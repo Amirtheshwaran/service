@@ -1,0 +1,48 @@
+﻿# Service
+
+A first-person atmospheric horror game prototype built in Unity.
+
+## Overview
+
+You play as a civil process server working evening shifts in rural Hollis County, delivering court documents to addresses across the area. With each shift, you receive a docket of addresses to locate and serve. Your tools are your car, a flashlight, and your judgment. If an address feels wrong or unsafe, there is no combat—you mark it, leave, or head back.
+
+The project focuses on slow-burn, environmental unease rather than jump scares, relying on heavy fog, rural lighting, and diegetic sound design.
+
+## How to Run in Unity
+
+- **Engine Version:** Unity 6 (`6000.6.0f1`)
+- **Pipeline:** Universal Render Pipeline (URP)
+
+### Steps:
+1. Open **Unity Hub**.
+2. Click **Add** -> **Add project from disk** and select this repository folder (`ServiceProject`).
+3. Open the project using Unity `6000.6.0f1`.
+4. In the Project window, open `Assets/Scenes/HollisCounty.unity`.
+5. Press **Play** to start the shift.
+
+## Controls
+
+| Key | Action |
+| --- | --- |
+| **WASD** | Walk / Drive (S reverses) |
+| **Mouse** | Look around (first-person on foot and inside vehicle) |
+| **E** | Interact (enter/exit car, knock on door, file report at depot) |
+| **R** | Leave copy of documents at door |
+| **U** | Mark property unable to serve |
+| **F** | Toggle flashlight (on foot) |
+| **Space** | Ignition key |
+| **Shift** | Brake / handbrake |
+| **Tab** | Check docket clipboard (inside vehicle) |
+| **M** | Check county map (inside vehicle) |
+| **Esc** | Close paper / pause menu |
+
+## Project Structure
+
+- `Assets/Scenes/HollisCounty.unity`: Main game scene containing county layout and shift setup.
+- `Assets/Scripts/`: Core gameplay scripts (player controller, vehicle mechanics, docket tracking, interaction logic).
+- `Assets/ServiceArt/`: Custom materials, lighting setups, and authored scene elements.
+- `Assets/Editor/ServiceBuild.cs`: Editor build helper utility.
+
+## Credits & Sourced Assets
+
+Environment models use the *Flooded Grounds* environment pack by Sandro T. Audio recordings are sourced from human field recordings via Freesound under CC0 and CC BY 4.0 licenses. Typography uses *Courier Prime* (SIL Open Font License). Full itemized source links and licensing details are listed in `ASSET-CREDITS.txt`.

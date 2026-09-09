@@ -1,0 +1,51 @@
+SERVICE — asset credits
+
+All audio is excerpted from human sound recordings. No synthesized or generative audio.
+Edits: trimming, channel downmix, level adjustment, short fades and loop crossfades.
+
+night-crickets — OwlStorm
+https://freesound.org/people/OwlStorm/sounds/320145/
+CC0 https://creativecommons.org/publicdomain/zero/1.0/
+
+dog-bark — ipears1
+https://freesound.org/people/ipears1/sounds/118072/
+CC0 https://creativecommons.org/publicdomain/zero/1.0/
+
+footsteps-gravel — Anthousai
+https://freesound.org/people/Anthousai/sounds/398778/
+CC0 https://creativecommons.org/publicdomain/zero/1.0/
+
+car-engine-idle — jpkweli
+https://freesound.org/people/jpkweli/sounds/154758/
+CC0 https://creativecommons.org/publicdomain/zero/1.0/
+
+paper-flip — gynation
+https://freesound.org/people/gynation/sounds/82379/
+CC0 https://creativecommons.org/publicdomain/zero/1.0/
+
+wind-trees — NomadApe
+https://freesound.org/people/NomadApe/sounds/444921/
+CC0 https://creativecommons.org/publicdomain/zero/1.0/
+
+car-engine-fail — jerry.berumen
+https://freesound.org/people/jerry.berumen/sounds/511685/
+CC0 https://creativecommons.org/publicdomain/zero/1.0/
+
+car-door-close — AdrianoAnjos
+https://freesound.org/people/AdrianoAnjos/sounds/607260/
+CC0 https://creativecommons.org/publicdomain/zero/1.0/
+
+door-knock — HunteR4708
+https://freesound.org/people/HunteR4708/sounds/256513/
+CC0 https://creativecommons.org/publicdomain/zero/1.0/
+
+car-engine-start — soundmary
+https://freesound.org/people/soundmary/sounds/128188/
+CC BY 4.0 https://creativecommons.org/licenses/by/4.0/
+
+Courier Prime — Alan Dague-Greene / Google Fonts. SIL Open Font License 1.1.
+https://github.com/google/fonts/tree/main/ofl/courierprime
+
+Flooded Grounds 1.1 — Sandro T. Standard Unity Asset Store EULA.
+https://assetstore.unity.com/packages/3d/environments/flooded-grounds-48529
+Licensed to the acquiring Unity account. Do not redistribute its raw source assets separately.
