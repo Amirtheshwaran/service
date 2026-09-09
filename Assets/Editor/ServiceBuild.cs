@@ -60,6 +60,12 @@ namespace ServiceGameV2.Editor
    var cameraData=scene.View.GetUniversalAdditionalCameraData();cameraData.renderPostProcessing=true;cameraData.antialiasing=AntialiasingMode.FastApproximateAntialiasing;
    scene.Flashlight=LightAt("Hand torch",Vector3.zero,new Color(.93f,.91f,.80f),4.2f,24,scene.View.transform);scene.Flashlight.transform.localPosition=V(.12f,-.14f,.15f);scene.Flashlight.type=LightType.Spot;scene.Flashlight.spotAngle=54;scene.Flashlight.innerSpotAngle=25;scene.Flashlight.shadows=LightShadows.Soft;scene.Flashlight.enabled=false;
    Creature();
+   root.AddComponent<ServiceWorldText>();
+   foreach(var text in Object.FindObjectsByType<TextMesh>(FindObjectsInactive.Include,FindObjectsSortMode.None)){
+    text.font.RequestCharactersInTexture(text.text+"0123456789. mi",text.fontSize,text.fontStyle);
+    string path=Art+"Materials/World type "+text.font.name+".mat";var mat=AssetDatabase.LoadAssetAtPath<Material>(path);if(!mat){mat=new Material(Shader.Find("Service/World Type"));AssetDatabase.CreateAsset(mat,path);}text.GetComponent<Renderer>().sharedMaterial=mat;
+   }
+   ServiceWorldText.Refresh(null);
    ConfigureProject();
    BakeNavigation();
    EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene(),"Assets/Scenes/HollisCounty.unity");
@@ -187,7 +193,7 @@ namespace ServiceGameV2.Editor
   }
   static ServiceProperty Villa(ServiceProperty p,Transform holder,Vector3 position,float yaw)
   {
-   var house=Building("Pref_Villa1_A",position,yaw,.55f,holder);
+   var house=Building("Pref_Villa1_A",position,yaw,.55f,holder);p.Building=house.transform;
    Vector3 outward=house.transform.forward;
    Vector3 at=house.transform.TransformPoint(V(14,1.03f,16.25f));
    p.Door=Empty("Villa entrance — open passage",at,holder);p.Door.rotation=Quaternion.LookRotation(outward);
@@ -197,21 +203,58 @@ namespace ServiceGameV2.Editor
    p.PorchLight=LightAt("Vale entrance bulb",at+outward*.6f+Vector3.up*2.8f,new Color(1,.65f,.35f),3.5f,12,holder);p.PorchLight.shadows=LightShadows.Soft;
    Prop("Prop_Lamp_E",at+outward*.13f+Vector3.up*2.8f,yaw,.6f,holder,false);
    p.AddressLabel=Label("77",at+house.transform.right*1.2f+Vector3.up*1.7f,yaw+180,.12f,new Color(.82f,.8f,.69f),holder);
-   Sign("VALE HOUSE\nLEAVE DOCUMENTS\nON THE HALL TABLE",at+outward*2+house.transform.right*2,yaw+180,.095f,holder);
-   Vector3 tableAt=house.transform.TransformPoint(V(16,1.04f,11.5f));
+   Sign("VALE HOUSE\nDELIVER TO STUDY\nSECOND FLOOR",at+outward*2+house.transform.right*2,yaw+180,.095f,holder);
+   Vector3 tableAt=house.transform.TransformPoint(V(21,8.04f,12.8f));
    var table=Prop("Prop_LargeTable_A",tableAt,yaw,.55f,holder);
+   var oldCenter=BoundsOf(table).center;var tableScale=table.transform.localScale;tableScale.x*=.75f;table.transform.localScale=tableScale;table.transform.position+=oldCenter-BoundsOf(table).center;
    var bounds=BoundsOf(table);p.DeliveryPoint=Empty("Delivery table",V(bounds.center.x,bounds.max.y+.03f,bounds.center.z),holder);
-   p.TableApproach=Empty("Stand before table",house.transform.TransformPoint(V(14,1.04f,13.5f)),holder);
+   p.TableApproach=Empty("Upstairs study approach",house.transform.TransformPoint(V(21,8.04f,10.4f)),holder);
    p.WindowLight=LightAt("Hall lamp",p.DeliveryPoint.position+Vector3.up*1.7f,new Color(1,.70f,.4f),2.5f,10,holder);p.WindowLight.shadows=LightShadows.Soft;
    Prop("Prop_Lamp_A",p.DeliveryPoint.position+house.transform.right*.25f,0,.3f,holder);
-   Prop("Prop_Chair_B",tableAt-house.transform.right*1.35f,yaw+95,.65f,holder);
-   p.SoundPoint=Empty("Footsteps upstairs",house.transform.TransformPoint(V(14,8,10)),holder);
+   Prop("Prop_Chair_B",tableAt-house.transform.right*1.65f,yaw+95,.65f,holder);
+   p.SoundPoint=Empty("Footsteps upstairs",house.transform.TransformPoint(V(22,8.04f,12)),holder);
    p.Curtains=new Renderer[0];
    p.PostedPaper=Box("Notice left on hall table",Vector3.zero,V(.24f,.006f,.32f),paper,holder,false);p.PostedPaper.transform.position=p.DeliveryPoint.position;p.PostedPaper.transform.rotation=Quaternion.Euler(0,yaw+8,0);p.PostedPaper.SetActive(false);
-   p.EntitySpawn=Empty("Entity emerging from hall",house.transform.TransformPoint(V(22,1.04f,12)),holder);
+   p.EntitySpawn=Empty("Entity emerging from upstairs hall",house.transform.TransformPoint(V(30,8.08f,12)),holder);
    p.EntitySpawn.rotation=Quaternion.LookRotation((p.TableApproach.position-p.EntitySpawn.position).normalized);
-   LightAt("Hall emergency spill",house.transform.TransformPoint(V(21,3.5f,12)),new Color(.7f,.18f,.08f),1.6f,9,holder);
+   DressVilla(p,house.transform,yaw,holder);
    return p;
+  }
+  static void DressVilla(ServiceProperty p,Transform house,float yaw,Transform holder)
+  {
+   Vector3 At(float x,float y,float z)=>house.TransformPoint(V(x,y,z));
+   GameObject Furnish(string name,float x,float y,float z,float turn,float scale)=>Prop(name,At(x,y,z),yaw+turn,scale,holder);
+   // Foyer: a waiting area and an empty hall table; all furniture sits outside the circulation lane.
+   Furnish("Prop_Sofa_A",7,1.04f,14.8f,180,.65f);
+   Furnish("Prop_SmallTable_B",7,1.04f,12,0,.65f);
+   Furnish("Prop_Rug_C",7,1.06f,12,0,.9f);
+   Furnish("Prop_Cabinet_A",19,1.04f,8.8f,0,.58f);
+   Furnish("Prop_Clock_A",25,1.04f,14.8f,180,.58f);
+   Furnish("Prop_Rug_A",14,1.05f,12,90,.9f);
+   // Landing and study: furniture backs against solid wall sections, not doorways.
+   Furnish("Prop_Cabinet_B",18,8.04f,8.8f,0,.58f);
+   Furnish("Prop_Sofa_A",7,8.04f,14.8f,180,.65f);
+   Furnish("Prop_Rug_D",22,8.06f,11.8f,0,.85f);
+   var sideTable=Furnish("Prop_SmallTable_A",11,8.04f,-2.8f,0,.7f);var top=BoundsOf(sideTable);Prop("Prop_Vase_B",V(top.center.x,top.max.y,top.center.z),yaw,.65f,holder);
+   foreach(float level in new[]{1f,8f})
+    Prop("Prop_Painting_C",At(26,level+3.2f,8.45f),yaw,.7f,holder,false);
+   var lamps=new List<Light>();
+   foreach(var v in new[]{V(14,5,12),V(11,5,6),V(2,8,4),V(10,12,2),V(14,12,9),V(26,12,12)}){
+    var lamp=Prop("Prop_Lamp_C",At(v.x,v.y,v.z),yaw,.35f,holder,false);
+    var ceiling=At(v.x,v.y<=8?7.9f:14.9f,v.z);var center=BoundsOf(lamp).max;center.x=At(v.x,v.y,v.z).x;center.z=At(v.x,v.y,v.z).z;
+    var cord=Box("Pendant cord",Vector3.zero,V(.012f,Mathf.Max(.1f,ceiling.y-center.y),.012f),dark,holder,false);cord.transform.position=(center+ceiling)*.5f;
+    var light=LightAt("Vale pendant",At(v.x,v.y-.3f,v.z),new Color(1,.67f,.37f),1.35f,6,holder);lamps.Add(light);
+   }
+   p.EncounterLights=lamps.ToArray();
+   // Readable diegetic directions at the two decision points.
+   void Plaque(string text,Vector3 position,float facing,float width,float height,float size){
+    var board=Box("Room directions",Vector3.zero,V(width,height,.025f),dark,holder,false);
+    board.transform.SetPositionAndRotation(position,Quaternion.Euler(0,facing,0));
+    Label(text,position-board.transform.forward*.016f,facing,size,new Color(.85f,.81f,.69f),holder);
+   }
+   Plaque("STUDY UPSTAIRS\nRIGHT STAIRCASE",At(12,4,8.45f),yaw+180,.75f,.29f,.067f);
+   Plaque("STUDY",At(12,11.2f,7.55f),yaw,.48f,.19f,.085f);
+   var reverb=Empty("Villa acoustics",At(20,5,6),holder).gameObject.AddComponent<AudioReverbZone>();reverb.reverbPreset=AudioReverbPreset.StoneCorridor;reverb.minDistance=5;reverb.maxDistance=13;
   }
   static List<Vector3> Curve(Vector3[] p)
   {
@@ -276,21 +319,13 @@ namespace ServiceGameV2.Editor
    scene.DriverSeat=Empty("Driver eye position",V(-.35f,1.19f,.12f),scene.Car);scene.DriverSeat.localPosition=V(-.35f,1.19f,.12f);
    scene.ExitLeft=Empty("Left door clearance",Vector3.zero,scene.Car);scene.ExitLeft.localPosition=V(-1.7f,.1f,0);
    scene.ExitRight=Empty("Right door clearance",Vector3.zero,scene.Car);scene.ExitRight.localPosition=V(1.7f,.1f,0);
-   var dash=Box("Vinyl dashboard",V(0,.82f,.75f),V(1.5f,.24f,.49f),dark,scene.Car,false);dash.transform.localRotation=Quaternion.Euler(-9,0,0);
-   Box("Instrument binnacle",V(-.35f,.94f,.57f),V(.52f,.12f,.18f),metal,scene.Car,false);
-   Box("Lower windshield seal",V(0,1.02f,.91f),V(1.64f,.04f,.04f),dark,scene.Car,false);
-   for(int s=-1;s<=1;s+=2){var pillar=Box("Windshield pillar",V(s*.77f,1.3f,.65f),V(.052f,.64f,.055f),dark,scene.Car,false);pillar.transform.localRotation=Quaternion.Euler(31,0,s*9);}
-   Box("Headliner",V(0,1.65f,.28f),V(1.6f,.04f,1.7f),dark,scene.Car,false);
-   var od=Label("TRIP  000.0",V(-.35f,.98f,.471f),0,.025f,new Color(.52f,.63f,.48f),scene.Car);od.transform.localPosition=V(-.35f,.98f,.471f);scene.Odometer=od;
-   var steering=Empty("Steering wheel",Vector3.zero,scene.Car);steering.localPosition=V(-.35f,.88f,.35f);steering.localRotation=Quaternion.Euler(18,0,0);
-   var verts=new List<Vector3>();var triangles=new List<int>();for(int i=0;i<32;i++)for(int j=0;j<8;j++){float a=i*Mathf.PI/16,b=j*Mathf.PI/4;verts.Add(V(Mathf.Cos(a)*(.18f+.017f*Mathf.Cos(b)),Mathf.Sin(a)*(.18f+.017f*Mathf.Cos(b)),.017f*Mathf.Sin(b)));int k=i*8+j,n=i*8+(j+1)%8,q=((i+1)%32)*8+j,r=((i+1)%32)*8+(j+1)%8;triangles.AddRange(new[]{k,n,q,n,r,q});}
-   var wheel=new Mesh{name="Steering rim"};wheel.SetVertices(verts);wheel.SetTriangles(triangles,0);wheel.RecalculateNormals();AssetDatabase.CreateAsset(wheel,Art+"Meshes/Steering rim.asset");steering.gameObject.AddComponent<MeshFilter>().sharedMesh=wheel;steering.gameObject.AddComponent<MeshRenderer>().sharedMaterial=dark;Box("Wheel crossbar",Vector3.zero,V(.34f,.032f,.045f),metal,steering,false);
+   ServiceCockpit.Create(scene);
    foreach(float side in new[]{-.62f,.62f}){var h=LightAt("Low beam",Vector3.zero,new Color(1,.91f,.73f),7,57,scene.Car);h.transform.localPosition=V(side,.65f,2.22f);h.transform.localRotation=Quaternion.Euler(7,0,0);h.type=LightType.Spot;h.spotAngle=65;h.innerSpotAngle=34;h.shadows=LightShadows.Soft;}
   }
   static void Lighting()
   {
    var sky=new Material(Shader.Find("Skybox/Cubemap"));sky.SetTexture("_Tex",AssetDatabase.LoadAssetAtPath<Cubemap>(FG+"Content/Textures/BGR_Sky1.tif"));sky.SetFloat("_Exposure",.45f);sky.SetColor("_Tint",new Color(.42f,.47f,.53f));AssetDatabase.CreateAsset(sky,Art+"Materials/Hollis sky.mat");RenderSettings.skybox=sky;
-   RenderSettings.ambientMode=AmbientMode.Custom;var sh=new SphericalHarmonicsL2();sh.AddAmbientLight(new Color(.24f,.27f,.29f));RenderSettings.ambientProbe=sh;RenderSettings.ambientIntensity=1;
+   RenderSettings.ambientMode=AmbientMode.Custom;var sh=new SphericalHarmonicsL2();sh.AddAmbientLight(new Color(.095f,.115f,.14f));RenderSettings.ambientProbe=sh;RenderSettings.ambientIntensity=1;
    scene.Moon=LightAt("Last light over Hollis County",V(0,80,0),new Color(.67f,.77f,.88f),.36f,1000,world);scene.Moon.type=LightType.Directional;scene.Moon.shadows=LightShadows.Soft;scene.Moon.transform.rotation=Quaternion.Euler(23,-28,0);RenderSettings.sun=scene.Moon;
    var volume=Empty("County color grade",Vector3.zero,world).gameObject.AddComponent<Volume>();volume.isGlobal=true;var profile=ScriptableObject.CreateInstance<VolumeProfile>();AssetDatabase.CreateAsset(profile,Art+"County grade.asset");volume.sharedProfile=profile;
    var tone=profile.Add<Tonemapping>();tone.mode.Override(TonemappingMode.ACES);var grade=profile.Add<ColorAdjustments>();grade.postExposure.Override(.4f);grade.saturation.Override(-13);grade.contrast.Override(9);var vignette=profile.Add<Vignette>();vignette.intensity.Override(.2f);vignette.smoothness.Override(.45f);
@@ -340,6 +375,9 @@ namespace ServiceGameV2.Editor
    foreach(var a in new[]{"night","wind","engine","dog","footstep","knock","paper","door","start","starter","tension","reveal","growl"})if(!Resources.Load<AudioClip>("Audio/"+a))missing.Add("Audio "+a);
    if(!scene.Entity||!scene.Entity.GetComponent<UnityEngine.AI.NavMeshAgent>()||!scene.Entity.GetComponentInChildren<Animator>(true)?.runtimeAnimatorController)missing.Add("Animated creature");
    if(!scene.Navigation||!scene.Properties[1].DeliveryPoint)missing.Add("Villa encounter references");
+   var nav=UnityEngine.AI.NavMesh.AddNavMeshData(scene.Navigation);var villa=scene.Properties[1];
+   foreach(var from in new[]{villa.EntitySpawn.position,villa.TableApproach.position}){var path=new UnityEngine.AI.NavMeshPath();if(!UnityEngine.AI.NavMesh.CalculatePath(from,villa.Gate.position,UnityEngine.AI.NavMesh.AllAreas,path)||path.status!=UnityEngine.AI.NavMeshPathStatus.PathComplete)missing.Add("Disconnected upstairs route from "+from);}
+   nav.Remove();
    if(missing.Count>0)throw new Exception("Missing content: "+string.Join(", ",missing.Take(15)));
    File.WriteAllText(Path.Combine(Work,"scene-validation.txt"),"All materials, shaders, thirteen sourced audio clips, animated creature, navigation and delivery references present.");
   }
@@ -359,4 +397,8 @@ namespace ServiceGameV2.Editor
   }
  }
 }
+
+
+
+
 

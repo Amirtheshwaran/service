@@ -9,5 +9,7 @@ namespace ServiceGameV2 {
   public GameObject PostedPaper;
   public Transform SoundPoint;
   public TextMesh AddressLabel;
+  public Transform Building;
+  public Light[] EncounterLights;
  }
 }

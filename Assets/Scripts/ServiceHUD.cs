@@ -6,24 +6,26 @@ namespace ServiceGameV2
     public sealed class ServiceHUD : MonoBehaviour
     {
         ServiceDirector d;
-        GUIStyle title, menu, small, prompt, heading, paper, paperSmall, paperBold, button, paperButton;
+        GUIStyle title, menu, small, prompt, heading, paper, paperSmall, paperBold, button, paperButton, alarm;
         bool options;
         readonly Color ink = new Color(.17f, .18f, .17f), sheet = new Color(.84f, .83f, .77f), white = new Color(.85f, .86f, .82f);
         public void Initialize(ServiceDirector director) { d = director; }
+        public void SmokeOptions(bool open){if(d.IsSmoke)options=open;}
 
         void Styles()
         {
             if (title != null) return;
             Font courier = Resources.Load<Font>("Fonts/CourierPrime-Regular");
-            title = Style(60, white, TextAnchor.MiddleLeft, courier);
+            title = Style(66, white, TextAnchor.MiddleLeft);
+            alarm = Style(36, white, TextAnchor.MiddleCenter);
             menu = Style(18, white, TextAnchor.MiddleLeft);
-            small = Style(13, new Color(.65f, .69f, .68f), TextAnchor.MiddleLeft);
-            prompt = Style(15, white, TextAnchor.MiddleCenter);
+            small = Style(16, new Color(.72f, .75f, .73f), TextAnchor.MiddleLeft);
+            prompt = Style(19, white, TextAnchor.MiddleCenter);
             heading = Style(27, ink, TextAnchor.MiddleLeft, courier);
             paper = Style(18, ink, TextAnchor.MiddleLeft, courier);
-            paperSmall = Style(14, ink, TextAnchor.MiddleLeft, courier);
+            paperSmall = Style(16, ink, TextAnchor.MiddleLeft, courier);
             paperBold = Style(18, ink, TextAnchor.MiddleLeft, courier); paperBold.fontStyle = FontStyle.Bold;
-            button = new GUIStyle(GUI.skin.button) { fontSize = 16, alignment = TextAnchor.MiddleLeft, padding = new RectOffset(16, 12, 9, 9) };
+            button = new GUIStyle(GUI.skin.button) { font=Resources.Load<Font>("Fonts/Barlow-Regular"), fontSize = 20, alignment = TextAnchor.MiddleLeft, padding = new RectOffset(16, 12, 9, 9) };
             button.normal.textColor = white; button.hover.textColor = Color.white; button.active.textColor = white;
             button.normal.background = Texture2D.whiteTexture; button.hover.background = Texture2D.whiteTexture; button.active.background = Texture2D.whiteTexture;
             paperButton = new GUIStyle(button) { font = courier, fontSize = 15 };
@@ -31,7 +33,7 @@ namespace ServiceGameV2
         }
         GUIStyle Style(int size, Color color, TextAnchor align, Font font = null)
         {
-            GUIStyle s = new GUIStyle(GUI.skin.label) { fontSize = size, alignment = align, wordWrap = true, font = font };
+            GUIStyle s = new GUIStyle(GUI.skin.label) { fontSize = size, alignment = align, wordWrap = true, font = font ? font : Resources.Load<Font>("Fonts/Barlow-Regular") };
             s.normal.textColor = color;
             return s;
         }
@@ -52,7 +54,8 @@ namespace ServiceGameV2
         bool Button(Rect rect, string label, bool onPaper = false)
         {
             Color before = GUI.backgroundColor;
-            GUI.backgroundColor = onPaper ? new Color(.73f, .73f, .67f) : new Color(.11f, .135f, .14f, .95f);
+            bool hover=rect.Contains(Event.current.mousePosition);
+            GUI.backgroundColor = onPaper ? (hover?new Color(.66f,.67f,.6f):new Color(.73f, .73f, .67f)) : (hover?new Color(.22f,.25f,.23f):new Color(.11f, .135f, .14f, .95f));
             bool clicked = GUI.Button(rect, label, onPaper ? paperButton : button);
             GUI.backgroundColor = before;
             return clicked;
@@ -67,11 +70,12 @@ namespace ServiceGameV2
             GUI.Label(new Rect(77, 174, 420, 90), "SERVICE", title);
             GUI.Label(new Rect(82, 278, 340, 52), "Evening assignments\nOctober 01 — October 09", menu);
             if (options) { Options(82, 355); return; }
-            if (Button(new Rect(82, 365, 315, 47), "Begin October 01")) d.BeginShift(0);
+            if (Button(new Rect(82, 365, 315, 47), d.HasSavedRoute?"Continue route":"Begin shift")) {if(d.HasSavedRoute)d.ContinueRoute();else d.NewRoute();}
             if (Button(new Rect(82, 426, 315, 47), "Preview Vale House encounter")) {d.BeginShift(0);d.PaperOpen=false;var p=d.Property(1);d.Player.TeleportCar(p.Gate.position+p.Door.forward*3,Quaternion.LookRotation(-p.Door.forward));d.SetCursor();}
             if (Button(new Rect(82, 487, 315, 47), "Options / controls")) options = true;
             if (Button(new Rect(82, 548, 315, 47), "Quit")) Application.Quit();
-            GUI.Label(new Rect(82, 632, 400, 34), "Drive the route. Record each attempt. Return.", small);
+            if(d.HasSavedRoute && Button(new Rect(82, 605, 315, 37),"Start a new route"))d.NewRoute();
+            GUI.Label(new Rect(82, 661, 400, 34), "Drive the route. Record each attempt. Return.", small);
         }
         void Pause()
         {
@@ -85,13 +89,15 @@ namespace ServiceGameV2
         }
         void Options(float x, float y)
         {
-            GUI.Label(new Rect(x, y, 320, 27), "Recorded sound volume", menu);
+            GUI.Label(new Rect(x, y, 320, 27), "Master volume", menu);
             d.Audio.Volume = GUI.HorizontalSlider(new Rect(x, y + 39, 315, 20), d.Audio.Volume, 0, 1);
             GUI.Label(new Rect(x, y + 70, 320, 27), "Mouse sensitivity", menu);
             d.Player.Sensitivity = GUI.HorizontalSlider(new Rect(x, y + 109, 315, 20), d.Player.Sensitivity, .03f, .2f);
-            GUI.Label(new Rect(625, 185, 460, 330), "W A S D    Walk / drive\nMOUSE      Look\nE          Door / car / depot\nR          Leave papers / table delivery\nU          Mark unable to serve\nF          Flashlight\nSPACE      Turn ignition key\nSHIFT      Sprint on foot / brake in car\nTAB        Docket in car\nM          County map in car\nESC        Pause / close paper", menu);
+            string[] keys={"WASD","Mouse","E","R","U","F","Space","Shift","Tab","M","Esc"};
+            string[] actions={"Walk / drive","Look around","Interact / enter vehicle","Leave a copy","Record unsuccessful visit","Flashlight","Start engine","Sprint / brake","Docket","County map","Pause / close document"};
+            for(int i=0;i<keys.Length;i++){GUI.Label(new Rect(625,190+i*28,100,28),keys[i],menu);GUI.Label(new Rect(740,190+i*28,440,28),actions[i],menu);}
             if (Button(new Rect(x, y + 150, 315, 44), Screen.fullScreen ? "Use windowed display" : "Use full screen")) Screen.fullScreen = !Screen.fullScreen;
-            if (Button(new Rect(x, y + 210, 315, 44), "Back")) options = false;
+            if (Button(new Rect(x, y + 210, 315, 44), "Back")){d.SaveOptions();options = false;}
         }
 
         void PaperBase(string name, string right)
@@ -155,7 +161,7 @@ namespace ServiceGameV2
             {
                 Vector2 p = MapPoint(d.Property(i).Door.position, bounds, minX, maxX, minZ, maxZ);
                 Rect(new Rect(p.x - 3, p.y - 3, 6, 6), ink);
-                GUI.Label(new Rect(p.x + 12, p.y - 15, 200, 46), i == 0 ? "214 MILLBROOK" : "77 LATIGO", paperSmall);
+                GUI.Label(new Rect(i==0?p.x-176:p.x+12, p.y - 15, i==0?166:200, 46), i == 0 ? "214 MILLBROOK" : "77 LATIGO", paperSmall);
             }
             if (d.Scene.LateThreshold != null)
             {
@@ -196,21 +202,23 @@ namespace ServiceGameV2
             else if (d.Player.InCar)
             {
                 if (d.CanFinish) context = "[E] File shift report at depot";
-                else if (d.Player.Speed < .8f) context = d.Player.IsStarting ? "Starting…" : "[E] Step out    [SPACE] Turn key    [TAB] Docket    [M] Map";
-                else context = "[TAB] Docket    [M] County map";
+                else if (d.Player.Speed < .8f) context = d.Player.IsStarting ? "Starting engine…" : d.Player.EngineRunning ? "E  Exit vehicle" : "E  Exit vehicle     /     Space  Start engine";
+                GUI.Label(new Rect(1030,30,220,28),"Tab  Docket     /     M  Map",small);
             }
             else if (Vector3.Distance(d.Scene.View.transform.position, d.Scene.Car.position + Vector3.up) < 3.5f) context = "[E] Get in";
-            else if (d.NearbyDoor() == 1) context = "[E / R] Put notice on table";
+            else if (d.NearbyDoor() == 1) context = "[E / R] Leave notice on study table";
             else if (d.NearbyDoor() >= 0) context = "[E] Knock    [R] Leave papers    [U] Unable to serve";
-            else if (d.NearbyProperty() >= 0) context = "[U] Mark unable to serve";
+            else if (d.NearbyProperty()==1 && d.ResultAt(1)==ServiceResult.Pending) context = d.Scene.Walker.transform.position.y>d.Property(1).TableApproach.position.y-.5f?"Study ahead. Leave the notice on the table.":"Study upstairs. Take the right staircase.";
+            else if (d.NearbyProperty() >= 0) context = "U  Record unsuccessful visit";
             if (context.Length > 0)
             {
-                Rect(new Rect(260, 641, 760, 34), new Color(.03f, .04f, .04f, .72f));
-                GUI.Label(new Rect(270, 641, 740, 34), context, prompt);
+                float width=Mathf.Min(900,prompt.CalcSize(new GUIContent(context)).x+40);
+                Rect(new Rect(640-width/2,660,width,36), new Color(.03f, .04f, .04f, .8f));
+                GUI.Label(new Rect(640-width/2,660,width,36), context, prompt);
             }
-            if (!string.IsNullOrEmpty(d.Notice)) GUI.Label(new Rect(260, 599, 760, 35), d.Notice, prompt);
-            if(d.Horror!=null&&d.Horror.Active){GUI.Label(new Rect(430,74,600,68),d.Horror.Phase==PursuitPhase.Chase?"RUN":"",title);GUI.Label(new Rect(300,145,680,30),d.Player.InCar?"Turn the key. Drive.":"Hold SHIFT to run. Get back to your car.",prompt);}
-            if(d.Horror!=null&&d.Horror.Caught){Dim(1);GUI.Label(new Rect(220,300,950,80),"YOU WERE NOT ALONE",title);GUI.Label(new Rect(330,390,620,55),"Returning to the villa gate…",prompt);}
+            if (!string.IsNullOrEmpty(d.Notice)&&!d.Horror.Active&&!d.Horror.Caught){Rect(new Rect(280,602,720,40),new Color(0,0,0,.65f));GUI.Label(new Rect(300,602,680,40),d.Notice,prompt);}
+            if(d.Horror.Active){if(d.Horror.Phase==PursuitPhase.Chase)GUI.Label(new Rect(440,56,400,55),"RUN",alarm);GUI.Label(new Rect(340,113,600,36),d.Horror.Phase==PursuitPhase.Chase?"Hold Shift. Get back to the car.":"Something moved in the hall.",prompt);}
+            if(d.Horror.Caught){Dim(1);GUI.Label(new Rect(240,290,800,60),"Caught",alarm);GUI.Label(new Rect(330,365,620,55),"Returning to the gate…",prompt);}
         }
 
         void Report()
@@ -245,3 +253,8 @@ namespace ServiceGameV2
         }
     }
 }
+
+
+
+
+

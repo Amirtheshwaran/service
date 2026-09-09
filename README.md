@@ -27,11 +27,11 @@ The project focuses on slow-burn, environmental unease rather than jump scares, 
 | **WASD** | Walk / Drive (S reverses) |
 | **Mouse** | Look around (first-person on foot and inside vehicle) |
 | **E** | Interact (enter/exit car, knock on door, file report at depot) |
-| **R** | Leave copy of documents at door |
+| **R** | Leave copy of documents (at door / on study table) |
 | **U** | Mark property unable to serve |
 | **F** | Toggle flashlight (on foot) |
 | **Space** | Ignition key |
-| **Shift** | Brake / handbrake |
+| **Shift** | Sprint on foot / brake in car |
 | **Tab** | Check docket clipboard (inside vehicle) |
 | **M** | Check county map (inside vehicle) |
 | **Esc** | Close paper / pause menu |
@@ -45,4 +45,4 @@ The project focuses on slow-burn, environmental unease rather than jump scares, 
 
 ## Credits & Sourced Assets
 
-Environment models use the *Flooded Grounds* environment pack by Sandro T. Audio recordings are sourced from human field recordings via Freesound under CC0 and CC BY 4.0 licenses. Typography uses *Courier Prime* (SIL Open Font License). Full itemized source links and licensing details are listed in `ASSET-CREDITS.txt`.
+Environment models use the *Flooded Grounds* pack by Sandro T. Character model uses *Creep Horror Creature* by AC Game Assets. Audio recordings are sourced from human field recordings via Freesound under CC0 and CC BY 4.0 licenses. Typography uses *Courier Prime* and *Barlow* (SIL Open Font License). Full itemized source links and licensing details are listed in `ASSET-CREDITS.txt`.

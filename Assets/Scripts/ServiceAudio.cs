@@ -13,6 +13,7 @@ namespace ServiceGameV2
         public void Initialize(ServiceDirector director)
         {
             d = director;
+            AudioListener.pause=false;if(!d.IsSmoke)Volume=Mathf.Clamp01(PlayerPrefs.GetFloat("SERVICE.volume",.8f));
             tension=Source("Horror pursuit score",d.Scene.View.transform,0);tension.clip=Clip("tension");tension.loop=true;tension.volume=0;
             engine = Source("Recorded engine", d.Scene.Car, 0);
             dog = Source("Recorded distant dog", transform, 1);
@@ -49,10 +50,12 @@ namespace ServiceGameV2
         void Update()
         {
             AudioListener.volume = Volume;
+            AudioListener.pause=d.Phase==ServicePhase.Paused;
+            if(AudioListener.pause)return;
             if(tension!=null){tension.volume=Mathf.MoveTowards(tension.volume,pursuing?.28f:0,Time.unscaledDeltaTime*.2f);if(!pursuing&&tension.volume<=0&&tension.isPlaying)tension.Stop();}
             bool inside = d.Player == null || d.Player.InCar;
-            if(wind != null) wind.volume = Mathf.MoveTowards(wind.volume, inside ? .035f : .13f, Time.unscaledDeltaTime * .15f);
-            if(ambience != null) ambience.volume = Mathf.MoveTowards(ambience.volume, d.NightIndex == 2 ? .012f : inside ? .045f : .13f, Time.unscaledDeltaTime * .1f);
+            if(wind != null) wind.volume = Mathf.MoveTowards(wind.volume, d.InsideVilla?.012f:inside ? .035f : .13f, Time.unscaledDeltaTime * .15f);
+            if(ambience != null) ambience.volume = Mathf.MoveTowards(ambience.volume, d.InsideVilla?.018f:d.NightIndex == 2 ? .012f : inside ? .045f : .13f, Time.unscaledDeltaTime * .1f);
         }
         void At(string name, Vector3 point, float volume)
         {

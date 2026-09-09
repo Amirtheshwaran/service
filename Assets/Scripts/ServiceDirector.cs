@@ -48,6 +48,7 @@ namespace ServiceGameV2
 
         void Start()
         {
+            IsSmoke = Array.IndexOf(Environment.GetCommandLineArgs(), "-serviceSmoke") >= 0;
             Scene = GetComponent<CountyScene>();
             if (Scene == null || Scene.Car == null || Scene.View == null || Scene.Properties == null || Scene.Properties.Length < 3)
                 throw new InvalidOperationException("Service requires the authored CountyScene references.");
@@ -71,7 +72,7 @@ namespace ServiceGameV2
             Player.EnterCar();
             SetCursor();
             IsSmoke = Array.IndexOf(Environment.GetCommandLineArgs(), "-serviceSmoke") >= 0;
-            if (IsSmoke) gameObject.AddComponent<ServiceV3Smoke>().Run(this);
+            if (IsSmoke) gameObject.AddComponent<ServiceV4Smoke>().Run(this);
         }
 
         public ServiceProperty Property(int index)
@@ -101,7 +102,7 @@ namespace ServiceGameV2
             lastCarPosition = Scene.Car.position;
             if (NightIndex == 2 && Scene.LateThreshold != null && Vector3.Dot(Scene.Car.position - Scene.LateThreshold.position, Scene.LateThreshold.forward) > 0)
                 OdometerFrozen = true;
-            if (Scene.Odometer != null) Scene.Odometer.text = "TRIP  " + TripMiles.ToString("000.0");
+            if (Scene.Odometer != null) Scene.Odometer.text = TripMiles.ToString("000.0") + " mi";
             if (Time.unscaledTime > noticeUntil) Notice = "";
             if (!PaperOpen && !Horror.Active && !Horror.Caught) EvaluateCues(Time.deltaTime);
             if (InputBlocked || Busy) return;
@@ -134,7 +135,7 @@ namespace ServiceGameV2
             if (NightIndex < 2)
             {
                 Docket.Add(new DocketEntry(0, "214 Millbrook Road", NightIndex == 0 ? "Correll residence · Civil summons" : Prior(0, "Correll residence · Receipt copy")));
-                Docket.Add(new DocketEntry(1, "77 Latigo Trail", NightIndex == 0 ? "M. Vale · Leave copy on hall table. Entrance open." : Prior(1, "M. Vale · Hall table, entrance open")));
+                Docket.Add(new DocketEntry(1, "77 Latigo Trail", NightIndex == 0 ? "M. Vale · Upstairs study. Use the right staircase." : Prior(1, "M. Vale · Upstairs study")));
             }
             else
             {
@@ -249,7 +250,7 @@ namespace ServiceGameV2
             if (entry == null) return;
             ServiceProperty p = Property(index);
             if(index==1 && result!=ServiceResult.Unable){
-                if(NearbyDoor()!=1){Say("Leave the notice on the hall table inside Vale House.");return;}
+                if(NearbyDoor()!=1){Say("Leave the notice on the upstairs study table.");return;}
                 entry.Result=ServiceResult.LeftAtDoor;p.PostedPaper.SetActive(true);Audio.Paper();Horror.Begin();return;
             }
             if (result == ServiceResult.Served) { StartCoroutine(Knock(entry, p)); return; }
@@ -293,6 +294,7 @@ namespace ServiceGameV2
         {
             if (!CanFinish || Busy) return false;
             foreach (DocketEntry e in Docket) lastResults[e.Property] = e.Result;
+            SaveRoute();
             Phase = ServicePhase.Report;
             PaperOpen = false;
             Player.StopEngine();
@@ -301,12 +303,24 @@ namespace ServiceGameV2
             return true;
         }
         public void NextShift() { if (NightIndex < 2) BeginShift(NightIndex + 1); else { Phase = ServicePhase.Finished; SetCursor(); } }
+        public bool InsideVilla {get {var house=Property(1).Building;if(!house||Player==null||Player.InCar)return false;var v=house.InverseTransformPoint(Scene.Walker.transform.position);return v.x>-1&&v.x<41&&v.z>-4&&v.z<16.2f&&v.y>.8f&&v.y<16;}}
+        string SavePrefix=>IsSmoke?"SERVICE.test.":"SERVICE.v4.";
+        public bool HasSavedRoute=>PlayerPrefs.HasKey(SavePrefix+"night");
+        void SaveRoute(){if(NightIndex<2){PlayerPrefs.SetInt(SavePrefix+"night",NightIndex+1);for(int i=0;i<3;i++)PlayerPrefs.SetInt(SavePrefix+"result"+i,(int)lastResults[i]);}else PlayerPrefs.DeleteKey(SavePrefix+"night");PlayerPrefs.Save();}
+        public void ContinueRoute(){for(int i=0;i<3;i++)lastResults[i]=(ServiceResult)PlayerPrefs.GetInt(SavePrefix+"result"+i,0);BeginShift(Mathf.Clamp(PlayerPrefs.GetInt(SavePrefix+"night",0),0,2));}
+        public void NewRoute(){PlayerPrefs.DeleteKey(SavePrefix+"night");Array.Clear(lastResults,0,lastResults.Length);PlayerPrefs.Save();BeginShift(0);}
+        public void SaveOptions(){if(IsSmoke)return;PlayerPrefs.SetFloat("SERVICE.volume",Audio.Volume);PlayerPrefs.SetFloat("SERVICE.sensitivity",Player.Sensitivity);PlayerPrefs.Save();}
+        void OnApplicationFocus(bool focused){if(!focused&&!IsSmoke&&Phase==ServicePhase.Playing)Pause();}
         public void Pause() { if (Phase != ServicePhase.Playing) return; Phase = ServicePhase.Paused; Time.timeScale = 0; SetCursor(); }
         public void Resume() { if (Phase != ServicePhase.Paused) return; Phase = ServicePhase.Playing; Time.timeScale = 1; SetCursor(); }
         public void Title() { StopAllCoroutines(); Busy = false; Phase = ServicePhase.Title; PaperOpen = false; Time.timeScale = 1; Player.StopEngine(); Horror.ResetEncounter(); SetCursor(); }
         public void SetCursor() { bool locked = Phase == ServicePhase.Playing && !PaperOpen && !IsSmoke; Cursor.lockState = locked ? CursorLockMode.Locked : CursorLockMode.None; Cursor.visible = !locked; }
-        void OnDestroy() { Time.timeScale = 1; Cursor.lockState = CursorLockMode.None; Cursor.visible = true; }
+        void OnDestroy() { if(Audio&&Player)SaveOptions();AudioListener.pause=false;Time.timeScale = 1; Cursor.lockState = CursorLockMode.None; Cursor.visible = true; }
     }
 }
+
+
+
+
 
 

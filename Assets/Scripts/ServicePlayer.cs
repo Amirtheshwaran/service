@@ -23,6 +23,7 @@ namespace ServiceGameV2
         public void Initialize(ServiceDirector director)
         {
             d = director; s = d.Scene;
+            if(!d.IsSmoke)Sensitivity=Mathf.Clamp(PlayerPrefs.GetFloat("SERVICE.sensitivity",.095f),.03f,.2f);
             fullMask = s.View.cullingMask | (1 << 8);
             s.View.nearClipPlane = .035f;
             s.View.fieldOfView = 68;
@@ -39,7 +40,7 @@ namespace ServiceGameV2
             if (InCar)
             {
                 yaw = Mathf.Clamp(yaw, -100, 100);
-                s.View.transform.localRotation = Quaternion.Euler(pitch, yaw, 0);
+                s.View.transform.localRotation = Quaternion.Euler(Mathf.Clamp(pitch,-35,48)+5, yaw, 0);
                 if (Pressed(Key.Space)) StartEngine();
                 float throttle = d.IsSmoke ? SmokeThrottle : Axis(Key.S, Key.W);
                 if (Mathf.Abs(throttle) > .1f && !EngineRunning && !IsStarting) StartEngine();
@@ -63,6 +64,9 @@ namespace ServiceGameV2
 
         void Drive(float throttle, float steering)
         {
+            s.SteeringWheel.localRotation=Quaternion.Slerp(s.SteeringWheel.localRotation,Quaternion.Euler(18,0,-steering*100),Time.deltaTime*8);
+            s.SpeedNeedle.localRotation=Quaternion.Euler(0,0,Mathf.Lerp(-130,130,Mathf.Clamp01(Speed*2.237f/60)));
+            s.RevNeedle.localRotation=Quaternion.Euler(0,0,Mathf.Lerp(-130,130,EngineRunning?Mathf.Clamp01(.14f+Speed/30+Mathf.Abs(throttle)*.12f):0));
             float target = !EngineRunning ? 0 : throttle > 0 ? throttle * 12 : throttle * 4;
             speed = Mathf.MoveTowards(speed, target, (Mathf.Abs(throttle) < .1f || Mathf.Sign(throttle) != Mathf.Sign(speed) ? 8 : 4.1f) * Time.deltaTime);
             if (Keyboard.current != null && Keyboard.current[Key.LeftShift].isPressed) speed = Mathf.MoveTowards(speed, 0, 14 * Time.deltaTime);
@@ -100,10 +104,11 @@ namespace ServiceGameV2
         public void EnterCar()
         {
             InCar = true;
+            if(s.Cockpit)s.Cockpit.SetActive(true);
             s.Walker.enabled = false;
             s.View.transform.SetParent(s.DriverSeat, false);
             s.View.transform.localPosition = Vector3.zero;
-            s.View.transform.localRotation = Quaternion.identity;
+            s.View.transform.localRotation = Quaternion.Euler(5,0,0);
             s.View.cullingMask = fullMask & ~(1 << 8);
             yaw = pitch = 0;
             if (s.Flashlight != null) s.Flashlight.enabled = false;
@@ -130,6 +135,7 @@ namespace ServiceGameV2
         void PlaceWalker(Vector3 point, float angle)
         {
             InCar = false;
+            if(s.Cockpit)s.Cockpit.SetActive(false);
             s.Walker.enabled = false;
             s.Walker.transform.position = point;
             s.Walker.transform.rotation = Quaternion.Euler(0, angle, 0);
@@ -167,5 +173,6 @@ namespace ServiceGameV2
             Vector3 offset=point-s.Walker.transform.position;
             yaw=Mathf.Atan2(offset.x,offset.z)*Mathf.Rad2Deg; pitch=0;
         }
+        public void SmokeLook(float horizontal,float vertical){if(d.IsSmoke){yaw=horizontal;pitch=vertical;}}
     }
 }

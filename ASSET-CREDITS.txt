@@ -1,6 +1,6 @@
 SERVICE — asset credits
 
-All audio is excerpted from human sound recordings. No synthesized or generative audio.
+Audio uses human recordings and human sound design. No generative AI media. The horror drone is a pre-existing 2019 sound-design recording.
 Edits: trimming, channel downmix, level adjustment, short fades and loop crossfades.
 
 night-crickets — OwlStorm
@@ -49,3 +49,21 @@ https://github.com/google/fonts/tree/main/ofl/courierprime
 Flooded Grounds 1.1 — Sandro T. Standard Unity Asset Store EULA.
 https://assetstore.unity.com/packages/3d/environments/flooded-grounds-48529
 Licensed to the acquiring Unity account. Do not redistribute its raw source assets separately.
+
+V3 additions:
+Barlow — Jeremy Tribby. SIL Open Font License 1.1.
+https://github.com/google/fonts/tree/main/ofl/barlow
+
+Creep Horror Creature — AC Game Assets. Standard Unity Asset Store EULA.
+https://assetstore.unity.com/packages/3d/characters/creatures/creep-horror-creature-244853
+Licensed to the acquiring Unity account; raw assets may not be redistributed as a library.
+
+tension - gerainsan
+https://freesound.org/people/gerainsan/sounds/457046/
+https://creativecommons.org/publicdomain/zero/1.0/
+reveal - StormKat2035
+https://freesound.org/people/StormKat2035/sounds/235177/
+https://creativecommons.org/publicdomain/zero/1.0/
+growl - uagadugu
+https://freesound.org/people/uagadugu/sounds/222523/
+https://creativecommons.org/publicdomain/zero/1.0/
