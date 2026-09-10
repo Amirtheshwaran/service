@@ -65,8 +65,8 @@ namespace ServiceGameV2
         void Drive(float throttle, float steering)
         {
             s.SteeringWheel.localRotation=Quaternion.Slerp(s.SteeringWheel.localRotation,Quaternion.Euler(18,0,-steering*100),Time.deltaTime*8);
-            s.SpeedNeedle.localRotation=Quaternion.Euler(0,0,Mathf.Lerp(-130,130,Mathf.Clamp01(Speed*2.237f/60)));
-            s.RevNeedle.localRotation=Quaternion.Euler(0,0,Mathf.Lerp(-130,130,EngineRunning?Mathf.Clamp01(.14f+Speed/30+Mathf.Abs(throttle)*.12f):0));
+            s.SpeedNeedle.localRotation=Quaternion.Euler(0,0,Mathf.Lerp(130,-130,Mathf.Clamp01(Speed*2.237f/60)));
+            s.RevNeedle.localRotation=Quaternion.Euler(0,0,Mathf.Lerp(130,-130,EngineRunning?Mathf.Clamp01(.14f+Speed/30+Mathf.Abs(throttle)*.12f):0));
             float target = !EngineRunning ? 0 : throttle > 0 ? throttle * 12 : throttle * 4;
             speed = Mathf.MoveTowards(speed, target, (Mathf.Abs(throttle) < .1f || Mathf.Sign(throttle) != Mathf.Sign(speed) ? 8 : 4.1f) * Time.deltaTime);
             if (Keyboard.current != null && Keyboard.current[Key.LeftShift].isPressed) speed = Mathf.MoveTowards(speed, 0, 14 * Time.deltaTime);

@@ -14,6 +14,7 @@ namespace ServiceGameV2 {
   public ParticleSystem Rain;
   public UnityEngine.AI.NavMeshData Navigation;
   public GameObject Entity;
+  public GameObject[] EntityVariants;
   public GameObject Cockpit;
   public Transform SteeringWheel,SpeedNeedle,RevNeedle;
  }

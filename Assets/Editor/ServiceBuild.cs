@@ -12,7 +12,7 @@ using Object=UnityEngine.Object;
 
 namespace ServiceGameV2.Editor
 {
- public static class ServiceBuild
+ public static partial class ServiceBuild
  {
   public static bool SceneOnly;
   const string FG="Assets/Flooded_Grounds/";
@@ -41,11 +41,12 @@ namespace ServiceGameV2.Editor
    route=Curve(points);
    TerrainLand();
    Ribbon("Millbrook and Latigo",route,5.8f,road,world);
+   var asphalt=world.Find("Millbrook and Latigo");asphalt.gameObject.AddComponent<MeshCollider>().sharedMesh=asphalt.GetComponent<MeshFilter>().sharedMesh;asphalt.gameObject.AddComponent<ServiceSurface>().Kind="stone";
    scene.Route=points.Select((p,i)=>Empty("Survey point "+i,p,world)).ToArray();
    scene.Depot=Empty("Depot parking bay",V(0,.03f,0),world);
    scene.LateThreshold=Empty("End of county survey",V(-4,0,385),world);
    scene.LateRoad=new GameObject("Beyond the survey — October 09");scene.LateRoad.transform.SetParent(world);
-   scene.Properties=new[]{Property(0,"Pref_Cabin1_A",V(-24,0,99),90),Property(1,"Pref_Villa1_A",V(67,0,235),270),Property(2,"Pref_Cabin1_A",V(-28,0,469),90)};
+   CreateFirstShift();
    scene.Properties[2].transform.SetParent(scene.LateRoad.transform,true);
    var depot=Building("Pref_IndBuilding2_A",V(-17,0,-3),90,.6f,world);
    LightAt("Depot sodium lamp",V(-8,4,-3),new Color(1,.68f,.34f),3.2f,19,world);
@@ -53,13 +54,13 @@ namespace ServiceGameV2.Editor
    Sign("MILLBROOK RD",V(5,1.9f,36),0,.10f,world);
    Sign("LATIGO TRAIL",V(41,1.9f,189),0,.1f,world);
    Sign("END COUNTY\nMAINTENANCE",V(1,1.65f,381),0,.095f,world);
-   DressRoad();
+   DressDenseCounty();
    Vehicle(); Lighting();
    scene.Walker=new GameObject("Field officer — on foot").AddComponent<CharacterController>();scene.Walker.transform.SetParent(world);scene.Walker.height=1.8f;scene.Walker.radius=.3f;scene.Walker.center=V(0,.9f,0);scene.Walker.stepOffset=.32f;
    scene.View=new GameObject("First person view").AddComponent<Camera>();scene.View.tag="MainCamera";scene.View.gameObject.AddComponent<AudioListener>();scene.View.transform.SetParent(scene.DriverSeat,false);scene.View.nearClipPlane=.035f;scene.View.farClipPlane=230;scene.View.fieldOfView=68;scene.View.backgroundColor=new Color(.065f,.078f,.085f);scene.View.clearFlags=CameraClearFlags.Skybox;
    var cameraData=scene.View.GetUniversalAdditionalCameraData();cameraData.renderPostProcessing=true;cameraData.antialiasing=AntialiasingMode.FastApproximateAntialiasing;
    scene.Flashlight=LightAt("Hand torch",Vector3.zero,new Color(.93f,.91f,.80f),4.2f,24,scene.View.transform);scene.Flashlight.transform.localPosition=V(.12f,-.14f,.15f);scene.Flashlight.type=LightType.Spot;scene.Flashlight.spotAngle=54;scene.Flashlight.innerSpotAngle=25;scene.Flashlight.shadows=LightShadows.Soft;scene.Flashlight.enabled=false;
-   Creature();
+   Creature(); CreatureVariants();
    root.AddComponent<ServiceWorldText>();
    foreach(var text in Object.FindObjectsByType<TextMesh>(FindObjectsInactive.Include,FindObjectsSortMode.None)){
     text.font.RequestCharactersInTexture(text.text+"0123456789. mi",text.fontSize,text.fontStyle);
@@ -81,7 +82,7 @@ namespace ServiceGameV2.Editor
   static void CaptureBuildings()
   {
    var src=EditorSceneManager.OpenScene(FG+"Scenes/PreAsembeld_Buildings.unity");
-   foreach(string name in new[]{"Pref_Cabin1_A","Pref_Cabin2_A","Pref_IndBuilding2_A","Pref_Villa1_A"})
+   foreach(string name in new[]{"Pref_Cabin1_A","Pref_Cabin2_A","Pref_IndBuilding2_A","Pref_Villa1_A","Pref_Villa2_A","Pref_BrickHouse_A","Pref_Barn1_A"})
    {
     var o=src.GetRootGameObjects().First(x=>x.name==name);o.transform.position=Vector3.zero;
     foreach(var t in o.GetComponentsInChildren<Transform>(true))GameObjectUtility.RemoveMonoBehavioursWithMissingScript(t.gameObject);
@@ -99,7 +100,7 @@ namespace ServiceGameV2.Editor
   }
   static GameObject Prop(string partial,Vector3 pos,float yaw,float scale,Transform parent,bool ground=true)
   {
-   string path=AssetDatabase.FindAssets(partial+" t:Prefab",new[]{FG+"Prefabs"}).Select(AssetDatabase.GUIDToAssetPath).FirstOrDefault(p=>Path.GetFileNameWithoutExtension(p)==partial);
+   if(!propPaths.TryGetValue(partial,out string path)){path=AssetDatabase.FindAssets(partial+" t:Prefab",new[]{FG+"Prefabs"}).Select(AssetDatabase.GUIDToAssetPath).FirstOrDefault(p=>Path.GetFileNameWithoutExtension(p)==partial);propPaths[partial]=path;}
    if(path==null)throw new Exception("Missing licensed prop "+partial);
    var o=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(path));
    PrefabUtility.UnpackPrefabInstance(o,PrefabUnpackMode.Completely,InteractionMode.AutomatedAction);
@@ -109,7 +110,7 @@ namespace ServiceGameV2.Editor
   static void Convert(GameObject o)
   {
    foreach(var t in o.GetComponentsInChildren<Transform>(true)){GameObjectUtility.RemoveMonoBehavioursWithMissingScript(t.gameObject);t.gameObject.layer=0;}
-   foreach(var r in o.GetComponentsInChildren<Renderer>(true))r.sharedMaterials=r.sharedMaterials.Select(ConvertMat).ToArray();
+   foreach(var r in o.GetComponentsInChildren<Renderer>(true)){r.sharedMaterials=r.sharedMaterials.Select(ConvertMat).ToArray();foreach(var m in r.sharedMaterials)if(m)m.enableInstancing=true;}
   }
   static Material ConvertMat(Material old)
   {
@@ -279,7 +280,7 @@ namespace ServiceGameV2.Editor
   static float LandHeight(float x,float z)
   {
    float d=RoadDistance(V(x,0,z));
-   foreach(var h in new[]{V(-24,0,99),V(67,0,235),V(-28,0,469),V(-17,0,-3)})d=Mathf.Min(d,Mathf.Max(0,Vector3.Distance(V(x,0,z),h)-24));
+   foreach(var h in PropertyCenters)d=Mathf.Min(d,Mathf.Max(0,Vector3.Distance(V(x,0,z),h)-43));
    return Mathf.SmoothStep(0,1,Mathf.Clamp01((d-15)/40))*(5+3*Mathf.Sin(z*.019f+x*.023f));
   }
   static void TerrainLand()
@@ -342,7 +343,7 @@ namespace ServiceGameV2.Editor
   static void BakeNavigation()
   {
    Physics.SyncTransforms();var sources=new List<UnityEngine.AI.NavMeshBuildSource>();
-   var bounds=new Bounds(V(40,7,240),V(150,30,130));
+   var bounds=new Bounds(V(12,10,222),V(300,42,415));
    UnityEngine.AI.NavMeshBuilder.CollectSources(bounds,~((1<<8)|(1<<9)),UnityEngine.AI.NavMeshCollectGeometry.PhysicsColliders,0,new List<UnityEngine.AI.NavMeshBuildMarkup>(),sources);
    var settings=UnityEngine.AI.NavMesh.GetSettingsByID(0);settings.agentRadius=.28f;settings.agentHeight=1.8f;settings.agentClimb=.32f;settings.agentSlope=46;settings.overrideVoxelSize=true;settings.voxelSize=.065f;
    scene.Navigation=UnityEngine.AI.NavMeshBuilder.BuildNavMeshData(settings,sources,bounds,Vector3.zero,Quaternion.identity);
@@ -378,6 +379,9 @@ namespace ServiceGameV2.Editor
    var nav=UnityEngine.AI.NavMesh.AddNavMeshData(scene.Navigation);var villa=scene.Properties[1];
    foreach(var from in new[]{villa.EntitySpawn.position,villa.TableApproach.position}){var path=new UnityEngine.AI.NavMeshPath();if(!UnityEngine.AI.NavMesh.CalculatePath(from,villa.Gate.position,UnityEngine.AI.NavMesh.AllAreas,path)||path.status!=UnityEngine.AI.NavMeshPathStatus.PathComplete)missing.Add("Disconnected upstairs route from "+from);}
    nav.Remove();
+   var expandedNav=UnityEngine.AI.NavMesh.AddNavMeshData(scene.Navigation);
+   foreach(var property in scene.Properties.Where(p=>p.HasEncounter))foreach(var start in new[]{property.TableApproach,property.EntitySpawn}){var path=new UnityEngine.AI.NavMeshPath();if(!UnityEngine.AI.NavMesh.SamplePosition(start.position,out var sampled,.8f,UnityEngine.AI.NavMesh.AllAreas)||Mathf.Abs(sampled.position.y-start.position.y)>.5f||!UnityEngine.AI.NavMesh.CalculatePath(sampled.position,property.Gate.position,UnityEngine.AI.NavMesh.AllAreas,path)||path.status!=UnityEngine.AI.NavMeshPathStatus.PathComplete)missing.Add("Property "+property.Index+" disconnected "+start.name);}
+   expandedNav.Remove();
    if(missing.Count>0)throw new Exception("Missing content: "+string.Join(", ",missing.Take(15)));
    File.WriteAllText(Path.Combine(Work,"scene-validation.txt"),"All materials, shaders, thirteen sourced audio clips, animated creature, navigation and delivery references present.");
   }
@@ -385,7 +389,7 @@ namespace ServiceGameV2.Editor
   {
    Directory.CreateDirectory(Path.Combine(Work,"Previews"));
    var cam=scene.View;cam.transform.SetParent(null);
-   foreach(int i in new[]{0,1}){var p=scene.Properties[i];cam.transform.position=p.Door.position+p.Door.forward*15+Vector3.up*1.8f;cam.transform.LookAt(p.Door.position+Vector3.up*2);Render(cam,"property-"+i);}
+   foreach(int i in new[]{0,3,1,4,5}){var p=scene.Properties[i];cam.transform.position=p.Door.position+p.Door.forward*15+Vector3.up*1.8f;cam.transform.LookAt(p.Door.position+Vector3.up*2);Render(cam,"property-"+i);}
    var villa=scene.Properties[1];cam.transform.position=villa.TableApproach.position+Vector3.up*1.65f;cam.transform.LookAt(villa.DeliveryPoint.position+Vector3.up*.35f);Render(cam,"villa-interior");
    cam.transform.position=scene.Car.position+scene.Car.forward*5+scene.Car.right*3+Vector3.up*1.7f;cam.transform.LookAt(scene.Car.position+Vector3.up*.9f);Render(cam,"car-front");
    var cabin=scene.Properties[0];cam.transform.position=cabin.Door.position+cabin.Door.forward*4+Vector3.up*1.4f;cam.transform.LookAt(cabin.Door.position+Vector3.up);Render(cam,"cabin-porch");

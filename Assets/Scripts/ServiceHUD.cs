@@ -119,68 +119,39 @@ namespace ServiceGameV2
             for (int i = 0; i < d.Docket.Count; i++)
             {
                 DocketEntry e = d.Docket[i];
-                float y = 252 + i * 115;
+                float y = 220 + i * 64;
                 GUI.Label(new Rect(230, y, 60, 35), (i + 1).ToString("00"), paperBold);
-                GUI.Label(new Rect(290, y, 620, 31), e.Address, paperBold);
-                GUI.Label(new Rect(290, y + 31, 670, 31), e.Case, paperSmall);
-                GUI.Label(new Rect(290, y + 60, 670, 27), "[ " + Status(e.Result).ToUpperInvariant() + " ]", paperSmall);
-                Rect(new Rect(230, y + 99, 807, 1), new Color(.55f, .56f, .51f));
+                GUI.Label(new Rect(290, y, 540, 26), e.Address, paperBold);
+                GUI.Label(new Rect(290, y + 25, 700, 36), d.Property(e.Property).Brief + " · " + (e.Property==1||e.Property==5?"Deliver upstairs":"Deliver inside"), paperSmall);
+                GUI.Label(new Rect(834, y, 195, 27), "[ " + Status(e.Result).ToUpperInvariant() + " ]", paperSmall);
+                Rect(new Rect(230, y + 60, 807, 1), new Color(.55f, .56f, .51f));
             }
-            GUI.Label(new Rect(230, 497, 800, 51), d.EndedEarly ? "ROUTE CLOSED. Remaining stops will be carried forward." : d.AllResolved ? "Route complete. Return to the depot to file this sheet." : "At a door: E attempt service · R leave copy · U unable to serve", paperSmall);
-            if (Button(new Rect(229, 563, 205, 43), "County map [M]", true)) d.MapOpen = true;
-            if (Button(new Rect(450, 563, 264, 43), "Return to road [TAB]", true)) { d.PaperOpen = false; d.SetCursor(); }
-            if (Button(new Rect(750, 563, 287, 43), "Close route early", true)) d.RequestEarlyFinish();
+            GUI.Label(new Rect(230, 541, 800, 24), d.EndedEarly ? "ROUTE CLOSED. Remaining stops will be carried forward." : d.AllResolved ? "Route complete. Return to the depot to file this sheet." : "At a door: E attempt service · R leave copy · U unable to serve", paperSmall);
+            if (Button(new Rect(229, 586, 205, 43), "County map [M]", true)) d.MapOpen = true;
+            if (Button(new Rect(450, 586, 264, 43), "Return to road [TAB]", true)) { d.PaperOpen = false; d.SetCursor(); }
+            if (Button(new Rect(750, 586, 287, 43), "Close route early", true)) d.RequestEarlyFinish();
         }
 
         void Map()
         {
             PaperBase("HOLLIS COUNTY · ROAD INDEX", "REV. 08/12");
-            GUI.Label(new Rect(230, 153, 780, 30), "Depot / Millbrook Road / Latigo Trail / County Route 9", paperSmall);
-            Rect bounds = new Rect(260, 210, 540, 300);
-            float minX = float.MaxValue, maxX = float.MinValue, minZ = float.MaxValue, maxZ = float.MinValue;
-            foreach (Transform point in d.Scene.Route)
-            {
-                if (BeyondMap(point.position)) continue;
-                minX = Mathf.Min(minX, point.position.x); maxX = Mathf.Max(maxX, point.position.x);
-                minZ = Mathf.Min(minZ, point.position.z); maxZ = Mathf.Max(maxZ, point.position.z);
+            Rect bounds=new Rect(245,179,390,350);float minX=-112,maxX=144,minZ=-25,maxZ=410;
+            Vector2 previous=Vector2.zero;bool have=false;
+            foreach(var point in d.Scene.Route){if(BeyondMap(point.position))continue;var now=MapPoint(point.position,bounds,minX,maxX,minZ,maxZ);if(have)Line(previous,now,3,ink);previous=now;have=true;}
+            var depot=MapPoint(d.Scene.Depot.position,bounds,minX,maxX,minZ,maxZ);GUI.Label(new Rect(depot.x+8,depot.y-13,130,27),"DEPOT",paperSmall);
+            for(int i=0;i<d.Docket.Count;i++){
+                var e=d.Docket[i];var property=d.Property(e.Property);float y=192+i*65;
+                GUI.Label(new Rect(685,y,350,25),(i+1).ToString("00")+"  "+e.Address,paperBold);
+                GUI.Label(new Rect(721,y+25,310,32),property.Brief,paperSmall);
+                if(BeyondMap(property.Door.position))continue;
+                var point=MapPoint(property.Door.position,bounds,minX,maxX,minZ,maxZ);Rect(new Rect(point.x-9,point.y-9,18,18),ink);
+                var numeral=Style(14,sheet,TextAnchor.MiddleCenter);GUI.Label(new Rect(point.x-9,point.y-12,18,24),(i+1).ToString(),numeral);
+                var gate=MapPoint(property.Gate.position,bounds,minX,maxX,minZ,maxZ);Line(point,gate,1,new Color(.4f,.42f,.37f));
             }
-            if (float.IsInfinity(minX) || minX == float.MaxValue) { minX = -60; maxX = 60; minZ = -30; maxZ = 300; }
-            minX -= 55; maxX += 55; minZ -= 20; maxZ += 20;
-            Vector2 previous = Vector2.zero; bool havePrevious = false;
-            foreach (Transform point in d.Scene.Route)
-            {
-                if (BeyondMap(point.position)) continue;
-                Vector2 now = MapPoint(point.position, bounds, minX, maxX, minZ, maxZ);
-                if (havePrevious) Line(previous, now, 3, ink);
-                previous = now; havePrevious = true;
-            }
-            Vector2 depot = MapPoint(d.Scene.Depot.position, bounds, minX, maxX, minZ, maxZ);
-            Rect(new Rect(depot.x - 4, depot.y - 4, 8, 8), ink);
-            GUI.Label(new Rect(depot.x + 10, depot.y - 13, 170, 26), "DEPOT", paperSmall);
-            for (int i = 0; i < 2; i++)
-            {
-                Vector2 p = MapPoint(d.Property(i).Door.position, bounds, minX, maxX, minZ, maxZ);
-                Rect(new Rect(p.x - 3, p.y - 3, 6, 6), ink);
-                GUI.Label(new Rect(i==0?p.x-176:p.x+12, p.y - 15, i==0?166:200, 46), i == 0 ? "214 MILLBROOK" : "77 LATIGO", paperSmall);
-            }
-            if (d.Scene.LateThreshold != null)
-            {
-                Vector2 end = MapPoint(d.Scene.LateThreshold.position, bounds, minX, maxX, minZ, maxZ);
-                Line(end + Vector2.left * 7, end + Vector2.right * 7, 2, ink);
-                GUI.Label(new Rect(end.x + 16, end.y - 14, 250, 46), "END COUNTY MAINTENANCE", paperSmall);
-            }
-            if (!BeyondMap(d.Scene.Car.position))
-            {
-                Vector2 car = MapPoint(d.Scene.Car.position, bounds, minX, maxX, minZ, maxZ);
-                Rect(new Rect(car.x - 4, car.y - 4, 8, 8), new Color(.36f, .42f, .37f));
-                GUI.Label(new Rect(car.x - 53, car.y - 14, 52, 26), "CAR", paperSmall);
-            }
-            GUI.Label(new Rect(850, 211, 145, 35), "N", paperBold);
-            Line(new Vector2(858, 269), new Vector2(858, 245), 2, ink);
-            GUI.Label(new Rect(837, 338, 190, 110), "County survey\n\nUnmaintained roads are not shown.", paperSmall);
-            GUI.Label(new Rect(230, 516, 800, 31), d.NightIndex == 2 ? "Docket addendum: 1 County Route 9. No surveyed parcel reference." : "Use posted house numbers. Road distances are approximate.", paperSmall);
-            if (Button(new Rect(230, 563, 250, 43), "Return to docket", true)) d.MapOpen = false;
-            if (Button(new Rect(502, 563, 300, 43), "Return to road [TAB]", true)) { d.PaperOpen = false; d.SetCursor(); }
+            var car=MapPoint(d.Scene.Car.position,bounds,minX,maxX,minZ,maxZ);Rect(new Rect(car.x-3,car.y-3,6,6),new Color(.55f,.23f,.16f));GUI.Label(new Rect(car.x+7,car.y+7,70,26),"CAR",paperSmall);
+            GUI.Label(new Rect(235,537,780,32),"Roadside numbers match the docket. Park outside the garden gates.",paperSmall);
+            if(Button(new Rect(230,586,250,43),"Return to docket",true))d.MapOpen=false;
+            if(Button(new Rect(502,586,300,43),"Return to road [TAB]",true)){d.PaperOpen=false;d.SetCursor();}
         }
         bool BeyondMap(Vector3 point) { return d.Scene.LateThreshold != null && Vector3.Dot(point - d.Scene.LateThreshold.position, d.Scene.LateThreshold.forward) > .5f; }
         Vector2 MapPoint(Vector3 p, Rect bounds, float minX, float maxX, float minZ, float maxZ)
@@ -206,9 +177,9 @@ namespace ServiceGameV2
                 GUI.Label(new Rect(1030,30,220,28),"Tab  Docket     /     M  Map",small);
             }
             else if (Vector3.Distance(d.Scene.View.transform.position, d.Scene.Car.position + Vector3.up) < 3.5f) context = "[E] Get in";
-            else if (d.NearbyDoor() == 1) context = "[E / R] Leave notice on study table";
+            else if (d.NearbyDoor() >= 0) context = "E / R  Leave the notice";
             else if (d.NearbyDoor() >= 0) context = "[E] Knock    [R] Leave papers    [U] Unable to serve";
-            else if (d.NearbyProperty()==1 && d.ResultAt(1)==ServiceResult.Pending) context = d.Scene.Walker.transform.position.y>d.Property(1).TableApproach.position.y-.5f?"Study ahead. Leave the notice on the table.":"Study upstairs. Take the right staircase.";
+            else if (d.NearbyProperty()>=0) context=d.Property(d.NearbyProperty()).Instructions;
             else if (d.NearbyProperty() >= 0) context = "U  Record unsuccessful visit";
             if (context.Length > 0)
             {
@@ -217,8 +188,8 @@ namespace ServiceGameV2
                 GUI.Label(new Rect(640-width/2,660,width,36), context, prompt);
             }
             if (!string.IsNullOrEmpty(d.Notice)&&!d.Horror.Active&&!d.Horror.Caught){Rect(new Rect(280,602,720,40),new Color(0,0,0,.65f));GUI.Label(new Rect(300,602,680,40),d.Notice,prompt);}
-            if(d.Horror.Active){if(d.Horror.Phase==PursuitPhase.Chase)GUI.Label(new Rect(440,56,400,55),"RUN",alarm);GUI.Label(new Rect(340,113,600,36),d.Horror.Phase==PursuitPhase.Chase?"Hold Shift. Get back to the car.":"Something moved in the hall.",prompt);}
-            if(d.Horror.Caught){Dim(1);GUI.Label(new Rect(240,290,800,60),"Caught",alarm);GUI.Label(new Rect(330,365,620,55),"Returning to the gate…",prompt);}
+            if(d.Horror.Active){GUI.Label(new Rect(290,56,700,55),d.Horror.Headline,alarm);GUI.Label(new Rect(250,113,780,52),d.Horror.Instruction,prompt);}
+            if(d.Horror.Caught){Dim(1);GUI.Label(new Rect(240,290,800,60),d.Horror.DeathLine,prompt);GUI.Label(new Rect(330,365,620,55),"The road brings you back.",small);}
         }
 
         void Report()
@@ -227,13 +198,13 @@ namespace ServiceGameV2
             GUI.Label(new Rect(230, 157, 790, 40), d.EndedEarly ? "Route closed before completion." : "Evening route filed.", paperBold);
             for (int i = 0; i < d.Docket.Count; i++)
             {
-                float y = 237 + i * 85;
+                float y = 207 + i * 53;
                 GUI.Label(new Rect(230, y, 540, 32), d.Docket[i].Address, paperBold);
-                GUI.Label(new Rect(230, y + 31, 730, 29), d.Docket[i].Result == ServiceResult.Pending ? "Not attempted · carry forward" : Status(d.Docket[i].Result), paperSmall);
-                Rect(new Rect(230, y + 70, 807, 1), new Color(.55f, .56f, .51f));
+                GUI.Label(new Rect(230, y + 23, 730, 26), d.Docket[i].Result == ServiceResult.Pending ? "Not attempted · carry forward" : Status(d.Docket[i].Result), paperSmall);
+                Rect(new Rect(230, y + 49, 807, 1), new Color(.55f, .56f, .51f));
             }
-            GUI.Label(new Rect(230, 438, 780, 52), "Trip record: " + d.TripMiles.ToString("0.0") + " mi\nFiled by: route holder", paperSmall);
-            GUI.Label(new Rect(230, 505, 790, 35), d.NightIndex == 2 ? "No further assignments on this sheet." : "The next docket will be issued at the start of your next shift.", paperSmall);
+            GUI.Label(new Rect(230, 493, 780, 52), "Trip record: " + d.TripMiles.ToString("0.0") + " mi\nFiled by: route holder", paperSmall);
+            GUI.Label(new Rect(230, 537, 790, 24), d.NightIndex == 2 ? "No further assignments on this sheet." : "The next docket will be issued at the start of your next shift.", paperSmall);
             if (d.NightIndex < 2)
             {
                 if (Button(new Rect(230, 563, 400, 43), d.NightIndex == 0 ? "Next shift · October 04" : "Next shift · October 09", true)) d.NextShift();

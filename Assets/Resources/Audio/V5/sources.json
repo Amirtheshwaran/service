@@ -1,0 +1,404 @@
+[
+  {
+    "key": "grass",
+    "file": "grass\\grass_0.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Grass/Footsteps_Grass_Walk/Footsteps_Walk_Grass_Mono_01.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "grass",
+    "file": "grass\\grass_1.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Grass/Footsteps_Grass_Walk/Footsteps_Walk_Grass_Mono_02.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "grass",
+    "file": "grass\\grass_2.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Grass/Footsteps_Grass_Walk/Footsteps_Walk_Grass_Mono_03.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "grass",
+    "file": "grass\\grass_3.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Grass/Footsteps_Grass_Walk/Footsteps_Walk_Grass_Mono_04.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "grass",
+    "file": "grass\\grass_4.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Grass/Footsteps_Grass_Walk/Footsteps_Walk_Grass_Mono_05.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "grass",
+    "file": "grass\\grass_5.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Grass/Footsteps_Grass_Walk/Footsteps_Walk_Grass_Mono_06.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "grass",
+    "file": "grass\\grass_6.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Grass/Footsteps_Grass_Walk/Footsteps_Walk_Grass_Mono_07.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "grass",
+    "file": "grass\\grass_7.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Grass/Footsteps_Grass_Walk/Footsteps_Walk_Grass_Mono_08.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "grass",
+    "file": "grass\\grass_8.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Grass/Footsteps_Grass_Walk/Footsteps_Walk_Grass_Mono_09.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "grass",
+    "file": "grass\\grass_9.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Grass/Footsteps_Grass_Walk/Footsteps_Walk_Grass_Mono_10.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "grass",
+    "file": "grass\\grass_10.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Grass/Footsteps_Grass_Walk/Footsteps_Walk_Grass_Mono_11.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "grass",
+    "file": "grass\\grass_11.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Grass/Footsteps_Grass_Walk/Footsteps_Walk_Grass_Mono_12.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "grass",
+    "file": "grass\\grass_12.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Grass/Footsteps_Grass_Walk/Footsteps_Walk_Grass_Mono_13.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "grass",
+    "file": "grass\\grass_13.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Grass/Footsteps_Grass_Walk/Footsteps_Walk_Grass_Mono_14.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "grass",
+    "file": "grass\\grass_14.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Grass/Footsteps_Grass_Walk/Footsteps_Walk_Grass_Mono_15.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "grass",
+    "file": "grass\\grass_15.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Grass/Footsteps_Grass_Walk/Footsteps_Walk_Grass_Mono_16.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "wood",
+    "file": "wood\\wood_0.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Wood/Footsteps_Wood_Walk/Footsteps_Wood_Walk_01.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "wood",
+    "file": "wood\\wood_1.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Wood/Footsteps_Wood_Walk/Footsteps_Wood_Walk_02.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "wood",
+    "file": "wood\\wood_2.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Wood/Footsteps_Wood_Walk/Footsteps_Wood_Walk_03.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "wood",
+    "file": "wood\\wood_3.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Wood/Footsteps_Wood_Walk/Footsteps_Wood_Walk_04.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "wood",
+    "file": "wood\\wood_4.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Wood/Footsteps_Wood_Walk/Footsteps_Wood_Walk_05.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "wood",
+    "file": "wood\\wood_5.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Wood/Footsteps_Wood_Walk/Footsteps_Wood_Walk_06.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "wood",
+    "file": "wood\\wood_6.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Wood/Footsteps_Wood_Walk/Footsteps_Wood_Walk_07.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "wood",
+    "file": "wood\\wood_7.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Wood/Footsteps_Wood_Walk/Footsteps_Wood_Walk_08.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "wood",
+    "file": "wood\\wood_8.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Wood/Footsteps_Wood_Walk/Footsteps_Wood_Walk_09.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "wood",
+    "file": "wood\\wood_9.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Wood/Footsteps_Wood_Walk/Footsteps_Wood_Walk_10.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "gravel",
+    "file": "gravel\\gravel_0.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Gravel/Footsteps_Gravel_Walk/Footsteps_Gravel_Walk_01.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "gravel",
+    "file": "gravel\\gravel_1.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Gravel/Footsteps_Gravel_Walk/Footsteps_Gravel_Walk_02.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "gravel",
+    "file": "gravel\\gravel_2.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Gravel/Footsteps_Gravel_Walk/Footsteps_Gravel_Walk_03.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "gravel",
+    "file": "gravel\\gravel_3.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Gravel/Footsteps_Gravel_Walk/Footsteps_Gravel_Walk_04.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "gravel",
+    "file": "gravel\\gravel_4.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Gravel/Footsteps_Gravel_Walk/Footsteps_Gravel_Walk_05.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "gravel",
+    "file": "gravel\\gravel_5.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Gravel/Footsteps_Gravel_Walk/Footsteps_Gravel_Walk_06.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "gravel",
+    "file": "gravel\\gravel_6.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Gravel/Footsteps_Gravel_Walk/Footsteps_Gravel_Walk_07.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "gravel",
+    "file": "gravel\\gravel_7.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Gravel/Footsteps_Gravel_Walk/Footsteps_Gravel_Walk_08.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "gravel",
+    "file": "gravel\\gravel_8.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Gravel/Footsteps_Gravel_Walk/Footsteps_Gravel_Walk_09.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "gravel",
+    "file": "gravel\\gravel_9.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Gravel/Footsteps_Gravel_Walk/Footsteps_Gravel_Walk_10.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "stone",
+    "file": "stone\\stone_0.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Rock/Footsteps_Rock_Walk/Footsteps_Rock_Walk_01.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "stone",
+    "file": "stone\\stone_1.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Rock/Footsteps_Rock_Walk/Footsteps_Rock_Walk_02.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "stone",
+    "file": "stone\\stone_2.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Rock/Footsteps_Rock_Walk/Footsteps_Rock_Walk_03.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "stone",
+    "file": "stone\\stone_3.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Rock/Footsteps_Rock_Walk/Footsteps_Rock_Walk_04.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "stone",
+    "file": "stone\\stone_4.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Rock/Footsteps_Rock_Walk/Footsteps_Rock_Walk_05.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "stone",
+    "file": "stone\\stone_5.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Rock/Footsteps_Rock_Walk/Footsteps_Rock_Walk_06.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "stone",
+    "file": "stone\\stone_6.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Rock/Footsteps_Rock_Walk/Footsteps_Rock_Walk_07.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "stone",
+    "file": "stone\\stone_7.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Rock/Footsteps_Rock_Walk/Footsteps_Rock_Walk_08.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "stone",
+    "file": "stone\\stone_8.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Rock/Footsteps_Rock_Walk/Footsteps_Rock_Walk_09.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "leaves",
+    "file": "leaves\\leaves_0.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Leaves/Footsteps_Leaves_Walk/Footsteps_Leaves_Walk_01.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "leaves",
+    "file": "leaves\\leaves_1.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Leaves/Footsteps_Leaves_Walk/Footsteps_Leaves_Walk_02.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "leaves",
+    "file": "leaves\\leaves_2.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Leaves/Footsteps_Leaves_Walk/Footsteps_Leaves_Walk_03.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "leaves",
+    "file": "leaves\\leaves_3.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Leaves/Footsteps_Leaves_Walk/Footsteps_Leaves_Walk_04.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "leaves",
+    "file": "leaves\\leaves_4.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Leaves/Footsteps_Leaves_Walk/Footsteps_Leaves_Walk_05.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "leaves",
+    "file": "leaves\\leaves_5.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Leaves/Footsteps_Leaves_Walk/Footsteps_Leaves_Walk_06.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "breath",
+    "file": "breath\\breath_0.wav",
+    "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Male/Voice_Male_Breath/Voice_Male_V1_Breath_Frozen_Mono_01.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "breath",
+    "file": "breath\\breath_1.wav",
+    "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Male/Voice_Male_Breath/Voice_Male_V1_Breath_Frozen_Mono_02.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "gasp",
+    "file": "gasp\\gasp_0.wav",
+    "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Female/Voice_Female_Breath/Voice_Female_V1_Breath_Gasp_Mono_01.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "gasp",
+    "file": "gasp\\gasp_1.wav",
+    "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Female/Voice_Female_Breath/Voice_Female_V1_Breath_Gasp_Mono_02.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "gasp",
+    "file": "gasp\\gasp_2.wav",
+    "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Female/Voice_Female_Breath/Voice_Female_V1_Breath_Gasp_Mono_03.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "gasp",
+    "file": "gasp\\gasp_3.wav",
+    "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Female/Voice_Female_Breath/Voice_Female_V1_Breath_Gasp_Mono_04.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "night",
+    "file": "night\\night_0.wav",
+    "source": "Essentials_Series_NOX_SOUND/Nature_Essentials_NOX_SOUND/Ambiance_Night_Loop_Stereo.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "forestwind",
+    "file": "forestwind\\forestwind_0.wav",
+    "source": "Essentials_Series_NOX_SOUND/Nature_Essentials_NOX_SOUND/Ambiance_Wind_Forest_Loop_Stereo.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "roomtone",
+    "file": "roomtone\\roomtone_0.wav",
+    "source": "Essentials_Series_NOX_SOUND/Nature_Essentials_NOX_SOUND/Ambiance_Cave_Dark_Loop_Stereo.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "static",
+    "file": "static\\static_0.wav",
+    "source": "Essentials_Series_NOX_SOUND/Electromagnetic_NOX_SOUND/Electromagnetic_Car_Dashboard_Loop_Mono_Elektrousi_01.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "static",
+    "file": "static\\static_1.wav",
+    "source": "Essentials_Series_NOX_SOUND/Electromagnetic_NOX_SOUND/Electromagnetic_Car_Dashboard_Loop_Mono_Elektrousi_02.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "static",
+    "file": "static\\static_2.wav",
+    "source": "Essentials_Series_NOX_SOUND/Electromagnetic_NOX_SOUND/Electromagnetic_Car_Dashboard_Loop_Mono_Elektrousi_03.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "rattle",
+    "file": "rattle\\DeepRattle.mp3",
+    "source": "Content\\Sounds\\DeepRattle.mp3",
+    "license": "Unity Asset Store EULA, Sandro T"
+  },
+  {
+    "key": "taps",
+    "file": "taps\\Taps.mp3",
+    "source": "Content\\Sounds\\Taps.mp3",
+    "license": "Unity Asset Store EULA, Sandro T"
+  },
+  {
+    "key": "rustle",
+    "file": "rustle\\LeafRustle.mp3",
+    "source": "Content\\Sounds\\LeafRustle.mp3",
+    "license": "Unity Asset Store EULA, Sandro T"
+  },
+  {
+    "key": "howl",
+    "file": "howl\\WindHowl.mp3",
+    "source": "Content\\Sounds\\WindHowl.mp3",
+    "license": "Unity Asset Store EULA, Sandro T"
+  }
+]

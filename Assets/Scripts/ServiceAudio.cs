@@ -7,7 +7,11 @@ namespace ServiceGameV2
     {
         readonly Dictionary<string, AudioClip> clips = new Dictionary<string, AudioClip>();
         ServiceDirector d;
-        AudioSource engine, dog, ambience, cabin, wind, tension;
+        AudioSource engine, dog, ambience, cabin, wind, tension, room;
+        readonly Dictionary<string,AudioClip[]> pools=new Dictionary<string,AudioClip[]>();
+        readonly Dictionary<string,int> previous=new Dictionary<string,int>();
+        float nextAtmosphere=12;
+        public string LastSurface {get;private set;}="grass";
         bool pursuing;
         public float Volume = .8f;
         public void Initialize(ServiceDirector director)
@@ -20,11 +24,12 @@ namespace ServiceGameV2
             ambience = Source("Recorded rural ambience", d.Scene.View.transform, 0);
             cabin = Source("Recorded cabin sounds", d.Scene.View.transform, 0);
             wind = Source("Recorded wind through trees", d.Scene.View.transform, 0);
-            wind.clip = Clip("wind"); wind.loop = true; wind.volume = .09f;
+            wind.clip = Pick("forestwind"); wind.loop = true; wind.volume = .09f;
             if (wind.clip != null) wind.Play();
             engine.clip = Clip("engine"); engine.loop = true; engine.volume = .17f;
-            ambience.clip = Clip("night"); ambience.loop = true; ambience.volume = .065f;
+            ambience.clip = Pick("night"); ambience.loop = true; ambience.volume = .065f;
             if (ambience.clip != null) ambience.Play();
+            room=Source("House room tone",d.Scene.View.transform,0);room.clip=Pick("roomtone");room.loop=true;room.volume=0;if(room.clip)room.Play();
         }
         AudioSource Source(string name, Transform parent, float spatial)
         {
@@ -47,6 +52,12 @@ namespace ServiceGameV2
             }
             return clip;
         }
+        AudioClip Pick(string name){
+            if(name=="monsterstep")name="wood";
+            if(!pools.TryGetValue(name,out var pool)){pool=Resources.LoadAll<AudioClip>("Audio/V5/"+name);pools[name]=pool;}
+            if(pool.Length==0)return Clip(name);
+            int last=previous.TryGetValue(name,out var n)?n:-1;int index=Random.Range(0,pool.Length);if(pool.Length>1&&index==last)index=(index+1)%pool.Length;previous[name]=index;return pool[index];
+        }
         void Update()
         {
             AudioListener.volume = Volume;
@@ -56,10 +67,12 @@ namespace ServiceGameV2
             bool inside = d.Player == null || d.Player.InCar;
             if(wind != null) wind.volume = Mathf.MoveTowards(wind.volume, d.InsideVilla?.012f:inside ? .035f : .13f, Time.unscaledDeltaTime * .15f);
             if(ambience != null) ambience.volume = Mathf.MoveTowards(ambience.volume, d.InsideVilla?.018f:d.NightIndex == 2 ? .012f : inside ? .045f : .13f, Time.unscaledDeltaTime * .1f);
+            if(room)room.volume=Mathf.MoveTowards(room.volume,d.InsideVilla?.065f:0,Time.unscaledDeltaTime*.06f);
+            if(d.Phase==ServicePhase.Playing&&!inside&&!d.Horror.Active&&!d.PaperOpen){nextAtmosphere-=Time.deltaTime;if(nextAtmosphere<0){nextAtmosphere=Random.Range(14f,25f);var point=d.Scene.View.transform.position+d.Scene.View.transform.right*(Random.value>.5f?1:-1)*Random.Range(9f,18f);At(d.InsideVilla?"taps":Random.value>.3f?"rustle":"howl",point,d.InsideVilla?.09f:.12f);}}
         }
         void At(string name, Vector3 point, float volume)
         {
-            AudioClip clip = Clip(name);
+            AudioClip clip = Pick(name);
             if (clip == null) return;
             AudioSource source = Source("Recorded " + name, transform, 1);
             source.transform.position = point;
@@ -68,7 +81,12 @@ namespace ServiceGameV2
         }
         public void KnockAt(Vector3 position, float volume = .7f) { At("knock", position, volume); }
         public void DoorAt(Vector3 position) { At("door", position, .43f); }
-        public void Footstep(Vector3 position) { At("footstep", position, .18f); }
+        public string SurfaceAt(Vector3 position){
+            var hits=Physics.RaycastAll(position+Vector3.up*.35f,Vector3.down,1.6f,~((1<<8)|(1<<9)),QueryTriggerInteraction.Ignore);
+            System.Array.Sort(hits,(a,b)=>a.distance.CompareTo(b.distance));
+            foreach(var hit in hits){if(hit.collider is CharacterController)continue;var surface=hit.collider.GetComponentInParent<ServiceSurface>();if(surface)return surface.Kind;if(hit.collider is TerrainCollider)return "grass";return "stone";}return "grass";
+        }
+        public void Footstep(Vector3 position) {LastSurface=SurfaceAt(position);At(LastSurface,position,LastSurface=="wood"?.12f:.18f);}
         public void DogAt(Vector3 position, float volume)
         {
             dog.Stop(); dog.transform.position = position; dog.clip = Clip("dog"); dog.volume = volume;
@@ -84,6 +102,7 @@ namespace ServiceGameV2
         }
         public void Paper() { AudioClip clip = Clip("paper"); if (clip != null) cabin.PlayOneShot(clip, .2f); }
         public void HorrorAt(string clip,Vector3 position,float volume){At(clip,position,volume);}
+        public void SilenceThreat(){foreach(var source in GetComponentsInChildren<AudioSource>())if(source.name=="Recorded breath"||source.name=="Recorded growl"||source.name=="Recorded reveal"||source.name=="Recorded monsterstep"){source.Stop();Destroy(source.gameObject);}}
         public void Pursuit(bool on){pursuing=on;if(on&&tension.clip!=null&&!tension.isPlaying)tension.Play();}
     }
 }
