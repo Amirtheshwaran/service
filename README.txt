@@ -1,21 +1,29 @@
 SERVICE — HOLLIS COUNTY
-Unity 6.6 Windows build — v4
+Unity 6.6 Windows development build — v5
 
 RUN
-Extract the entire Windows ZIP into a folder, then double-click Service.exe.
+Extract the entire Windows ZIP, then double-click Service.exe.
 Keep Service_Data, UnityPlayer.dll and the other included files together.
-Unity does not need to be installed to play the Windows build.
+Unity is not needed to play the Windows build.
 
 PLAY
-You are a civil process server working three evening shifts: October 1, 4 and 9.
-Read the docket in your car, use the county map to locate each address, record
-each attempt, and return to the depot to file your report. The route can also
-be closed early from the docket; return to the depot to end that shift.
+Work the evening delivery route, read your docket and county map, and return
+to the depot to file your report. First shift: five distinct properties.
+Correll residence: deliver inside the cabin.
+Harrow Lodge: deliver inside. When breathing begins, turn away and stand
+completely still for eight seconds. Sprinting after the warning catches you.
+Vale House: take the right staircase to the upstairs study.
+Bell residence: enter the brick house and find the delivery table.
+Morrow House: take the central stairs to the upstairs gallery.
+
+For pursuit encounters, run back through the house and garden to your car.
+Park outside the gates. Getting caught returns you to that property's gate
+and preserves the other completed deliveries. Headphones are suggested.
 
 WASD       Walk / drive. S reverses the car.
 Mouse      Look around, including inside the car.
-E          Step out / enter car / knock / file report at depot.
-R          Leave a copy at the nearby door / on the upstairs study table.
+E          Exit / enter car, interact, file report at depot.
+R          Leave a copy at the marked delivery table.
 U          Mark a nearby property unable to serve.
 F          Flashlight while on foot.
 Space      Turn the ignition key.
@@ -24,58 +32,34 @@ Tab        Docket while in the car.
 M          County map while in the car.
 Esc        Close the paper / pause.
 
-Stop the car before trying to get out. Return to your starting parking bay
-after completing the docket and press E to file it. Revisit familiar places
-and pay attention to the physical surroundings and the sounds. At Vale House,
-enter the open front door, take the right staircase up, and find the study.
-Place the notice on the desk. When the upstairs lights go out, hold Shift and
-run back downstairs to the car. Getting caught returns
-you to the gate and preserves your other deliveries. Headphones are suggested.
-The title screen's Vale House preview skips directly to this encounter.
+Stop before exiting the car. Options includes volume, sensitivity and display
+controls. Completed shifts save automatically; unfinished-shift progress is
+not saved on quit. Three evening shifts are implemented. The title's Vale
+preview provides a shortcut to its encounter.
 
-Options provides volume, mouse sensitivity and fullscreen/windowed controls.
-Completed shifts save automatically. Continue route starts the next shift;
-work in an unfinished shift is not saved on quit. Volume and mouse sensitivity
-are remembered. Switching away from the game pauses it, including audio.
-Use Restart this shift in the pause menu if needed.
-
-V4 CHANGES
-Upstairs study delivery and a longer escape through the stairs. Furnished
-foyer, landing and study using additional Flooded Grounds assets: rugs,
-cabinets, paintings, clock, sofa, vases and pendant lamps. Quieter outdoor
-ambience indoors, villa reverb and sounds upstairs before the encounter.
-The upstairs lamps fail on delivery; downstairs lights mark the way out.
-Navigation and physical stair traversal are verified alongside capture,
-retry, escape, pause/resume and continuing a saved route.
-
-V3 CHANGES
-Rebuilt first-person cabin with gauges, dashboard lighting, door panels and
-moving steering wheel. Clearer controls and document text. Corrected car
-orientation, flush cabin doors, outward-facing porch bench and mounted lamps.
-Vale House uses the large Flooded Grounds villa and an indoor delivery table.
-The Creep creature pursues you after the delivery, with recorded horror audio.
+V5 CHANGES
+Five different stock Flooded Grounds buildings with interior deliveries,
+including two upstairs routes. Forest canopy, understory, garden paths,
+fences, planters, lamps, seating, outbuildings and a graveyard garden.
+Four pursuits and one look-away encounter use three Creep appearance variants.
+Recorded grass, gravel, stone and wood footsteps follow the ground surface;
+additional breathing, gasps, forest ambience and spatial cues support encounters.
+Revised docket, county map, death messages, cabin fittings and gauge direction.
 
 EDITABLE UNITY PROJECT
-Extract the Unity project ZIP. In Unity Hub, choose Add project from disk and
-select the extracted project folder. Open it with Unity 6000.6.0f1. Open
-Assets/Scenes/HollisCounty.unity and press Play.
-Assets/Scripts contains the game logic; the scene stores the county layout.
-Assets/ServiceArt contains adapted URP materials and authored scene pieces.
-The editor build utility is Assets/Editor/ServiceBuild.cs. The cockpit is
-modelled with native Unity meshes in Assets/Editor/ServiceCockpit.cs.
+The current project is already registered in Unity Hub as ServiceProject.
+For the ZIP: extract, choose Add project from disk in Unity Hub, select its
+folder, and open with Unity 6000.6.0f1. Open Assets/Scenes/HollisCounty.unity
+and press Play. Scripts and editor utilities are included.
 
-ASSETS
-The environment uses Flooded Grounds by Sandro T, acquired through Unity
-Asset Store, with Creep Horror Creature by AC Game Assets. Audio uses credited
-human recordings and sound design; Courier Prime is a
-licensed font. See ASSET-CREDITS.txt and the included font license.
-No generative image, music, voice, texture or model service was used.
-Native Unity geometry, terrain, lighting and UI supplement the sourced art.
-The Asset Store content in the source project is for the acquiring account;
-do not redistribute the raw source pack as an asset library.
-
-PROTOTYPE SCOPE
-This is a short, three-shift interpretation of the proposal, not the complete
-multi-week game. It has no recorded dialogue, traffic, multiple save slots or full
-vehicle simulation. The villa encounter includes an animated pursuer,
-spatial creature sounds, a tension loop and a retry checkpoint.
+ASSETS AND SCOPE
+Flooded Grounds by Sandro T; Creep Horror Creature by AC Game Assets;
+Nox Sound Essentials recordings; other credited recordings; Courier Prime.
+See ASSET-CREDITS.txt and Assets/Resources/Audio/V5/sources.json for sources.
+No generative images, music, voices, textures or models were used. Native
+Unity geometry supplements the sourced art, including the car cockpit.
+This is an expanded development build, not a finished production release.
+The broader multi-week proposal, recorded dialogue, traffic, multiple save
+slots and a full vehicle simulation remain outside this build.
+Source assets are for the acquiring account; do not redistribute them as
+an asset library. TESTING.txt describes the checks on this Windows build.

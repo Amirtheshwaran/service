@@ -23,6 +23,7 @@ namespace ServiceGameV2.Editor
             string command=File.ReadAllText(job).Trim(); File.Delete(job);
             try {
                 if(command=="inventory") Inventory();
+                if(command=="v5inspect") V5Inspect.Run();
                 if(command=="build") ServiceBuild.Build();
                 if(command=="quit") EditorApplication.Exit(0);
                 if(command=="packages") UnityEditor.PackageManager.UI.Window.Open("244853");
