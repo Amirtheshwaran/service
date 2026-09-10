@@ -1,51 +1,56 @@
 ﻿# Service
 
-A first-person atmospheric horror game prototype built in Unity.
+First-person horror game with free-roam driving/walking and no combat, built in Unity.
 
-## Overview
+## About the Game
 
-You play as a civil process server working evening shifts in rural Hollis County, delivering court documents to addresses across the area. With each shift, you receive a docket of addresses to locate and serve. Your tools are your car, a flashlight, and your judgment. If an address feels wrong or unsafe, there is no combat—you mark it, leave, or head back.
+You play as a civil process server working night shifts in rural Hollis County. Your job is to drive out and deliver court documents to people who usually don't want to receive them. Every shift gives you a docket of addresses to locate and serve using your car, a flashlight, and your own judgment. If a place feels wrong, you can't fight back; you just leave.
 
-The first shift features five distinct properties across the county (Correll residence, Harrow Lodge, Vale House, Bell residence, and Morrow House). Encounters require reading the environment—some involve fleeing back to your vehicle, while others (like Harrow Lodge) require turning away and standing completely still.
+The horror is focused on slow burn and atmosphere rather than cheap jump scares. In this build (v5), the first shift covers five locations across the county:
+- Correll residence (cabin delivery)
+- Harrow Lodge (interior delivery; when you hear breathing, turn away and stand completely still for 8 seconds)
+- Vale House (upstairs study delivery with an escape back to the car)
+- Bell residence (brick house interior delivery)
+- Morrow House (manor with an upstairs gallery delivery)
 
-The project focuses on slow-burn, environmental unease rather than jump scares, relying on heavy fog, rural lighting, surface-aware footstep audio, and diegetic sound design.
+## How to Play / Run in Unity
 
-## How to Run in Unity
+Built with Unity 6 (6000.6.0f1) using URP.
 
-- **Engine Version:** Unity 6 (`6000.6.0f1`)
-- **Pipeline:** Universal Render Pipeline (URP)
-
-### Steps:
-1. Open **Unity Hub**.
-2. Click **Add** -> **Add project from disk** and select this repository folder (`ServiceProject`).
-3. Open the project using Unity `6000.6.0f1`.
-4. In the Project window, open `Assets/Scenes/HollisCounty.unity`.
-5. Press **Play** to start the shift.
+1. Open Unity Hub.
+2. Click Add -> Add project from disk, and select this folder (ServiceProject).
+3. Open it with Unity 6000.6.0f1.
+4. In the Project tab, open Assets/Scenes/HollisCounty.unity.
+5. Hit Play.
 
 ## Controls
 
 | Key | Action |
 | --- | --- |
-| **WASD** | Walk / Drive (S reverses) |
-| **Mouse** | Look around (first-person on foot and inside vehicle) |
-| **E** | Exit / enter vehicle, interact, file report at depot |
-| **R** | Leave copy of documents at marked delivery table |
-| **U** | Mark property unable to serve |
-| **F** | Toggle flashlight (on foot) |
-| **Space** | Ignition key |
-| **Shift** | Sprint on foot / brake in car |
-| **Tab** | Check docket clipboard (inside vehicle) |
-| **M** | Check county map (inside vehicle) |
-| **Esc** | Close paper / pause menu |
+| WASD | Walk / Drive (S reverses car) |
+| Mouse | Look around |
+| E | Get in/out of car, knock, interact, file shift report at depot |
+| R | Leave documents on the delivery table |
+| U | Mark address as unable to serve |
+| F | Flashlight (on foot) |
+| Space | Start car ignition |
+| Shift | Sprint on foot / brake while driving |
+| Tab | Open docket clipboard (in car) |
+| M | Open county map (in car) |
+| Esc | Pause menu / close papers |
 
-## Project Structure
+## Project Layout
 
-- `Assets/Scenes/HollisCounty.unity`: Main game scene containing county layout, road network, and property destinations.
-- `Assets/Scripts/`: Core gameplay scripts (player controller, vehicle mechanics, docket tracking, surface audio detection, encounter logic).
-- `Assets/ServiceArt/`: Custom materials, lighting setups, environment meshes, and authored scene elements.
-- `Assets/Editor/`: Editor build, cockpit modeling, and scene expansion tools.
-- `docs/`: Design documents and shift specifications.
+- Assets/Scenes/HollisCounty.unity: Main scene with the road network and county properties.
+- Assets/Scripts/: Gameplay scripts (player, car controller, surface footsteps, audio, and encounter logic).
+- Assets/ServiceArt/: Shaders, materials, meshes, and scene assets.
+- Assets/Editor/: Build tools and scene layout utilities.
+- docs/: Design notes and shift specs.
 
-## Credits & Sourced Assets
+## Asset Credits
 
-Environment models use the *Flooded Grounds* pack by Sandro T. Character models use *Creep Horror Creature* by AC Game Assets. Audio recordings are sourced from human field recordings via Freesound and Nox Sound Essentials under CC0 and CC BY 4.0 licenses. Typography uses *Courier Prime* and *Barlow* (SIL Open Font License). Full itemized source links and licensing details are listed in `ASSET-CREDITS.txt` and `Assets/Resources/Audio/V5/sources.json`.
+- Environment: Flooded Grounds by Sandro T (Unity Asset Store).
+- Monster model: Creep Horror Creature by AC Game Assets.
+- Audio: Human field recordings and sound effects from Freesound and Nox Sound Essentials (CC0 / CC BY 4.0).
+- Fonts: Courier Prime and Barlow (SIL Open Font License).
+- Full links and source details are in ASSET-CREDITS.txt and Assets/Resources/Audio/V5/sources.json.
