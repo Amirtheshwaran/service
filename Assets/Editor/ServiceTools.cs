@@ -22,6 +22,7 @@ namespace ServiceGameV2.Editor
             if(EditorApplication.isCompiling || EditorApplication.isUpdating || !File.Exists(job))return;
             string command=File.ReadAllText(job).Trim(); File.Delete(job);
             try {
+                if(command.StartsWith("import:")) AssetDatabase.ImportPackage(command.Substring(7),false);
                 if(command=="inventory") Inventory();
                 if(command=="v5inspect") V5Inspect.Run();
                 if(command=="build") ServiceBuild.Build();
@@ -29,6 +30,7 @@ namespace ServiceGameV2.Editor
                 if(command=="packages") UnityEditor.PackageManager.UI.Window.Open("244853");
                 if(command=="navigation") V3Regression.Navigation();
                 if(command=="walk") V3Regression.Walk();
+                if(command.StartsWith("download:")) CreatureDownload.Run(command.Substring(9).Split(',').Select(long.Parse).ToArray());
                 if(command=="creature") CreatureDownload.Run();
                 if(command=="import-creature") AssetDatabase.ImportPackage(Directory.GetFiles(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),"Unity/Asset Store-5.x/AC Game Assets"),"*.unitypackage",SearchOption.AllDirectories).Single(),false);
                 if(command=="regression") V3Regression.Check();

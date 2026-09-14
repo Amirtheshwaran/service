@@ -54,13 +54,13 @@ namespace ServiceGameV2.Editor
    Sign("MILLBROOK RD",V(5,1.9f,36),0,.10f,world);
    Sign("LATIGO TRAIL",V(41,1.9f,189),0,.1f,world);
    Sign("END COUNTY\nMAINTENANCE",V(1,1.65f,381),0,.095f,world);
-   DressDenseCounty();
+   DressDenseCounty(); ForestArt();
    Vehicle(); Lighting();
    scene.Walker=new GameObject("Field officer — on foot").AddComponent<CharacterController>();scene.Walker.transform.SetParent(world);scene.Walker.height=1.8f;scene.Walker.radius=.3f;scene.Walker.center=V(0,.9f,0);scene.Walker.stepOffset=.32f;
    scene.View=new GameObject("First person view").AddComponent<Camera>();scene.View.tag="MainCamera";scene.View.gameObject.AddComponent<AudioListener>();scene.View.transform.SetParent(scene.DriverSeat,false);scene.View.nearClipPlane=.035f;scene.View.farClipPlane=230;scene.View.fieldOfView=68;scene.View.backgroundColor=new Color(.065f,.078f,.085f);scene.View.clearFlags=CameraClearFlags.Skybox;
    var cameraData=scene.View.GetUniversalAdditionalCameraData();cameraData.renderPostProcessing=true;cameraData.antialiasing=AntialiasingMode.FastApproximateAntialiasing;
    scene.Flashlight=LightAt("Hand torch",Vector3.zero,new Color(.93f,.91f,.80f),4.2f,24,scene.View.transform);scene.Flashlight.transform.localPosition=V(.12f,-.14f,.15f);scene.Flashlight.type=LightType.Spot;scene.Flashlight.spotAngle=54;scene.Flashlight.innerSpotAngle=25;scene.Flashlight.shadows=LightShadows.Soft;scene.Flashlight.enabled=false;
-   Creature(); CreatureVariants();
+   Creature(); CreatureVariants(); DemonVariant();
    root.AddComponent<ServiceWorldText>();
    foreach(var text in Object.FindObjectsByType<TextMesh>(FindObjectsInactive.Include,FindObjectsSortMode.None)){
     text.font.RequestCharactersInTexture(text.text+"0123456789. mi",text.fontSize,text.fontStyle);
@@ -326,15 +326,15 @@ namespace ServiceGameV2.Editor
   static void Lighting()
   {
    var sky=new Material(Shader.Find("Skybox/Cubemap"));sky.SetTexture("_Tex",AssetDatabase.LoadAssetAtPath<Cubemap>(FG+"Content/Textures/BGR_Sky1.tif"));sky.SetFloat("_Exposure",.45f);sky.SetColor("_Tint",new Color(.42f,.47f,.53f));AssetDatabase.CreateAsset(sky,Art+"Materials/Hollis sky.mat");RenderSettings.skybox=sky;
-   RenderSettings.ambientMode=AmbientMode.Custom;var sh=new SphericalHarmonicsL2();sh.AddAmbientLight(new Color(.095f,.115f,.14f));RenderSettings.ambientProbe=sh;RenderSettings.ambientIntensity=1;
+   RenderSettings.ambientMode=AmbientMode.Custom;var sh=new SphericalHarmonicsL2();sh.AddAmbientLight(new Color(.035f,.049f,.065f));RenderSettings.ambientProbe=sh;RenderSettings.ambientIntensity=1;
    scene.Moon=LightAt("Last light over Hollis County",V(0,80,0),new Color(.67f,.77f,.88f),.36f,1000,world);scene.Moon.type=LightType.Directional;scene.Moon.shadows=LightShadows.Soft;scene.Moon.transform.rotation=Quaternion.Euler(23,-28,0);RenderSettings.sun=scene.Moon;
    var volume=Empty("County color grade",Vector3.zero,world).gameObject.AddComponent<Volume>();volume.isGlobal=true;var profile=ScriptableObject.CreateInstance<VolumeProfile>();AssetDatabase.CreateAsset(profile,Art+"County grade.asset");volume.sharedProfile=profile;
-   var tone=profile.Add<Tonemapping>();tone.mode.Override(TonemappingMode.ACES);var grade=profile.Add<ColorAdjustments>();grade.postExposure.Override(.4f);grade.saturation.Override(-13);grade.contrast.Override(9);var vignette=profile.Add<Vignette>();vignette.intensity.Override(.2f);vignette.smoothness.Override(.45f);
+   var tone=profile.Add<Tonemapping>();tone.mode.Override(TonemappingMode.ACES);var grade=profile.Add<ColorAdjustments>();grade.postExposure.Override(.15f);grade.saturation.Override(-13);grade.contrast.Override(9);var vignette=profile.Add<Vignette>();vignette.intensity.Override(.2f);vignette.smoothness.Override(.45f);
    foreach(var effect in profile.components)AssetDatabase.AddObjectToAsset(effect,profile);
   }
   static void ConfigureProject()
   {
-   var rp=AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>("Assets/Settings/PC_RPAsset.asset");GraphicsSettings.defaultRenderPipeline=rp;QualitySettings.renderPipeline=rp;rp.shadowDistance=65;rp.msaaSampleCount=2;
+   var rp=AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>("Assets/Settings/PC_RPAsset.asset");GraphicsSettings.defaultRenderPipeline=rp;QualitySettings.renderPipeline=rp;rp.shadowDistance=80;rp.msaaSampleCount=4;
    PlayerSettings.companyName="Hollis County";PlayerSettings.productName="SERVICE";PlayerSettings.colorSpace=ColorSpace.Linear;PlayerSettings.defaultScreenWidth=1280;PlayerSettings.defaultScreenHeight=720;PlayerSettings.fullScreenMode=FullScreenMode.Windowed;PlayerSettings.runInBackground=true;PlayerSettings.resizableWindow=true;
    PlayerSettings.SetScriptingBackend(UnityEditor.Build.NamedBuildTarget.Standalone,ScriptingImplementation.Mono2x);
    var settings=new SerializedObject(AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/ProjectSettings.asset")[0]);var input=settings.FindProperty("activeInputHandler");if(input!=null)input.intValue=1;settings.ApplyModifiedPropertiesWithoutUndo();

@@ -154,11 +154,11 @@ namespace ServiceGameV2
         void ConfigureNight(int night)
         {
             if (Scene.LateRoad != null) Scene.LateRoad.SetActive(night == 2);
-            if (Scene.Moon != null) { Scene.Moon.intensity = night == 0 ? .22f : night == 1 ? .19f : .16f; Scene.Moon.transform.rotation = Quaternion.Euler(23 - night * 5, -28, 0); }
+            if (Scene.Moon != null) { Scene.Moon.intensity = night == 0 ? .17f : night == 1 ? .14f : .12f; Scene.Moon.transform.rotation = Quaternion.Euler(23 - night * 5, -28, 0); }
             RenderSettings.fog = true;
             RenderSettings.fogMode = FogMode.ExponentialSquared;
-            RenderSettings.fogDensity = night == 0 ? .006f : night == 1 ? .007f : .011f;
-            RenderSettings.fogColor = new Color(.065f, .077f, .08f);
+            RenderSettings.fogDensity = night == 0 ? .012f : night == 1 ? .014f : .017f;
+            RenderSettings.fogColor = new Color(.038f, .052f, .060f);
             if (Scene.Rain != null)
             {
                 if (night == 1) Scene.Rain.Play();

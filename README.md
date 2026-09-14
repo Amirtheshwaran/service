@@ -4,7 +4,7 @@ First-person horror game with free-roam driving/walking and no combat, built in 
 
 ## About the Game
 
-You play as a civil process server working night shifts in rural Hollis County. Your job is to drive out and deliver court documents to people who usually don't want to receive them. Every shift gives you a docket of addresses to locate and serve using your car, a flashlight, and your own judgment. If a place feels wrong, you can't fight back; you just leave.
+You play as a civil process server working night shifts in rural Hollis County. Your job is to drive out and deliver court documents to people who usually don't want to receive them. Every shift gives you a docket of addresses to locate and serve using your car, a flashlight, and your judgment. If a place feels wrong, you can't fight back; you just leave.
 
 The horror is focused on slow burn and atmosphere rather than cheap jump scares. In this build (v5), the first shift covers five locations across the county:
 - Correll residence (cabin delivery)
@@ -45,12 +45,11 @@ Built with Unity 6 (6000.6.0f1) using URP.
 - Assets/Scripts/: Gameplay scripts (player, car controller, surface footsteps, audio, and encounter logic).
 - Assets/ServiceArt/: Shaders, materials, meshes, and scene assets.
 - Assets/Editor/: Build tools and scene layout utilities.
-- docs/: Design notes and shift specs.
 
 ## Asset Credits
 
-- Environment: Flooded Grounds by Sandro T (Unity Asset Store).
-- Monster model: Creep Horror Creature by AC Game Assets.
+- Environment: Flooded Grounds by Sandro T, Conifers [BOTD], and Rocks and Boulders 2 (Unity Asset Store).
+- Monster models: Creep Horror Creature by AC Game Assets, and Demon Horror Creature with Weapon.
 - Audio: Human field recordings and sound effects from Freesound and Nox Sound Essentials (CC0 / CC BY 4.0).
 - Fonts: Courier Prime and Barlow (SIL Open Font License).
 - Full links and source details are in ASSET-CREDITS.txt and Assets/Resources/Audio/V5/sources.json.

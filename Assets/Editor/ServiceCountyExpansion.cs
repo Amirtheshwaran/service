@@ -70,6 +70,7 @@ public static partial class ServiceBuild {
   for(int i=3;i<path.Count-2;i+=5){
    var pos=path[i];var tangent=(path[i+1]-path[i-1]).normalized;var side=Vector3.Cross(Vector3.up,tangent);
    foreach(int s in new[]{-1,1}){
+    if(i>3 && i<path.Count-8)continue;
     var boxAt=pos+side*s*2.1f;boxAt.y=LandHeight(boxAt.x,boxAt.z);Prop("Struct_FlowerBox_A",boxAt,Quaternion.LookRotation(tangent).eulerAngles.y,.38f,holder);
     ResizePlant(Prop("Grass_Tall_A",boxAt+Vector3.up*.33f,i*41+s*17,.42f,holder),.55f);
    }
