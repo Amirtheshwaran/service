@@ -74,3 +74,11 @@ CC0 publisher license. Same Footsteps Essentials pack listed on Unity Asset Stor
 Recordings distributed unchanged. Selected footsteps, breathing, gasps, forest wind, room tone and electromagnetic recordings.
 Additional rattle, taps, leaf rustle, wind howl: Flooded Grounds by Sandro T, Standard Unity Asset Store EULA.
 Per-file sources: Assets/Resources/Audio/V5/sources.json
+
+V6 ART ADDITIONS — acquired through the user's Unity Asset Store account
+Conifers [BOTD] — forst — Standard Unity Asset Store EULA
+https://assetstore.unity.com/packages/3d/vegetation/trees/conifers-botd-142076
+Rock and Boulders 2 — Manufactura K4 — Standard Unity Asset Store EULA
+https://assetstore.unity.com/packages/3d/props/exterior/rock-and-boulders-2-6947
+Demon Horror Creature with Weapon — AC Game Assets — Standard Unity Asset Store EULA
+https://assetstore.unity.com/packages/3d/characters/creatures/demon-horror-creature-with-weapon-247792

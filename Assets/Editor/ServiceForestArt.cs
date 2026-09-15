@@ -12,6 +12,7 @@ namespace ServiceGameV2.Editor {
    var o=(GameObject)PrefabUtility.InstantiatePrefab(prefab);PrefabUtility.UnpackPrefabInstance(o,PrefabUnpackMode.Completely,InteractionMode.AutomatedAction);
    o.transform.SetParent(parent);o.transform.SetPositionAndRotation(at,Quaternion.Euler(0,yaw,0));
    if(height>0){ResizePlant(o,height);var b=BoundsOf(o);o.transform.position+=at-V(b.center.x,b.min.y,b.center.z);}
+   foreach(var billboard in o.GetComponentsInChildren<BillboardRenderer>(true))if(billboard.billboard)billboard.sharedMaterial=billboard.billboard.material;
    if(convert)Convert(o);return o;
   }
   static void ForestArt(){
@@ -41,8 +42,9 @@ namespace ServiceGameV2.Editor {
    }
    var wind=Sourced("Assets/Forst/CTI Runtime Components/CTI Runtime Components URP 14plus/Prefabs/CTI Windzone URP.prefab",Vector3.zero,35,0,forest);
    var zone=wind.GetComponent<WindZone>();zone.windMain=.28f;zone.windTurbulence=.2f;zone.windPulseMagnitude=.18f;
+   ForestUnderstory();
    var terrain=world.GetComponentInChildren<Terrain>();var data=terrain.terrainData;
-   foreach(var layer in data.terrainLayers){string baseName=layer.diffuseTexture.name.Replace("_AS","_N");layer.normalMapTexture=AssetDatabase.LoadAssetAtPath<Texture2D>(FG+"Content/Textures/"+baseName+".tif");layer.normalScale=.85f;layer.tileSize=new Vector2(4,4);EditorUtility.SetDirty(layer);}
+   RoughGround(data);
    int res=data.alphamapResolution;var alpha=new float[res,res,2];
    for(int z=0;z<res;z++)for(int x=0;x<res;x++){
     var at=terrain.transform.position+V(x*data.size.x/(res-1),0,z*data.size.z/(res-1));
@@ -52,6 +54,27 @@ namespace ServiceGameV2.Editor {
    }data.SetAlphamaps(0,0,alpha);
    // Preserve authored CTI shaders and their wind/LOD support.
    foreach(var r in forest.GetComponentsInChildren<Renderer>())foreach(var m in r.sharedMaterials)if(m)m.enableInstancing=true;
+  }
+  static void RoughGround(TerrainData data){
+   var mask=AssetDatabase.LoadAssetAtPath<Texture2D>(Art+"Forest surface mask.asset");
+   if(!mask){mask=new Texture2D(1,1,TextureFormat.RGBA32,false,true);mask.SetPixel(0,0,new Color(0,1,.5f,.035f));mask.Apply();AssetDatabase.CreateAsset(mask,Art+"Forest surface mask.asset");}
+   foreach(var layer in data.terrainLayers){string baseName=layer.diffuseTexture.name.Replace("_AS","_N");layer.normalMapTexture=AssetDatabase.LoadAssetAtPath<Texture2D>(FG+"Content/Textures/"+baseName+".tif");layer.normalScale=.35f;layer.maskMapTexture=mask;layer.maskMapRemapMin=Vector4.zero;layer.maskMapRemapMax=Vector4.one;layer.tileSize=new Vector2(4,4);EditorUtility.SetDirty(layer);}
+  }
+  static void ForestUnderstory(){
+   if(world.Find("Forest understory thickets"))return;
+   var holder=Empty("Forest understory thickets",Vector3.zero,world);var rng=new System.Random(7714);
+   for(int i=0;i<1100;i++){
+    float x=-130+(float)rng.NextDouble()*278,z=18+(float)rng.NextDouble()*410;var at=V(x,0,z);
+    if(Mathf.PerlinNoise((x+170)*.035f,z*.04f)<.45f||!ClearForPlay(at,1.3f))continue;at.y=LandHeight(x,z);
+    var bush=Prop("TreeCreator_Bush_A",at,(float)rng.NextDouble()*360,.3f,holder);ResizePlant(bush,.7f+(float)rng.NextDouble()*1.1f);
+    foreach(var c in bush.GetComponentsInChildren<Collider>())Object.DestroyImmediate(c);
+    foreach(var r in bush.GetComponentsInChildren<Renderer>())r.shadowCastingMode=ShadowCastingMode.Off;
+   }
+  }
+  public static void FinishForestBuild(){
+   UnityEditor.SceneManagement.EditorSceneManager.OpenScene("Assets/Scenes/HollisCounty.unity");
+   scene=Object.FindFirstObjectByType<CountyScene>();world=scene.transform;route=Curve(scene.Route.Select(p=>p.position).ToArray());ForestUnderstory();
+   RoughGround(Object.FindFirstObjectByType<Terrain>().terrainData);UnityEditor.SceneManagement.EditorSceneManager.SaveOpenScenes();AssetDatabase.SaveAssets();ServiceQuickBuild.Build();
   }
   static void DemonVariant(){
    var root=scene.Entity;var model=Sourced("Assets/Demon Horror Creature with Weapon/Prefabs/Demon_default.prefab",root.transform.position,0,2.1f,root.transform,true);

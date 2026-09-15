@@ -26,7 +26,7 @@ namespace ServiceGameV2 {
    if(d.Scene.EntityVariants!=null)for(int i=0;i<d.Scene.EntityVariants.Length;i++)d.Scene.EntityVariants[i].SetActive(i==p.CreatureVariant);
    d.Scene.Entity.SetActive(true);
    if(!NavMesh.SamplePosition(p.EntitySpawn.position,out var hit,2,NavMesh.AllAreas))throw new System.InvalidOperationException("Presence outside navigation at "+index);
-   Agent.Warp(hit.position);Agent.isStopped=true;Phase=PursuitPhase.Reveal;Elapsed=repath=steps=LookAwaySeconds=0;growl=5;lastWalker=d.Scene.Walker.transform.position;
+   Agent.Warp(hit.position);var facing=d.Scene.Walker.transform.position-hit.position;facing.y=0;if(facing.sqrMagnitude>.01f)Agent.transform.rotation=Quaternion.LookRotation(facing);Agent.isStopped=true;Phase=PursuitPhase.Reveal;Elapsed=repath=steps=LookAwaySeconds=0;growl=5;lastWalker=d.Scene.Walker.transform.position;
    if(p.WindowLight)p.WindowLight.enabled=false;if(p.EncounterLights!=null)foreach(var l in p.EncounterLights)if(l)l.enabled=l.transform.position.y<p.TableApproach.position.y-1;
    d.Scene.Flashlight.enabled=true;d.Audio.HorrorAt(p.Encounter==EncounterKind.LookAway?"breath":"reveal",hit.position,.52f);d.Audio.Pursuit(p.Encounter==EncounterKind.Pursuit);
   }

@@ -1,5 +1,5 @@
 SERVICE — HOLLIS COUNTY
-Unity 6.6 Windows development build — v5
+Unity 6.6 Windows development build — v6
 
 RUN
 Extract the entire Windows ZIP, then double-click Service.exe.
@@ -36,6 +36,13 @@ Stop before exiting the car. Options includes volume, sensitivity and display
 controls. Completed shifts save automatically; unfinished-shift progress is
 not saved on quit. Three evening shifts are implemented. The title's Vale
 preview provides a shortcut to its encounter.
+
+V6 CHANGES
+New Conifers [BOTD] trees with authored wind and LOD support, uneven groves,
+clustered ground cover, Rock and Boulders 2 outcrops, normal-mapped terrain,
+denser distance fog and reduced ambient fill. Harrow and Morrow now use the
+Demon Horror Creature, with its own animation clips. Three new free Asset
+Store packs supplement the existing environment and recorded audio.
 
 V5 CHANGES
 Five different stock Flooded Grounds buildings with interior deliveries,

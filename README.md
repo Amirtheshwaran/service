@@ -6,7 +6,7 @@ First-person horror game with free-roam driving/walking and no combat, built in 
 
 You play as a civil process server working night shifts in rural Hollis County. Your job is to drive out and deliver court documents to people who usually don't want to receive them. Every shift gives you a docket of addresses to locate and serve using your car, a flashlight, and your judgment. If a place feels wrong, you can't fight back; you just leave.
 
-The horror is focused on slow burn and atmosphere rather than cheap jump scares. In this build (v5), the first shift covers five locations across the county:
+The horror is focused on slow burn and atmosphere rather than cheap jump scares. In this build (v6), the first shift covers five locations across the county:
 - Correll residence (cabin delivery)
 - Harrow Lodge (interior delivery; when you hear breathing, turn away and stand completely still for 8 seconds)
 - Vale House (upstairs study delivery with an escape back to the car)
