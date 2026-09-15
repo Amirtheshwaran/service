@@ -13,10 +13,15 @@ namespace ServiceGameV2
         float nextAtmosphere=12;
         public string LastSurface {get;private set;}="grass";
         bool pursuing;
+        static bool silentTest;
+        readonly List<AudioSource> forestPockets=new List<AudioSource>();
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        static void TestSilence(){silentTest=System.Array.Exists(System.Environment.GetCommandLineArgs(),a=>a=="-serviceSmoke"||a=="-silent")||System.Environment.GetEnvironmentVariable("SERVICE_SILENT_TEST")=="1";if(silentTest)AudioListener.volume=0;}
         public float Volume = .8f;
         public void Initialize(ServiceDirector director)
         {
             d = director;
+            silentTest|=d.IsSmoke;AudioListener.volume=silentTest?0:Volume;
             AudioListener.pause=false;if(!d.IsSmoke)Volume=Mathf.Clamp01(PlayerPrefs.GetFloat("SERVICE.volume",.8f));
             tension=Source("Horror pursuit score",d.Scene.View.transform,0);tension.clip=Clip("tension");tension.loop=true;tension.volume=0;
             engine = Source("Recorded engine", d.Scene.Car, 0);
@@ -30,6 +35,10 @@ namespace ServiceGameV2
             ambience.clip = Pick("night"); ambience.loop = true; ambience.volume = .065f;
             if (ambience.clip != null) ambience.Play();
             room=Source("House room tone",d.Scene.View.transform,0);room.clip=Pick("roomtone");room.loop=true;room.volume=0;if(room.clip)room.Play();
+            for(int i=1;i<d.Scene.Route.Length;i+=Mathf.Max(1,d.Scene.Route.Length/5)){
+                var pocket=Source("Recorded woodland insects",transform,1);pocket.transform.position=d.Scene.Route[i].position+new Vector3(i%2==0?19:-19,2,0);pocket.clip=Pick("insects");pocket.loop=true;pocket.volume=0;pocket.minDistance=4;pocket.maxDistance=32;
+                if(pocket.clip){pocket.time=Random.Range(0,pocket.clip.length);pocket.Play();}forestPockets.Add(pocket);
+            }
         }
         AudioSource Source(string name, Transform parent, float spatial)
         {
@@ -60,7 +69,7 @@ namespace ServiceGameV2
         }
         void Update()
         {
-            AudioListener.volume = Volume;
+            AudioListener.volume = silentTest ? 0 : Volume;
             AudioListener.pause=d.Phase==ServicePhase.Paused;
             if(AudioListener.pause)return;
             if(tension!=null){tension.volume=Mathf.MoveTowards(tension.volume,pursuing?.28f:0,Time.unscaledDeltaTime*.2f);if(!pursuing&&tension.volume<=0&&tension.isPlaying)tension.Stop();}
@@ -68,7 +77,12 @@ namespace ServiceGameV2
             if(wind != null) wind.volume = Mathf.MoveTowards(wind.volume, d.InsideVilla?.012f:inside ? .035f : .13f, Time.unscaledDeltaTime * .15f);
             if(ambience != null) ambience.volume = Mathf.MoveTowards(ambience.volume, d.InsideVilla?.018f:d.NightIndex == 2 ? .012f : inside ? .045f : .13f, Time.unscaledDeltaTime * .1f);
             if(room)room.volume=Mathf.MoveTowards(room.volume,d.InsideVilla?.065f:0,Time.unscaledDeltaTime*.06f);
-            if(d.Phase==ServicePhase.Playing&&!inside&&!d.Horror.Active&&!d.PaperOpen){nextAtmosphere-=Time.deltaTime;if(nextAtmosphere<0){nextAtmosphere=Random.Range(14f,25f);var point=d.Scene.View.transform.position+d.Scene.View.transform.right*(Random.value>.5f?1:-1)*Random.Range(9f,18f);At(d.InsideVilla?"taps":Random.value>.3f?"rustle":"howl",point,d.InsideVilla?.09f:.12f);}}
+            foreach(var pocket in forestPockets)pocket.volume=Mathf.MoveTowards(pocket.volume,inside||d.InsideVilla||d.Horror.Active?0:.045f,Time.unscaledDeltaTime*.025f);
+            if(d.Phase==ServicePhase.Playing&&!inside&&!d.Horror.Active&&!d.PaperOpen){nextAtmosphere-=Time.deltaTime;if(nextAtmosphere<0){
+                nextAtmosphere=Random.Range(9f,19f);var heading=Quaternion.Euler(0,Random.Range(70f,290f),0)*d.Scene.View.transform.forward;heading.y=0;
+                var point=d.Scene.View.transform.position+heading.normalized*Random.Range(8f,17f);float choice=Random.value;
+                At(d.InsideVilla?"taps":choice<.6f?"brush":choice<.88f?"rustle":"howl",point,d.InsideVilla?.09f:.16f);
+            }}
         }
         void At(string name, Vector3 point, float volume)
         {

@@ -1,5 +1,5 @@
 SERVICE — HOLLIS COUNTY
-Unity 6.6 Windows development build — v6
+Unity 6.6 Windows development build — v7
 
 RUN
 Extract the entire Windows ZIP, then double-click Service.exe.
@@ -70,3 +70,7 @@ The broader multi-week proposal, recorded dialogue, traffic, multiple save
 slots and a full vehicle simulation remain outside this build.
 Source assets are for the acquiring account; do not redistribute them as
 an asset library. TESTING.txt describes the checks on this Windows build.
+V7 FOREST PASS
+Dense mixed bush, sapling and grass patches with distance culling.
+Recorded woodland insects and varied off-path leaf movement.
+Automated tests force master volume to zero; use -silent for silent play.

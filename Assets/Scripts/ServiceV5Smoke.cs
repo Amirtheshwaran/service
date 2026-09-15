@@ -20,10 +20,14 @@ namespace ServiceGameV2 {
    Require(Mathf.Abs(d.Scene.Walker.transform.position.y-goal.position.y)<.45f,"Wrong floor at "+target);Debug.Log("V5_WALK "+(sprint?"escape":"approach")+" seconds="+(Time.time-start));d.Player.SmokeSprint=false;
   }
   IEnumerator Check(){
+   Require(AudioListener.volume==0,"Tests must start muted");
+   var thickets=d.Scene.transform.Find("Forest understory thickets");Require(thickets&&thickets.childCount>500,"Dense forest patches installed");
+   Require(Resources.LoadAll<AudioClip>("Audio/V5/brush").Length>=6&&Resources.Load<AudioClip>("Audio/V5/insects/insects_0"),"Recorded forest variations installed");
    yield return new WaitForSeconds(1);yield return Shot("00-title");d.BeginShift(0);Require(d.Docket.Count==5,"First shift needs five stops");Require(d.Docket.Select(e=>d.Property(e.Property).Template).Distinct().Count()==5,"Repeated building template");yield return Shot("01-docket");d.MapOpen=true;yield return Shot("02-map");d.PaperOpen=false;
    d.Player.StartEngine();yield return new WaitForSeconds(.8f);d.Player.SmokeThrottle=1;yield return new WaitForSeconds(2);d.Player.SmokeThrottle=0;Require(d.Player.Speed>1,"Car moves");var needle=d.Scene.SpeedNeedle.up;var axis=d.Scene.SpeedNeedle.parent;float angle=Mathf.Lerp(220,-40,d.Player.Speed*2.237f/60)*Mathf.Deg2Rad;Require(Vector3.Dot(needle,axis.TransformDirection(new Vector3(Mathf.Cos(angle),Mathf.Sin(angle),0)))>.98f,"Speed needle follows dial");d.Player.StopEngine();d.Player.SmokeLook(0,24);yield return Shot("03-cockpit");
    Require(Resources.LoadAll<AudioClip>("Audio/V5/grass").Length>4&&Resources.LoadAll<AudioClip>("Audio/V5/wood").Length>4,"Footstep variations");
    foreach(int index in new[]{0,3,1,4,5}){
+    Require(AudioListener.volume==0,"Tests must remain muted");
     var p=d.Property(index);d.Player.TeleportCar(p.Gate.position-p.Gate.forward*3,Quaternion.LookRotation(p.Gate.forward));d.Player.SmokePlaceWalker(p.Gate.position);d.Player.SmokeFace(p.Door.position);yield return Shot("property-"+index+"-approach");
     yield return Navigate(p.TableApproach.position,false);Require(d.NearbyDoor()==index,"Delivery unavailable at property "+index);Require(d.Audio.SurfaceAt(d.Scene.Walker.transform.position)=="wood","Interior wood surface "+index);d.Player.SmokeFace(p.DeliveryPoint.position);yield return Shot("property-"+index+"-interior");d.Attempt(index,ServiceResult.LeftAtDoor);Require(d.Horror.Active&&d.Horror.PropertyIndex==index,"Encounter did not start "+index);
     d.Pause();float elapsed=d.Horror.Elapsed;yield return new WaitForSecondsRealtime(.15f);Require(AudioListener.pause&&Mathf.Abs(elapsed-d.Horror.Elapsed)<.01f,"Pause freezes audio and encounter");d.Resume();

@@ -400,5 +400,47 @@
     "file": "howl\\WindHowl.mp3",
     "source": "Content\\Sounds\\WindHowl.mp3",
     "license": "Unity Asset Store EULA, Sandro T"
+  },
+  {
+    "key": "brush",
+    "file": "brush\\brush_0.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Leaves/Footsteps_Leaves_Run/Footsteps_Leaves_Run_01.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "brush",
+    "file": "brush\\brush_1.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Leaves/Footsteps_Leaves_Run/Footsteps_Leaves_Run_02.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "brush",
+    "file": "brush\\brush_2.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Leaves/Footsteps_Leaves_Run/Footsteps_Leaves_Run_03.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "brush",
+    "file": "brush\\brush_3.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Leaves/Footsteps_Leaves_Run/Footsteps_Leaves_Run_04.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "brush",
+    "file": "brush\\brush_4.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Leaves/Footsteps_Leaves_Run/Footsteps_Leaves_Run_05.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "brush",
+    "file": "brush\\brush_5.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Leaves/Footsteps_Leaves_Run/Footsteps_Leaves_Run_06.wav",
+    "license": "CC0"
+  },
+  {
+    "key": "insects",
+    "file": "insects\\insects_0.wav",
+    "source": "Essentials_Series_NOX_SOUND/Nature_Essentials_NOX_SOUND/Ambiance_Cicadas_Loop_Stereo.wav",
+    "license": "CC0"
   }
 ]

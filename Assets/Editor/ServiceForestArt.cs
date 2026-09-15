@@ -61,20 +61,54 @@ namespace ServiceGameV2.Editor {
    foreach(var layer in data.terrainLayers){string baseName=layer.diffuseTexture.name.Replace("_AS","_N");layer.normalMapTexture=AssetDatabase.LoadAssetAtPath<Texture2D>(FG+"Content/Textures/"+baseName+".tif");layer.normalScale=.35f;layer.maskMapTexture=mask;layer.maskMapRemapMin=Vector4.zero;layer.maskMapRemapMax=Vector4.one;layer.tileSize=new Vector2(4,4);EditorUtility.SetDirty(layer);}
   }
   static void ForestUnderstory(){
-   if(world.Find("Forest understory thickets"))return;
+   var old=world.Find("Forest understory thickets");if(old)Object.DestroyImmediate(old.gameObject);
    var holder=Empty("Forest understory thickets",Vector3.zero,world);var rng=new System.Random(7714);
-   for(int i=0;i<1100;i++){
-    float x=-130+(float)rng.NextDouble()*278,z=18+(float)rng.NextDouble()*410;var at=V(x,0,z);
-    if(Mathf.PerlinNoise((x+170)*.035f,z*.04f)<.45f||!ClearForPlay(at,1.3f))continue;at.y=LandHeight(x,z);
-    var bush=Prop("TreeCreator_Bush_A",at,(float)rng.NextDouble()*360,.3f,holder);ResizePlant(bush,.7f+(float)rng.NextDouble()*1.1f);
-    foreach(var c in bush.GetComponentsInChildren<Collider>())Object.DestroyImmediate(c);
-    foreach(var r in bush.GetComponentsInChildren<Renderer>())r.shadowCastingMode=ShadowCastingMode.Off;
+   float R(float lo,float hi)=>(float)(lo+rng.NextDouble()*(hi-lo));int plants=0,clusters=0;
+   for(float z=20;z<428;z+=9)for(float x=-130;x<148;x+=9){
+    var at=V(x+R(-3,3),0,z+R(-3,3));float road=RoadDistance(at);
+    if(!ClearForPlay(at,.5f)||R(0,1)>(road<35?.94f:.72f))continue;
+    var cluster=Empty("Mixed woodland thicket",at,holder);
+    for(int n=0;n<10;n++){
+     var q=at+V(R(-4.5f,4.5f),0,R(-4.5f,4.5f));bool shrub=n<3,sapling=n==9&&clusters%3==0;
+     if(n==9&&!sapling)continue;if(!ClearForPlay(q,shrub||sapling?1.2f:.25f))continue;q.y=LandHeight(q.x,q.z);
+     GameObject plant;
+     if(sapling)plant=Sourced(Conifers+"PF Conifer Small BOTD URP.prefab",q,R(0,360),R(2.8f,4.8f),cluster);
+     else {plant=Prop(shrub?"TreeCreator_Bush_A":n%2==0?"Grass_Tall_C":"Grass_Tall_A",q,R(0,360),1,cluster);ResizePlant(plant,shrub?R(1.1f,2.3f):R(.45f,.95f));if(!shrub)plant.transform.localScale=Vector3.Scale(plant.transform.localScale,V(2.2f,1,2.2f));}
+     foreach(var c in plant.GetComponentsInChildren<Collider>())Object.DestroyImmediate(c);
+     foreach(var lod in plant.GetComponentsInChildren<LODGroup>()){
+      var levels=lod.GetLODs();if(levels.Length>0)foreach(var renderer in levels.Skip(1).SelectMany(l=>l.renderers).Distinct().Where(r=>r&&!levels[0].renderers.Contains(r)))Object.DestroyImmediate(renderer);
+      Object.DestroyImmediate(lod);
+     }
+     foreach(var r in plant.GetComponentsInChildren<Renderer>()){r.shadowCastingMode=ShadowCastingMode.Off;foreach(var m in r.sharedMaterials)if(m)m.enableInstancing=true;}
+     plants++;
+    }
+    var renderers=cluster.GetComponentsInChildren<Renderer>().Where(r=>!(r is BillboardRenderer)).ToArray();
+    // Cull complete patches beyond the nearby forest; retain shared, instanced materials.
+    var group=cluster.gameObject.AddComponent<LODGroup>();group.SetLODs(new[]{new LOD(.075f,renderers)});group.RecalculateBounds();clusters++;
    }
+   foreach(var property in scene.Properties){
+    var fringe=Empty("Low woodland along "+property.name,Vector3.zero,holder);Vector3 last=Vector3.one*9999;var path=property.ApproachRoute;
+    for(int i=1;i<path.Length-1;i++){
+     var at=path[i];if(Vector3.Distance(at,last)<2.7f||Vector3.Distance(at,property.Door.position)<10)continue;last=at;
+     var side=Vector3.Cross(Vector3.up,(path[i+1]-path[i-1]).normalized);
+     foreach(int sign in new[]{-1,1})for(int n=0;n<4;n++){
+      var q=at+side*sign*(3.5f+n*1.4f+R(-.4f,.4f));if(RoadDistance(q)<5)continue;
+      var bounds=property.InteriorBounds;bounds.Expand(3);if(q.x>bounds.min.x&&q.x<bounds.max.x&&q.z>bounds.min.z&&q.z<bounds.max.z)continue;
+      q.y=LandHeight(q.x,q.z);bool bush=n%2==0;var plant=Prop(bush?"TreeCreator_Bush_A":"Grass_Tall_C",q,R(0,360),1,fringe);ResizePlant(plant,bush?R(.45f,.85f):R(.5f,.8f));plant.transform.localScale=Vector3.Scale(plant.transform.localScale,V(bush?1.4f:2.2f,1,bush?1.4f:2.2f));
+      foreach(var c in plant.GetComponentsInChildren<Collider>())Object.DestroyImmediate(c);foreach(var r in plant.GetComponentsInChildren<Renderer>())r.shadowCastingMode=ShadowCastingMode.Off;plants++;
+     }
+    }
+    var lod=fringe.gameObject.AddComponent<LODGroup>();lod.SetLODs(new[]{new LOD(.06f,fringe.GetComponentsInChildren<Renderer>())});lod.RecalculateBounds();
+   }
+   Debug.Log("SERVICE_FOREST: "+plants+" undergrowth plants in "+clusters+" patches plus six path fringes");
   }
   public static void FinishForestBuild(){
    UnityEditor.SceneManagement.EditorSceneManager.OpenScene("Assets/Scenes/HollisCounty.unity");
    scene=Object.FindFirstObjectByType<CountyScene>();world=scene.transform;route=Curve(scene.Route.Select(p=>p.position).ToArray());ForestUnderstory();
-   RoughGround(Object.FindFirstObjectByType<Terrain>().terrainData);UnityEditor.SceneManagement.EditorSceneManager.SaveOpenScenes();AssetDatabase.SaveAssets();ServiceQuickBuild.Build();
+   RoughGround(Object.FindFirstObjectByType<Terrain>().terrainData);
+   UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(scene.gameObject.scene);
+   if(!UnityEditor.SceneManagement.EditorSceneManager.SaveScene(scene.gameObject.scene))throw new Exception("Forest scene could not be saved");
+   AssetDatabase.SaveAssets();ServiceQuickBuild.Build();
   }
   static void DemonVariant(){
    var root=scene.Entity;var model=Sourced("Assets/Demon Horror Creature with Weapon/Prefabs/Demon_default.prefab",root.transform.position,0,2.1f,root.transform,true);
