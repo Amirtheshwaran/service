@@ -23,6 +23,8 @@ namespace ServiceGameV2
         public ServiceAudio Audio { get; private set; }
         public ServiceHUD HUD { get; private set; }
         public ServiceHorror Horror {get;private set;}
+        public ServiceStorm Storm {get;private set;}
+        public ServicePresentation Presentation {get;private set;}
         public readonly List<DocketEntry> Docket = new List<DocketEntry>();
         public ServicePhase Phase { get; private set; } = ServicePhase.Title;
         public int NightIndex { get; private set; }
@@ -70,6 +72,8 @@ namespace ServiceGameV2
             HUD.Initialize(this);
             ConfigureNight(0);
             Player.EnterCar();
+            Storm=gameObject.AddComponent<ServiceStorm>();Storm.Initialize(this);
+            Presentation=gameObject.AddComponent<ServicePresentation>();Presentation.Initialize(this);
             SetCursor();
             IsSmoke = Array.IndexOf(Environment.GetCommandLineArgs(), "-serviceSmoke") >= 0;
             if (IsSmoke) gameObject.AddComponent<ServiceV5Smoke>().Run(this);
@@ -107,7 +111,7 @@ namespace ServiceGameV2
             if (!PaperOpen && !Horror.Active && !Horror.Caught) EvaluateCues(Time.deltaTime);
             if (InputBlocked || Busy) return;
             if (Pressed(Key.F) && Scene.Flashlight != null) Scene.Flashlight.enabled = !Scene.Flashlight.enabled;
-            if (Pressed(Key.E))
+            if (Pressed(Key.E)&&!Player.InteractionSuppressed)
             {
                 if (CanFinish) TryFinishShift();
                 else if (Player.InCar) Player.TryExitCar();
@@ -157,8 +161,7 @@ namespace ServiceGameV2
             ServiceForestMood.Apply(Scene,night);
             if (Scene.Rain != null)
             {
-                if (night == 1) Scene.Rain.Play();
-                else Scene.Rain.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+                Scene.Rain.Play();
             }
             for (int i = 0; i < Scene.Properties.Length; i++)
             {
@@ -298,7 +301,7 @@ namespace ServiceGameV2
         void SaveRoute(){if(NightIndex<2){PlayerPrefs.SetInt(SavePrefix+"night",NightIndex+1);for(int i=0;i<6;i++)PlayerPrefs.SetInt(SavePrefix+"result"+i,(int)lastResults[i]);}else PlayerPrefs.DeleteKey(SavePrefix+"night");PlayerPrefs.Save();}
         public void ContinueRoute(){for(int i=0;i<6;i++)lastResults[i]=(ServiceResult)PlayerPrefs.GetInt(SavePrefix+"result"+i,0);BeginShift(Mathf.Clamp(PlayerPrefs.GetInt(SavePrefix+"night",0),0,2));}
         public void NewRoute(){PlayerPrefs.DeleteKey(SavePrefix+"night");Array.Clear(lastResults,0,lastResults.Length);PlayerPrefs.Save();BeginShift(0);}
-        public void SaveOptions(){if(IsSmoke)return;PlayerPrefs.SetFloat("SERVICE.volume",Audio.Volume);PlayerPrefs.SetFloat("SERVICE.sensitivity",Player.Sensitivity);PlayerPrefs.Save();}
+        public void SaveOptions(){if(IsSmoke)return;PlayerPrefs.SetFloat("SERVICE.volume",Audio.Volume);PlayerPrefs.SetFloat("SERVICE.music",Audio.MusicVolume);PlayerPrefs.SetFloat("SERVICE.sensitivity",Player.Sensitivity);if(Storm)Storm.Save();PlayerPrefs.Save();}
         void OnApplicationFocus(bool focused){if(!focused&&!IsSmoke&&Phase==ServicePhase.Playing)Pause();}
         public void Pause() { if (Phase != ServicePhase.Playing) return; Phase = ServicePhase.Paused; Time.timeScale = 0; SetCursor(); }
         public void Resume() { if (Phase != ServicePhase.Paused) return; Phase = ServicePhase.Playing; Time.timeScale = 1; SetCursor(); }

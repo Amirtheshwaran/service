@@ -84,3 +84,10 @@ Demon Horror Creature with Weapon — AC Game Assets — Standard Unity Asset St
 https://assetstore.unity.com/packages/3d/characters/creatures/demon-horror-creature-with-weapon-247792
 
 V7: Additional unchanged Nox Sound CC0 recordings: cicadas and six leaf-footstep recordings used as off-path brush movement. Per-file attribution in Audio/V5/sources.json.
+
+V9 STORM AND MUSIC
+This House and The Descent — Kevin MacLeod (incompetech.com). Licensed under Creative Commons: By Attribution 4.0 License, https://creativecommons.org/licenses/by/4.0/ . Original recordings unchanged; chase playback starts at 12 seconds. https://incompetech.com/music/royalty-free/
+Loud Thunder sounds — Rvgerxini, CC0. https://freesound.org/people/Rvgerxini/sounds/620529/ . Four edited mono excerpts with fades.
+Rain, mud and water footsteps — Nox Sound Essentials, CC0. Recordings unchanged.
+Additional native shrub and grass meshes and rain particle texture: Flooded Grounds / Sandro T, Unity Asset Store EULA.
+Per-file V9 attribution: Assets/Resources/Audio/V9/sources.json

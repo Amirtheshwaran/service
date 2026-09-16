@@ -14,6 +14,12 @@ namespace ServiceGameV2
         public float SmokeThrottle;
         public Vector2 SmokeWalk;
         public bool SmokeSprint;
+        public int SmokeLookBack;
+        public float LookBackAngle=>lookBack;
+        float lookBack;
+        public static float ResolveLookBack(bool running,bool car,bool blocked,bool left,bool right)=>!running||car||blocked||left==right?0:left?-155:155;
+        float LookBackTarget=>ResolveLookBack(Sprinting,InCar,d.InputBlocked,d.IsSmoke?SmokeLookBack<0:Keyboard.current!=null&&Keyboard.current[Key.Q].isPressed,d.IsSmoke?SmokeLookBack>0:Keyboard.current!=null&&Keyboard.current[Key.E].isPressed);
+        public bool InteractionSuppressed=>LookBackTarget!=0||Mathf.Abs(lookBack)>1;
         public bool Sprinting => !InCar && (d.IsSmoke ? SmokeSprint : Keyboard.current != null && Keyboard.current[Key.LeftShift].isPressed);
         ServiceDirector d;
         CountyScene s;
@@ -35,7 +41,8 @@ namespace ServiceGameV2
             if (IsStarting && Time.time >= startAt) { IsStarting = false; EngineRunning = true; d.Audio.Engine(true); }
             if (d.InputBlocked) { speed = Mathf.MoveTowards(speed, 0, 9 * Time.deltaTime); return; }
             Vector2 look = Mouse.current == null || d.IsSmoke ? Vector2.zero : Mouse.current.delta.ReadValue();
-            yaw += look.x * Sensitivity;
+            float backTarget=LookBackTarget;
+            if(backTarget==0&&Mathf.Abs(lookBack)<5)yaw += look.x * Sensitivity;
             pitch = Mathf.Clamp(pitch - look.y * Sensitivity, -65, 70);
             if (InCar)
             {
@@ -49,7 +56,8 @@ namespace ServiceGameV2
             else
             {
                 s.Walker.transform.rotation = Quaternion.Euler(0, yaw, 0);
-                s.View.transform.localRotation = Quaternion.Euler(pitch, 0, 0);
+                lookBack=Mathf.MoveTowards(lookBack,backTarget,720*Time.deltaTime);
+                s.View.transform.localRotation = Quaternion.Euler(pitch, lookBack, 0);
                 Walk(d.IsSmoke ? SmokeWalk : new Vector2(Axis(Key.A, Key.D), Axis(Key.S, Key.W)));
             }
             d.Audio.EngineSpeed(Speed);
@@ -103,6 +111,7 @@ namespace ServiceGameV2
 
         public void EnterCar()
         {
+            lookBack=0;SmokeLookBack=0;
             InCar = true;
             if(s.Cockpit)s.Cockpit.SetActive(true);
             s.Walker.enabled = false;
@@ -134,6 +143,7 @@ namespace ServiceGameV2
         }
         void PlaceWalker(Vector3 point, float angle)
         {
+            lookBack=0;SmokeLookBack=0;
             InCar = false;
             if(s.Cockpit)s.Cockpit.SetActive(false);
             s.Walker.enabled = false;

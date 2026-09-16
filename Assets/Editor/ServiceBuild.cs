@@ -124,7 +124,12 @@ namespace ServiceGameV2.Editor
    bool leaf=old.name.ToLower().Contains("leaf")||old.name.ToLower().Contains("leaves")||old.name.ToLower().Contains("grass")||old.name.ToLower().Contains("branch");
    if(leaf){n.SetFloat("_AlphaClip",1);n.SetFloat("_Cutoff",.42f);n.SetFloat("_Cull",0);n.EnableKeyword("_ALPHATEST_ON");n.renderQueue=2450;}
    if(old.name.ToLower().Contains("glass")){n.SetFloat("_Surface",1);n.SetFloat("_SrcBlend",5);n.SetFloat("_DstBlend",10);n.SetFloat("_ZWrite",0);n.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");n.SetColor("_BaseColor",new Color(.37f,.42f,.40f,.22f));n.SetFloat("_Smoothness",.8f);n.renderQueue=3000;}
-   string path=Art+"Materials/"+old.name.Replace('/','_')+"_"+converted.Count+".mat";AssetDatabase.CreateAsset(n,path);converted[old]=n;return n;
+   AssetDatabase.TryGetGUIDAndLocalFileIdentifier(old,out string sourceGuid,out long sourceId);
+   string stableKey=string.IsNullOrEmpty(sourceGuid)?old.GetEntityId().ToString():sourceGuid+"_"+sourceId;
+   string path=Art+"Materials/"+old.name.Replace('/','_')+"_"+stableKey+".mat";
+   var existing=AssetDatabase.LoadAssetAtPath<Material>(path);
+   if(existing){EditorUtility.CopySerialized(n,existing);Object.DestroyImmediate(n);n=existing;EditorUtility.SetDirty(n);}else AssetDatabase.CreateAsset(n,path);
+   converted[old]=n;return n;
   }
   static Material Mat(string name,Color c,string texture=null)
   {

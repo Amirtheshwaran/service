@@ -1,5 +1,5 @@
 SERVICE — HOLLIS COUNTY
-Unity 6.6 Windows development build — v8
+Unity 6.6 Windows development build — v9
 
 RUN
 Extract the entire Windows ZIP, then double-click Service.exe.
@@ -28,14 +28,14 @@ U          Mark a nearby property unable to serve.
 F          Flashlight while on foot.
 Space      Turn the ignition key.
 Shift      Sprint on foot / brake while driving.
+Q / E      Hold while sprinting to look behind over either shoulder.
 Tab        Docket while in the car.
 M          County map while in the car.
 Esc        Close the paper / pause.
 
 Stop before exiting the car. Options includes volume, sensitivity and display
 controls. Completed shifts save automatically; unfinished-shift progress is
-not saved on quit. Three evening shifts are implemented. The title's Vale
-preview provides a shortcut to its encounter.
+not saved on quit. Three evening shifts are implemented.
 
 V6 CHANGES
 New Conifers [BOTD] trees with authored wind and LOD support, uneven groves,
@@ -80,3 +80,14 @@ Bare hardwood silhouettes, restrained blue-grey/violet palette, pale distance mi
 darker gravel and more detailed ground normals. Based on the supplied forest references,
 especially image 3. Authored Flooded Grounds dead trees and BOTD bare conifers.
 Existing five-stop horror route and silent launcher retained.
+
+V9 STORM / PRESENTATION
+Rain across all shifts, occasional lightning with delayed recorded thunder.
+Animated Vale manor title view and a skippable, fading headphone recommendation.
+Hold Shift + Q/E to look over either shoulder while running; release to face forward.
+Release sprint before using E to interact. Look-back does not reverse movement.
+Wet mud / water footsteps outside; dry wood and softened rain under shelter.
+Contact rustles when walking through shrubs; three natural shrub/sapling forms and two grass types.
+Traversal and chase music by Kevin MacLeod; full attribution in ASSET-CREDITS.txt.
+Options include separate music level and a lightning-flash toggle.
+All automated tests run with master volume locked to zero. Listening verification deferred.

@@ -1,0 +1,170 @@
+[
+  {
+    "file": "rain\\rain_0.wav",
+    "source": "Essentials_Series_NOX_SOUND/Nature_Essentials_NOX_SOUND/Ambiance_Rain_Strong_Loop_Stereo.wav",
+    "author": "Nox Sound",
+    "license": "CC0"
+  },
+  {
+    "file": "wetmud\\wetmud_0.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Mud/Footsteps_Mud_Walk/Footsteps_Mud_Walk_01.wav",
+    "author": "Nox Sound",
+    "license": "CC0"
+  },
+  {
+    "file": "wetmud\\wetmud_1.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Mud/Footsteps_Mud_Walk/Footsteps_Mud_Walk_02.wav",
+    "author": "Nox Sound",
+    "license": "CC0"
+  },
+  {
+    "file": "wetmud\\wetmud_2.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Mud/Footsteps_Mud_Walk/Footsteps_Mud_Walk_03.wav",
+    "author": "Nox Sound",
+    "license": "CC0"
+  },
+  {
+    "file": "wetmud\\wetmud_3.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Mud/Footsteps_Mud_Walk/Footsteps_Mud_Walk_04.wav",
+    "author": "Nox Sound",
+    "license": "CC0"
+  },
+  {
+    "file": "wetmud\\wetmud_4.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Mud/Footsteps_Mud_Walk/Footsteps_Mud_Walk_05.wav",
+    "author": "Nox Sound",
+    "license": "CC0"
+  },
+  {
+    "file": "wetmud\\wetmud_5.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Mud/Footsteps_Mud_Walk/Footsteps_Mud_Walk_06.wav",
+    "author": "Nox Sound",
+    "license": "CC0"
+  },
+  {
+    "file": "wetmud\\wetmud_6.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Mud/Footsteps_Mud_Walk/Footsteps_Mud_Walk_07.wav",
+    "author": "Nox Sound",
+    "license": "CC0"
+  },
+  {
+    "file": "wetmud\\wetmud_7.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Mud/Footsteps_Mud_Walk/Footsteps_Mud_Walk_08.wav",
+    "author": "Nox Sound",
+    "license": "CC0"
+  },
+  {
+    "file": "wetmud\\wetmud_8.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Mud/Footsteps_Mud_Walk/Footsteps_Mud_Walk_09.wav",
+    "author": "Nox Sound",
+    "license": "CC0"
+  },
+  {
+    "file": "wetmud\\wetmud_9.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Mud/Footsteps_Mud_Walk/Footsteps_Mud_Walk_10.wav",
+    "author": "Nox Sound",
+    "license": "CC0"
+  },
+  {
+    "file": "wetstone\\wetstone_0.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Water/Footsteps_Water_Walk/Footsteps_WaterV1_Walk_01.wav",
+    "author": "Nox Sound",
+    "license": "CC0"
+  },
+  {
+    "file": "wetstone\\wetstone_1.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Water/Footsteps_Water_Walk/Footsteps_WaterV1_Walk_02.wav",
+    "author": "Nox Sound",
+    "license": "CC0"
+  },
+  {
+    "file": "wetstone\\wetstone_2.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Water/Footsteps_Water_Walk/Footsteps_WaterV1_Walk_03.wav",
+    "author": "Nox Sound",
+    "license": "CC0"
+  },
+  {
+    "file": "wetstone\\wetstone_3.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Water/Footsteps_Water_Walk/Footsteps_WaterV1_Walk_04.wav",
+    "author": "Nox Sound",
+    "license": "CC0"
+  },
+  {
+    "file": "wetstone\\wetstone_4.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Water/Footsteps_Water_Walk/Footsteps_WaterV1_Walk_05.wav",
+    "author": "Nox Sound",
+    "license": "CC0"
+  },
+  {
+    "file": "wetstone\\wetstone_5.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Water/Footsteps_Water_Walk/Footsteps_WaterV1_Walk_06.wav",
+    "author": "Nox Sound",
+    "license": "CC0"
+  },
+  {
+    "file": "wetstone\\wetstone_6.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Water/Footsteps_Water_Walk/Footsteps_WaterV1_Walk_07.wav",
+    "author": "Nox Sound",
+    "license": "CC0"
+  },
+  {
+    "file": "wetstone\\wetstone_7.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Water/Footsteps_Water_Walk/Footsteps_WaterV1_Walk_08.wav",
+    "author": "Nox Sound",
+    "license": "CC0"
+  },
+  {
+    "file": "wetstone\\wetstone_8.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Water/Footsteps_Water_Walk/Footsteps_WaterV1_Walk_09.wav",
+    "author": "Nox Sound",
+    "license": "CC0"
+  },
+  {
+    "file": "wetstone\\wetstone_9.wav",
+    "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Water/Footsteps_Water_Walk/Footsteps_WaterV1_Walk_10.wav",
+    "author": "Nox Sound",
+    "license": "CC0"
+  },
+  {
+    "file": "traversal\\This House.mp3",
+    "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/This%20House.mp3",
+    "author": "Kevin MacLeod (incompetech.com)",
+    "license": "CC BY 4.0 https://creativecommons.org/licenses/by/4.0/",
+    "changes": "none"
+  },
+  {
+    "file": "chase\\The Descent.mp3",
+    "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/The%20Descent.mp3",
+    "author": "Kevin MacLeod (incompetech.com)",
+    "license": "CC BY 4.0 https://creativecommons.org/licenses/by/4.0/",
+    "changes": "none"
+  },
+  {
+    "file": "thunder/thunder_0.wav",
+    "source": "https://freesound.org/people/Rvgerxini/sounds/620529/",
+    "author": "Rvgerxini",
+    "license": "CC0",
+    "changes": "7-second excerpt at 0s, mono fold-down, short fades, peak-limited"
+  },
+  {
+    "file": "thunder/thunder_1.wav",
+    "source": "https://freesound.org/people/Rvgerxini/sounds/620529/",
+    "author": "Rvgerxini",
+    "license": "CC0",
+    "changes": "7-second excerpt at 24s, mono fold-down, short fades, peak-limited"
+  },
+  {
+    "file": "thunder/thunder_2.wav",
+    "source": "https://freesound.org/people/Rvgerxini/sounds/620529/",
+    "author": "Rvgerxini",
+    "license": "CC0",
+    "changes": "7-second excerpt at 38s, mono fold-down, short fades, peak-limited"
+  },
+  {
+    "file": "thunder/thunder_3.wav",
+    "source": "https://freesound.org/people/Rvgerxini/sounds/620529/",
+    "author": "Rvgerxini",
+    "license": "CC0",
+    "changes": "7-second excerpt at 52s, mono fold-down, short fades, peak-limited"
+  }
+]

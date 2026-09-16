@@ -64,17 +64,22 @@ namespace ServiceGameV2
 
         void Title()
         {
-            Dim(.44f);
-            Rect(new Rect(0, 0, 525, 720), new Color(.025f, .035f, .039f, .76f));
+            if(d.Presentation&&d.Presentation.IntroVisible){
+                Rect(new Rect(0,0,1280,720),new Color(0,0,0,d.Presentation.IntroBackgroundAlpha));var before=GUI.color;GUI.color=new Color(1,1,1,d.Presentation.IntroTextAlpha);
+                GUI.Label(new Rect(250,287,780,65),"HEADPHONES RECOMMENDED",alarm);
+                GUI.Label(new Rect(280,361,720,40),"For the full audio experience.",prompt);
+                GUI.Label(new Rect(280,607,720,35),"Press any key to continue",prompt);GUI.color=before;return;
+            }
+            Dim(.1f);
+            Rect(new Rect(0, 0, 485, 720), new Color(.025f, .029f, .039f, .66f));
             GUI.Label(new Rect(82, 126, 400, 40), "HOLLIS COUNTY / CIVIL PROCESS", small);
             GUI.Label(new Rect(77, 174, 420, 90), "SERVICE", title);
             GUI.Label(new Rect(82, 278, 340, 52), "Evening assignments\nOctober 01 — October 09", menu);
             if (options) { Options(82, 355); return; }
             if (Button(new Rect(82, 365, 315, 47), d.HasSavedRoute?"Continue route":"Begin shift")) {if(d.HasSavedRoute)d.ContinueRoute();else d.NewRoute();}
-            if (Button(new Rect(82, 426, 315, 47), "Preview Vale House encounter")) {d.BeginShift(0);d.PaperOpen=false;var p=d.Property(1);d.Player.TeleportCar(p.Gate.position+p.Door.forward*3,Quaternion.LookRotation(-p.Door.forward));d.SetCursor();}
-            if (Button(new Rect(82, 487, 315, 47), "Options / controls")) options = true;
-            if (Button(new Rect(82, 548, 315, 47), "Quit")) Application.Quit();
-            if(d.HasSavedRoute && Button(new Rect(82, 605, 315, 37),"Start a new route"))d.NewRoute();
+            if (Button(new Rect(82, 426, 315, 47), "Options / controls")) options = true;
+            if (Button(new Rect(82, 487, 315, 47), "Quit")) Application.Quit();
+            if(d.HasSavedRoute && Button(new Rect(82, 548, 315, 37),"Start a new route"))d.NewRoute();
             GUI.Label(new Rect(82, 661, 400, 34), "Drive the route. Record each attempt. Return.", small);
         }
         void Pause()
@@ -93,11 +98,13 @@ namespace ServiceGameV2
             d.Audio.Volume = GUI.HorizontalSlider(new Rect(x, y + 39, 315, 20), d.Audio.Volume, 0, 1);
             GUI.Label(new Rect(x, y + 70, 320, 27), "Mouse sensitivity", menu);
             d.Player.Sensitivity = GUI.HorizontalSlider(new Rect(x, y + 109, 315, 20), d.Player.Sensitivity, .03f, .2f);
-            string[] keys={"WASD","Mouse","E","R","U","F","Space","Shift","Tab","M","Esc"};
-            string[] actions={"Walk / drive","Look around","Interact / enter vehicle","Leave a copy","Record unsuccessful visit","Flashlight","Start engine","Sprint / brake","Docket","County map","Pause / close document"};
+            string[] keys={"WASD","Mouse","E","Q / E","R","U","F","Space","Shift","Tab","M","Esc"};
+            string[] actions={"Walk / drive","Look around","Interact (release sprint first)","Hold while sprinting: look behind","Leave a copy","Record unsuccessful visit","Flashlight","Start engine","Sprint / brake","Docket","County map","Pause / close document"};
             for(int i=0;i<keys.Length;i++){GUI.Label(new Rect(625,190+i*28,100,28),keys[i],menu);GUI.Label(new Rect(740,190+i*28,440,28),actions[i],menu);}
-            if (Button(new Rect(x, y + 150, 315, 44), Screen.fullScreen ? "Use windowed display" : "Use full screen")) Screen.fullScreen = !Screen.fullScreen;
-            if (Button(new Rect(x, y + 210, 315, 44), "Back")){d.SaveOptions();options = false;}
+            GUI.Label(new Rect(x,y+140,320,27),"Music",menu);d.Audio.MusicVolume=GUI.HorizontalSlider(new Rect(x,y+174,315,20),d.Audio.MusicVolume,0,1);
+            if(d.Storm)d.Storm.FlashesEnabled=GUI.Toggle(new Rect(x,y+200,315,28),d.Storm.FlashesEnabled," Lightning flashes");
+            if (Button(new Rect(x, y + 236, 315, 38), Screen.fullScreen ? "Use windowed display" : "Use full screen")) Screen.fullScreen = !Screen.fullScreen;
+            if (Button(new Rect(x, y + 284, 315, 38), "Back")){d.SaveOptions();options = false;}
         }
 
         void PaperBase(string name, string right)
