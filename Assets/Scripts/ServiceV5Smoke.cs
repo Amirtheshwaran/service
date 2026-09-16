@@ -21,6 +21,7 @@ namespace ServiceGameV2 {
   }
   IEnumerator Check(){
    Require(AudioListener.volume==0,"Tests must start muted");
+   Require(RenderSettings.fogDensity>=.025f&&RenderSettings.fogColor.b>.4f,"Reference fog applied at runtime");
    var thickets=d.Scene.transform.Find("Forest understory thickets");Require(thickets&&thickets.childCount>500,"Dense forest patches installed");
    Require(Resources.LoadAll<AudioClip>("Audio/V5/brush").Length>=6&&Resources.Load<AudioClip>("Audio/V5/insects/insects_0"),"Recorded forest variations installed");
    yield return new WaitForSeconds(1);yield return Shot("00-title");d.BeginShift(0);Require(d.Docket.Count==5,"First shift needs five stops");Require(d.Docket.Select(e=>d.Property(e.Property).Template).Distinct().Count()==5,"Repeated building template");yield return Shot("01-docket");d.MapOpen=true;yield return Shot("02-map");d.PaperOpen=false;
@@ -29,6 +30,7 @@ namespace ServiceGameV2 {
    foreach(int index in new[]{0,3,1,4,5}){
     Require(AudioListener.volume==0,"Tests must remain muted");
     var p=d.Property(index);d.Player.TeleportCar(p.Gate.position-p.Gate.forward*3,Quaternion.LookRotation(p.Gate.forward));d.Player.SmokePlaceWalker(p.Gate.position);d.Player.SmokeFace(p.Door.position);yield return Shot("property-"+index+"-approach");
+    if(index==0){yield return Navigate(p.ApproachRoute[p.ApproachRoute.Length/2],false);d.Player.SmokeFace(p.Door.position+Vector3.up);yield return Shot("forest-reference");}
     yield return Navigate(p.TableApproach.position,false);Require(d.NearbyDoor()==index,"Delivery unavailable at property "+index);Require(d.Audio.SurfaceAt(d.Scene.Walker.transform.position)=="wood","Interior wood surface "+index);d.Player.SmokeFace(p.DeliveryPoint.position);yield return Shot("property-"+index+"-interior");d.Attempt(index,ServiceResult.LeftAtDoor);Require(d.Horror.Active&&d.Horror.PropertyIndex==index,"Encounter did not start "+index);
     d.Pause();float elapsed=d.Horror.Elapsed;yield return new WaitForSecondsRealtime(.15f);Require(AudioListener.pause&&Mathf.Abs(elapsed-d.Horror.Elapsed)<.01f,"Pause freezes audio and encounter");d.Resume();
     if(index==3){

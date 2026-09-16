@@ -1,5 +1,5 @@
 SERVICE — HOLLIS COUNTY
-Unity 6.6 Windows development build — v7
+Unity 6.6 Windows development build — v8
 
 RUN
 Extract the entire Windows ZIP, then double-click Service.exe.
@@ -74,3 +74,9 @@ V7 FOREST PASS
 Dense mixed bush, sapling and grass patches with distance culling.
 Recorded woodland insects and varied off-path leaf movement.
 Automated tests force master volume to zero; use -silent for silent play.
+
+V8 REFERENCE ART DIRECTION
+Bare hardwood silhouettes, restrained blue-grey/violet palette, pale distance mist,
+darker gravel and more detailed ground normals. Based on the supplied forest references,
+especially image 3. Authored Flooded Grounds dead trees and BOTD bare conifers.
+Existing five-stop horror route and silent launcher retained.
