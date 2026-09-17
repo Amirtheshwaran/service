@@ -1,0 +1,25 @@
+{
+  "asset": "brown_mud_03",
+  "source": "https://polyhaven.com/a/brown_mud_03",
+  "license": "CC0",
+  "files": [
+    {
+      "size": 2133326,
+      "md5": "c3eabb7f0e13ef63091d632c03228163",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/brown_mud_03/brown_mud_03_diff_2k.jpg",
+      "local": "Diffuse.jpg"
+    },
+    {
+      "size": 3728131,
+      "md5": "dc36255da382749c33eba9288b1cab34",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/brown_mud_03/brown_mud_03_nor_gl_2k.jpg",
+      "local": "nor_gl.jpg"
+    },
+    {
+      "size": 6465940,
+      "md5": "b57f48605002ab3b48c2562fb172b24e",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/brown_mud_03/brown_mud_03_arm_2k.png",
+      "local": "arm.png"
+    }
+  ]
+}

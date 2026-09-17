@@ -91,3 +91,16 @@ Loud Thunder sounds — Rvgerxini, CC0. https://freesound.org/people/Rvgerxini/s
 Rain, mud and water footsteps — Nox Sound Essentials, CC0. Recordings unchanged.
 Additional native shrub and grass meshes and rain particle texture: Flooded Grounds / Sandro T, Unity Asset Store EULA.
 Per-file V9 attribution: Assets/Resources/Audio/V9/sources.json
+
+V10 SCANNED WOODLAND
+Poly Haven — CC0: https://polyhaven.com/license
+https://polyhaven.com/a/fern_02
+https://polyhaven.com/a/dead_tree_trunk_02
+https://polyhaven.com/a/tree_stump_01
+https://polyhaven.com/a/dry_branches_medium_01
+https://polyhaven.com/a/rock_moss_set_01
+https://polyhaven.com/a/leaves_forest_ground
+https://polyhaven.com/a/forest_floor
+https://polyhaven.com/a/brown_mud_03
+https://polyhaven.com/a/bark_brown_02
+Source maps and models supplied by Poly Haven artists. Texture channels packed for Unity URP; fern alpha combined with diffuse; authored model variants/LODs selected for runtime. Per-file source URLs and checksums in Assets/ServiceArt/ScannedWoodland/*/source.json.

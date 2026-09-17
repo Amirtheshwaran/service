@@ -1,0 +1,25 @@
+{
+  "asset": "bark_brown_02",
+  "source": "https://polyhaven.com/a/bark_brown_02",
+  "license": "CC0",
+  "files": [
+    {
+      "size": 2356592,
+      "md5": "11a2a6039bb5b93f12dcf1689838545b",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/bark_brown_02/bark_brown_02_diff_2k.jpg",
+      "local": "Diffuse.jpg"
+    },
+    {
+      "size": 3707907,
+      "md5": "39db6c4574fb58de1ad164442e9d6287",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/bark_brown_02/bark_brown_02_nor_gl_2k.jpg",
+      "local": "nor_gl.jpg"
+    },
+    {
+      "size": 6086265,
+      "md5": "b56615d5f886b6fcc8fefc44d7994e45",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/bark_brown_02/bark_brown_02_arm_2k.png",
+      "local": "arm.png"
+    }
+  ]
+}

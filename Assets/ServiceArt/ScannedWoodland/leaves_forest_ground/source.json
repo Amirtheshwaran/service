@@ -1,0 +1,25 @@
+{
+  "asset": "leaves_forest_ground",
+  "source": "https://polyhaven.com/a/leaves_forest_ground",
+  "license": "CC0",
+  "files": [
+    {
+      "size": 4253470,
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/leaves_forest_ground/leaves_forest_ground_diff_2k.jpg",
+      "md5": "9adf3721c2a5ce011e1184762e8c1a8d",
+      "local": "Diffuse.jpg"
+    },
+    {
+      "size": 5273836,
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/leaves_forest_ground/leaves_forest_ground_nor_gl_2k.jpg",
+      "md5": "da3f3f6762cc0e95bd1e5919d2c38d68",
+      "local": "nor_gl.jpg"
+    },
+    {
+      "size": 17457826,
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/leaves_forest_ground/leaves_forest_ground_arm_2k.png",
+      "md5": "4a46de82b40c71ae92487c1754b473b9",
+      "local": "arm.png"
+    }
+  ]
+}

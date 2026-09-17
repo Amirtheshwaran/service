@@ -1,0 +1,59 @@
+{
+  "asset": "fern_02",
+  "source": "https://polyhaven.com/a/fern_02",
+  "license": "CC0",
+  "files": [
+    {
+      "size": 993703,
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/fern_02/fern_02_diff_2k.jpg",
+      "md5": "ba8bbb9dc9ff55bdc081565cd926d776",
+      "local": "Diffuse.jpg"
+    },
+    {
+      "size": 1365615,
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/fern_02/fern_02_nor_gl_2k.jpg",
+      "md5": "00936dff4661dc9fe1f2fbe6c000615a",
+      "local": "nor_gl.jpg"
+    },
+    {
+      "size": 1419505,
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/fern_02/fern_02_arm_2k.png",
+      "md5": "d92b7bd12a6b03218135f1c8ae0762f4",
+      "local": "arm.png"
+    },
+    {
+      "size": 230089,
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/fern_02/fern_02_alpha_2k.png",
+      "md5": "ff18f7e8e869c58eac8f9c7d7c519f4a",
+      "local": "Alpha.png"
+    },
+    {
+      "include": {
+        "textures/fern_02_diff_2k.jpg": {
+          "size": 993703,
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/fern_02/fern_02_diff_2k.jpg",
+          "md5": "ba8bbb9dc9ff55bdc081565cd926d776"
+        },
+        "textures/fern_02_nor_gl_2k.exr": {
+          "size": 2895843,
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/fern_02/fern_02_nor_gl_2k.exr",
+          "md5": "4e1fa9220f53965604b406ba28e223b3"
+        },
+        "textures/fern_02_rough_2k.exr": {
+          "size": 901394,
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/fern_02/fern_02_rough_2k.exr",
+          "md5": "beb315edeb84760a46dcc3d223b609fd"
+        },
+        "textures/fern_02_alpha_2k.png": {
+          "size": 230089,
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/fern_02/fern_02_alpha_2k.png",
+          "md5": "ff18f7e8e869c58eac8f9c7d7c519f4a"
+        }
+      },
+      "size": 223596,
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/fbx/2k/fern_02/fern_02_2k.fbx",
+      "md5": "b0faf5c26baf61032ac5abea4f4ce568",
+      "local": "fern_02.fbx"
+    }
+  ]
+}

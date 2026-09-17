@@ -1,0 +1,25 @@
+{
+  "asset": "forest_floor",
+  "source": "https://polyhaven.com/a/forest_floor",
+  "license": "CC0",
+  "files": [
+    {
+      "size": 5452936,
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/forest_floor/forest_floor_diff_2k.jpg",
+      "md5": "a93f845fca105e6cabc82853161ff7b6",
+      "local": "Diffuse.jpg"
+    },
+    {
+      "size": 5367757,
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/forest_floor/forest_floor_nor_gl_2k.jpg",
+      "md5": "41e49ec58f74a749e325f59290266e9d",
+      "local": "nor_gl.jpg"
+    },
+    {
+      "size": 18144510,
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/forest_floor/forest_floor_arm_2k.png",
+      "md5": "49c6f76ded9b52566ed220dfc76a284c",
+      "local": "arm.png"
+    }
+  ]
+}

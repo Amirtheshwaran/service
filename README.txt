@@ -1,5 +1,5 @@
 SERVICE — HOLLIS COUNTY
-Unity 6.6 Windows development build — v9
+Unity 6.6 Windows development build — v10
 
 RUN
 Extract the entire Windows ZIP, then double-click Service.exe.
@@ -91,3 +91,13 @@ Contact rustles when walking through shrubs; three natural shrub/sapling forms a
 Traversal and chase music by Kevin MacLeod; full attribution in ASSET-CREDITS.txt.
 Options include separate music level and a lightning-flash toggle.
 All automated tests run with master volume locked to zero. Listening verification deferred.
+
+V10 SCANNED WOODLAND
+Nine new CC0 Poly Haven assets: leaf litter, forest floor, wet mud, bark,
+ferns, fallen timber, stumps, dry branches and mossy rocks. Three blended
+terrain layers with softly blended wet trails; authored variants placed around
+approaches, with distance culling. Improved contact shadows and shadow
+resolution. Existing five encounters and all v9 features retained.
+
+Canopy revised to 70% bare BOTD trees, 10% medium conifers and 20% slender
+dead hardwoods, retaining the pale forest reference and physical routes.

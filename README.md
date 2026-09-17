@@ -6,7 +6,7 @@ First-person horror game with free-roam driving/walking and no combat, built in 
 
 You play as a civil process server working night shifts in rural Hollis County. Your job is to drive out and deliver court documents to people who usually don't want to receive them. Every shift gives you a docket of addresses to locate and serve using your car, a flashlight, and your judgment. If a place feels wrong, you can't fight back; you just leave.
 
-The horror is focused on slow burn and atmosphere rather than cheap jump scares. In this build (v9), the first shift covers five locations across the county:
+The horror is focused on slow burn and atmosphere rather than cheap jump scares. In this build (v10), the first shift covers five locations across the county:
 - Correll residence (cabin delivery)
 - Harrow Lodge (interior delivery; when you hear breathing, turn away and stand completely still for 8 seconds)
 - Vale House (upstairs study delivery with an escape back to the car)
@@ -44,14 +44,14 @@ Built with Unity 6 (6000.6.0f1) using URP.
 
 - Assets/Scenes/HollisCounty.unity: Main scene with the road network and county properties.
 - Assets/Scripts/: Gameplay scripts (player, car controller, surface footsteps, storm effects, audio, and encounter logic).
-- Assets/ServiceArt/: Shaders, materials, meshes, and scene assets.
+- Assets/ServiceArt/: Shaders, materials, meshes, scanned woodland assets, and scene assets.
 - Assets/Editor/: Build tools and scene layout utilities.
 
 ## Asset Credits
 
-- Environment: Flooded Grounds by Sandro T, Conifers [BOTD], and Rocks and Boulders 2 (Unity Asset Store).
+- Environment: Flooded Grounds by Sandro T, Conifers [BOTD], Rocks and Boulders 2 (Unity Asset Store), and Poly Haven CC0 scanned nature assets (ground textures, timber, stumps, ferns).
 - Monster models: Creep Horror Creature by AC Game Assets, and Demon Horror Creature with Weapon.
 - Music: "This House" and "The Descent" by Kevin MacLeod (incompetech.com), licensed under CC BY 4.0.
 - Audio: Human field recordings and sound effects from Freesound and Nox Sound Essentials (CC0 / CC BY 4.0).
 - Fonts: Courier Prime and Barlow (SIL Open Font License).
-- Full links and source details are in ASSET-CREDITS.txt, Assets/Resources/Audio/V5/sources.json, and Assets/Resources/Audio/V9/sources.json.
+- Full links and source details are in ASSET-CREDITS.txt, Assets/Resources/Audio/V5/sources.json, Assets/Resources/Audio/V9/sources.json, and Assets/ServiceArt/ScannedWoodland/*/source.json.
