@@ -82,7 +82,7 @@ namespace ServiceGameV2
             AudioListener.pause=d.Phase==ServicePhase.Paused;
             if(AudioListener.pause)return;
             if(tension!=null){tension.volume=Mathf.MoveTowards(tension.volume,pursuing?.38f*MusicVolume:0,Time.unscaledDeltaTime*.3f);if(!pursuing&&tension.volume<=0&&tension.isPlaying)tension.Stop();}
-            if(music)music.volume=Mathf.MoveTowards(music.volume,pursuing?0:(d.Phase==ServicePhase.Title?.16f:.085f)*MusicVolume,Time.unscaledDeltaTime*.065f);
+            if(music)music.volume=Mathf.MoveTowards(music.volume,pursuing||(d.Vehicle&&d.Vehicle.RadioOn&&d.Player.InCar)?0:(d.Phase==ServicePhase.Title?.16f:.085f)*MusicVolume,Time.unscaledDeltaTime*.065f);
             bool sheltered=d.Storm&&d.Storm.Sheltered;
             if(rain){rain.volume=Mathf.MoveTowards(rain.volume,sheltered?.045f:.17f,Time.unscaledDeltaTime*.2f);rainFilter.cutoffFrequency=Mathf.MoveTowards(rainFilter.cutoffFrequency,sheltered?1600:18000,Time.unscaledDeltaTime*16000);}
             bool inside = d.Player == null || d.Player.InCar;

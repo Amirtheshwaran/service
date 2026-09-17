@@ -21,7 +21,7 @@ namespace ServiceGameV2 {
   public void ResetEncounter(){Phase=PursuitPhase.Dormant;Elapsed=LookAwaySeconds=0;System.Array.Clear(approach,0,6);System.Array.Clear(cue,0,6);if(Agent&&Agent.isOnNavMesh)Agent.ResetPath();d.Scene.Entity.SetActive(false);d.Audio.Pursuit(false);foreach(var h in d.Scene.Properties){if(h.WindowLight)h.WindowLight.enabled=true;if(h.EncounterLights!=null)foreach(var l in h.EncounterLights)if(l)l.enabled=true;}}
   public void Begin(){Begin(1);}
   public void Begin(int index){
-   if(Active||Caught)return;p=d.Property(index);if(!p.HasEncounter)return;
+   if(Active||Caught||d.IsFriendly(index))return;p=d.Property(index);if(!p.HasEncounter)return;
    d.Scene.Entity.transform.SetPositionAndRotation(p.EntitySpawn.position,p.EntitySpawn.rotation);
    if(d.Scene.EntityVariants!=null)for(int i=0;i<d.Scene.EntityVariants.Length;i++)d.Scene.EntityVariants[i].SetActive(i==p.CreatureVariant);
    d.Scene.Entity.SetActive(true);
@@ -32,7 +32,7 @@ namespace ServiceGameV2 {
   }
   void Update(){
    if(d==null||d.Phase!=ServicePhase.Playing)return;
-   if(!Active&&!Caught){if(d.Player.InCar)return;foreach(var h in d.Scene.Properties)if(h.HasEncounter&&d.ResultAt(h.Index)==ServiceResult.Pending&&Vector3.Distance(d.Scene.Walker.transform.position,h.Door.position)<18){approach[h.Index]+=Time.deltaTime;if(approach[h.Index]>3&&cue[h.Index]==0){cue[h.Index]++;d.Audio.HorrorAt(h.Index%2==0?"rattle":"breath",h.SoundPoint.position,.16f);}if(approach[h.Index]>11&&cue[h.Index]==1){cue[h.Index]++;d.Audio.HorrorAt("taps",h.SoundPoint.position,.19f);}}return;}
+   if(!Active&&!Caught){if(d.Player.InCar)return;foreach(var h in d.Scene.Properties)if(h.HasEncounter&&!d.IsFriendly(h.Index)&&d.ResultAt(h.Index)==ServiceResult.Pending&&Vector3.Distance(d.Scene.Walker.transform.position,h.Door.position)<18){approach[h.Index]+=Time.deltaTime;if(approach[h.Index]>3&&cue[h.Index]==0){cue[h.Index]++;d.Audio.HorrorAt(h.Index%2==0?"rattle":"breath",h.SoundPoint.position,.16f);}if(approach[h.Index]>11&&cue[h.Index]==1){cue[h.Index]++;d.Audio.HorrorAt("taps",h.SoundPoint.position,.19f);}}return;}
    Elapsed+=Time.deltaTime;
    if(Caught){if(Elapsed>3.8f){Captures++;int index=p.Index;ResetEncounter();d.RetryProperty(index);d.Player.RestoreApproach(p.Gate.position,p.Gate.eulerAngles.y);d.Say("The notice is still in your hand.");}return;}
    if(p.Encounter==EncounterKind.LookAway){
@@ -46,8 +46,12 @@ namespace ServiceGameV2 {
    }
    if(d.Player.InCar){Complete();d.Audio.DoorAt(d.Scene.Car.position);d.Say("Keep the doors locked.");return;}
    if(Phase==PursuitPhase.Reveal){var to=d.Scene.Walker.transform.position-Agent.transform.position;to.y=0;if(to.sqrMagnitude>.1f)Agent.transform.rotation=Quaternion.RotateTowards(Agent.transform.rotation,Quaternion.LookRotation(to),80*Time.deltaTime);if(Elapsed<3.1f)return;Phase=PursuitPhase.Chase;Elapsed=0;Agent.isStopped=false;}
-   Agent.speed=Mathf.Lerp(3.1f,5.05f,Mathf.Clamp01(Elapsed/30));repath-=Time.deltaTime;if(repath<=0){repath=.24f;if(NavMesh.SamplePosition(d.Scene.Walker.transform.position,out var goal,2,NavMesh.AllAreas))Agent.SetDestination(goal.position);}
-   steps-=Time.deltaTime;if(steps<=0&&Agent.velocity.sqrMagnitude>.2f){steps=.46f;d.Audio.HorrorAt("monsterstep",Agent.transform.position,.23f);}growl-=Time.deltaTime;if(growl<=0){growl=7.5f;d.Audio.HorrorAt(p.Index%2==0?"growl":"breath",Agent.transform.position,.36f);}
+   float distance=Vector3.Distance(Agent.transform.position,d.Scene.Walker.transform.position);
+   float surge=Mathf.SmoothStep(0,1,Mathf.InverseLerp(.4f,.85f,Mathf.Sin(Elapsed*1.1f+p.Index)));
+   float targetSpeed=Mathf.Lerp(3.3f,4.75f,Mathf.Clamp01(Elapsed/24))+surge*.6f;
+   Agent.acceleration=9;Agent.angularSpeed=240;Agent.speed=Mathf.MoveTowards(Agent.speed,targetSpeed,Time.deltaTime*2.5f);
+   repath-=Time.deltaTime;if(repath<=0){repath=.16f;var target=d.Scene.Walker.transform.position;if(distance>6)target+=Vector3.ClampMagnitude(d.Scene.Walker.velocity,3)*.3f;if(NavMesh.SamplePosition(target,out var goal,2,NavMesh.AllAreas))Agent.SetDestination(goal.position);}
+   steps-=Time.deltaTime;if(steps<=0&&Agent.velocity.sqrMagnitude>.2f){steps=Mathf.Lerp(.53f,.29f,Mathf.InverseLerp(2,5.5f,Agent.velocity.magnitude));d.Audio.HorrorAt("monsterstep",Agent.transform.position,.23f);}growl-=Time.deltaTime;if(growl<=0){growl=distance<7?3.7f:7.5f;d.Audio.HorrorAt(p.Index%2==0?"growl":"breath",Agent.transform.position,distance<7?.42f:.29f);}
    var delta=d.Scene.Walker.transform.position-Agent.transform.position;bool blocked=Physics.Linecast(Agent.transform.position+Vector3.up,d.Scene.View.transform.position,out var obstruction,~((1<<8)|(1<<9)),QueryTriggerInteraction.Ignore)&&obstruction.collider!=d.Scene.Walker;if(delta.magnitude<1.1f&&!blocked)Catch();
   }
   void Complete(){Phase=PursuitPhase.Escaped;Agent.isStopped=true;d.Audio.Pursuit(false);d.Audio.SilenceThreat();d.Scene.Entity.SetActive(false);}

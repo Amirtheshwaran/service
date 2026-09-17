@@ -15,12 +15,18 @@ namespace ServiceGameV2
         public Vector2 SmokeWalk;
         public bool SmokeSprint;
         public int SmokeLookBack;
+        public bool SmokeCrouch, SmokeJump;
+        public bool Crouched { get; private set; }
+        public float CameraMotion=.65f, MotionBlurAmount=.16f;
+        public float VerticalSpeed=>gravity;
+        float gait, motionBlend, landing, lastVertical, groundedUntil, jumpUntil;
+        UnityEngine.Rendering.Universal.MotionBlur blur;
         public float LookBackAngle=>lookBack;
         float lookBack;
         public static float ResolveLookBack(bool running,bool car,bool blocked,bool left,bool right)=>!running||car||blocked||left==right?0:left?-155:155;
         float LookBackTarget=>ResolveLookBack(Sprinting,InCar,d.InputBlocked,d.IsSmoke?SmokeLookBack<0:Keyboard.current!=null&&Keyboard.current[Key.Q].isPressed,d.IsSmoke?SmokeLookBack>0:Keyboard.current!=null&&Keyboard.current[Key.E].isPressed);
         public bool InteractionSuppressed=>LookBackTarget!=0||Mathf.Abs(lookBack)>1;
-        public bool Sprinting => !InCar && (d.IsSmoke ? SmokeSprint : Keyboard.current != null && Keyboard.current[Key.LeftShift].isPressed);
+        public bool Sprinting => !InCar && !Crouched && (d.IsSmoke ? SmokeSprint : Keyboard.current != null && Keyboard.current[Key.LeftShift].isPressed);
         ServiceDirector d;
         CountyScene s;
         float yaw, pitch, speed, gravity, footstep, startAt;
@@ -31,6 +37,9 @@ namespace ServiceGameV2
             d = director; s = d.Scene;
             if(!d.IsSmoke)Sensitivity=Mathf.Clamp(PlayerPrefs.GetFloat("SERVICE.sensitivity",.095f),.03f,.2f);
             fullMask = s.View.cullingMask | (1 << 8);
+            if(!d.IsSmoke){CameraMotion=PlayerPrefs.GetFloat("SERVICE.motion",.65f);MotionBlurAmount=PlayerPrefs.GetFloat("SERVICE.blur",.16f);}
+            var volume=GetComponentInChildren<UnityEngine.Rendering.Volume>();
+            if(volume){var profile=volume.profile;if(!profile.TryGet(out blur))blur=profile.Add<UnityEngine.Rendering.Universal.MotionBlur>(true);blur.mode.Override(UnityEngine.Rendering.Universal.MotionBlurMode.CameraOnly);blur.intensity.Override(MotionBlurAmount);blur.clamp.Override(.035f);}
             s.View.nearClipPlane = .035f;
             s.View.fieldOfView = 68;
         }
@@ -88,15 +97,35 @@ namespace ServiceGameV2
         void Walk(Vector2 input)
         {
             input = Vector2.ClampMagnitude(input, 1);
-            Vector3 move = (s.Walker.transform.right * input.x + s.Walker.transform.forward * input.y) * (Sprinting ? 5.7f : 3.25f);
-            gravity = s.Walker.isGrounded ? -2 : Mathf.Max(-25, gravity - 20 * Time.deltaTime);
-            s.Walker.Move((move + Vector3.up * gravity) * Time.deltaTime);
+            bool crouch=d.IsSmoke?SmokeCrouch:Keyboard.current!=null&&Keyboard.current[Key.LeftCtrl].isPressed;
+            if(crouch)Crouched=true;
+            else if(Crouched&&CanStand())Crouched=false;
+            s.Walker.height=Crouched?1.12f:1.8f;s.Walker.center=new Vector3(0,s.Walker.height*.5f,0);
+            Vector3 move = (s.Walker.transform.right * input.x + s.Walker.transform.forward * input.y) * (Crouched?1.55f:Sprinting ? 5.7f : 3.25f);
+            if(s.Walker.isGrounded){groundedUntil=Time.time+.1f;if(gravity<0){if(lastVertical< -4)landing=Mathf.Min(.1f,-lastVertical*.008f);gravity=-2;}}
+            if(d.IsSmoke?SmokeJump:Pressed(Key.Space)){jumpUntil=Time.time+.12f;SmokeJump=false;}
+            if(jumpUntil>Time.time&&groundedUntil>Time.time&&!Crouched){gravity=5.8f;jumpUntil=groundedUntil=0;}
+            else gravity=Mathf.Max(-25,gravity-20*Time.deltaTime);
+            lastVertical=gravity;var flags=s.Walker.Move((move+Vector3.up*gravity)*Time.deltaTime);if((flags&CollisionFlags.Above)!=0&&gravity>0)gravity=0;
+            motionBlend=Mathf.MoveTowards(motionBlend,input.magnitude*(s.Walker.isGrounded?1:0),Time.deltaTime*6);gait+=Time.deltaTime*(Sprinting?12:Crouched?6:8);
             footstep -= Time.deltaTime;
             if (input.sqrMagnitude > .1f && s.Walker.isGrounded && footstep <= 0)
             {
                 d.Audio.Footstep(s.Walker.transform.position);
-                footstep = Sprinting ? .32f : .53f;
+                footstep = Crouched?.8f:Sprinting ? .32f : .53f;
             }
+        }
+        bool CanStand(){foreach(var hit in Physics.OverlapCapsule(s.Walker.transform.position+Vector3.up*.35f,s.Walker.transform.position+Vector3.up*1.52f,.27f,~((1<<8)|(1<<9)),QueryTriggerInteraction.Ignore))if(hit!=s.Walker&&!hit.transform.IsChildOf(s.Walker.transform))return false;return true;}
+        void LateUpdate(){
+            if(!s)return;bool active=d.Phase==ServicePhase.Playing&&!d.PaperOpen;
+            if(blur)blur.intensity.value=active?MotionBlurAmount:0;
+            if(!active)return;
+            s.View.fieldOfView=Mathf.Lerp(s.View.fieldOfView,!InCar&&Sprinting?74:68,1-Mathf.Exp(-Time.deltaTime*6));
+            if(InCar)return;
+            float amount=motionBlend*CameraMotion, bob=Mathf.Sin(gait*2)*(Sprinting?.025f:.014f)*amount;
+            var target=new Vector3(Mathf.Sin(gait)*.018f*amount,(Crouched?1.02f:1.65f)+bob-landing*CameraMotion,0);
+            s.View.transform.localPosition=Vector3.Lerp(s.View.transform.localPosition,target,1-Mathf.Exp(-Time.deltaTime*14));
+            s.View.transform.localRotation=Quaternion.Euler(pitch+Mathf.Sin(gait)*amount*.45f,lookBack,Mathf.Cos(gait)*amount*(Sprinting?1.15f:.45f));landing=Mathf.MoveTowards(landing,0,Time.deltaTime*.45f);
         }
 
         public void StartEngine()
@@ -111,6 +140,7 @@ namespace ServiceGameV2
 
         public void EnterCar()
         {
+            Crouched=false;motionBlend=landing=0;SmokeCrouch=SmokeJump=false;
             lookBack=0;SmokeLookBack=0;
             InCar = true;
             if(s.Cockpit)s.Cockpit.SetActive(true);
@@ -143,6 +173,7 @@ namespace ServiceGameV2
         }
         void PlaceWalker(Vector3 point, float angle)
         {
+            Crouched=false;motionBlend=landing=0;SmokeCrouch=SmokeJump=false;s.Walker.height=1.8f;s.Walker.center=Vector3.up*.9f;
             lookBack=0;SmokeLookBack=0;
             InCar = false;
             if(s.Cockpit)s.Cockpit.SetActive(false);

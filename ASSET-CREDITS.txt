@@ -104,3 +104,22 @@ https://polyhaven.com/a/forest_floor
 https://polyhaven.com/a/brown_mud_03
 https://polyhaven.com/a/bark_brown_02
 Source maps and models supplied by Poly Haven artists. Texture channels packed for Unity URP; fern alpha combined with diffuse; authored model variants/LODs selected for runtime. Per-file source URLs and checksums in Assets/ServiceArt/ScannedWoodland/*/source.json.
+
+V11 EXPERIENCE ASSETS
+[Animated] Wolf - CoinCoin, Creative Commons Attribution 4.0.
+https://opengameart.org/content/animated-wolf
+https://creativecommons.org/licenses/by/4.0/
+Authored model, texture and animations. Used as a yard canine; scaled, converted
+to Unity legacy animation and URP material. Run playback slowed for pacing.
+
+George Street Shuffle and Local Forecast - Elevator - Kevin MacLeod
+(incompetech.com). Licensed under Creative Commons: By Attribution 4.0 License.
+https://creativecommons.org/licenses/by/4.0/
+https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1300035
+https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1300012
+Recordings unchanged; spatial speaker filtering applied at runtime.
+
+Leather White - Poly Haven, CC0.
+https://polyhaven.com/a/leather_white
+https://polyhaven.com/license
+Scanned texture maps packed and tinted for Unity's existing cabin material.

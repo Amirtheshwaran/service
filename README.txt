@@ -1,5 +1,5 @@
-SERVICE — HOLLIS COUNTY
-Unity 6.6 Windows development build — v10
+SERVICE - HOLLIS COUNTY
+Unity 6.6 Windows development build - v11
 
 RUN
 Extract the entire Windows ZIP, then double-click Service.exe.
@@ -9,11 +9,11 @@ Unity is not needed to play the Windows build.
 PLAY
 Work the evening delivery route, read your docket and county map, and return
 to the depot to file your report. First shift: five distinct properties.
-Correll residence: deliver inside the cabin.
+Correll residence: knock at the front door. A friendly delivery.
 Harrow Lodge: deliver inside. When breathing begins, turn away and stand
 completely still for eight seconds. Sprinting after the warning catches you.
 Vale House: take the right staircase to the upstairs study.
-Bell residence: enter the brick house and find the delivery table.
+Bell residence: knock first. A friendly visit on the first shift.
 Morrow House: take the central stairs to the upstairs gallery.
 
 For pursuit encounters, run back through the house and garden to your car.
@@ -22,18 +22,20 @@ and preserves the other completed deliveries. Headphones are suggested.
 
 WASD       Walk / drive. S reverses the car.
 Mouse      Look around, including inside the car.
-E          Exit / enter car, interact, file report at depot.
+E          Knock / exit / enter car, interact, file report at depot.
 R          Leave a copy at the marked delivery table.
 U          Mark a nearby property unable to serve.
 F          Flashlight while on foot.
-Space      Turn the ignition key.
+Space      Jump on foot / turn the ignition key in car.
+Ctrl       Hold to crouch.
+V / B      Radio power / next station.
 Shift      Sprint on foot / brake while driving.
 Q / E      Hold while sprinting to look behind over either shoulder.
 Tab        Docket while in the car.
 M          County map while in the car.
 Esc        Close the paper / pause.
 
-Stop before exiting the car. Options includes volume, sensitivity and display
+Stop before exiting the car. Settings include volume, camera movement, motion blur, sensitivity and display
 controls. Completed shifts save automatically; unfinished-shift progress is
 not saved on quit. Three evening shifts are implemented.
 
@@ -101,3 +103,17 @@ resolution. Existing five encounters and all v9 features retained.
 
 Canopy revised to 70% bare BOTD trees, 10% medium conifers and 20% slender
 dead hardwoods, retaining the pale forest reference and physical routes.
+
+V11 EXPERIENCE PASS
+Canvas-based title, pause, settings, docket, report and route-map layouts.
+The map follows the actual curved road and displays every current stop,
+plus vehicle position and heading. M toggles it closed.
+Road/driveway vegetation clearance, textured cabin, live mirrored rear view,
+two recorded radio stations, Ctrl crouch, Space jump, adjustable camera motion
+and camera-only motion blur. Pursuit acceleration and cadence vary with distance.
+Friendly first-shift visits provide contrast to the hostile houses. Knocking
+is available at front entrances. Authored animated canine in Correll's yard;
+barking comes from that animal. Hostile porch lights flicker on first approach.
+The cockpit is a refined Unity-built interior, not a newly purchased vehicle.
+The canine is a stylized authored asset. This remains a development build;
+AAA production quality and exhaustive scene QA have not been established.
