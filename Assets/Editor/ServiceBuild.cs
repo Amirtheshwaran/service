@@ -347,9 +347,15 @@ namespace ServiceGameV2.Editor
   }
   static void BakeNavigation()
   {
+   bool lateActive=scene.LateRoad&&scene.LateRoad.activeSelf;
+   if(scene.LateRoad)scene.LateRoad.SetActive(true);
    Physics.SyncTransforms();var sources=new List<UnityEngine.AI.NavMeshBuildSource>();
    var bounds=new Bounds(V(12,10,222),V(300,42,415));
-   UnityEngine.AI.NavMeshBuilder.CollectSources(bounds,~((1<<8)|(1<<9)),UnityEngine.AI.NavMeshCollectGeometry.PhysicsColliders,0,new List<UnityEngine.AI.NavMeshBuildMarkup>(),sources);
+   foreach(var point in scene.Route)bounds.Encapsulate(point.position);
+   foreach(var property in scene.Properties){bounds.Encapsulate(property.InteriorBounds);bounds.Encapsulate(property.Gate.position);bounds.Encapsulate(property.Door.position);}
+   bounds.Expand(4);
+   try{UnityEngine.AI.NavMeshBuilder.CollectSources(bounds,~((1<<8)|(1<<9)),UnityEngine.AI.NavMeshCollectGeometry.PhysicsColliders,0,new List<UnityEngine.AI.NavMeshBuildMarkup>(),sources);}
+   finally{if(scene.LateRoad)scene.LateRoad.SetActive(lateActive);}
    var settings=UnityEngine.AI.NavMesh.GetSettingsByID(0);settings.agentRadius=.28f;settings.agentHeight=1.8f;settings.agentClimb=.32f;settings.agentSlope=46;settings.overrideVoxelSize=true;settings.voxelSize=.065f;
    scene.Navigation=UnityEngine.AI.NavMeshBuilder.BuildNavMeshData(settings,sources,bounds,Vector3.zero,Quaternion.identity);
    if(!scene.Navigation)throw new Exception("Villa navigation failed");AssetDatabase.CreateAsset(scene.Navigation,Art+"Vale navigation.asset");

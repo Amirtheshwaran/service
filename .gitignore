@@ -48,3 +48,7 @@ sysinfo.txt
 # OS generated
 .DS_Store
 Thumbs.db
+
+# Project notes and logs
+AGENTS.md
+*.log

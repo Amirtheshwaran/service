@@ -6,12 +6,12 @@ First-person horror game with free-roam driving/walking and no combat, built in 
 
 You play as a civil process server working night shifts in rural Hollis County. Your job is to drive out and deliver court documents to people who usually don't want to receive them. Every shift gives you a docket of addresses to locate and serve using your car, a flashlight, and your judgment. If a place feels wrong, you can't fight back; you just leave.
 
-The horror is focused on slow burn and atmosphere rather than cheap jump scares. In this build (v11), the first shift covers five locations across the county:
+The horror is focused on slow burn and atmosphere rather than cheap jump scares. In this build (v15), the first shift covers five locations across the county:
 - Correll residence (friendly delivery; knock at the front door, animated yard dog)
 - Harrow Lodge (interior delivery; when you hear breathing, turn away and stand completely still for 8 seconds)
 - Vale House (upstairs study delivery with pursuit escape back to the car)
-- Bell residence (friendly delivery; knock first on the first shift)
-- Morrow House (manor with an upstairs gallery delivery and pursuit escape)
+- Bell residence (friendly delivery at front entrance, followed by return-path ambush and delayed vehicle ignition escape)
+- Morrow House (manor with an upstairs gallery delivery, accelerated pursuit, and roadwork hurdles)
 
 ## How to Play / Run in Unity
 
@@ -33,29 +33,30 @@ Built with Unity 6 (6000.6.0f1) using URP.
 | R | Leave documents on the delivery table |
 | U | Mark address as unable to serve |
 | F | Flashlight (on foot) |
-| Space | Jump (on foot) / turn ignition key (in car) |
+| Space | Jump on foot (disabled on stairs) / turn ignition key (in car) |
 | Ctrl | Hold to crouch (on foot) |
-| V / B | Radio power / cycle stations (in car) |
+| V / B | Radio power / cycle through 3 stations (in car) |
 | Shift | Sprint on foot / brake while driving |
 | Q / E | Hold while sprinting to look behind over shoulder |
 | Tab | Open docket clipboard (in car) |
-| M | Open route map (in car, follows curved roads) |
+| M | Open route map (in car, follows curved roads and return lane) |
 | Esc | Pause menu / close papers |
 
 ## Project Layout
 
-- Assets/Scenes/HollisCounty.unity: Main scene with the road network and county properties.
+- Assets/Scenes/HollisCounty.unity: Main scene with the road network, return lane, and county properties.
 - Assets/Scripts/: Gameplay scripts (player movement, crouch/jump, car controller, surface footsteps, storm effects, radio, route map, audio, and encounter logic).
 - Assets/ServiceArt/: Shaders, materials, meshes, scanned woodland assets, and scene assets.
 - Assets/Editor/: Build tools, doorway inspection, and scene layout utilities.
 
 ## Asset Credits
 
-- Environment: Flooded Grounds by Sandro T, Conifers [BOTD], Rocks and Boulders 2 (Unity Asset Store), and Poly Haven CC0 scanned woodland assets (ground textures, timber, stumps, ferns, leather).
+- Environment: Flooded Grounds by Sandro T, Conifers [BOTD], Rocks and Boulders 2 (Unity Asset Store), Poly Haven CC0 scanned woodland assets (ground textures, timber, stumps, ferns, leather), and Kenney City Kit Roads (CC0).
 - Monster models: Creep Horror Creature by AC Game Assets, and Demon Horror Creature with Weapon.
-- Canine: Animated Wolf by CoinCoin (CC BY 4.0).
-- Music: "This House", "The Descent", "George Street Shuffle", and "Local Forecast - Elevator" by Kevin MacLeod (incompetech.com), licensed under CC BY 4.0.
-- Audio: Human field recordings and sound effects from Freesound and Nox Sound Essentials (CC0 / CC BY 4.0).
+- Domestic dog: Animated Animals by Quaternius (CC0).
+- Vehicle cabin: Ford Crown Victoria interior by Tyble (CC BY 3.0 fan art, noncommercial).
+- Music: "This House", "The Descent", "George Street Shuffle", "Local Forecast - Elevator", and "Jazz Brunch" by Kevin MacLeod (incompetech.com), licensed under CC BY 4.0.
+- Audio: Human field recordings and sound effects from Freesound, Nox Sound Essentials, and ViRiX Dreamcore (CC0 / CC BY 4.0 / CC BY 3.0).
 - Fonts: Courier Prime and Barlow (SIL Open Font License).
-- Full links and source details are in ASSET-CREDITS.txt, Assets/Resources/Audio/V5/sources.json, Assets/Resources/Audio/V9/sources.json, Assets/Resources/Audio/Radio/, and Assets/ServiceArt/ScannedWoodland/*/source.json.
+- Full links and source details are in ASSET-CREDITS.txt, Assets/Resources/Audio/V5/sources.json, Assets/Resources/Audio/V9/sources.json, Assets/Resources/Audio/Radio/, Assets/Resources/Audio/V13/sources.json, and Assets/ServiceArt/ScannedWoodland/*/source.json.
 

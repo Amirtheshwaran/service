@@ -3,6 +3,8 @@ using UnityEngine;
 namespace ServiceGameV2 {
  public sealed class ServiceStorm:MonoBehaviour {
   ServiceDirector d;Light flash;float nextFlash,exposureCheck,flashTime=-1;Color baseFog;
+  ParticleSystem.Particle[] cabinParticles;
+  public int CabinDropsRemoved {get;private set;}
   public bool Sheltered {get;private set;}
   public bool IsRaining=>d&&d.Scene.Rain;
   public bool FlashesEnabled=true;
@@ -30,6 +32,14 @@ namespace ServiceGameV2 {
    if(!FlashesEnabled)FlashStrength=0;
    flash.intensity=FlashStrength*1.8f;
    RenderSettings.fogColor=Color.Lerp(baseFog,new Color(.77f,.80f,.89f),FlashStrength*.4f);d.Scene.View.backgroundColor=RenderSettings.fogColor;
+  }
+  void LateUpdate(){
+   if(!d||d.Phase==ServicePhase.Paused||!d.Scene.Rain||Vector3.Distance(d.Scene.View.transform.position,d.Scene.Car.position)>14)return;
+   var rain=d.Scene.Rain;int capacity=rain.main.maxParticles;if(cabinParticles==null||cabinParticles.Length<capacity)cabinParticles=new ParticleSystem.Particle[capacity];
+   int count=rain.GetParticles(cabinParticles);bool changed=false;var space=rain.main.simulationSpace;
+   for(int i=0;i<count;i++){var world=space==ParticleSystemSimulationSpace.World?cabinParticles[i].position:rain.transform.TransformPoint(cabinParticles[i].position);var local=d.Scene.Car.InverseTransformPoint(world);
+    if(Mathf.Abs(local.x)<.91f&&local.y>.15f&&local.y<1.95f&&local.z> -1.85f&&local.z<1.25f){cabinParticles[i].remainingLifetime=-1;CabinDropsRemoved++;changed=true;}
+   }if(changed)rain.SetParticles(cabinParticles,count);
   }
   public void TriggerLightning(){flashTime=Time.time;nextFlash=Time.time+Random.Range(24f,46f);LightningCount++;StartCoroutine(ThunderAfter(Random.Range(1.4f,3.4f)));}
   IEnumerator ThunderAfter(float delay){yield return new WaitForSeconds(delay);if(d&&d.Audio)d.Audio.Thunder(Sheltered);}

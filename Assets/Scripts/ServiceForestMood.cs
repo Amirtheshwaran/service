@@ -4,7 +4,7 @@ using UnityEngine.Rendering;
 namespace ServiceGameV2 {
  public static class ServiceForestMood {
   public static void Apply(CountyScene scene,int night){
-   var mist=new Color(.62f,.60f,.65f);
+   var mist=new Color(.36f,.41f,.49f);
    RenderSettings.fog=true;RenderSettings.fogMode=FogMode.ExponentialSquared;
    RenderSettings.fogDensity=night==0?.025f:night==1?.028f:.032f;RenderSettings.fogColor=mist;
    RenderSettings.ambientMode=AmbientMode.Custom;

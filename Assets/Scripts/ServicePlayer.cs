@@ -9,9 +9,19 @@ namespace ServiceGameV2
         public bool EngineRunning { get; private set; }
         public bool IsStarting { get; private set; }
         public bool IgnitionDelayPending;
+        public bool FailedIgnition {get;private set;}
+        public bool OnStairs {get;private set;}
+        public float HorizontalSpeed {get;private set;}
+        float nextCollision;
+        public string LastVehicleObstruction {get;private set;}
         public float Speed => Mathf.Abs(speed);
         public float Sensitivity = .095f;
-        public float SmokeThrottle;
+        public float SmokeThrottle, SmokeSteering;
+        public bool SmokeBrake;
+        public float SteeringInput=>steer;
+        public float SignedSpeed=>speed;
+        float steer, acceleration, previousSpeed;
+        Quaternion wheelRest;
         public Vector2 SmokeWalk;
         public bool SmokeSprint;
         public int SmokeLookBack;
@@ -36,6 +46,7 @@ namespace ServiceGameV2
         {
             d = director; s = d.Scene;
             if(!d.IsSmoke)Sensitivity=Mathf.Clamp(PlayerPrefs.GetFloat("SERVICE.sensitivity",.095f),.03f,.2f);
+            wheelRest=s.SteeringWheel.localRotation;
             fullMask = s.View.cullingMask | (1 << 8);
             if(!d.IsSmoke){CameraMotion=PlayerPrefs.GetFloat("SERVICE.motion",.65f);MotionBlurAmount=PlayerPrefs.GetFloat("SERVICE.blur",.16f);}
             var volume=GetComponentInChildren<UnityEngine.Rendering.Volume>();
@@ -47,8 +58,8 @@ namespace ServiceGameV2
         void Update()
         {
             if (s == null || d.Phase != ServicePhase.Playing) return;
-            if (IsStarting && Time.time >= startAt) { IsStarting = false; EngineRunning = true; d.Audio.Engine(true); }
-            if (d.InputBlocked) { speed = Mathf.MoveTowards(speed, 0, 9 * Time.deltaTime); return; }
+            if (IsStarting && !d.PaperOpen && Time.time >= startAt) { IsStarting = false; EngineRunning = true; d.Audio.Engine(true); }
+            if (d.InputBlocked) { HoldVehicle(); return; }
             Vector2 look = Mouse.current == null || d.IsSmoke ? Vector2.zero : Mouse.current.delta.ReadValue();
             float backTarget=LookBackTarget;
             if(backTarget==0&&Mathf.Abs(lookBack)<5)yaw += look.x * Sensitivity;
@@ -58,9 +69,10 @@ namespace ServiceGameV2
                 yaw = Mathf.Clamp(yaw, -100, 100);
                 s.View.transform.localRotation = Quaternion.Euler(Mathf.Clamp(pitch,-35,48)+5, yaw, 0);
                 if (Pressed(Key.Space)) StartEngine();
+                UpdateGauges();
                 float throttle = d.IsSmoke ? SmokeThrottle : Axis(Key.S, Key.W);
                 if (Mathf.Abs(throttle) > .1f && !EngineRunning && !IsStarting) StartEngine();
-                Drive(throttle, d.IsSmoke ? 0 : Axis(Key.A, Key.D));
+                Drive(throttle, d.IsSmoke ? SmokeSteering : Axis(Key.A, Key.D));
             }
             else
             {
@@ -81,17 +93,31 @@ namespace ServiceGameV2
 
         void Drive(float throttle, float steering)
         {
-            s.SteeringWheel.localRotation=Quaternion.Slerp(s.SteeringWheel.localRotation,Quaternion.Euler(18,0,-steering*100),Time.deltaTime*8);
-            s.SpeedNeedle.localRotation=Quaternion.Euler(0,0,Mathf.Lerp(130,-130,Mathf.Clamp01(Speed*2.237f/60)));
-            s.RevNeedle.localRotation=Quaternion.Euler(0,0,Mathf.Lerp(130,-130,EngineRunning?Mathf.Clamp01(.14f+Speed/30+Mathf.Abs(throttle)*.12f):0));
-            float target = !EngineRunning ? 0 : throttle > 0 ? throttle * 12 : throttle * 4;
-            speed = Mathf.MoveTowards(speed, target, (Mathf.Abs(throttle) < .1f || Mathf.Sign(throttle) != Mathf.Sign(speed) ? 8 : 4.1f) * Time.deltaTime);
-            if (Keyboard.current != null && Keyboard.current[Key.LeftShift].isPressed) speed = Mathf.MoveTowards(speed, 0, 14 * Time.deltaTime);
-            s.Car.Rotate(0, steering * Mathf.Clamp(speed / 5, -1, 1) * 50 * Time.deltaTime, 0, Space.World);
-            gravity = s.CarBody.isGrounded ? -2 : Mathf.Max(-20, gravity - 20 * Time.deltaTime);
-            Vector3 before = s.Car.position;
-            CollisionFlags collision = s.CarBody.Move((s.Car.forward * speed + Vector3.up * gravity) * Time.deltaTime);
-            if ((collision & CollisionFlags.Sides) != 0 && Vector3.Distance(before, s.Car.position) < Mathf.Abs(speed) * Time.deltaTime * .35f) speed *= .75f;
+            steer=Mathf.MoveTowards(steer,steering,Time.deltaTime*(Mathf.Abs(steering)<.1f?3.3f:2.2f));
+            s.SteeringWheel.localRotation=wheelRest*Quaternion.Euler(0,0,-steer*135);
+            
+            bool brake=d.IsSmoke?SmokeBrake:Keyboard.current!=null&&Keyboard.current[Key.LeftShift].isPressed;
+            // Opposite pedal input brakes first; reversal starts only after reaching rest.
+            bool opposing=Mathf.Abs(speed)>.12f&&throttle*speed<0;
+            float target=!EngineRunning||brake||opposing?0:throttle*(throttle>0?14:3.5f);
+            float rate=brake?14:opposing?9:Mathf.Abs(throttle)<.1f?2.1f:3.3f;
+            speed=Mathf.MoveTowards(speed,target,rate*Time.deltaTime);
+            acceleration=Mathf.Lerp(acceleration,(speed-previousSpeed)/Mathf.Max(.001f,Time.deltaTime),1-Mathf.Exp(-Time.deltaTime*5));previousSpeed=speed;
+            float wheelAngle=steer*Mathf.Lerp(29,15,Mathf.InverseLerp(3,14,Speed));
+            float yawRate=speed/2.5f*Mathf.Tan(wheelAngle*Mathf.Deg2Rad)*Mathf.Rad2Deg;
+            s.Car.Rotate(0,yawRate*Time.deltaTime,0,Space.World);
+            gravity=s.CarBody.isGrounded?-2:Mathf.Max(-20,gravity-20*Time.deltaTime);
+            Vector3 before=s.Car.position;
+            float impactSpeed=Speed;
+            Vector3 travel=s.Car.forward*speed*Time.deltaTime;
+            bool estate=d.Scene.Properties.AnyBuildingContains(before+travel,1.35f);
+            bool solid=Physics.BoxCast(before+Vector3.up*.85f,new Vector3(.78f,.42f,1.85f),speed<0?-s.Car.forward:s.Car.forward,out var hit,s.Car.rotation,travel.magnitude+.06f,~((1<<8)|(1<<9)|(1<<10)),QueryTriggerInteraction.Ignore);
+            var collision=s.CarBody.Move((estate||solid?Vector3.zero:travel)+Vector3.up*gravity*Time.deltaTime);
+            if(estate||solid||(collision&CollisionFlags.Sides)!=0){
+                LastVehicleObstruction=estate?"Building clearance":solid?hit.collider.name:"Controller side contact";
+                if(impactSpeed>1.2f&&Time.time>nextCollision){d.Audio.CollisionAt(s.Car.position+s.Car.forward*1.8f,impactSpeed);nextCollision=Time.time+.8f;landing=.06f;}
+                speed=0;
+            }
         }
 
         void Walk(Vector2 input)
@@ -101,12 +127,15 @@ namespace ServiceGameV2
             if(crouch)Crouched=true;
             else if(Crouched&&CanStand())Crouched=false;
             s.Walker.height=Crouched?1.12f:1.8f;s.Walker.center=new Vector3(0,s.Walker.height*.5f,0);
-            Vector3 move = (s.Walker.transform.right * input.x + s.Walker.transform.forward * input.y) * (Crouched?1.55f:Sprinting ? 5.7f : 3.25f);
+            OnStairs=ServiceStairZone.Contains(s.Walker.transform.position);
+            if(OnStairs)jumpUntil=groundedUntil=0;
+            Vector3 move = (s.Walker.transform.right * input.x + s.Walker.transform.forward * input.y) * (Crouched?1.55f:Sprinting ? 5.5f : 3.25f);
             if(s.Walker.isGrounded){groundedUntil=Time.time+.1f;if(gravity<0){if(lastVertical< -4)landing=Mathf.Min(.1f,-lastVertical*.008f);gravity=-2;}}
-            if(d.IsSmoke?SmokeJump:Pressed(Key.Space)){jumpUntil=Time.time+.12f;SmokeJump=false;}
-            if(jumpUntil>Time.time&&groundedUntil>Time.time&&!Crouched){gravity=5.8f;jumpUntil=groundedUntil=0;}
+            if(d.IsSmoke?SmokeJump:Pressed(Key.Space)){if(!OnStairs)jumpUntil=Time.time+.12f;SmokeJump=false;}
+            if(jumpUntil>Time.time&&groundedUntil>Time.time&&!Crouched&&!OnStairs){gravity=5.8f;jumpUntil=groundedUntil=0;}
             else gravity=Mathf.Max(-25,gravity-20*Time.deltaTime);
-            lastVertical=gravity;var flags=s.Walker.Move((move+Vector3.up*gravity)*Time.deltaTime);if((flags&CollisionFlags.Above)!=0&&gravity>0)gravity=0;
+            Vector3 prior=s.Walker.transform.position;lastVertical=gravity;var flags=s.Walker.Move((move+Vector3.up*gravity)*Time.deltaTime);if((flags&CollisionFlags.Above)!=0&&gravity>0)gravity=0;
+            var delta=s.Walker.transform.position-prior;delta.y=0;HorizontalSpeed=delta.magnitude/Mathf.Max(Time.deltaTime,.001f);
             motionBlend=Mathf.MoveTowards(motionBlend,input.magnitude*(s.Walker.isGrounded?1:0),Time.deltaTime*6);gait+=Time.deltaTime*(Sprinting?12:Crouched?6:8);
             footstep -= Time.deltaTime;
             if (input.sqrMagnitude > .1f && s.Walker.isGrounded && footstep <= 0)
@@ -121,7 +150,13 @@ namespace ServiceGameV2
             if(blur)blur.intensity.value=active?MotionBlurAmount:0;
             if(!active)return;
             s.View.fieldOfView=Mathf.Lerp(s.View.fieldOfView,!InCar&&Sprinting?74:68,1-Mathf.Exp(-Time.deltaTime*6));
-            if(InCar)return;
+            if(InCar){
+                float motion=CameraMotion*Mathf.Clamp01(Speed/6);
+                var offset=new Vector3(-steer*motion*.018f,Mathf.Sin(Time.time*17)*motion*.0015f,-acceleration*CameraMotion*.0015f);
+                s.View.transform.localPosition=Vector3.Lerp(s.View.transform.localPosition,offset,1-Mathf.Exp(-Time.deltaTime*8));
+                s.View.transform.localRotation=Quaternion.Euler(Mathf.Clamp(pitch,-35,48)+5+acceleration*CameraMotion*.09f,yaw,steer*motion*.65f);return;
+            }
+            if(d.Horror.Caught||d.Horror.ForcedLook)return;
             float amount=motionBlend*CameraMotion, bob=Mathf.Sin(gait*2)*(Sprinting?.025f:.014f)*amount;
             var target=new Vector3(Mathf.Sin(gait)*.018f*amount,(Crouched?1.02f:1.65f)+bob-landing*CameraMotion,0);
             s.View.transform.localPosition=Vector3.Lerp(s.View.transform.localPosition,target,1-Mathf.Exp(-Time.deltaTime*14));
@@ -132,11 +167,14 @@ namespace ServiceGameV2
         {
             if (!InCar || IsStarting || EngineRunning) return;
             IsStarting = true;
-            startAt = Time.time + (IgnitionDelayPending ? 4.6f : .7f);
+            FailedIgnition=IgnitionDelayPending;startAt = Time.time + (FailedIgnition ? 3.8f : .7f);
+            if(FailedIgnition)d.Say("Come on. Turn over.");
             d.Audio.Ignition(IgnitionDelayPending);
             IgnitionDelayPending = false;
         }
-        public void StopEngine() { EngineRunning = IsStarting = false; speed = 0; if (d.Audio != null) d.Audio.Engine(false); }
+        public void HoldVehicle(){speed=previousSpeed=acceleration=0;HorizontalSpeed=0;UpdateGauges();}
+        void UpdateGauges(){ServiceGauge.Set(s.SpeedNeedle,Mathf.Clamp01(Speed*2.237f/60));ServiceGauge.Set(s.RevNeedle,EngineRunning?Mathf.Clamp01(.14f+Speed/30):0);}
+        public void StopEngine() { FailedIgnition=false; EngineRunning = IsStarting = false; speed = 0; if (d.Audio != null) d.Audio.Engine(false); }
 
         public void EnterCar()
         {
@@ -185,7 +223,7 @@ namespace ServiceGameV2
             s.View.transform.localPosition = new Vector3(0, 1.65f, 0);
             s.View.transform.localRotation = Quaternion.identity;
             s.View.cullingMask = fullMask;
-            yaw = angle; pitch = gravity = 0;
+            yaw = angle; pitch = gravity = 0;HorizontalSpeed=0;
             d.PaperOpen = false;
             d.SetCursor();
         }
@@ -200,7 +238,7 @@ namespace ServiceGameV2
             s.CarBody.enabled = false;
             s.Car.SetPositionAndRotation(point + Vector3.up * .04f, rotation);
             s.CarBody.enabled = true;
-            speed = gravity = 0;
+            speed = gravity = previousSpeed = acceleration = steer = 0;
         }
         public void SmokePlaceWalker(Vector3 point)
         {
@@ -208,6 +246,17 @@ namespace ServiceGameV2
             StopEngine(); PlaceWalker(point + Vector3.up * .08f, 0);
         }
         public void RestoreApproach(Vector3 point,float angle) { StopEngine(); SmokeWalk=Vector2.zero;SmokeSprint=false;PlaceWalker(point+Vector3.up*.08f,angle); }
+        public void GlanceAt(Vector3 point,bool returning){
+            var target=returning?s.Walker.transform.rotation*Quaternion.Euler(pitch,0,0):Quaternion.LookRotation(point-s.View.transform.position);
+            s.View.transform.rotation=Quaternion.Slerp(s.View.transform.rotation,target,1-Mathf.Exp(-Time.deltaTime*(returning?14:7)));
+        }
+        public void FocusOn(Vector3 point,float blend){
+            var offset=point-s.View.transform.position;
+            float targetYaw=Mathf.Atan2(offset.x,offset.z)*Mathf.Rad2Deg;
+            float targetPitch=-Mathf.Atan2(offset.y,new Vector2(offset.x,offset.z).magnitude)*Mathf.Rad2Deg;
+            yaw=Mathf.LerpAngle(yaw,targetYaw,blend);pitch=Mathf.Lerp(pitch,Mathf.Clamp(targetPitch,-50,50),blend);
+            s.Walker.transform.rotation=Quaternion.Euler(0,yaw,0);s.View.transform.localRotation=Quaternion.Euler(pitch,0,0);
+        }
         public void SmokeFace(Vector3 point)
         {
             if (!d.IsSmoke) return;

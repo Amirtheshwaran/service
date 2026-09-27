@@ -1,60 +1,60 @@
-SERVICE — asset credits
+SERVICE ??asset credits
 
 Audio uses human recordings and human sound design. No generative AI media. The horror drone is a pre-existing 2019 sound-design recording.
 Edits: trimming, channel downmix, level adjustment, short fades and loop crossfades.
 
-night-crickets — OwlStorm
+night-crickets ??OwlStorm
 https://freesound.org/people/OwlStorm/sounds/320145/
 CC0 https://creativecommons.org/publicdomain/zero/1.0/
 
-dog-bark — ipears1
+dog-bark ??ipears1
 https://freesound.org/people/ipears1/sounds/118072/
 CC0 https://creativecommons.org/publicdomain/zero/1.0/
 
-footsteps-gravel — Anthousai
+footsteps-gravel ??Anthousai
 https://freesound.org/people/Anthousai/sounds/398778/
 CC0 https://creativecommons.org/publicdomain/zero/1.0/
 
-car-engine-idle — jpkweli
+car-engine-idle ??jpkweli
 https://freesound.org/people/jpkweli/sounds/154758/
 CC0 https://creativecommons.org/publicdomain/zero/1.0/
 
-paper-flip — gynation
+paper-flip ??gynation
 https://freesound.org/people/gynation/sounds/82379/
 CC0 https://creativecommons.org/publicdomain/zero/1.0/
 
-wind-trees — NomadApe
+wind-trees ??NomadApe
 https://freesound.org/people/NomadApe/sounds/444921/
 CC0 https://creativecommons.org/publicdomain/zero/1.0/
 
-car-engine-fail — jerry.berumen
+car-engine-fail ??jerry.berumen
 https://freesound.org/people/jerry.berumen/sounds/511685/
 CC0 https://creativecommons.org/publicdomain/zero/1.0/
 
-car-door-close — AdrianoAnjos
+car-door-close ??AdrianoAnjos
 https://freesound.org/people/AdrianoAnjos/sounds/607260/
 CC0 https://creativecommons.org/publicdomain/zero/1.0/
 
-door-knock — HunteR4708
+door-knock ??HunteR4708
 https://freesound.org/people/HunteR4708/sounds/256513/
 CC0 https://creativecommons.org/publicdomain/zero/1.0/
 
-car-engine-start — soundmary
+car-engine-start ??soundmary
 https://freesound.org/people/soundmary/sounds/128188/
 CC BY 4.0 https://creativecommons.org/licenses/by/4.0/
 
-Courier Prime — Alan Dague-Greene / Google Fonts. SIL Open Font License 1.1.
+Courier Prime ??Alan Dague-Greene / Google Fonts. SIL Open Font License 1.1.
 https://github.com/google/fonts/tree/main/ofl/courierprime
 
-Flooded Grounds 1.1 — Sandro T. Standard Unity Asset Store EULA.
+Flooded Grounds 1.1 ??Sandro T. Standard Unity Asset Store EULA.
 https://assetstore.unity.com/packages/3d/environments/flooded-grounds-48529
 Licensed to the acquiring Unity account. Do not redistribute its raw source assets separately.
 
 V3 additions:
-Barlow — Jeremy Tribby. SIL Open Font License 1.1.
+Barlow ??Jeremy Tribby. SIL Open Font License 1.1.
 https://github.com/google/fonts/tree/main/ofl/barlow
 
-Creep Horror Creature — AC Game Assets. Standard Unity Asset Store EULA.
+Creep Horror Creature ??AC Game Assets. Standard Unity Asset Store EULA.
 https://assetstore.unity.com/packages/3d/characters/creatures/creep-horror-creature-244853
 Licensed to the acquiring Unity account; raw assets may not be redistributed as a library.
 
@@ -75,25 +75,25 @@ Recordings distributed unchanged. Selected footsteps, breathing, gasps, forest w
 Additional rattle, taps, leaf rustle, wind howl: Flooded Grounds by Sandro T, Standard Unity Asset Store EULA.
 Per-file sources: Assets/Resources/Audio/V5/sources.json
 
-V6 ART ADDITIONS — acquired through the user's Unity Asset Store account
-Conifers [BOTD] — forst — Standard Unity Asset Store EULA
+V6 ART ADDITIONS ??acquired through the user's Unity Asset Store account
+Conifers [BOTD] ??forst ??Standard Unity Asset Store EULA
 https://assetstore.unity.com/packages/3d/vegetation/trees/conifers-botd-142076
-Rock and Boulders 2 — Manufactura K4 — Standard Unity Asset Store EULA
+Rock and Boulders 2 ??Manufactura K4 ??Standard Unity Asset Store EULA
 https://assetstore.unity.com/packages/3d/props/exterior/rock-and-boulders-2-6947
-Demon Horror Creature with Weapon — AC Game Assets — Standard Unity Asset Store EULA
+Demon Horror Creature with Weapon ??AC Game Assets ??Standard Unity Asset Store EULA
 https://assetstore.unity.com/packages/3d/characters/creatures/demon-horror-creature-with-weapon-247792
 
 V7: Additional unchanged Nox Sound CC0 recordings: cicadas and six leaf-footstep recordings used as off-path brush movement. Per-file attribution in Audio/V5/sources.json.
 
 V9 STORM AND MUSIC
-This House and The Descent — Kevin MacLeod (incompetech.com). Licensed under Creative Commons: By Attribution 4.0 License, https://creativecommons.org/licenses/by/4.0/ . Original recordings unchanged; chase playback starts at 12 seconds. https://incompetech.com/music/royalty-free/
-Loud Thunder sounds — Rvgerxini, CC0. https://freesound.org/people/Rvgerxini/sounds/620529/ . Four edited mono excerpts with fades.
-Rain, mud and water footsteps — Nox Sound Essentials, CC0. Recordings unchanged.
+This House and The Descent ??Kevin MacLeod (incompetech.com). Licensed under Creative Commons: By Attribution 4.0 License, https://creativecommons.org/licenses/by/4.0/ . Original recordings unchanged; chase playback starts at 12 seconds. https://incompetech.com/music/royalty-free/
+Loud Thunder sounds ??Rvgerxini, CC0. https://freesound.org/people/Rvgerxini/sounds/620529/ . Four edited mono excerpts with fades.
+Rain, mud and water footsteps ??Nox Sound Essentials, CC0. Recordings unchanged.
 Additional native shrub and grass meshes and rain particle texture: Flooded Grounds / Sandro T, Unity Asset Store EULA.
 Per-file V9 attribution: Assets/Resources/Audio/V9/sources.json
 
 V10 SCANNED WOODLAND
-Poly Haven — CC0: https://polyhaven.com/license
+Poly Haven ??CC0: https://polyhaven.com/license
 https://polyhaven.com/a/fern_02
 https://polyhaven.com/a/dead_tree_trunk_02
 https://polyhaven.com/a/tree_stump_01
@@ -106,20 +106,78 @@ https://polyhaven.com/a/bark_brown_02
 Source maps and models supplied by Poly Haven artists. Texture channels packed for Unity URP; fern alpha combined with diffuse; authored model variants/LODs selected for runtime. Per-file source URLs and checksums in Assets/ServiceArt/ScannedWoodland/*/source.json.
 
 V11 EXPERIENCE ASSETS
-[Animated] Wolf - CoinCoin, Creative Commons Attribution 4.0.
+[Animated] Wolf ??CoinCoin, Creative Commons Attribution 4.0.
 https://opengameart.org/content/animated-wolf
 https://creativecommons.org/licenses/by/4.0/
 Authored model, texture and animations. Used as a yard canine; scaled, converted
 to Unity legacy animation and URP material. Run playback slowed for pacing.
 
-George Street Shuffle and Local Forecast - Elevator - Kevin MacLeod
+George Street Shuffle and Local Forecast - Elevator ??Kevin MacLeod
 (incompetech.com). Licensed under Creative Commons: By Attribution 4.0 License.
 https://creativecommons.org/licenses/by/4.0/
 https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1300035
 https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1300012
 Recordings unchanged; spatial speaker filtering applied at runtime.
 
-Leather White - Poly Haven, CC0.
+Leather White ??Poly Haven, CC0.
 https://polyhaven.com/a/leather_white
 https://polyhaven.com/license
 Scanned texture maps packed and tinted for Unity's existing cabin material.
+
+V12 DRIVING AND FOLEY ASSETS
+Rigged Car ??Racoon Media / eracoon.
+https://opengameart.org/content/rigged-car
+Archive license: Creative Commons Attribution 4.0.
+https://creativecommons.org/licenses/by/4.0/
+Converted from the authored Blender model to FBX; fitted instruments, surface
+materials, edge bevels, working mirror and wipers added. Original archive
+license retained in Assets/External/RacoonCar/LICENSE.txt. The source webpage
+also offers CC BY 3.0; this distribution uses the archive's explicit CC BY 4.0.
+
+Additional Nox_Sound CC0 recordings from Essentials_Series_NOX_SOUND:
+car door closures, key movements, trunk impact, wooden door opening, wiper
+interior loop, driving interior loop and dashboard switch. Exact source file
+mapping in Assets/Resources/Audio/V12/sources.json. No synthesized recordings.
+Existing AC Game Assets Creep and Demon punch animations used for captures.
+
+Car Concept steering components ??Darmstadt Graphics Group GmbH; Eric Chadwick
+(glTF conversion), original model by Unity Fan. CC BY 4.0.
+https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/CarConcept
+https://creativecommons.org/licenses/by/4.0/
+Only authored steering meshes and their normal map are adapted. Model logo
+meshes and logo color textures are excluded. Source LICENSE.md is retained in
+Assets/External/CarConceptWheel. Repositioned and refinished for the county car.
+Racoon's unused navigation display removed; UVs refitted for scanned leather.
+
+V13 REPAIR / RUNNING FOLEY
+The V12 Racoon car and Car Concept wheel are no longer used in the playable
+scene. Their source-project files remain for historical recovery, with licenses.
+Nox Sound / Essentials Series ??39 unchanged CC0 running-step recordings.
+https://nox-sound-design.itch.io/essentials-series-sfx-nox-sound
+Source mapping: Assets/Resources/Audio/V13/sources.json.
+AC Game Assets Demon Horror Creature: existing authored Run1 animation.
+
+V14 AUTHORED CABIN ??PRIVATE, NONCOMMERCIAL BUILD
+Ford Crown Victoria with Interior ??Tyble, BlendSwap.
+https://blendswap.com/blend/16239 (original archive ID 81414)
+Creative Commons Attribution 3.0; bundled license additionally marks this
+asset as fan art and prohibits commercial use. Do not sell or commercially
+release this build with this model. Original license retained at
+Assets/External/TybleCrownVictoria/81414 - LICENSE.html.
+Adaptations: selected the authored taxi cabin, applied its existing modeling
+modifiers, assigned materials, fitted driver/wheel/dials, adapted existing
+wing-mirror faces into the rearview assembly and mapped the live reflection.
+No generated replacement meshes or image/audio assets were added in V14.
+Functional instrument and radio lettering uses the existing Barlow font.
+
+V15 additions:
+City Kit (Roads), Kenney ??CC0. https://kenney.nl/assets/city-kit-roads
+Animated Animals Vol.2, Quaternius ??CC0. https://opengameart.org/content/animated-animales-low-poly
+Some of the sounds in this project were created by ViRiX Dreamcore soundcloud.com/virix ??CC BY 3.0. https://opengameart.org/content/ui-and-item-sound-effect-jingles-sample-2 ; Item2A unchanged.
+Jazz Brunch, Kevin MacLeod (incompetech.com), CC BY 4.0 https://creativecommons.org/licenses/by/4.0/ https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1700074 ; third radio station, file unchanged.
+Nox Sound vehicle trunk impact ??CC0 Essentials Series; unchanged recording used for low-speed body collision.
+
+V15 Flooded Grounds truck adaptation: the original authored rear tonneau
+panel is detached and lowered as the bed liner in Blender. The original
+body, rim, textures, UVs and three LODs are retained. Editable adaptation:
+Sources/V15/CountyTruck-open-bed.blend. Source package license unchanged.

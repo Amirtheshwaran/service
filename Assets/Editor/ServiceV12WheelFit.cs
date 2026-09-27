@@ -1,0 +1,3 @@
+using UnityEngine;using UnityEditor;using UnityEditor.SceneManagement;
+namespace ServiceGameV2.Editor {public static class ServiceV12WheelFit {public static void Build(){EditorSceneManager.OpenScene("Assets/Scenes/HollisCounty.unity");var s=Object.FindAnyObjectByType<CountyScene>();foreach(var t in s.Car.GetComponentsInChildren<Transform>(true))if(t.name.StartsWith("Authored leather steering"))t.localRotation=Quaternion.Euler(40,0,180);EditorSceneManager.MarkSceneDirty(s.gameObject.scene);EditorSceneManager.SaveScene(s.gameObject.scene);AssetDatabase.SaveAssets();ServiceV12Contract.Run();ServiceQuickBuild.Build();}}}
+

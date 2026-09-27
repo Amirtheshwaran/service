@@ -12,6 +12,9 @@ namespace ServiceGameV2
         Vector3 lastBrushPosition;float brushCheck,brushCooldown;
         public int BrushEvents {get;private set;}
         public string LastFootstepPool {get;private set;}="grass";
+        public int MonsterSteps {get;private set;}
+        public string LastMonsterFootstepPool {get;private set;}
+        public readonly HashSet<string> MonsterStepSurfaces=new HashSet<string>();
         public float MusicVolume=.7f;
         public float ChaseLevel=>tension?tension.volume:0;
         readonly Dictionary<string,AudioClip[]> pools=new Dictionary<string,AudioClip[]>();
@@ -71,14 +74,14 @@ namespace ServiceGameV2
             return clip;
         }
         AudioClip Pick(string name){
-            if(name=="monsterstep")name="wood";
-            if(!pools.TryGetValue(name,out var pool)){pool=Resources.LoadAll<AudioClip>("Audio/V9/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V5/"+name);pools[name]=pool;}
+            if(!pools.TryGetValue(name,out var pool)){pool=Resources.LoadAll<AudioClip>("Audio/V15/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V13/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V12/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V9/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V5/"+name);pools[name]=pool;}
             if(pool.Length==0)return Clip(name);
             int last=previous.TryGetValue(name,out var n)?n:-1;int index=Random.Range(0,pool.Length);if(pool.Length>1&&index==last)index=(index+1)%pool.Length;previous[name]=index;return pool[index];
         }
         void Update()
         {
             AudioListener.volume = silentTest ? 0 : Volume;
+            SyncVehicleAudio();
             AudioListener.pause=d.Phase==ServicePhase.Paused;
             if(AudioListener.pause)return;
             if(tension!=null){tension.volume=Mathf.MoveTowards(tension.volume,pursuing?.38f*MusicVolume:0,Time.unscaledDeltaTime*.3f);if(!pursuing&&tension.volume<=0&&tension.isPlaying)tension.Stop();}
@@ -119,14 +122,31 @@ namespace ServiceGameV2
             At(LastFootstepPool,position,LastSurface=="wood"?.12f:.19f);
         }
         public void Thunder(bool sheltered){At("thunder",d.Scene.View.transform.position+Vector3.up*5,sheltered?.19f:.43f);}
+        public void MonsterFootstep(Vector3 position){
+            string surface=SurfaceAt(position);
+            bool wet=d.Storm&&d.Storm.IsRaining&&!d.Storm.Covered(position);
+            LastMonsterFootstepPool=surface=="wood"?"monsterwood":surface=="stone"?"monsterstone":surface=="gravel"?"monstergravel":wet?"monstermud":"monstergrass";
+            var clip=Pick(LastMonsterFootstepPool);if(!clip)return;
+            var source=Source("Recorded monsterstep",transform,1);source.transform.position=position+Vector3.up*.15f;source.clip=clip;
+            source.minDistance=2;source.maxDistance=28;source.volume=.62f;
+            bool blocked=Physics.Linecast(position+Vector3.up*.65f,d.Scene.View.transform.position,out var hit,~((1<<8)|(1<<9)),QueryTriggerInteraction.Ignore)&&hit.collider!=d.Scene.Walker;
+            if(blocked){source.volume*=.6f;source.gameObject.AddComponent<AudioLowPassFilter>().cutoffFrequency=1700;}
+            source.Play();MonsterSteps++;MonsterStepSurfaces.Add(surface);Destroy(source.gameObject,clip.length+.1f);
+        }
         public void DogAt(Vector3 position, float volume)
         {
             dog.Stop(); dog.transform.position = position; dog.clip = Clip("dog"); dog.volume = volume;
             if (dog.clip != null) dog.Play();
         }
         public void StopDog() { if (dog != null && dog.isPlaying) dog.Stop(); }
+        public bool EngineAudible=>engine&&engine.isPlaying&&!engine.mute;
+        public int CollisionsPlayed {get;private set;}
+        public int CompletionCues {get;private set;}
+        public void SyncVehicleAudio(){if(engine)engine.mute=d.Phase!=ServicePhase.Playing||d.PaperOpen;if(cabin)cabin.mute=d.PaperOpen;}
+        public void CollisionAt(Vector3 position,float speed){At("collision",position,Mathf.Lerp(.2f,.65f,Mathf.Clamp01(speed/14)));CollisionsPlayed++;}
+        public void DeliveryComplete(){var clip=Pick("complete");if(clip){cabin.PlayOneShot(clip,.28f);CompletionCues++;}}
         public void Engine(bool on) { if (on && engine.clip != null) engine.Play(); else engine.Stop(); }
-        public void EngineSpeed(float speed) { engine.volume = Mathf.Lerp(.12f, .25f, speed / 12); }
+        public void EngineSpeed(float speed) { engine.volume = Mathf.Lerp(.12f, .25f, speed / 14); engine.pitch=Mathf.Lerp(.85f,1.4f,Mathf.Clamp01(speed/14)); }
         public void Ignition(bool delayed)
         {
             AudioClip clip = Clip(delayed ? "starter" : "start");

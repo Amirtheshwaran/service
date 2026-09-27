@@ -1,0 +1,16 @@
+{
+  "author": "Nox_Sound",
+  "license": "CC0",
+  "source_archive": "Essentials_Series_NOX_SOUND.zip",
+  "files": {
+    "Vehicle_Car_Door_Closing_Exterior_Mono_01.wav": "Essentials_Series_NOX_SOUND/Vehicle_Essentials_NOX_SOUND/Vehicle_Essential_Car/Vehicle_Car_Door_Closing_Exterior_Mono_01.wav",
+    "Vehicle_Car_Door_Closing_Exterior_Mono_02.wav": "Essentials_Series_NOX_SOUND/Vehicle_Essentials_NOX_SOUND/Vehicle_Essential_Car/Vehicle_Car_Door_Closing_Exterior_Mono_02.wav",
+    "Vehicle_Car_Keys_Mono_03.wav": "Essentials_Series_NOX_SOUND/Vehicle_Essentials_NOX_SOUND/Vehicle_Essential_Car/Vehicle_Car_Keys_Mono_03.wav",
+    "Vehicle_Car_Keys_Mono_04.wav": "Essentials_Series_NOX_SOUND/Vehicle_Essentials_NOX_SOUND/Vehicle_Essential_Car/Vehicle_Car_Keys_Mono_04.wav",
+    "Vehicle_Car_Trunk_Close_Impact_Mono.wav": "Essentials_Series_NOX_SOUND/Vehicle_Essentials_NOX_SOUND/Vehicle_Essential_Car/Vehicle_Car_Trunk_Close_Impact_Mono.wav",
+    "Household_Door_Wood_Open_Stereo.wav": "Essentials_Series_NOX_SOUND/Sample_A_Sound_Effect/Household_Door_Wood_Open_Stereo.wav",
+    "Vehicle_Car_Wiper_Interior_Loop_Mono.wav": "Essentials_Series_NOX_SOUND/Vehicle_Essentials_NOX_SOUND/Vehicle_Essential_Car/Vehicle_Car_Wiper_Interior_Loop_Mono.wav",
+    "Vehicle_Car_Drive_Interior_Loop_Stereo_01.wav": "Essentials_Series_NOX_SOUND/Vehicle_Essentials_NOX_SOUND/Vehicle_Essential_Car/Vehicle_Car_Drive_Interior_Loop_Stereo_01.wav",
+    "Vehicle_Car_Button_Mono_01.wav": "Essentials_Series_NOX_SOUND/Vehicle_Essentials_NOX_SOUND/Vehicle_Essential_Car/Vehicle_Car_Button_Mono_01.wav"
+  }
+}

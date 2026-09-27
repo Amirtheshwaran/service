@@ -17,5 +17,6 @@ namespace ServiceGameV2 {
   public GameObject[] EntityVariants;
   public GameObject Cockpit;
   public Transform SteeringWheel,SpeedNeedle,RevNeedle;
+  public Vector2 MirrorUVScale=new Vector2(1,-1);
  }
 }

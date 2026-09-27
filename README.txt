@@ -1,5 +1,5 @@
-SERVICE - HOLLIS COUNTY
-Unity 6.6 Windows development build - v11
+SERVICE ??HOLLIS COUNTY
+Unity 6.6 Windows development build ??v13
 
 RUN
 Extract the entire Windows ZIP, then double-click Service.exe.
@@ -117,3 +117,15 @@ barking comes from that animal. Hostile porch lights flicker on first approach.
 The cockpit is a refined Unity-built interior, not a newly purchased vehicle.
 The canine is a stylized authored asset. This remains a development build;
 AAA production quality and exhaustive scene QA have not been established.
+
+V13 REPAIR RELEASE
+Original V11 car appearance restored, including its exterior and complete cabin.
+The rejected V12 car and wipers are no longer present in the playable scene.
+Gradual steering, braking, reverse, radio and live mirror retained.
+272 additional plants/debris and 27 obstructing fence/planter sections removed.
+County Route 9 bench moved beside the path; estate approaches cleared.
+Faster pursuits, authored demon running animation and 39 recorded running steps
+with surface changes, positional attenuation and wall muffling.
+Bell's friendly first delivery is followed by the scripted return-path ambush.
+Correll remains safe. No new generated artwork or scenery was added.
+See V13-IMPLEMENTATION.md and TESTING.txt for verification and limitations.
