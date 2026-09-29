@@ -1,5 +1,5 @@
-SERVICE ??HOLLIS COUNTY
-Unity 6.6 Windows development build ??v13
+SERVICE - HOLLIS COUNTY
+Unity 6.6 Windows development build - v16
 
 RUN
 Extract the entire Windows ZIP, then double-click Service.exe.
@@ -129,3 +129,17 @@ with surface changes, positional attenuation and wall muffling.
 Bell's friendly first delivery is followed by the scripted return-path ambush.
 Correll remains safe. No new generated artwork or scenery was added.
 See V13-IMPLEMENTATION.md and TESTING.txt for verification and limitations.
+
+V15 REPAIR PASS
+Swept body vehicle collision checks and low-speed metal impact foley.
+Fitted Ford Crown Victoria cabin interior with aligned gauges, live mirror, and third radio station.
+Marked return lane branching after property 5 back to the depot; map displays return lane.
+Persistent door latch state across attempts; Bell return-path ambush and delayed car restart.
+Low-poly domestic dog model by Quaternius. Jumping disabled on stair zones.
+
+V16 CHARACTER AND REPAIR PASS
+First-person arms and hands for knocking and document placement interactions.
+Renderpeople Sophia and Nathan animated NPC residents at properties and walking at depot.
+Pawel Walasiewicz seated textured German Shepherd model at Correll residence.
+Native entrance door meshes with inward swings; entrance notices for room discovery.
+Watcher reacts to sustained eye contact and movement; Morrow House route and local notice tuning.

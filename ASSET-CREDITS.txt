@@ -181,3 +181,28 @@ V15 Flooded Grounds truck adaptation: the original authored rear tonneau
 panel is detached and lowered as the bed liner in Blender. The original
 body, rim, textures, UVs and three LODs are retained. Editable adaptation:
 Sources/V15/CountyTruck-open-bed.blend. Source package license unchanged.
+
+V16 AUTHORED CHARACTERS AND HANDS
+PSX First Person Arms ??Drillimpact, CC0.
+https://drillimpact.itch.io/psx-first-person-arms-free
+Author-supplied mesh, painted texture and relax/jab/grab animation clips.
+Re-exported from original .blend to FBX in metric units; fitted to player camera.
+No generated replacement mesh or texture.
+
+Sophia idling and Nathan walking ??Renderpeople Free Animated People samples.
+https://renderpeople.com/free-3d-people/
+https://renderpeople.com/general-terms-and-conditions/
+Renderpeople licence permits incorporation into games. The rendered/compiled
+characters are part of this player build; raw model files are not redistributed.
+Original scanned textures and recorded animation are used.
+
+German Shepard ??Pawel Walasiewicz, BlenderKit royalty-free asset.
+https://www.blenderkit.com/asset-gallery-detail/d45d4039-660e-460d-b6e6-b3c2a4742a6c/
+https://www.blenderkit.com/docs/licenses/
+Original model, seated rig pose and painted coat/eye/normal textures.
+Source pose adapted for Unity using Blender; particle fur omitted.
+This source has no animation clips. The seated model replaces the old
+Quaternius dog in this build. Raw source is not included in the player archive.
+
+V16 scene repairs reuse Flooded Grounds door/furniture meshes and BOTD conifers;
+source package licences remain applicable. No image-generator assets were used.

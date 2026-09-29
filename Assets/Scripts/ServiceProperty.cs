@@ -6,6 +6,9 @@ namespace ServiceGameV2 {
   public Transform Door, Gate, DeliveryPoint, TableApproach, EntitySpawn;
   public Light PorchLight, WindowLight;
   public Transform DoorPanel;
+  public float DoorSwing=100;
+  public Transform KnockPoint, NoticePoint;
+  [TextArea] public string NoticeText;
   public Renderer[] Curtains;
   public GameObject PostedPaper;
   public Transform SoundPoint;

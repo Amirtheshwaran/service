@@ -23,9 +23,10 @@ namespace ServiceGameV2 {
   void Line(Vector2 a,Vector2 b,float width,Color color){var t=Block(new Rect(a.x,a.y,Vector2.Distance(a,b),width),color).rectTransform;t.pivot=new Vector2(0,.5f);t.localRotation=Quaternion.Euler(0,0,-Mathf.Atan2(b.y-a.y,b.x-a.x)*Mathf.Rad2Deg);}
   string Context(){if(d.Busy||d.Horror.Caught)return "";if(d.Player.InCar)return d.CanFinish?"E   File shift report":d.Player.Speed<.8f?(d.Player.IsStarting?"Turning the ignition…":"E   Leave vehicle     /     Space   Ignition"):"";
    if(Vector3.Distance(d.Scene.View.transform.position,d.Scene.Car.position+Vector3.up)<3.5f)return "E   Enter vehicle";
+   if(d.NearbyNotice()>=0)return "E   Read the notice";
    int front=d.NearbyKnockDoor();if(front>=0)return "E   Knock     /     U   No service";
    if(d.NearbyDoor()>=0)return "E / R   Leave the notice";
-   int nearby=d.NearbyProperty();return nearby>=0?d.Property(nearby).Instructions:"";
+   return "";
   }
   void LateUpdate(){if(!d||!canvas)return;bool intro=d.Phase==ServicePhase.Title&&d.Presentation&&d.Presentation.IntroVisible;string context=Context();string state=d.Phase+"|"+d.PaperOpen+"|"+d.MapOpen+"|"+options+"|"+confirmNew+"|"+intro+"|"+d.Notice+"|"+d.Horror.Phase+"|"+context+"|"+d.NightIndex+"|"+(d.Vehicle?d.Vehicle.RadioOn+"/"+d.Vehicle.Station:"")+"|"+string.Join(",",d.Docket.Select(e=>(int)e.Result));
    if(last!=state){last=state;Rebuild(intro,context);}
@@ -59,7 +60,7 @@ namespace ServiceGameV2 {
   void Documents(){Shade(.93f);Label(new Rect(64,40,680,60),d.MapOpen?"County road index":"Evening assignments",38);Label(new Rect(66,103,620,26),d.Date.ToLowerInvariant()+"  /  Hollis County civil process",16,muted);Action(new Rect(945,60,270,35),d.MapOpen?"Tab   Field docket":"M   Route map",()=>d.MapOpen=!d.MapOpen);Rule(64,148,1152);
    if(d.MapOpen){Map();return;}
    Label(new Rect(65,177,750,28),"Deliver each notice, then record the visit.",18,muted);
-   for(int i=0;i<d.Docket.Count;i++){var e=d.Docket[i];var p=d.Property(e.Property);float y=225+i*67;Label(new Rect(66,y,58,32),(i+1).ToString("00"),20,accent);Label(new Rect(135,y,650,30),e.Address,22);Label(new Rect(135,y+29,680,27),p.Brief+"  ·  "+(d.IsFriendly(p.Index)?"Knock at the front door":p.Index==1||p.Index==5?"Delivery upstairs":"Delivery inside"),16,muted);Label(new Rect(916,y,295,35),Status(e.Result),17,e.Result==ServiceResult.Pending?muted:white);Rule(135,y+63,1080);}
+   for(int i=0;i<d.Docket.Count;i++){var e=d.Docket[i];var p=d.Property(e.Property);float y=225+i*67;Label(new Rect(66,y,58,32),(i+1).ToString("00"),20,accent);Label(new Rect(135,y,650,30),e.Address,22);Label(new Rect(135,y+29,680,27),p.Brief+"  ·  "+(d.NoticeRead(p.Index)?p.Instructions:"Visit the address"),16,muted);Label(new Rect(916,y,295,35),Status(e.Result),17,e.Result==ServiceResult.Pending?muted:white);Rule(135,y+63,1080);}
    Footer(d.AllResolved?"All visits recorded. Return to the depot.":"E  Knock / interact     R  Leave notice     U  Unable to serve");Action(new Rect(66,639,260,36),"Close document",()=>{d.PaperOpen=false;d.SetCursor();});Action(new Rect(924,639,290,36),"End route early",()=>d.RequestEarlyFinish());
   }
   void Footer(string text){Label(new Rect(66,590,1110,28),text,17,muted);Rule(64,627,1152);}
@@ -78,7 +79,11 @@ namespace ServiceGameV2 {
    Label(new Rect(695,554,500,27),"Amber marker: your vehicle and direction",16,accent);Footer("North is up. Numbers correspond to your current docket.");Action(new Rect(66,639,275,36),"Close document",()=>{d.PaperOpen=false;d.SetCursor();});Action(new Rect(928,639,270,36),"View field docket",()=>d.MapOpen=false);
   }
   void Playing(string context){if(context.Length>0)Label(new Rect(160,658,960,35),context,19).alignment=TextAnchor.MiddleCenter;if(d.Player.InCar){Label(new Rect(934,25,302,28),"Tab  Docket     M  Route map",16,muted);if(d.Vehicle&&d.Vehicle.RadioOn)Label(new Rect(925,59,311,27),d.Vehicle.StationName,16,accent);Label(new Rect(975,92,270,26),"V  Radio     B  Tune",14,muted);}
-   if(!string.IsNullOrEmpty(d.Notice)&&!d.Horror.Active&&!d.Horror.Caught)Label(new Rect(205,595,870,48),d.Notice,20).alignment=TextAnchor.MiddleCenter;
+   if(!string.IsNullOrEmpty(d.Notice)&&!d.Horror.Active&&!d.Horror.Caught){
+    bool posted=d.Notice.Contains("\n");
+    if(posted){Block(new Rect(298,399,684,230),panel);Rule(322,419,636,accent);Label(new Rect(328,433,624,178),d.Notice,22).alignment=TextAnchor.MiddleLeft;}
+    else Label(new Rect(205,568,870,78),d.Notice,20).alignment=TextAnchor.MiddleCenter;
+   }
    if(d.Horror.Active){Label(new Rect(240,67,800,38),d.Horror.Headline,24).alignment=TextAnchor.MiddleCenter;Label(new Rect(220,111,840,50),d.Horror.Instruction,19).alignment=TextAnchor.MiddleCenter;}
    if(d.Horror.Phase==PursuitPhase.Attack){contactShade=Block(new Rect(-1000,-1000,3280,2720),Color.clear);}
    if(d.Horror.Phase==PursuitPhase.Caught){Shade(1);Label(new Rect(230,310,820,65),d.Horror.DeathLine,26).alignment=TextAnchor.MiddleCenter;Label(new Rect(230,388,820,30),"Retrying from the property gate…",17,muted).alignment=TextAnchor.MiddleCenter;}
