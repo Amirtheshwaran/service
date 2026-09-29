@@ -44,7 +44,9 @@ namespace ServiceGameV2
             wind.clip = Pick("forestwind"); wind.loop = true; wind.volume = .09f;
             if (wind.clip != null) wind.Play();
             engine.clip = Clip("engine"); engine.loop = true; engine.volume = .17f;
-            ambience.clip = Pick("night"); ambience.loop = true; ambience.volume = .065f;
+            ambience.clip = Resources.Load<AudioClip>("Audio/V17/crickets") ?? Pick("night"); ambience.loop = true; ambience.volume = .065f;
+            // V17: recorded distant dogs (felix.blume, CC0) under the crickets.
+            var dogs = Source("Recorded distant dogs", d.Scene.View.transform, 0); dogs.clip = Resources.Load<AudioClip>("Audio/V17/distant_dogs"); dogs.loop = true; dogs.volume = .035f; if (dogs.clip != null) dogs.Play();
             if (ambience.clip != null) ambience.Play();
             room=Source("House room tone",d.Scene.View.transform,0);room.clip=Pick("roomtone");room.loop=true;room.volume=0;if(room.clip)room.Play();
             for(int i=1;i<d.Scene.Route.Length;i+=Mathf.Max(1,d.Scene.Route.Length/5)){

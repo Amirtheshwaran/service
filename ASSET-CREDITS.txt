@@ -206,3 +206,13 @@ Quaternius dog in this build. Raw source is not included in the player archive.
 
 V16 scene repairs reuse Flooded Grounds door/furniture meshes and BOTD conifers;
 source package licences remain applicable. No image-generator assets were used.
+
+V17 ADDITIONS (September 29, 2026) - all downloaded by the project owner; no AI-generated media
+- "Just man" by vrimen (Sketchfab), CC BY 4.0 - https://sketchfab.com/3d-models/just-man-e77a26778dc14b3c8f4838fe6a827dc3 - Bell resident and depot worker (worker jacket colour-tinted in Unity).
+- "An Elderly Man" by BELAZ (@asset_for_games, Sketchfab), CC BY 4.0 - https://sketchfab.com/3d-models/an-elderly-man-60cca77799e249e39ef53e3112baa4a7 - Correll resident.
+- "Pine trees pack (lowpoly, game ready, LODs)" by LOLIPOP (Sketchfab), CC BY 4.0 - https://sketchfab.com/3d-models/pine-trees-pack-lowpoly-game-ready-lods-e1e9c07b8e2e445c943fec660beefba2 - forest pines.
+- "Mid Poly Dead Pine Tree" by sujirour (Sketchfab), CC BY 4.0 - https://sketchfab.com/3d-models/mid-poly-dead-pine-tree-84b73e8b6efb4ca7b47409c89689927a - dead snags.
+- "German Shepherd 3D Dog Model (Free)" by RetroStyle Games (itch.io), free for personal/commercial projects - https://retrostylegames.itch.io/german-shepherd-3d-dog-model-free - Correll's dog (model, textures, breathing/idle clips).
+- Poly Haven (CC0): dead_tree_trunk, dry_branches_medium_01, rock_moss_set_01, rock_moss_set_02 - https://polyhaven.com (decimated in Blender for real-time use).
+- Unity Starter Assets - Third Person (Unity Technologies, Asset Store EULA): humanoid Idle and Walk_N clips retargeted to the residents.
+- Freesound (CC0): "Night Crickets Ambience on Rural Property" by OwlStorm - https://freesound.org/people/OwlStorm/sounds/320145/ ; "Dogs barking far with echo in a small village at night" by felix.blume - https://freesound.org/people/felix.blume/sounds/705299/ (both trimmed).
