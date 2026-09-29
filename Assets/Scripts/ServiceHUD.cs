@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.UI;
 namespace ServiceGameV2 {
  public sealed class ServiceHUD:MonoBehaviour {
-  ServiceDirector d;Canvas canvas;RectTransform root,carPin,carHeading;Image introShade,contactShade;CanvasGroup introWords;Font sans,document;bool options,confirmNew;string last="";int selected=-1;Rect worldBounds,mapPanel;Button firstButton;
+  ServiceDirector d;Canvas canvas;RectTransform root,carPin,carHeading;Image introShade,contactShade,cardShade;CanvasGroup introWords,cardWords;Font sans,document;bool options,confirmNew;string last="";int selected=-1;Rect worldBounds,mapPanel;Button firstButton;
   readonly Color white=new Color(.88f,.89f,.86f),muted=new Color(.53f,.58f,.57f),accent=new Color(.72f,.57f,.36f),panel=new Color(.035f,.045f,.048f,.97f),ink=new Color(.16f,.20f,.19f),mapPaper=new Color(.63f,.65f,.59f);
   public int MapPins {get;private set;} public int MapSegments {get;private set;}
   public void Initialize(ServiceDirector director){d=director;sans=Resources.Load<Font>("Fonts/Barlow-Regular");document=Resources.Load<Font>("Fonts/CourierPrime-Regular");
@@ -28,17 +28,25 @@ namespace ServiceGameV2 {
    if(d.NearbyDoor()>=0)return "E / R   Leave the notice";
    return "";
   }
-  void LateUpdate(){if(!d||!canvas)return;bool intro=d.Phase==ServicePhase.Title&&d.Presentation&&d.Presentation.IntroVisible;string context=Context();string state=d.Phase+"|"+d.PaperOpen+"|"+d.MapOpen+"|"+options+"|"+confirmNew+"|"+intro+"|"+d.Notice+"|"+d.Horror.Phase+"|"+context+"|"+d.NightIndex+"|"+(d.Vehicle?d.Vehicle.RadioOn+"/"+d.Vehicle.Station:"")+"|"+string.Join(",",d.Docket.Select(e=>(int)e.Result));
-   if(last!=state){last=state;Rebuild(intro,context);}
+  void LateUpdate(){if(!d||!canvas)return;bool intro=d.Phase==ServicePhase.Title&&d.Presentation&&d.Presentation.IntroVisible;string context=Context();bool card=ShiftCard;string state=card+"|"+(d.Horror.Active?d.Horror.Instruction+d.Horror.Headline:"")+"|"+d.Phase+"|"+d.PaperOpen+"|"+d.MapOpen+"|"+options+"|"+confirmNew+"|"+intro+"|"+d.Notice+"|"+d.Horror.Phase+"|"+context+"|"+d.NightIndex+"|"+(d.Vehicle?d.Vehicle.RadioOn+"/"+d.Vehicle.Station:"")+"|"+string.Join(",",d.Docket.Select(e=>(int)e.Result));
+   if(last!=state){last=state;Rebuild(intro,context,card);}
+   if(card&&cardShade){float t=d.ShiftCardTime;cardShade.color=new Color(0,0,0,1-Mathf.SmoothStep(0,1,(t-3.1f)/1.5f));cardWords.alpha=Mathf.SmoothStep(0,1,t/.9f)*(1-Mathf.SmoothStep(0,1,(t-2.5f)/.9f));}
    if(intro&&introShade){introShade.color=new Color(0,0,0,d.Presentation.IntroBackgroundAlpha);introWords.alpha=d.Presentation.IntroTextAlpha;}
    if(contactShade)contactShade.color=new Color(.65f,.62f,.56f,d.Storm.FlashesEnabled?d.Horror.ImpactAlpha:0);
    if(carPin){var pos=ServiceRouteMap.Project(d.Scene.Car.position,worldBounds,mapPanel);carPin.anchoredPosition=new Vector2(pos.x,-pos.y);carHeading.localRotation=Quaternion.Euler(0,0,-d.Scene.Car.eulerAngles.y);}
   }
-  void Rebuild(bool intro,string context){if(root){root.gameObject.SetActive(false);Destroy(root.gameObject);}firstButton=null;carPin=carHeading=null;introShade=contactShade=null;MapPins=MapSegments=0;root=Area("Screen",new Rect(0,0,1280,720),canvas.transform);root.anchorMin=root.anchorMax=root.pivot=new Vector2(.5f,.5f);root.anchoredPosition=Vector2.zero;
+  bool ShiftCard=>d.Phase==ServicePhase.Playing&&d.ShiftCardTime<4.6f;
+  void Rebuild(bool intro,string context,bool card){if(root){root.gameObject.SetActive(false);Destroy(root.gameObject);}firstButton=null;carPin=carHeading=null;introShade=contactShade=cardShade=null;cardWords=null;MapPins=MapSegments=0;root=Area("Screen",new Rect(0,0,1280,720),canvas.transform);root.anchorMin=root.anchorMax=root.pivot=new Vector2(.5f,.5f);root.anchoredPosition=Vector2.zero;
    if(intro){introShade=Block(new Rect(-1000,-1000,3280,2720),Color.black);var words=Area("Headphones",new Rect(0,0,1280,720));introWords=words.gameObject.AddComponent<CanvasGroup>();Label(new Rect(0,290,1280,52),"Headphones recommended",30,null,words).alignment=TextAnchor.MiddleCenter;Label(new Rect(0,348,1280,35),"For directional sound, use headphones.",18,muted,words).alignment=TextAnchor.MiddleCenter;Label(new Rect(0,636,1280,30),"Press any key to continue",15,muted,words).alignment=TextAnchor.MiddleCenter;return;}
-   if(d.Phase==ServicePhase.Title)Title();else if(d.Phase==ServicePhase.Paused)Pause();else if(d.Phase==ServicePhase.Report||d.Phase==ServicePhase.Finished)Report();else if(d.PaperOpen)Documents();else Playing(context);
+   if(d.Phase==ServicePhase.Title)Title();else if(d.Phase==ServicePhase.Paused)Pause();else if(d.Phase==ServicePhase.Finished)Epilogue();else if(d.Phase==ServicePhase.Report)Report();else if(d.PaperOpen)Documents();else Playing(context);
+   if(card)ShiftTitle();
    if(firstButton&&EventSystem.current)EventSystem.current.SetSelectedGameObject(firstButton.gameObject);
   }
+  void ShiftTitle(){cardShade=Block(new Rect(-1000,-1000,3280,2720),Color.black);cardShade.raycastTarget=true;var words=Area("Shift title",new Rect(0,0,1280,720));cardWords=words.gameObject.AddComponent<CanvasGroup>();cardWords.blocksRaycasts=false;cardWords.alpha=0;
+   Label(new Rect(0,292,1280,50),d.LongDate,30,null,words).alignment=TextAnchor.MiddleCenter;Label(new Rect(0,348,1280,30),d.ShiftTime+"   /   Hollis County",18,muted,words).alignment=TextAnchor.MiddleCenter;Label(new Rect(0,392,1280,26),new[]{"First shift","Second shift","Final shift"}[d.NightIndex],15,accent,words).alignment=TextAnchor.MiddleCenter;}
+  void Epilogue(){Shade(1);Label(new Rect(190,150,900,40),"Hollis County, 1998",18,muted);Rule(190,204,58,accent);
+   var text=Label(new Rect(190,232,900,300),"Civil process routes in Hollis County were suspended that November, after a process server failed to return from an evening shift.\n\nThe county car was found parked at the depot the next morning, engine running, headlights on. The return of service had been filed and signed.\n\nOne address on that docket, 1 County Route 9, does not appear on any county survey. The road it sits on was closed in 1971.\n\nThe route was never reassigned.",20);text.alignment=TextAnchor.UpperLeft;text.lineSpacing=1.15f;
+   Action(new Rect(190,600,320,40),"Return to title",()=>d.Title());}
   void Shade(float alpha=.86f){Block(new Rect(-1000,-1000,3280,2720),new Color(.015f,.021f,.026f,alpha));}
   void Title(){if(options){Settings();return;}Shade(.1f);Block(new Rect(0,0,490,720),new Color(.015f,.022f,.026f,.67f));
    Label(new Rect(78,160,450,85),"S E R V I C E",56);Label(new Rect(82,244,320,30),"Hollis County, October 1998",18,muted);Rule(82,306,58,accent);
@@ -69,7 +77,7 @@ namespace ServiceGameV2 {
    Block(new Rect(65,170,583,407),mapPaper);for(int i=1;i<8;i++)Line(new Vector2(65+i*73,170),new Vector2(65+i*73,577),1,new Color(.3f,.37f,.32f,.11f));for(int i=1;i<6;i++)Line(new Vector2(65,170+i*68),new Vector2(648,170+i*68),1,new Color(.3f,.37f,.32f,.11f));
    Vector2 MapPoint(Vector3 p)=>ServiceRouteMap.Project(p,worldBounds,mapPanel);
    for(int i=1;i<road.Length;i++){Line(MapPoint(road[i-1]),MapPoint(road[i]),3,ink);MapSegments++;}var back=d.Scene.GetComponentInChildren<ServiceReturnRoad>();if(back)for(int i=1;i<back.Points.Length;i++){Line(MapPoint(back.Points[i-1]),MapPoint(back.Points[i]),2,ink);MapSegments++;}
-   for(int i=0;i<d.Docket.Count;i++){var e=d.Docket[i];var p=d.Property(e.Property);var path=p.ApproachRoute;var nearest=road.OrderBy(t=>(t-p.Gate.position).sqrMagnitude).First();Line(MapPoint(nearest),MapPoint(p.Gate.position),1.5f,ink);for(int j=1;j<path.Length;j++)Line(MapPoint(path[j-1]),MapPoint(path[j]),1.5f,ink);Line(MapPoint(path[path.Length-1]),MapPoint(p.Door.position),1.5f,ink);
+   for(int i=0;i<d.Docket.Count;i++){var e=d.Docket[i];var p=d.Property(e.Property);var path=p.ApproachRoute;var nearest=road.OrderBy(t=>(t-p.Gate.position).sqrMagnitude).First();Line(MapPoint(nearest),MapPoint(p.Gate.position),1.5f,ink);if(path!=null&&path.Length>0){for(int j=1;j<path.Length;j++)Line(MapPoint(path[j-1]),MapPoint(path[j]),1.5f,ink);Line(MapPoint(path[path.Length-1]),MapPoint(p.Door.position),1.5f,ink);}
     var pin=MapPoint(p.Door.position);var color=e.Result==ServiceResult.Pending?ink:new Color(.38f,.43f,.35f);Block(new Rect(pin.x-11,pin.y-11,22,22),color);Label(new Rect(pin.x-11,pin.y-12,22,24),(i+1).ToString(),15,mapPaper).alignment=TextAnchor.MiddleCenter;MapPins++;
     float y=174+i*72;int captured=i;var row=Action(new Rect(695,y,510,63),(i+1).ToString("00")+"   "+e.Address,()=>selected=captured);row.GetComponentInChildren<Text>().fontSize=21;row.GetComponentInChildren<Text>().alignment=TextAnchor.UpperLeft;Label(new Rect(740,y+31,450,28),p.Brief+"  /  "+Status(e.Result),16,muted);if(selected==i){Block(new Rect(680,y+2,2,50),accent);Block(new Rect(pin.x-14,pin.y+14,28,2),new Color(.55f,.24f,.1f));}
    }
@@ -79,16 +87,19 @@ namespace ServiceGameV2 {
    Label(new Rect(695,554,500,27),"Amber marker: your vehicle and direction",16,accent);Footer("North is up. Numbers correspond to your current docket.");Action(new Rect(66,639,275,36),"Close document",()=>{d.PaperOpen=false;d.SetCursor();});Action(new Rect(928,639,270,36),"View field docket",()=>d.MapOpen=false);
   }
   void Playing(string context){if(context.Length>0)Label(new Rect(160,658,960,35),context,19).alignment=TextAnchor.MiddleCenter;if(d.Player.InCar){Label(new Rect(934,25,302,28),"Tab  Docket     M  Route map",16,muted);if(d.Vehicle&&d.Vehicle.RadioOn)Label(new Rect(925,59,311,27),d.Vehicle.StationName,16,accent);Label(new Rect(975,92,270,26),"V  Radio     B  Tune",14,muted);}
-   if(!string.IsNullOrEmpty(d.Notice)&&!d.Horror.Active&&!d.Horror.Caught){
+   if(d.Horror.Active){
+    if(!string.IsNullOrEmpty(d.Horror.Headline)){Label(new Rect(44,34,500,26),d.Horror.Headline.ToUpperInvariant(),15,accent);Rule(44,62,40,accent);}
+    var line=Label(new Rect(205,568,870,78),string.IsNullOrEmpty(d.Notice)?d.Horror.Instruction:d.Notice,21);line.alignment=TextAnchor.MiddleCenter;line.fontStyle=FontStyle.Italic;
+   }
+   else if(!string.IsNullOrEmpty(d.Notice)&&!d.Horror.Caught){
     bool posted=d.Notice.Contains("\n");
     if(posted){Block(new Rect(298,399,684,230),panel);Rule(322,419,636,accent);Label(new Rect(328,433,624,178),d.Notice,22).alignment=TextAnchor.MiddleLeft;}
     else Label(new Rect(205,568,870,78),d.Notice,20).alignment=TextAnchor.MiddleCenter;
    }
-   if(d.Horror.Active){Label(new Rect(240,67,800,38),d.Horror.Headline,24).alignment=TextAnchor.MiddleCenter;Label(new Rect(220,111,840,50),d.Horror.Instruction,19).alignment=TextAnchor.MiddleCenter;}
    if(d.Horror.Phase==PursuitPhase.Attack){contactShade=Block(new Rect(-1000,-1000,3280,2720),Color.clear);}
    if(d.Horror.Phase==PursuitPhase.Caught){Shade(1);Label(new Rect(230,310,820,65),d.Horror.DeathLine,26).alignment=TextAnchor.MiddleCenter;Label(new Rect(230,388,820,30),"Retrying from the property gate…",17,muted).alignment=TextAnchor.MiddleCenter;}
   }
-  void Report(){Shade(.96f);Label(new Rect(95,69,900,65),"Return of service",42);Label(new Rect(98,148,900,35),d.Date.ToLowerInvariant()+"  /  "+(d.EndedEarly?"Route closed early":"Route filed"),19,muted);Rule(95,211,1090);for(int i=0;i<d.Docket.Count;i++){var e=d.Docket[i];Label(new Rect(98,244+i*56,700,40),e.Address,22);Label(new Rect(858,244+i*56,330,40),Status(e.Result),18,e.Result==ServiceResult.Pending?muted:accent);}Rule(95,550,1090);Label(new Rect(98,572,700,32),"Trip recorded   "+d.TripMiles.ToString("0.0")+" mi",17,muted);Action(new Rect(98,631,600,40),d.NightIndex<2?"Continue to the next shift":"Return to title",()=>{if(d.NightIndex<2)d.NextShift();else d.Title();});}
+  void Report(){Shade(.96f);Label(new Rect(95,69,900,65),"Return of service",42);Label(new Rect(98,148,900,35),d.Date.ToLowerInvariant()+"  /  "+(d.EndedEarly?"Route closed early":"Route filed"),19,muted);Rule(95,211,1090);for(int i=0;i<d.Docket.Count;i++){var e=d.Docket[i];Label(new Rect(98,244+i*56,700,40),e.Address,22);Label(new Rect(858,244+i*56,330,40),Status(e.Result),18,e.Result==ServiceResult.Pending?muted:accent);}Rule(95,550,1090);Label(new Rect(98,572,700,32),"Trip recorded   "+d.TripMiles.ToString("0.0")+" mi",17,muted);Action(new Rect(98,631,600,40),d.NightIndex<2?"Continue to the next shift":"Go home",()=>d.NextShift());}
   public static string Status(ServiceResult result)=>result==ServiceResult.Served?"Served directly":result==ServiceResult.LeftAtDoor?"Notice left":result==ServiceResult.Unable?"Unable to serve":"Pending";
  }
 }

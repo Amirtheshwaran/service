@@ -48,6 +48,17 @@ Built with Unity 6 (6000.6.0f1) using URP.
 - **Route Saves**: Completed delivery shifts save automatically upon filing your report at the county depot. Unfinished mid-shift progress resets if the game is closed.
 - **Shift Progression**: The route features three evening shifts with escalating delivery conditions and altered road access.
 
+## v16.1 Fixes
+
+- Pressing E at the car while sprinting now gets you in. Before, E also triggered the look-behind, so you had to let go of Shift mid-chase.
+- The car now scrapes along fences, kerbs and verges and slows down. Before, any side contact stopped it dead. It can also always reverse out of a house's clearance zone.
+- F no longer switches the flashlight on inside the cockpit. When you step out, the flashlight comes back the way you left it (on by default).
+- Lines spoken during an encounter ("It's at the door.", "Come on. Turn over.") now appear as subtitles. Before, they were hidden.
+- Encounter prompts are shorter: a small objective at the top left and an inner-voice subtitle, instead of large "RUN" headlines.
+- Restarting a shift or getting caught no longer turns every window light on regardless of the night. Restarting during a porch-light flicker no longer leaves the light dimmed for good.
+- Each shift now opens with a date/time title card. After the final shift report there is a short epilogue. The unsurveyed parcel on the final night has its own closing line.
+- Performance: stair checks no longer search the whole scene every frame, and the first-person hands no longer look up their renderers every frame.
+
 ## Project Layout
 
 - Assets/Scenes/HollisCounty.unity: Main scene with the road network, return lane, and county properties.

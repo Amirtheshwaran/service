@@ -40,6 +40,7 @@ namespace ServiceGameV2
         ServiceDirector d;
         CountyScene s;
         float yaw, pitch, speed, gravity, footstep, startAt;
+        bool torch=true, walked;
         int fullMask;
 
         public void Initialize(ServiceDirector director)
@@ -110,10 +111,16 @@ namespace ServiceGameV2
             Vector3 before=s.Car.position;
             float impactSpeed=Speed;
             Vector3 travel=s.Car.forward*speed*Time.deltaTime;
-            bool estate=d.Scene.Properties.AnyBuildingContains(before+travel,1.35f);
+            bool estate=d.Scene.Properties.BlocksVehicle(before,before+travel,1.35f);
             bool solid=Physics.BoxCast(before+Vector3.up*.85f,new Vector3(.78f,.42f,1.85f),speed<0?-s.Car.forward:s.Car.forward,out var hit,s.Car.rotation,travel.magnitude+.06f,~((1<<8)|(1<<9)|(1<<10)),QueryTriggerInteraction.Ignore);
             var collision=s.CarBody.Move((estate||solid?Vector3.zero:travel)+Vector3.up*gravity*Time.deltaTime);
-            if(estate||solid||(collision&CollisionFlags.Sides)!=0){
+            bool side=(collision&CollisionFlags.Sides)!=0;
+            if(side&&!estate&&!solid&&travel.sqrMagnitude>1e-6f){
+                // A glancing contact (fence, kerb, verge) scrapes along and bleeds speed; only a real stop ends the motion.
+                var moved=s.Car.position-before;moved.y=0;float kept=moved.magnitude/travel.magnitude;
+                if(kept>.45f){speed=Mathf.MoveTowards(speed,0,Mathf.Clamp01(1-kept)*18*Time.deltaTime);side=false;}
+            }
+            if(estate||solid||side){
                 LastVehicleObstruction=estate?"Building clearance":solid?hit.collider.name:"Controller side contact";
                 if(impactSpeed>1.2f&&Time.time>nextCollision){d.Audio.CollisionAt(s.Car.position+s.Car.forward*1.8f,impactSpeed);nextCollision=Time.time+.8f;landing=.06f;}
                 speed=0;
@@ -180,6 +187,7 @@ namespace ServiceGameV2
         {
             Crouched=false;motionBlend=landing=0;SmokeCrouch=SmokeJump=false;
             lookBack=0;SmokeLookBack=0;
+            if(!InCar&&walked&&s.Flashlight)torch=s.Flashlight.enabled;
             InCar = true;
             if(s.Cockpit)s.Cockpit.SetActive(true);
             s.Walker.enabled = false;
@@ -213,6 +221,9 @@ namespace ServiceGameV2
         {
             Crouched=false;motionBlend=landing=0;SmokeCrouch=SmokeJump=false;s.Walker.height=1.8f;s.Walker.center=Vector3.up*.9f;
             lookBack=0;SmokeLookBack=0;
+            // Stepping out of the car restores the torch the player last had on foot (on by default).
+            if(InCar&&s.Flashlight)s.Flashlight.enabled=torch;
+            walked=true;
             InCar = false;
             if(s.Cockpit)s.Cockpit.SetActive(false);
             s.Walker.enabled = false;

@@ -18,8 +18,9 @@ namespace ServiceGameV2 {
   public NavMeshAgent Agent {get;private set;}
   public int PropertyIndex=>p?p.Index:-1;
   public float LookAwaySeconds {get;private set;}
-  public string Headline=>p&&p.Encounter==EncounterKind.LookAway?"DON'T LOOK BACK":Phase==PursuitPhase.Chase?d.Player.InCar?(d.Player.EngineRunning?"DRIVE":"START THE CAR"):"RUN":"";
-  public string Instruction=>p&&p.Encounter==EncounterKind.LookAway?"Turn away. Stand completely still until the breathing stops.":Phase==PursuitPhase.Chase?d.Player.InCar?(d.Player.EngineRunning?"Get clear of the gate.":"Hold W or S. Get the engine running."):"Get inside the car.":p?p.RevealLine:"";
+  // Objective (small, top-left) and inner-voice subtitle, in the manner of a found-footage walk-through rather than an arcade prompt.
+  public string Headline=>p&&p.Encounter==EncounterKind.LookAway?"Stay still":Phase==PursuitPhase.Chase?d.Player.InCar?(d.Player.EngineRunning?"Drive":"Start the car"):"Get back to the car":"";
+  public string Instruction=>p&&p.Encounter==EncounterKind.LookAway?(Elapsed<1?p.RevealLine:"Don't look at it. Don't move. Wait for the breathing to stop."):Phase==PursuitPhase.Chase?d.Player.InCar?(d.Player.EngineRunning?"Don't stop. Don't look at it.":"Come on. Start. Start."):"It's coming. Get to the car.":p?p.RevealLine:"";
   public string DeathLine=>p?p.DeathLine:"There is no record of your return.";
   ServiceDirector d;ServiceProperty p;NavMeshDataInstance nav;Animator[] animators;
   float repath,steps,growl,movingFor;Vector3 stillOrigin;bool stillAnchored,ignitionEscape;Vector3 lastWalker;readonly float[] approach=new float[6];readonly int[] cue=new int[6];
@@ -27,7 +28,7 @@ namespace ServiceGameV2 {
   public float GazeSeconds=>gazeSeconds;
   void LateUpdate(){if(Agent&&animators!=null)foreach(var a in animators)if(a&&a.gameObject.activeInHierarchy){a.SetBool("Moving",Phase==PursuitPhase.Chase&&p.Encounter==EncounterKind.Pursuit&&Agent.velocity.sqrMagnitude>.08f);a.speed=Phase==PursuitPhase.Chase?Mathf.Clamp(Agent.velocity.magnitude/(p.CreatureVariant==3?4.8f:2.2f),.8f,p.CreatureVariant==3?1.4f:2.1f):1;}}
   public void Initialize(ServiceDirector director){d=director;nav=NavMesh.AddNavMeshData(d.Scene.Navigation);Agent=d.Scene.Entity.GetComponent<NavMeshAgent>();animators=d.Scene.Entity.GetComponentsInChildren<Animator>(true);ResetEncounter();}
-  public void ResetEncounter(){Phase=PursuitPhase.Dormant;Elapsed=LookAwaySeconds=movingFor=0;stillAnchored=false;ignitionEscape=false;armedReturn=returnEncounter=false;System.Array.Clear(approach,0,6);System.Array.Clear(cue,0,6);if(Agent&&Agent.isOnNavMesh)Agent.ResetPath();d.Scene.Entity.SetActive(false);d.Audio.Pursuit(false);foreach(var h in d.Scene.Properties){if(h.WindowLight)h.WindowLight.enabled=true;if(h.EncounterLights!=null)foreach(var l in h.EncounterLights)if(l)l.enabled=true;}}
+  public void ResetEncounter(){Phase=PursuitPhase.Dormant;Elapsed=LookAwaySeconds=movingFor=0;stillAnchored=false;ignitionEscape=false;armedReturn=returnEncounter=false;System.Array.Clear(approach,0,6);System.Array.Clear(cue,0,6);if(Agent&&Agent.isOnNavMesh)Agent.ResetPath();d.Scene.Entity.SetActive(false);d.Audio.Pursuit(false);foreach(var h in d.Scene.Properties){if(h.WindowLight)h.WindowLight.enabled=h.Index<2||d.NightIndex==0;if(h.EncounterLights!=null)foreach(var l in h.EncounterLights)if(l)l.enabled=true;}}
   public void Begin(){Begin(1);}
   public void Begin(int index){BeginEncounter(index,false);}
   void BeginEncounter(int index,bool returning){

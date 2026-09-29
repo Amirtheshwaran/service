@@ -3,12 +3,12 @@ using System.Linq;
 using UnityEngine;
 namespace ServiceGameV2 {
  public sealed class ServiceLife:MonoBehaviour {
-  ServiceDirector d;Transform dog,model;Animation animationPlayer;Vector3 home,end;string walk,idle,bark;float pace,wait;int direction=1;bool moving;bool[] seen=new bool[6];Quaternion[] rest=new Quaternion[6];Coroutine[] doors=new Coroutine[6];
+  ServiceDirector d;Transform dog,model;Animation animationPlayer;Vector3 home,end;string walk,idle,bark;float pace,wait;int direction=1;bool moving;bool[] seen=new bool[6];Quaternion[] rest=new Quaternion[6];float[] porch=new float[6];Coroutine[] doors=new Coroutine[6];
   public bool DogPresent=>dog&&model;public float DogTravel {get;private set;}
   public void Initialize(ServiceDirector director){d=director;dog=transform.Find("Correll yard dog");if(dog){home=dog.position;end=home+d.Property(0).Door.right*2.5f;model=dog.GetChild(0);animationPlayer=dog.GetComponentInChildren<Animation>();if(animationPlayer){var names=animationPlayer.Cast<AnimationState>().Select(s=>s.name).ToArray();walk=names.FirstOrDefault(n=>n.ToLower().Contains("walk"))??names.FirstOrDefault(n=>n.ToLower().Contains("run"));if(walk!=null)animationPlayer[walk].speed=.45f;idle=names.FirstOrDefault(n=>n.ToLower().Contains("idle"))??names.FirstOrDefault();bark=names.FirstOrDefault(n=>n.ToLower().Contains("bark"));Play(idle);}}
-   for(int i=0;i<6;i++)rest[i]=d.Property(i).DoorPanel?d.Property(i).DoorPanel.localRotation:Quaternion.identity;
+   for(int i=0;i<6;i++){rest[i]=d.Property(i).DoorPanel?d.Property(i).DoorPanel.localRotation:Quaternion.identity;porch[i]=d.Property(i).PorchLight?d.Property(i).PorchLight.intensity:0;}
   }
-  public void ResetForShift(){StopAllCoroutines();System.Array.Clear(seen,0,seen.Length);if(dog)dog.position=home;for(int i=0;i<6;i++)if(d.Property(i).DoorPanel)d.Property(i).DoorPanel.localRotation=rest[i];}
+  public void ResetForShift(){StopAllCoroutines();System.Array.Clear(seen,0,seen.Length);if(dog)dog.position=home;for(int i=0;i<6;i++){if(d.Property(i).DoorPanel)d.Property(i).DoorPanel.localRotation=rest[i];if(d.Property(i).PorchLight)d.Property(i).PorchLight.intensity=porch[i];}}
   void Play(string name){if(animationPlayer&&!string.IsNullOrEmpty(name)&&!animationPlayer.IsPlaying(name))animationPlayer.CrossFade(name,.2f);}
   public void Bark(){if(!dog)return;d.Audio.DogAt(dog.position+Vector3.up*.4f,.32f);if(!string.IsNullOrEmpty(bark)){Play(bark);wait=1.8f;}}
   void Update(){if(!d||d.Phase!=ServicePhase.Playing||d.PaperOpen)return;
@@ -19,7 +19,7 @@ namespace ServiceGameV2 {
    if(d.Player.InCar)return;
    foreach(var p in d.Scene.Properties){if(d.IsFriendly(p.Index)||seen[p.Index]||Vector3.Distance(d.Scene.Walker.transform.position,p.Door.position)>14)continue;seen[p.Index]=true;StartCoroutine(Flicker(p));}
   }
-  IEnumerator Flicker(ServiceProperty p){if(!p.PorchLight)yield break;var light=p.PorchLight;float baseline=light.intensity;foreach(float value in new[]{.15f,1f,.1f,.2f,1f}){light.intensity=baseline*value;yield return new WaitForSeconds(.12f);}light.intensity=baseline;}
+  IEnumerator Flicker(ServiceProperty p){if(!p.PorchLight)yield break;var light=p.PorchLight;float baseline=porch[p.Index];foreach(float value in new[]{.15f,1f,.1f,.2f,1f}){light.intensity=baseline*value;yield return new WaitForSeconds(.12f);}light.intensity=baseline;}
   public void OpenDoor(ServiceProperty p,bool open,bool wide=false){if(p.DoorPanel){if(doors[p.Index]!=null)StopCoroutine(doors[p.Index]);doors[p.Index]=StartCoroutine(Door(p,open,wide));}}
   IEnumerator Door(ServiceProperty p,bool open,bool wide){var start=p.DoorPanel.localRotation;var goal=rest[p.Index]*Quaternion.Euler(0,open?(d.IsFriendly(p.Index)&&!wide?62:p.DoorSwing):0,0);float time=0;while(time<.65f){time+=Time.deltaTime;p.DoorPanel.localRotation=Quaternion.Slerp(start,goal,Mathf.SmoothStep(0,1,time/.65f));yield return null;}p.DoorPanel.localRotation=goal;}
  }
