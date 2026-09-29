@@ -42,6 +42,12 @@ Built with Unity 6 (6000.6.0f1) using URP.
 | M | Open route map (in car, follows curved roads and return lane) |
 | Esc | Pause menu / close papers |
 
+## Gameplay & Settings
+
+- **Settings Menu**: Press `Esc` while playing to access configuration options for master sound volume, music volume, mouse look sensitivity, camera gait bob, and camera motion blur.
+- **Route Saves**: Completed delivery shifts save automatically upon filing your report at the county depot. Unfinished mid-shift progress resets if the game is closed.
+- **Shift Progression**: The route features three evening shifts with escalating delivery conditions and altered road access.
+
 ## Project Layout
 
 - Assets/Scenes/HollisCounty.unity: Main scene with the road network, return lane, and county properties.
