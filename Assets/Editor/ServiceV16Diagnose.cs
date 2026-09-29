@@ -1,0 +1,15 @@
+using System;using System.IO;using System.Linq;using System.Collections.Generic;using UnityEngine;using UnityEditor;
+namespace ServiceGameV2.Editor {public static class ServiceV16Diagnose {
+ public static void Run(){var s=ServiceV16Audit.Open();var log=new List<string>();Physics.SyncTransforms();
+  foreach(var p in s.Properties){var from=p.TableApproach.position+Vector3.up*1.65f;var to=p.DeliveryPoint.position+Vector3.up*.09f;log.Add("TABLE "+p.Index+" "+from+" -> "+to);foreach(var h in Physics.RaycastAll(from,(to-from).normalized,Vector3.Distance(to,from),~0,QueryTriggerInteraction.Ignore))log.Add(" HIT "+ServiceV16Audit.PathOf(h.transform)+" "+h.distance+" "+h.point+" layer "+h.transform.gameObject.layer);}
+  var hands=s.View.GetComponentInChildren<ServiceHands>();foreach(var t in hands.GetComponentsInChildren<Transform>(true))if(t.parent==hands.transform||t.name=="ArmsMesh"||t.name=="ArmsRig")log.Add("HAND "+t.name+" active "+t.gameObject.activeInHierarchy+" local "+t.localPosition+" scale "+t.localScale+" layer "+t.gameObject.layer);
+  foreach(var r in hands.GetComponentsInChildren<Renderer>(true))log.Add("RENDER "+r.name+" enabled "+r.enabled+" active "+r.gameObject.activeInHierarchy+" forceOff "+r.forceRenderingOff+" bounds "+r.bounds+" shader "+r.sharedMaterial.shader.name);
+  ServiceForestMood.Apply(s,0);s.Cockpit.SetActive(false);s.Entity.SetActive(false);var cam=s.View;cam.transform.SetParent(null);cam.transform.position=new Vector3(82,2.4f,150);cam.transform.LookAt(new Vector3(87,2,153));cam.nearClipPlane=.035f;cam.cullingMask=-1;s.Flashlight.enabled=true;
+  var dir=Path.Combine(ServiceV16Audit.Work,"PreviewV16Diagnosis");Directory.CreateDirectory(dir);foreach(var p in new[]{new Vector3(82,2.4f,150),new Vector3(86,2.4f,154)}){cam.transform.position=p;cam.transform.LookAt(new Vector3(88,1.5f,156));ServiceV16Audit.Capture(cam,Path.Combine(dir,"harrow-"+p.x+".png"));}
+  cam.transform.position=new Vector3(-63,2.5f,92);cam.transform.LookAt(new Vector3(-68,2,92));hands.transform.localPosition=new Vector3(0,-1.74315f,.4f);hands.transform.localRotation=Quaternion.identity;
+  foreach(var t in hands.GetComponentsInChildren<Transform>(true))t.gameObject.SetActive(true);foreach(var r in hands.GetComponentsInChildren<Renderer>(true)){r.enabled=true;r.forceRenderingOff=false;r.gameObject.layer=0;}
+  var clip=AssetDatabase.LoadAllAssetsAtPath("Assets/External/DrillimpactArms/arms_rig.fbx").OfType<AnimationClip>().First(c=>c.name.EndsWith("|jab.R"));clip.SampleAnimation(hands.Rig.gameObject,clip.length*.5f);ServiceV16Audit.Capture(cam,Path.Combine(dir,"hand-enabled.png"));
+  foreach(var r in hands.GetComponentsInChildren<SkinnedMeshRenderer>()){var mesh=new Mesh();r.BakeMesh(mesh);var vertices=mesh.vertices.Select(v=>cam.transform.InverseTransformPoint(r.transform.TransformPoint(v))).ToArray();log.Add("POSE "+r.name+" verts "+vertices.Length+" tri "+mesh.triangles.Length+" z "+vertices.Min(v=>v.z)+".."+vertices.Max(v=>v.z)+" y "+vertices.Min(v=>v.y)+".."+vertices.Max(v=>v.y));}
+  File.WriteAllLines(Path.Combine(ServiceV16Audit.Work,"v16-diagnosis.txt"),log);
+ }
+}}
