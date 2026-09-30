@@ -63,15 +63,15 @@ namespace ServiceGameV2.Editor {
   }
 
   // ---------- animation ----------
-  static void Loop(string path,bool inPlace){
+  public static void Loop(string path,bool inPlace){
    var mi=(ModelImporter)AssetImporter.GetAtPath(path);if(!mi)return;
    var clips=(mi.clipAnimations.Length>0?mi.clipAnimations:mi.defaultClipAnimations);
    foreach(var c in clips){c.loopTime=true;c.lockRootRotation=true;c.keepOriginalOrientation=true;c.lockRootHeightY=true;c.keepOriginalPositionY=true;if(inPlace){c.lockRootPositionXZ=true;c.keepOriginalPositionXZ=true;}}
    mi.clipAnimations=clips;mi.SaveAndReimport();
   }
-  static AnimationClip Clip(string path)=>AssetDatabase.LoadAllAssetsAtPath(path).OfType<AnimationClip>().First(c=>!c.name.StartsWith("__preview"));
+  public static AnimationClip Clip(string path)=>AssetDatabase.LoadAllAssetsAtPath(path).OfType<AnimationClip>().First(c=>!c.name.StartsWith("__preview"));
   static void Clips(){Loop(R+"/Anim/Stand--Idle.anim.fbx",true);Loop(R+"/Anim/Locomotion--Walk_N.anim.fbx",true);Loop(R+"/Dog/A_Breathing.fbx",true);}
-  static AnimatorController Controller(string name,params (string state,string clip)[] states){
+  public static AnimatorController Controller(string name,params (string state,string clip)[] states){
    var path=$"{R}/Prefabs/{name}.controller";AssetDatabase.DeleteAsset(path);
    var c=AnimatorController.CreateAnimatorControllerAtPath(path);var sm=c.layers[0].stateMachine;
    foreach(var (state,clip) in states){var s=sm.AddState(state);s.motion=Clip(clip);if(sm.defaultState==null)sm.defaultState=s;}
@@ -79,13 +79,13 @@ namespace ServiceGameV2.Editor {
   }
 
   // ---------- residents ----------
-  static GameObject Human(string fbx,string name,Transform parent,Vector3 pos,Vector3 face,RuntimeAnimatorController ctrl,System.Action<GameObject> dress){
+  public static GameObject Human(string fbx,string name,Transform parent,Vector3 pos,Vector3 face,RuntimeAnimatorController ctrl,System.Action<GameObject> dress){
    var root=new GameObject(name);root.transform.SetParent(parent,true);root.transform.position=pos;var dir=face-pos;dir.y=0;root.transform.rotation=Quaternion.LookRotation(dir.sqrMagnitude>.01f?dir:Vector3.forward);
    var m=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(fbx));m.transform.SetParent(root.transform,false);
    var an=m.GetComponent<Animator>();if(!an)an=m.AddComponent<Animator>();an.runtimeAnimatorController=ctrl;an.applyRootMotion=false;an.cullingMode=AnimatorCullingMode.CullUpdateTransforms;
    dress?.Invoke(m);return root;
   }
-  static void DressJustMan(GameObject m,bool worker){
+  public static void DressJustMan(GameObject m,bool worker){
    const string J=R+"/Characters/JustMan/";
    Material Part(string part,float smooth,Color tint)=>Lit((worker?"Worker ":"JustMan ")+part,J+part+"_Base_Color.png",J+part+"_Normal_OpenGL.png",smooth:smooth,tint:tint);
    var jacket=Part("jacket",.25f,worker?new Color(.42f,.47f,.36f):Color.white);var legs=Part("pants_shirt",.15f,worker?new Color(.62f,.64f,.7f):Color.white);

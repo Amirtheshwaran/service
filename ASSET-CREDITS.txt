@@ -216,3 +216,9 @@ V17 ADDITIONS (September 29, 2026) - all downloaded by the project owner; no AI-
 - Poly Haven (CC0): dead_tree_trunk, dry_branches_medium_01, rock_moss_set_01, rock_moss_set_02 - https://polyhaven.com (decimated in Blender for real-time use).
 - Unity Starter Assets - Third Person (Unity Technologies, Asset Store EULA): humanoid Idle and Walk_N clips retargeted to the residents.
 - Freesound (CC0): "Night Crickets Ambience on Rural Property" by OwlStorm - https://freesound.org/people/OwlStorm/sounds/320145/ ; "Dogs barking far with echo in a small village at night" by felix.blume - https://freesound.org/people/felix.blume/sounds/705299/ (both trimmed).
+
+V18 ADDITIONS (September 29, 2026)
+- Poly Haven (CC0) furniture in the delivery rooms and the late cabin: ArmChair_01, ClassicNightstand_01, Rockingchair_01, Shelf_01, Sofa_01, WoodenChair_01, cardboard_box_01 - https://polyhaven.com/models
+- Unity Starter Assets - Third Person (Unity Technologies, Asset Store EULA): humanoid Run_N clip for the human pursuer.
+- The man who follows you (Daniel Bell, tree-line figure, human pursuer) reuses "Just man" by vrimen (CC BY 4.0), credited above.
+- All V18 dialogue and inner-voice lines are original written text; no synthesized voices.

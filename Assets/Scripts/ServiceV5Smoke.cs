@@ -51,7 +51,7 @@ namespace ServiceGameV2 {
    Require(AudioListener.volume==0,"Tests must start muted");
    var glass=d.Scene.Cockpit.transform.Find("Rearview glass");var glassMesh=glass.GetComponent<MeshFilter>().sharedMesh;var glassMat=glass.GetComponent<Renderer>().sharedMaterial;var uvScale=glassMat.GetTextureScale("_BaseMap");
    Require(uvScale==d.Scene.MirrorUVScale,"Mirror uses editor-verified upright reflected UV mapping");
-   Require(RenderSettings.fogDensity>=.025f&&RenderSettings.fogColor.b>.4f,"Reference fog applied at runtime");
+   Require(RenderSettings.fogDensity>=.025f&&RenderSettings.fogColor.b<.15f&&RenderSettings.fogColor.b>RenderSettings.fogColor.r,"Dark night fog applied at runtime");
    var thickets=d.Scene.transform.Find("Forest understory thickets");Require(thickets&&thickets.childCount>500,"Dense forest patches installed");
    Require(Resources.LoadAll<AudioClip>("Audio/V5/brush").Length>=6&&Resources.Load<AudioClip>("Audio/V5/insects/insects_0"),"Recorded forest variations installed");
    float introLimit=Time.realtimeSinceStartup+30;while(d.Presentation.IntroTextAlpha<.75f&&Time.realtimeSinceStartup<introLimit)yield return null;Require(d.Presentation.IntroVisible&&d.Presentation.IntroTextAlpha>.5f,"Headphone card fades in");yield return Shot("headphones");while(d.Presentation.IntroVisible&&Time.realtimeSinceStartup<introLimit)yield return null;Require(!d.Presentation.IntroVisible,"Headphone card fades out");

@@ -28,7 +28,7 @@ namespace ServiceGameV2 {
    if(d.NearbyDoor()>=0)return "E / R   Leave the notice";
    return "";
   }
-  void LateUpdate(){if(!d||!canvas)return;bool intro=d.Phase==ServicePhase.Title&&d.Presentation&&d.Presentation.IntroVisible;string context=Context();bool card=ShiftCard;string state=card+"|"+(d.Horror.Active?d.Horror.Instruction+d.Horror.Headline:"")+"|"+d.Phase+"|"+d.PaperOpen+"|"+d.MapOpen+"|"+options+"|"+confirmNew+"|"+intro+"|"+d.Notice+"|"+d.Horror.Phase+"|"+context+"|"+d.NightIndex+"|"+(d.Vehicle?d.Vehicle.RadioOn+"/"+d.Vehicle.Station:"")+"|"+string.Join(",",d.Docket.Select(e=>(int)e.Result));
+  void LateUpdate(){if(!d||!canvas)return;bool intro=d.Phase==ServicePhase.Title&&d.Presentation&&d.Presentation.IntroVisible;string context=Context();bool card=ShiftCard;string state=card+"|"+(d.Horror.Active?d.Horror.Instruction+d.Horror.Headline:"")+"|"+d.Phase+"|"+d.PaperOpen+"|"+d.MapOpen+"|"+options+"|"+confirmNew+"|"+intro+"|"+d.Notice+"|"+d.Horror.Phase+"|"+context+"|"+d.NightIndex+"|"+(d.Vehicle?d.Vehicle.RadioOn+"/"+d.Vehicle.Station:"")+"|"+string.Join(",",d.Docket.Select(e=>(int)e.Result))+"|"+(d.Dialogue?d.Dialogue.StateKey:"");
    if(last!=state){last=state;Rebuild(intro,context,card);}
    if(card&&cardShade){float t=d.ShiftCardTime;cardShade.color=new Color(0,0,0,1-Mathf.SmoothStep(0,1,(t-3.1f)/1.5f));cardWords.alpha=Mathf.SmoothStep(0,1,t/.9f)*(1-Mathf.SmoothStep(0,1,(t-2.5f)/.9f));}
    if(intro&&introShade){introShade.color=new Color(0,0,0,d.Presentation.IntroBackgroundAlpha);introWords.alpha=d.Presentation.IntroTextAlpha;}
@@ -86,7 +86,13 @@ namespace ServiceGameV2 {
    carPin=Area("Vehicle position",new Rect(0,0,10,10));Block(new Rect(-5,-5,10,10),new Color(.65f,.25f,.08f),carPin);carHeading=Area("Vehicle heading",new Rect(0,0,0,0),carPin);Block(new Rect(-1,-19,2,14),new Color(.65f,.25f,.08f),carHeading);
    Label(new Rect(695,554,500,27),"Amber marker: your vehicle and direction",16,accent);Footer("North is up. Numbers correspond to your current docket.");Action(new Rect(66,639,275,36),"Close document",()=>{d.PaperOpen=false;d.SetCursor();});Action(new Rect(928,639,270,36),"View field docket",()=>d.MapOpen=false);
   }
-  void Playing(string context){if(context.Length>0)Label(new Rect(160,658,960,35),context,19).alignment=TextAnchor.MiddleCenter;if(d.Player.InCar){Label(new Rect(934,25,302,28),"Tab  Docket     M  Route map",16,muted);if(d.Vehicle&&d.Vehicle.RadioOn)Label(new Rect(925,59,311,27),d.Vehicle.StationName,16,accent);Label(new Rect(975,92,270,26),"V  Radio     B  Tune",14,muted);}
+  void Playing(string context){bool talking=d.Dialogue&&d.Dialogue.Active;
+   // Fears to Fathom style: a small centre dot on foot, prompts just under it, named subtitles and numbered replies while talking.
+   if(!d.Player.InCar&&!talking&&!d.Horror.Caught)Block(new Rect(638,358,4,4),new Color(1,1,1,.55f));
+   if(context.Length>0&&!talking&&(d.Player.InCar||!d.Notice.Contains('\n'))){if(d.Player.InCar)Label(new Rect(160,658,960,35),context,19).alignment=TextAnchor.MiddleCenter;else Label(new Rect(340,376,600,30),context,17,new Color(.93f,.93f,.9f,.92f)).alignment=TextAnchor.MiddleCenter;}
+   if(talking){var dl=d.Dialogue;Label(new Rect(205,552,870,26),dl.Speaker.ToUpperInvariant(),15,accent).alignment=TextAnchor.MiddleCenter;Label(new Rect(185,578,910,64),dl.Line,21).alignment=TextAnchor.MiddleCenter;
+    if(dl.Choices.Length>0){Block(new Rect(360,412,560,dl.Choices.Length*38+22),new Color(0,0,0,.62f));for(int i=0;i<dl.Choices.Length;i++)Label(new Rect(384,423+i*38,520,34),(i+1)+"    "+dl.Choices[i],18);}
+    return;}if(d.Player.InCar){Label(new Rect(934,25,302,28),"Tab  Docket     M  Route map",16,muted);if(d.Vehicle&&d.Vehicle.RadioOn)Label(new Rect(925,59,311,27),d.Vehicle.StationName,16,accent);Label(new Rect(975,92,270,26),"V  Radio     B  Tune",14,muted);}
    if(d.Horror.Active){
     if(!string.IsNullOrEmpty(d.Horror.Headline)){Label(new Rect(44,34,500,26),d.Horror.Headline.ToUpperInvariant(),15,accent);Rule(44,62,40,accent);}
     var line=Label(new Rect(205,568,870,78),string.IsNullOrEmpty(d.Notice)?d.Horror.Instruction:d.Notice,21);line.alignment=TextAnchor.MiddleCenter;line.fontStyle=FontStyle.Italic;

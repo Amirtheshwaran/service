@@ -40,6 +40,11 @@ namespace ServiceGameV2
         public bool Busy { get; private set; }
         public ServiceVehiclePresentation Vehicle {get;private set;}
         public ServiceLife Life {get;private set;}
+        public ServiceDialogue Dialogue {get;private set;}
+        public ServiceStalker Stalker {get;private set;}
+        public int HumanVariant {get;private set;}=-1;
+        public bool BellGone;
+        EncounterKind[] baseKind; int[] baseVariant; readonly bool[] arrived = new bool[6];
         public int KnockCount {get;private set;}
         public bool IsFriendly(int index)=>index==0||(index==4&&NightIndex==0);
         public bool IsSmoke { get; private set; }
@@ -83,12 +88,16 @@ namespace ServiceGameV2
             Horror=gameObject.AddComponent<ServiceHorror>();Horror.Initialize(this);
             HUD = gameObject.AddComponent<ServiceHUD>();
             HUD.Initialize(this);
+            Dialogue=gameObject.AddComponent<ServiceDialogue>();Dialogue.Initialize(this);
+            baseKind=new EncounterKind[Scene.Properties.Length];baseVariant=new int[Scene.Properties.Length];for(int i=0;i<Scene.Properties.Length;i++){baseKind[i]=Scene.Properties[i].Encounter;baseVariant[i]=Scene.Properties[i].CreatureVariant;}
+            if(Scene.EntityVariants!=null)HumanVariant=Array.FindIndex(Scene.EntityVariants,v=>v&&v.name.StartsWith("The man"));
             ConfigureNight(0);
             Player.EnterCar();
             Storm=gameObject.AddComponent<ServiceStorm>();Storm.Initialize(this);
             Presentation=gameObject.AddComponent<ServicePresentation>();Presentation.Initialize(this);
             Vehicle=gameObject.AddComponent<ServiceVehiclePresentation>();Vehicle.Initialize(this);
             Life=gameObject.AddComponent<ServiceLife>();Life.Initialize(this);
+            Stalker=gameObject.AddComponent<ServiceStalker>();Stalker.Initialize(this,Scene.StalkerFigure);
             SetCursor();
             IsSmoke = Array.IndexOf(Environment.GetCommandLineArgs(), "-serviceSmoke") >= 0;
             if(IsSmoke){if(Array.IndexOf(Environment.GetCommandLineArgs(),"-serviceV16")>=0)gameObject.AddComponent<ServiceV16Smoke>().Run(this);else if(Array.IndexOf(Environment.GetCommandLineArgs(),"-serviceVisual")>=0)gameObject.AddComponent<ServiceV15VisualSmoke>().Run(this);else gameObject.AddComponent<ServiceV5Smoke>().Run(this);}
@@ -161,7 +170,8 @@ namespace ServiceGameV2
             EnvironmentChanges = 0;
             Notice = "";
             Array.Clear(noticeRead,0,6); Array.Clear(accessGranted,0,6); Array.Clear(linger, 0, 6); Array.Clear(unseen, 0, 6);
-            Array.Clear(changed, 0, 6); Array.Clear(dogHeard, 0, 6);
+            Array.Clear(changed, 0, 6); Array.Clear(dogHeard, 0, 6); Array.Clear(arrived, 0, 6); BellGone = false;
+            if(Dialogue)Dialogue.Cancel(); if(Stalker)Stalker.ResetForShift();
             ConfigureNight(NightIndex);if(Life)Life.ResetForShift();
             Horror.ResetEncounter();
             Player.ResetForShift(depotStart, depotRotation);
@@ -192,6 +202,20 @@ namespace ServiceGameV2
                 if (p.AddressLabel != null) p.AddressLabel.gameObject.SetActive(false);
                 for (int j = 0; j < curtainRest[i].Length; j++) if (p.Curtains[j] != null) p.Curtains[j].transform.localRotation = curtainRest[i][j];
             }
+            Schedule(night);
+        }
+
+        // V18: night one is ordinary work and Bell (the man) is the only threat. Night two mixes the man with the creatures; night three is the creatures.
+        void Schedule(int night)
+        {
+            if (baseKind == null) return;
+            for (int i = 0; i < Scene.Properties.Length; i++)
+            {
+                var p = Scene.Properties[i]; p.Encounter = baseKind[i]; p.CreatureVariant = baseVariant[i];
+                if (HumanVariant < 0) continue;
+                if (night == 0) { if (p.Index == 1 || p.Index == 3 || p.Index == 5) p.Encounter = EncounterKind.None; if (p.Index == 4) p.CreatureVariant = HumanVariant; }
+                else if (night == 1 && (p.Index == 1 || p.Index == 5)) p.CreatureVariant = HumanVariant;
+            }
         }
 
         void EvaluateCues(float dt)
@@ -203,6 +227,7 @@ namespace ServiceGameV2
                 float distance = Vector3.Distance(Scene.View.transform.position, p.Door.position);
                 if (distance > 32) continue;
                 linger[i] += dt;
+                if (distance < 16 && !arrived[i] && Docket.Exists(e => e.Property == p.Index && e.Result == ServiceResult.Pending)) { arrived[i] = true; var line = ServiceScript.Arrival(p.Index, NightIndex); if (line != null && string.IsNullOrEmpty(Notice)) Say(line); }
                 if (NightIndex > 0 && linger[i] > 24) Player.IgnitionDelayPending = true;
                 if (i == 0 && distance > 11 && Time.time > nextDog)
                 {
@@ -274,12 +299,12 @@ namespace ServiceGameV2
             {
                 if (p.PostedPaper != null) p.PostedPaper.SetActive(true);
                 Audio.Paper();
-                if (!p.HasEncounter && !IsFriendly(index) && !string.IsNullOrEmpty(p.RevealLine))
+                if (!p.HasEncounter && !IsFriendly(index) && NightIndex > 0 && !string.IsNullOrEmpty(p.RevealLine))
                 {
                     Audio.KnockAt(p.SoundPoint != null ? p.SoundPoint.position : p.Door.position, .35f);
                     Say(p.RevealLine);
                 }
-                else { Audio.DeliveryComplete(); Say("Notice left."); }
+                else { Audio.DeliveryComplete(); Say(NightIndex == 0 && !IsFriendly(index) ? ServiceScript.QuietDelivery(index) : "Notice left."); }
             }
             else Say("No contact. Visit recorded.");
         }
@@ -298,7 +323,9 @@ namespace ServiceGameV2
                 Audio.DoorAt(p.Door.position);
                 Say("A floorboard creaks beyond the door.");
                 if(Life)Life.OpenDoor(p,true);
-                yield return new WaitForSeconds(1.6f);
+                yield return new WaitForSeconds(1.1f);
+                var talk=ServiceScript.Doorstep(entry.Property,NightIndex);
+                if(talk.HasValue&&Dialogue)yield return Dialogue.Run(talk.Value.speaker,talk.Value.steps);
                 entry.Result = ServiceResult.Served;
                 if(hands)hands.Interact(false);
                 Audio.Paper();
@@ -306,7 +333,7 @@ namespace ServiceGameV2
                 if(entry.Property==4&&NightIndex==0)Horror.ArmReturnAmbush();
                 if(Life)Life.OpenDoor(p,false);
                 Audio.DoorAt(p.Door.position);
-                Say(entry.Property==0?"The resident takes the envelope.":"“Thank you. Mind the step on your way out.”");
+                Say(entry.Property==0?"He takes the envelope and shuts the door.":"He takes it without looking at it. The door stays open a moment longer than it should.");
             }
             else if (NightIndex > 0)
             {
@@ -345,7 +372,7 @@ namespace ServiceGameV2
         void OnApplicationFocus(bool focused){if(!focused&&!IsSmoke&&Phase==ServicePhase.Playing)Pause();}
         public void Pause() { if (Phase != ServicePhase.Playing) return; Phase = ServicePhase.Paused; Time.timeScale = 0; SetCursor(); }
         public void Resume() { if (Phase != ServicePhase.Paused) return; Phase = ServicePhase.Playing; Time.timeScale = 1; SetCursor(); }
-        public void Title() { StopAllCoroutines(); Busy = false; Phase = ServicePhase.Title; PaperOpen = MapOpen = false; Time.timeScale = 1; Player.StopEngine(); Horror.ResetEncounter(); SetCursor(); }
+        public void Title() { StopAllCoroutines(); Busy = false; if(Dialogue)Dialogue.Cancel(); Phase = ServicePhase.Title; PaperOpen = MapOpen = false; Time.timeScale = 1; Player.StopEngine(); Horror.ResetEncounter(); SetCursor(); }
         public void SetCursor() { bool locked = Phase == ServicePhase.Playing && !PaperOpen && !IsSmoke; Cursor.lockState = locked ? CursorLockMode.Locked : CursorLockMode.None; Cursor.visible = !locked; }
         void OnDestroy() { if(Audio&&Player)SaveOptions();AudioListener.pause=false;Time.timeScale = 1; Cursor.lockState = CursorLockMode.None; Cursor.visible = true; }
     }
