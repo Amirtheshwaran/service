@@ -32,6 +32,8 @@ namespace ServiceGameV2
         public bool PaperOpen, MapOpen, EndedEarly, OdometerFrozen;
         public float TripMiles { get; private set; }
         public string Notice { get; private set; } = "";
+        // V19: the handwritten note currently held up to read (property index), or -1.
+        public int NoteOpen { get; private set; } = -1;
         public string Date => new[] { "OCTOBER 01", "OCTOBER 04", "OCTOBER 09" }[NightIndex];
         public string LongDate => new[] { "Thursday, October 1st, 1998", "Sunday, October 4th, 1998", "Friday, October 9th, 1998" }[NightIndex];
         public string ShiftTime => new[] { "9:48 PM", "10:21 PM", "11:57 PM" }[NightIndex];
@@ -41,13 +43,14 @@ namespace ServiceGameV2
         public ServiceVehiclePresentation Vehicle {get;private set;}
         public ServiceLife Life {get;private set;}
         public ServiceDialogue Dialogue {get;private set;}
-        public ServiceStalker Stalker {get;private set;}
-        public int HumanVariant {get;private set;}=-1;
+        public ServiceCamcorder Camcorder {get;private set;}
         public bool BellGone;
-        EncounterKind[] baseKind; int[] baseVariant; readonly bool[] arrived = new bool[6];
+        readonly bool[] arrived = new bool[6], inside = new bool[6];
+        bool dogLine, lightsLine, docketLine, barricadeLine, surveyLine; float depotIntroAt = -1;
         public int KnockCount {get;private set;}
         public bool IsFriendly(int index)=>index==0||(index==4&&NightIndex==0);
         public bool IsSmoke { get; private set; }
+        public bool IsTour { get; private set; }
         public bool InputBlocked => Phase != ServicePhase.Playing || PaperOpen || (Horror!=null&&(Horror.Caught||Horror.ForcedLook));
         public bool AllResolved => Docket.Count > 0 && Docket.TrueForAll(e => e.Result != ServiceResult.Pending);
         public bool CanFinish => (AllResolved || EndedEarly) && !Horror.Active && !Horror.Caught && Player.InCar && Player.Speed < .6f && ServiceInteraction.InDepot(Scene.Car.position, Scene.Depot.position);
@@ -89,18 +92,17 @@ namespace ServiceGameV2
             HUD = gameObject.AddComponent<ServiceHUD>();
             HUD.Initialize(this);
             Dialogue=gameObject.AddComponent<ServiceDialogue>();Dialogue.Initialize(this);
-            baseKind=new EncounterKind[Scene.Properties.Length];baseVariant=new int[Scene.Properties.Length];for(int i=0;i<Scene.Properties.Length;i++){baseKind[i]=Scene.Properties[i].Encounter;baseVariant[i]=Scene.Properties[i].CreatureVariant;}
-            if(Scene.EntityVariants!=null)HumanVariant=Array.FindIndex(Scene.EntityVariants,v=>v&&v.name.StartsWith("The man"));
+            Camcorder=gameObject.AddComponent<ServiceCamcorder>();
+            ApplyScriptText(0);
             ConfigureNight(0);
             Player.EnterCar();
             Storm=gameObject.AddComponent<ServiceStorm>();Storm.Initialize(this);
             Presentation=gameObject.AddComponent<ServicePresentation>();Presentation.Initialize(this);
             Vehicle=gameObject.AddComponent<ServiceVehiclePresentation>();Vehicle.Initialize(this);
             Life=gameObject.AddComponent<ServiceLife>();Life.Initialize(this);
-            Stalker=gameObject.AddComponent<ServiceStalker>();Stalker.Initialize(this,Scene.StalkerFigure);
             SetCursor();
             IsSmoke = Array.IndexOf(Environment.GetCommandLineArgs(), "-serviceSmoke") >= 0;
-            if(IsSmoke){if(Array.IndexOf(Environment.GetCommandLineArgs(),"-serviceV16")>=0)gameObject.AddComponent<ServiceV16Smoke>().Run(this);else if(Array.IndexOf(Environment.GetCommandLineArgs(),"-serviceVisual")>=0)gameObject.AddComponent<ServiceV15VisualSmoke>().Run(this);else gameObject.AddComponent<ServiceV5Smoke>().Run(this);}
+            if(IsSmoke){if(Array.IndexOf(Environment.GetCommandLineArgs(),"-serviceSurvey")>=0)gameObject.AddComponent<ServiceV19Survey>().Run(this);else if(Array.IndexOf(Environment.GetCommandLineArgs(),"-serviceTour")>=0){IsTour=true;gameObject.AddComponent<ServiceV19Tour>().Run(this);}else if(Array.IndexOf(Environment.GetCommandLineArgs(),"-serviceV19")>=0)gameObject.AddComponent<ServiceV19Smoke>().Run(this);else if(Array.IndexOf(Environment.GetCommandLineArgs(),"-serviceV16")>=0)gameObject.AddComponent<ServiceV16Smoke>().Run(this);else if(Array.IndexOf(Environment.GetCommandLineArgs(),"-serviceVisual")>=0)gameObject.AddComponent<ServiceV15VisualSmoke>().Run(this);else gameObject.AddComponent<ServiceV5Smoke>().Run(this);}
         }
 
         public ServiceProperty Property(int index)
@@ -129,11 +131,13 @@ namespace ServiceGameV2
             lastCarPosition = Scene.Car.position;
             if (NightIndex == 2 && Scene.LateThreshold != null && Vector3.Dot(Scene.Car.position - Scene.LateThreshold.position, Scene.LateThreshold.forward) > 0)
                 OdometerFrozen = true;
+            ShiftLines();
             if (Scene.Odometer != null) Scene.Odometer.text = TripMiles.ToString("000.0") + " mi";
             if (Time.unscaledTime > noticeUntil) Notice = "";
+            if (NoteOpen >= 0) { var np = Property(NoteOpen); if (Player.InCar || Horror.Active || Horror.Caught || np.NoticePoint == null || Vector3.Distance(Scene.View.transform.position, np.NoticePoint.position) > 3.2f) NoteOpen = -1; }
             if (!PaperOpen && !Horror.Active && !Horror.Caught) EvaluateCues(Time.deltaTime);
             if (InputBlocked || Busy) return;
-            if (Pressed(Key.F) && Scene.Flashlight != null && !Player.InCar) Scene.Flashlight.enabled = !Scene.Flashlight.enabled;
+            if (Pressed(Key.F) && Scene.Flashlight != null && !Player.InCar) { Scene.Flashlight.enabled = !Scene.Flashlight.enabled; var click = Resources.Load<AudioClip>("Audio/V19/torch_click"); if (click) AudioSource.PlayClipAtPoint(click, Scene.View.transform.position, .45f); }
             // E also looks over the right shoulder while sprinting, so reaching the car must not depend on releasing Shift first.
             bool nearCar = !Player.InCar && Vector3.Distance(Scene.View.transform.position, Scene.Car.position + Vector3.up) < 3.5f;
             if (Pressed(Key.E) && nearCar) Player.EnterCar();
@@ -141,6 +145,7 @@ namespace ServiceGameV2
             {
                 if (CanFinish) TryFinishShift();
                 else if (Player.InCar) Player.TryExitCar();
+                else if(NoteOpen>=0){NoteOpen=-1;Audio.Paper();}
                 else if(NearbyNotice()>=0)ReadNotice(NearbyNotice());
                 else { int front=NearbyKnockDoor();if(front>=0)Attempt(front,ServiceResult.Served);else {int i=NearbyDoor();if(i>=0)Attempt(i,ServiceResult.LeftAtDoor);} }
             }
@@ -169,16 +174,18 @@ namespace ServiceGameV2
             TripMiles = 0;
             EnvironmentChanges = 0;
             Notice = "";
-            Array.Clear(noticeRead,0,6); Array.Clear(accessGranted,0,6); Array.Clear(linger, 0, 6); Array.Clear(unseen, 0, 6);
-            Array.Clear(changed, 0, 6); Array.Clear(dogHeard, 0, 6); Array.Clear(arrived, 0, 6); BellGone = false;
-            if(Dialogue)Dialogue.Cancel(); if(Stalker)Stalker.ResetForShift();
+            NoteOpen=-1;Array.Clear(noticeRead,0,6); Array.Clear(accessGranted,0,6); Array.Clear(linger, 0, 6); Array.Clear(unseen, 0, 6);
+            Array.Clear(changed, 0, 6); Array.Clear(dogHeard, 0, 6); Array.Clear(arrived, 0, 6); Array.Clear(inside, 0, 6); BellGone = false;
+            dogLine = lightsLine = docketLine = barricadeLine = surveyLine = false; depotIntroAt = Time.unscaledTime + (IsSmoke && !IsTour ? 0 : 5.2f);
+            if(Dialogue)Dialogue.Cancel();
+            ApplyScriptText(NightIndex);
             ConfigureNight(NightIndex);if(Life)Life.ResetForShift();
             Horror.ResetEncounter();
             Player.ResetForShift(depotStart, depotRotation);
             lastCarPosition = Scene.Car.position;
             PaperOpen = true; MapOpen = false;
             nextDog = Time.time + 4;
-            shiftStartedAt = IsSmoke ? -99 : Time.unscaledTime;
+            shiftStartedAt = IsSmoke && !IsTour ? -99 : Time.unscaledTime;
             SetCursor();
         }
 
@@ -202,20 +209,28 @@ namespace ServiceGameV2
                 if (p.AddressLabel != null) p.AddressLabel.gameObject.SetActive(false);
                 for (int j = 0; j < curtainRest[i].Length; j++) if (p.Curtains[j] != null) p.Curtains[j].transform.localRotation = curtainRest[i][j];
             }
-            Schedule(night);
         }
 
-        // V18: night one is ordinary work and Bell (the man) is the only threat. Night two mixes the man with the creatures; night three is the creatures.
-        void Schedule(int night)
+        // V19: all narrative text comes from ServiceScript (Sources/V19/script.json).
+        void ApplyScriptText(int night)
         {
-            if (baseKind == null) return;
-            for (int i = 0; i < Scene.Properties.Length; i++)
+            foreach (var p in Scene.Properties)
             {
-                var p = Scene.Properties[i]; p.Encounter = baseKind[i]; p.CreatureVariant = baseVariant[i];
-                if (HumanVariant < 0) continue;
-                if (night == 0) { if (p.Index == 1 || p.Index == 3 || p.Index == 5) p.Encounter = EncounterKind.None; if (p.Index == 4) p.CreatureVariant = HumanVariant; }
-                else if (night == 1 && (p.Index == 1 || p.Index == 5)) p.CreatureVariant = HumanVariant;
+                var t = ServiceScript.For(p.Index); if (t == null) continue;
+                p.Brief = t.Docket; p.Instructions = t.Instructions; p.RevealLine = t.Reveal;
+                if (!string.IsNullOrEmpty(t.Death)) p.DeathLine = t.Death;
+                p.NoticeText = ServiceScript.Note(p.Index, night);
+                if (p.NoticePoint != null && p.NoticePoint.name == "Door note") p.NoticePoint.gameObject.SetActive(!string.IsNullOrEmpty(p.NoticeText));
             }
+        }
+
+        // Inner voice at the depot, at the barricade and past the survey line, and once the docket is done.
+        void ShiftLines()
+        {
+            if (depotIntroAt > 0 && Time.unscaledTime > depotIntroAt && !PaperOpen) { depotIntroAt = -1; Say(ServiceScript.DepotIntro[NightIndex]); }
+            if (NightIndex == 2 && !barricadeLine && Scene.LateThreshold != null && Player.InCar && Vector3.Distance(Scene.Car.position, Scene.LateThreshold.position) < 38) { barricadeLine = true; Say(ServiceScript.BarricadeGone); }
+            if (OdometerFrozen && !surveyLine) { surveyLine = true; Say(ServiceScript.PastTheSurvey); }
+            if (AllResolved && !docketLine && !Horror.Active && !Horror.Caught && !Busy) { docketLine = true; Say(ServiceScript.AllVisitsRecorded); }
         }
 
         void EvaluateCues(float dt)
@@ -227,11 +242,14 @@ namespace ServiceGameV2
                 float distance = Vector3.Distance(Scene.View.transform.position, p.Door.position);
                 if (distance > 32) continue;
                 linger[i] += dt;
-                if (distance < 16 && !arrived[i] && Docket.Exists(e => e.Property == p.Index && e.Result == ServiceResult.Pending)) { arrived[i] = true; var line = ServiceScript.Arrival(p.Index, NightIndex); if (line != null && string.IsNullOrEmpty(Notice)) Say(line); }
+                bool pending = Docket.Exists(e => e.Property == p.Index && e.Result == ServiceResult.Pending);
+                if (distance < 16 && !arrived[i] && pending) { arrived[i] = true; var line = ServiceScript.Arrival(p.Index, NightIndex); if (line != null && string.IsNullOrEmpty(Notice)) Say(line); }
+                if (!inside[i] && pending && p.InteriorBounds.Contains(Scene.Walker.transform.position + Vector3.up * .3f) && Vector3.Dot(Scene.Walker.transform.position - p.Door.position, Outward(p)) < -0.8f) { inside[i] = true; var t = ServiceScript.For(p.Index); if (t != null && !string.IsNullOrEmpty(t.Inside)) Say(t.Inside); if (p.Index == 2) StartCoroutine(Later(7.5f, ServiceScript.ParcelInside)); }
                 if (NightIndex > 0 && linger[i] > 24) Player.IgnitionDelayPending = true;
                 if (i == 0 && distance > 11 && Time.time > nextDog)
                 {
                     if(Life)Life.Bark();
+                    if (!dogLine && string.IsNullOrEmpty(Notice)) { dogLine = true; Say(ServiceScript.DogBarks); }
                     nextDog = Time.time + (dogHeard[i] ? 11 : 5.4f);
                     dogHeard[i] = true;
                 }
@@ -252,6 +270,7 @@ namespace ServiceGameV2
                     if (p.WindowLight != null) p.WindowLight.enabled = !p.WindowLight.enabled;
                     changed[i] = true;
                     EnvironmentChanges++;
+                    if (!lightsLine && distance < 26) { lightsLine = true; Say(ServiceScript.LightsChanged); }
                 }
             }
         }
@@ -260,10 +279,19 @@ namespace ServiceGameV2
         public ServiceResult ResultAt(int index) { DocketEntry entry = Docket.Find(e => e.Property == index); return entry == null ? ServiceResult.Pending : entry.Result; }
         public int NearbyNotice(){
             if(Player.InCar||Busy||Horror.Active)return -1;
-            foreach(var entry in Docket){var p=Property(entry.Property);if(entry.Result==ServiceResult.Pending&&p.NoticePoint&&ServiceInteraction.Reachable(Scene.View,p.NoticePoint.position,2.7f,p.NoticePoint.parent))return p.Index;}
+            // The note is taped to the door, next to where you knock: whichever of the two sits nearer the crosshair wins,
+            // and once read the note has to be looked at squarely to pick it up again.
+            var eye=Scene.View.transform;
+            foreach(var entry in Docket){var p=Property(entry.Property);if(entry.Result!=ServiceResult.Pending||!p.NoticePoint||!p.NoticePoint.gameObject.activeInHierarchy||string.IsNullOrEmpty(p.NoticeText)||!ServiceInteraction.Reachable(Scene.View,p.NoticePoint.position,2.7f,p.NoticePoint.parent))continue;
+             float aim=Vector3.Dot(eye.forward,(p.NoticePoint.position-eye.position).normalized);
+             if(noticeRead[p.Index]&&aim<.975f)continue;
+             if(!AccessGranted(p.Index)&&p.KnockPoint&&p.DoorPanel&&ServiceInteraction.Reachable(Scene.View,p.KnockPoint.position,2.4f,p.DoorPanel)&&Vector3.Dot(eye.forward,(p.KnockPoint.position-eye.position).normalized)>aim+.004f)continue;
+             return p.Index;}
             return -1;
         }
-        public void ReadNotice(int index){if(NearbyNotice()!=index)return;noticeRead[index]=true;Say(Property(index).NoticeText);noticeUntil=Time.unscaledTime+9;Audio.Paper();}
+        public void CloseNote(){NoteOpen=-1;}
+        static Vector3 Outward(ServiceProperty p){var o=p.Door.position-p.InteriorBounds.center;o.y=0;return o.sqrMagnitude<.01f?p.Door.forward:o.normalized;}
+        public void ReadNotice(int index){if(NearbyNotice()!=index)return;noticeRead[index]=true;NoteOpen=index;Notice="";Audio.Paper();}
         public int NearbyKnockDoor(){
             if(Player.InCar)return -1;
             foreach(var entry in Docket){var p=Property(entry.Property);if(entry.Result==ServiceResult.Pending&&!AccessGranted(p.Index)&&p.DoorPanel&&p.KnockPoint&&ServiceInteraction.Reachable(Scene.View,p.KnockPoint.position,2.4f,p.DoorPanel))return p.Index;}
@@ -289,7 +317,7 @@ namespace ServiceGameV2
             if (entry == null) return;
             ServiceProperty p = Property(index);
             if(result==ServiceResult.Served){if(NearbyKnockDoor()==index)StartCoroutine(Knock(entry,p));return;}
-            if(result==ServiceResult.LeftAtDoor&&(!AccessGranted(index)||IsFriendly(index))){Say("Knock at the front door first.");return;}
+            if(result==ServiceResult.LeftAtDoor&&(!AccessGranted(index)||IsFriendly(index))){Say(ServiceScript.KnockFirst);return;}
             if(p.HasEncounter && !IsFriendly(index) && result!=ServiceResult.Unable){
                 if(NearbyDoor()!=index)return;
                 entry.Result=ServiceResult.LeftAtDoor;if(p.PostedPaper)p.PostedPaper.SetActive(true);Audio.Paper();var hands=Scene.View.GetComponentInChildren<ServiceHands>();if(hands)hands.Interact(false);Horror.Begin(index);return;
@@ -304,9 +332,9 @@ namespace ServiceGameV2
                     Audio.KnockAt(p.SoundPoint != null ? p.SoundPoint.position : p.Door.position, .35f);
                     Say(p.RevealLine);
                 }
-                else { Audio.DeliveryComplete(); Say(NightIndex == 0 && !IsFriendly(index) ? ServiceScript.QuietDelivery(index) : "Notice left."); }
+                else { Audio.DeliveryComplete(); Say(ServiceScript.EnvelopeLeft); }
             }
-            else Say("No contact. Visit recorded.");
+            else Say(ServiceScript.NoContact);
         }
 
         IEnumerator Knock(DocketEntry entry, ServiceProperty p)
@@ -314,8 +342,9 @@ namespace ServiceGameV2
             Busy = true;
             KnockCount++;
             var hands=Scene.View.GetComponentInChildren<ServiceHands>();if(hands)hands.Interact(true);
+            if(hands&&hands.Visible)yield return new WaitForSeconds(hands.KnockLead);
             Audio.KnockAt(p.Door.position);
-            yield return new WaitForSeconds(1.35f);
+            yield return new WaitForSeconds(1.2f);
             accessGranted[p.Index]=true;
             if (IsFriendly(entry.Property))
             {
@@ -326,6 +355,7 @@ namespace ServiceGameV2
                 yield return new WaitForSeconds(1.1f);
                 var talk=ServiceScript.Doorstep(entry.Property,NightIndex);
                 if(talk.HasValue&&Dialogue)yield return Dialogue.Run(talk.Value.speaker,talk.Value.steps);
+                string after=talk.HasValue?talk.Value.after:"";
                 entry.Result = ServiceResult.Served;
                 if(hands)hands.Interact(false);
                 Audio.Paper();
@@ -333,22 +363,23 @@ namespace ServiceGameV2
                 if(entry.Property==4&&NightIndex==0)Horror.ArmReturnAmbush();
                 if(Life)Life.OpenDoor(p,false);
                 Audio.DoorAt(p.Door.position);
-                Say(entry.Property==0?"He takes the envelope and shuts the door.":"He takes it without looking at it. The door stays open a moment longer than it should.");
+                if(!string.IsNullOrEmpty(after))Say(after);
             }
             else if (NightIndex > 0)
             {
                 yield return new WaitForSeconds(.75f);
                 Audio.KnockAt(p.SoundPoint != null ? p.SoundPoint.position : p.Door.position + p.Door.forward * .6f, .52f);
             }
-            else Say("No answer.");
-            if(!IsFriendly(entry.Property)&&p.DoorPanel){if(Life)Life.OpenDoor(p,true);Say(NoticeRead(p.Index)?"The latch gives. "+p.Instructions:"The latch gives. A note has been left by the entrance.");}
+            else Say(ServiceScript.NoAnswer);
+            if(!IsFriendly(entry.Property)&&p.DoorPanel){if(Life)Life.OpenDoor(p,true);Say(NoticeRead(p.Index)?ServiceScript.LatchGivesNoteRead:ServiceScript.LatchGives);}
             Busy = false;
         }
 
-        public void Say(string text) { Notice = text; noticeUntil = Time.unscaledTime + 3.2f; }
+        public void Say(string text) { if (string.IsNullOrEmpty(text)) return; Notice = text; noticeUntil = Time.unscaledTime + Mathf.Clamp(1.6f + text.Length * .055f, 3.2f, 6.5f); }
         public void RetryVilla(){RetryProperty(1);}
         public void RetryProperty(int index){var entry=Docket.Find(e=>e.Property==index);if(entry!=null)entry.Result=IsFriendly(index)?ServiceResult.Served:ServiceResult.Pending;if(Property(index).PostedPaper)Property(index).PostedPaper.SetActive(false);Busy=false;PaperOpen=MapOpen=false;accessGranted[index]=true;if(Life)Life.OpenDoor(Property(index),true);Player.IgnitionDelayPending=false;}
-        public void RequestEarlyFinish() { if (Phase == ServicePhase.Playing) { EndedEarly = true; PaperOpen = false; Say("Route closed. Return to the depot."); SetCursor(); } }
+        public void RequestEarlyFinish() { if (Phase == ServicePhase.Playing) { EndedEarly = true; PaperOpen = false; Say(ServiceScript.RouteClosedEarly); SetCursor(); } }
+        IEnumerator Later(float seconds, string line) { yield return new WaitForSeconds(seconds); if (Phase == ServicePhase.Playing && !Horror.Active) Say(line); }
         public bool TryFinishShift()
         {
             if (!CanFinish || Busy) return false;

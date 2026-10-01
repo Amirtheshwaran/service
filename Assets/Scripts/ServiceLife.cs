@@ -21,7 +21,7 @@ namespace ServiceGameV2 {
   }
   IEnumerator Flicker(ServiceProperty p){if(!p.PorchLight)yield break;var light=p.PorchLight;float baseline=porch[p.Index];foreach(float value in new[]{.15f,1f,.1f,.2f,1f}){light.intensity=baseline*value;yield return new WaitForSeconds(.12f);}light.intensity=baseline;}
   public void OpenDoor(ServiceProperty p,bool open,bool wide=false){if(p.DoorPanel){if(doors[p.Index]!=null)StopCoroutine(doors[p.Index]);doors[p.Index]=StartCoroutine(Door(p,open,wide));}}
-  IEnumerator Door(ServiceProperty p,bool open,bool wide){var start=p.DoorPanel.localRotation;var goal=rest[p.Index]*Quaternion.Euler(0,open?(d.IsFriendly(p.Index)&&!wide?62:p.DoorSwing):0,0);float time=0;while(time<.65f){time+=Time.deltaTime;p.DoorPanel.localRotation=Quaternion.Slerp(start,goal,Mathf.SmoothStep(0,1,time/.65f));yield return null;}p.DoorPanel.localRotation=goal;}
+  IEnumerator Door(ServiceProperty p,bool open,bool wide){var start=p.DoorPanel.localRotation;var goal=rest[p.Index]*Quaternion.Euler(0,open?(d.IsFriendly(p.Index)&&!wide?Mathf.Sign(p.DoorSwing)*62:p.DoorSwing):0,0);float time=0;while(time<.65f){time+=Time.deltaTime;p.DoorPanel.localRotation=Quaternion.Slerp(start,goal,Mathf.SmoothStep(0,1,time/.65f));yield return null;}p.DoorPanel.localRotation=goal;}
  }
 }
 

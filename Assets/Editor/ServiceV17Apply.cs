@@ -106,13 +106,13 @@ namespace ServiceGameV2.Editor {
    var worker=Controller("V17 Worker",("Idle",R+"/Anim/Stand--Idle.anim.fbx"),("Walk",R+"/Anim/Locomotion--Walk_N.anim.fbx"));
    ServiceProperty P(int i)=>county.Properties.First(p=>p.Index==i);
    Vector3 Outside(ServiceProperty p)=>p.Door.position+p.Door.forward*3;
-   var oldC=res.Correll;var oldB=res.Bell;var oldW=res.DepotWorker;
+   var oldC=res.Correll;var oldB=res.Bell;
    res.Correll=Human(R+"/Characters/ElderlyMan/ElderlyMan.fbx","Correll — elderly resident (Ready Player Me / BELAZ, CC-BY)",parent,oldC.transform.position,Outside(P(0)),resident,DressElderly);
    res.Bell=Human(R+"/Characters/JustMan/JustMan.fbx","Bell — resident (vrimen, CC-BY)",parent,oldB.transform.position,Outside(P(4)),resident,m=>DressJustMan(m,false));
-   var w=Human(R+"/Characters/JustMan/JustMan.fbx","Depot worker — county jacket (vrimen, CC-BY)",parent,oldW.position,res.WalkTo,worker,m=>DressJustMan(m,true));
-   res.DepotWorker=w.transform;res.WorkerAnimator=w.GetComponentInChildren<Animator>();res.WorkerAnimation=null;
-   oldC.SetActive(false);oldB.SetActive(false);oldW.gameObject.SetActive(false);EditorUtility.SetDirty(res);
-   log.AppendLine($"CAST correll {res.Correll.transform.position} bell {res.Bell.transform.position} worker {w.transform.position}");
+   // V19: the depot worker was removed; V17 installed him here.
+   
+   oldC.SetActive(false);oldB.SetActive(false);EditorUtility.SetDirty(res);
+   log.AppendLine($"CAST correll {res.Correll.transform.position} bell {res.Bell.transform.position}");
   }
 
   // ---------- dog ----------

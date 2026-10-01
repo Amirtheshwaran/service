@@ -1,0 +1,32 @@
+{
+ "note-p1.png": {
+  "property": 1,
+  "font": "NothingYouCouldDo.ttf",
+  "paper": "stationery"
+ },
+ "note-p2.png": {
+  "property": 2,
+  "font": "IndieFlower-Regular.ttf",
+  "paper": "stationery"
+ },
+ "note-p3.png": {
+  "property": 3,
+  "font": "ReenieBeanie.ttf",
+  "paper": "yellowed"
+ },
+ "note-p4.png": {
+  "property": 4,
+  "font": "Kalam-Regular.ttf",
+  "paper": "ruled"
+ },
+ "note-p4-n2.png": {
+  "property": 4,
+  "font": "Kalam-Regular.ttf",
+  "paper": "ruled"
+ },
+ "note-p5.png": {
+  "property": 5,
+  "font": "ShadowsIntoLight.ttf",
+  "paper": "card"
+ }
+}

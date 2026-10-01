@@ -1,49 +1,56 @@
 namespace ServiceGameV2 {
- // All V18 spoken lines and inner-voice subtitles. Written text only; no generated voices.
+ // V19 script: every spoken line, note and inner-voice subtitle. Generated from Sources/V19/script.json; edit there.
  public static class ServiceScript {
-  static ServiceDialogue.Step S(string line,string[] choices=null,string[] replies=null)=>new ServiceDialogue.Step(line,choices,replies);
-
-  public static (string speaker,ServiceDialogue.Step[] steps)? Doorstep(int property,int night){
-   if(property==0&&night==0)return ("Walter Correll",new[]{
-    S("Evening. You're not the usual fella.",new[]{"Process server, sir. I've got papers for Walter Correll.","Sorry to bother you this late."},new[]{"That'd be me. Hush, Rex.","Late's the only time anybody comes out this far. Hush, Rex."}),
-    S("You're doing the whole Latigo run tonight? Stay on the road.",new[]{"Why's that?","I'll be fine."},new[]{"Somebody's been walking the tree line out past Vale's. Big fella. Leather jacket. Doesn't wave back.","That's what the last one said."}),
-    S("Well. Here. Give it here.")});
-   if(property==0&&night==1)return ("Walter Correll",new[]{
-    S("You again. Heard your car go by late the other night.",new[]{"I had a few stops.","Did something happen?"},new[]{"Mm. Something went by after it. Slow. No headlights.","A truck went by after you. Slow. No headlights."}),
-    S("Whatever's past Bell's place, you leave it be.",new[]{"I'm just delivering papers.","What's past Bell's place?"},new[]{"That's what I'm afraid of.","Nothing that's on your map."}),
-    S("Go on. Before Rex starts again.")});
-   if(property==0&&night==2)return ("Walter Correll",new[]{
-    S("They added a road out there. I've lived here forty years. There's no road out there.",new[]{"It's on my docket.","Have you seen it?"},new[]{"Then somebody wants you on it.","I've seen the lights. That's enough."})});
-   if(property==4&&night==0)return ("Daniel Bell",new[]{
-    S("...Help you?",new[]{"Daniel Bell? I have court papers for you.","Evening. Sorry, it's late."},new[]{"Who's asking.","It is."}),
-    S("Who sent you all the way out here?",new[]{"The county court.","I just deliver them."},new[]{"The county. Right.","Sure you do."}),
-    S("Long drive for a piece of paper. Mind the step on your way out.")});
-   return null;
-  }
-
-  // Inner voice when you first walk up to an address on a shift.
-  public static string Arrival(int property,int night){
+  public sealed class PropertyText{public string Docket,Note,NoteNight2,Instructions,Inside,Reveal,Death;public string[] Arrival;}
+  static readonly PropertyText[] properties={
+   new PropertyText{Docket="Correll residence",Note="",NoteNight2="",Instructions="Knock. Serve Walter Correll in person at the front door.",Inside="",Reveal="",Death="",Arrival=new[]{"Porch light's on. Dog in the yard. Somebody actually lives out here.","Correll again. Rex remembers me. Doesn't like me any better.",""}},
+   new PropertyText{Docket="Vale House",Note="Can't come down. Let yourself in.\nRight-hand stairs, left at the landing.\nStudy's the last room. Desk is fine.\nNo need to come find me.\n- M. Vale",NoteNight2="",Instructions="Right-hand stairs, left at the landing. Last room is the study. Papers on the desk.",Inside="Hello? County. Just dropping something off. I'll be quick.",Reveal="Something just came out into the hall. It saw me.",Death="Vale House was searched the next morning. The study door was locked.",Arrival=new[]{"Vale House. Too much house for this road. Too many windows.","Vale again. Right stairs, left, last door, desk, out. Don't think about it.","Vale. Third time. The only name on tonight's sheet I recognize."}},
+   new PropertyText{Docket="Unsurveyed parcel",Note="Come in out of the rain.\nPost on the table past the sitting room.\nYou know the way.\nWe kept the light on.\nDon't bother knocking next time.",NoteNight2="",Instructions="Through the sitting room. Leave the post on the table beyond it.",Inside="It's warm in here. First warm house I've been in all week.",Reveal="Car's running out there. The keys are in my pocket.",Death="",Arrival=new[]{"","","Same cabin as Correll's. Same porch. No dog. Same builder, probably."}},
+   new PropertyText{Docket="Harrow Lodge",Note="County - it's not locked. Come in.\nLeave it on the table by the lamp,\nfar end of the hall.\nI leave the lamp on. Always have.\n- E. Harrow",NoteNight2="",Instructions="Down the hall to the lamp at the far end. Papers on the table beside it.",Inside="Smells like nobody's opened a window in here since the fifties.",Reveal="That's breathing. Right behind me. It isn't mine.",Death="Papers were found on the table at Harrow Lodge. The server was not.",Arrival=new[]{"Harrow Lodge. Long place. Looks like the kind that doesn't answer.","Harrow again. Nobody's touched that note since Thursday.",""}},
+   new PropertyText{Docket="Bell residence",Note="Knock hard. I'm usually in the back\nand I don't always hear the door.\n- Daniel Bell",NoteNight2="Sorry I missed you. Door's open.\nBack room. Leave it on the table.\nThank you for Thursday.\n- Dan Bell  Thurs. Oct 1, 11:40pm",Instructions="Knock hard. If he doesn't answer, papers on the table in the back room.",Inside="Heat's off. Been off a few days, by the feel of it.",Reveal="Something in the dark just got up off the floor.",Death="A county flashlight was found on the Bell drive, still switched on.",Arrival=new[]{"Bell residence. Long drive. Hope he's the type who answers.","Bell's place. I'm not walking that drive slow this time.",""}},
+   new PropertyText{Docket="Morrow House",Note="Door's open. Go up and follow the\nlanding to the lamp at the far end.\nEnvelope on that desk is fine.\nWipe your feet. I just did the floors.\n- J. Morrow",NoteNight2="",Instructions="Upstairs. Follow the landing to the lamp at the far end. Envelope on that desk.",Inside="Floor's still wet. Somebody really did just mop. At this hour.",Reveal="Something's on the gallery. It waited for me to put that down.",Death="The docket was found on the front steps of 108 Latigo, soaked through.",Arrival=new[]{"Morrow House. Mud on the steps. Somebody was here not long ago.","Morrow again. I keep thinking an upstairs window was lit a second ago.",""}},
+  };
+  public static PropertyText For(int index)=>index>=0&&index<properties.Length?properties[index]:null;
+  public static string Note(int index,int night){var p=For(index);if(p==null)return "";return night>0&&!string.IsNullOrEmpty(p.NoteNight2)?p.NoteNight2:p.Note;}
+  public static string Arrival(int index,int night){var p=For(index);if(p==null||night<0||night>=p.Arrival.Length)return null;return string.IsNullOrEmpty(p.Arrival[night])?null:p.Arrival[night];}
+  static ServiceDialogue.Step S(string line,string[] choices,string[] replies)=>new ServiceDialogue.Step(line,choices,replies);
+  public static (string speaker,ServiceDialogue.Step[] steps,string after)? Doorstep(int property,int night){
    switch(property*10+night){
-    case 0: return "Porch light's on. Dog's out. At least somebody's home.";
-    case 1: return "Correll again. The dog's quieter tonight.";
-    case 30: return "Harrow. No car in the drive. Lights off.";
-    case 31: return "It's colder near the door than it should be.";
-    case 10: return "Vale House. Big place for somebody who never opens their mail.";
-    case 11: return "The front door's already open a crack.";
-    case 12: return "Vale again. I shouldn't have come back here.";
-    case 40: return "Bell residence. Truck in the drive. Engine's still ticking.";
-    case 41: return "Bell's truck is gone. The door isn't.";
-    case 50: return "Morrow House. Mud on the steps. Somebody was here recently.";
-    case 51: return "Somebody's scraped the notice off the post and put it back.";
-    case 22: return "This road isn't on any map I've been given.";
+    case 0: return ("Walter Correll",new[]{S("Rex, hush. Hush. ...County? This late it's either taxes or somebody died.",new[]{"Walter Correll? I've just got papers for you.","Sorry about the hour. Won't take a minute.","He always bark like that?"},new[]{"Papers is how both of those start, son.","Hour doesn't matter. I don't sleep much since Ruth passed.","Not at people. It's the car. He's never liked that car, whoever's driving it."}),S("It'll be the hospital. Ruth's bills. They were good to her at the end, I'll give them that.",new[]{"I don't know what's in them. I just deliver.","Could be. They don't tell me much."},new[]{"Funny job. Carrying things you haven't read to people who don't want them.","They don't tell anybody much. You find out when it's in your mailbox."}),S("Where've they got you going after me?",new[]{"Harrow Lodge, then out Latigo.","Few more stops out this way."},new[]{"Harrow's. Nobody's answered that door in years. Lights still come on, though. Some nights.","Plenty of houses out this way. Not so many people."}),S("Well. Give it here. I suppose you want a signature.",new[]{"Just at the bottom. Thanks.","Sorry again about the hour."},new[]{"There. Go slow on Latigo. Things come out of those trees. Deer and whatnot.","Don't be. It's nice to get a knock. Even this kind."})},"He takes the envelope and shuts the door. Two bolts, then the chain.");
+    case 1: return ("Walter Correll",new[]{S("You again. On a Sunday. Either I'm in trouble or you're lonely.",new[]{"More papers, Mr. Correll. Sorry.","Little of both, maybe.","They don't give us Sundays this month."},new[]{"Don't be sorry. It's not your name on them.","Ha. Well, Rex likes you, anyhow. He only barked twice.","Ruth's brother drove for the county. Roads. They worked him like that till his heart quit."}),S("Heard a car come back by here Thursday. Late. Three, maybe. Sounded like yours. Didn't have its lights on.",new[]{"Wasn't me. I was home by one.","Probably a logging truck.","Did you see who was driving?"},new[]{"Well. Sounded like yours, is all.","Logging trucks got headlights, son.","I didn't go to the window. I'm too old to go to windows."}),S("You see Daniel Bell Thursday? He calls me every Saturday. About nothing, mostly. Didn't call yesterday.",new[]{"He signed. Seemed alright. Quiet.","I didn't hang around after.","I can't really talk about other stops."},new[]{"Quiet's how he is. Still. Saturday's Saturday.","No. I don't expect you did.","No. Course not. He's just never missed a Saturday, is all."}),S("Go on, give it here. And do me a favor, would you.",new[]{"What's that?","Depends on the favor."},new[]{"Don't stop here on your way back tonight. Whatever you hear. Just keep on toward town.","Small one. Don't stop here on your way back. Not for anything. Not if I wave, even."})},"He takes it and shuts the door. I don't hear him walk away from it.");
+    case 40: return ("Daniel Bell",new[]{S("Keep it down, would you. ...County? Bit late for the county.",new[]{"Daniel Bell? I've got papers for you.","Sorry. Didn't mean to wake anybody."},new[]{"That's me. Go on, then. Let's see what they want now.","Nobody to wake. It's only me. It's only ever me."}),S("This from Carol's lawyer? She said there'd be more.",new[]{"I don't know. I just deliver them.","It's from the court. That's all I know."},new[]{"Right. Twelve years married, and it's the county that comes to the door.","Doesn't matter. I'll read it in the morning. When it's light out."}),S("You come in off Millbrook? Past Correll's place?",new[]{"Yeah. His dog about took my arm off.","I did. Why?"},new[]{"Rex. He's alright. He barks at the right things.","He have his porch light on? ...Good. That's good."}),S("They've got me down as 'Dan' on here. It's Daniel. Always has been. ...Never mind. Where do I sign?",new[]{"Bottom of the page. Thanks.","I can have the clerk fix the name.","Everything alright in there, Mr. Bell?"},new[]{"There. Go on. Walk the drive quick. It's longer going back than it looks.","Don't bother. They never listen down there. Go on, now. Walk the drive quick.","It's the house. Old brick makes noise in the rain. Go on, now. Don't hang around out front."})},"He takes it without reading it. The door closes. The lock doesn't turn.");
    }
    return null;
   }
-
-  // Night one: nothing supernatural, just an ordinary delivery.
-  public static string QuietDelivery(int property)=>property==3?"Envelope's on the table. Nobody home. Good.":property==1?"Left on the desk. The house is dead quiet.":"Left by the lamp. Time to go.";
-  public const string TreeLineSeen="Was somebody standing out there?";
-  public const string TreeLineMissed="...I could have sworn somebody was standing there.";
-  public const string WindshieldNote="A note under the wiper. \"STOP COMING OUT HERE.\"";
+  public const string LookAwayHeadline="Stay still";
+  public const string LookAwaySurvived="It's stopped. Okay. I'm done here. I'm going.";
+  public const string ChaseHeadlineOnFoot="Run";
+  public const string ChaseOnFoot="Out. Back to the car. Don't stop.";
+  public const string ChaseStartCarHeadline="Start the car";
+  public const string ChaseStartCar="Come on. Turn over. Come on, come on.";
+  public const string ChaseDriveHeadline="Drive";
+  public const string ChaseDrive="Go. Just drive. Don't stop for anything.";
+  public const string AtTheCarDoor="Get in. Get in the car.";
+  public const string Escaped="Okay. I'm out. I'm not putting that in the log.";
+  public const string ReturnAmbush="His door just banged open behind me. Mr. Bell?";
+  public const string RetryAtGate="Back at the end of the drive. Papers still in my hand.";
+  public const string RetryAtGateServed="Back at the end of the drive. It's done. Get to the car.";
+  public const string CarDoorContact="It's at the window. Start it. Start it.";
+  public static readonly string[] LookAwayLines=new[]{"Don't turn around. Keep your back to it.","Stand still. Don't even shift your feet.","It's getting quieter. Not yet. Hold."};
+  public const string NoAnswer="Nothing. I'll give it a second. ...Nothing.";
+  public const string LatchGives="The latch gives. There's a note taped to the door.";
+  public const string LatchGivesNoteRead="The latch gives. Unlocked, like the note said.";
+  public const string EnvelopeLeft="Papers are down. That counts as served.";
+  public const string NoContact="No contact. I'll write it up and move on.";
+  public const string KnockFirst="Knock first. Even out here, you knock first.";
+  public const string AllVisitsRecorded="That's the docket. Back to the depot.";
+  public const string RouteClosedEarly="I'm calling it. The rest can wait. Back to the depot.";
+  public const string BarricadeGone="The barricade's gone. No tracks. Just road where it used to be.";
+  public const string PastTheSurvey="Odometer's stopped. Probably the cable. I'm still moving. I think.";
+  public const string ParcelInside="I stepped over the board that creaks. I didn't know I knew that.";
+  public const string Epilogue="Civil process routes in Hollis County were suspended that November, after a process server failed to return from an evening shift.\n\nThe county car was found parked at the depot the next morning, engine running, headlights on. The return of service had been filed and signed.\n\nOne address on that docket, 1 County Route 9, does not appear on any county survey. The road it sits on was closed in 1971.\n\nThe route was never reassigned.";
+  public const string DogBarks="Easy. I'm not here for you.";
+  public const string LightsChanged="That light. It wasn't like that a minute ago. Timer, probably.";
+  public static readonly string[] DepotIntro=new[]{"Five stops. Home by one if the rain lets up. It won't.","Same five addresses. On a Sunday. I almost called in sick.","Two stops tonight. Vale again, and a road I've never driven."};
  }
 }

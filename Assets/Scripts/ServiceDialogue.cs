@@ -10,6 +10,7 @@ namespace ServiceGameV2 {
    public Step(string line,string[] choices=null,string[] replies=null){Line=line;Choices=choices??new string[0];Replies=replies;}
   }
   ServiceDirector d;
+  public static bool TourPacing; // review tour: real reading pace even under -serviceSmoke
   public bool Active {get;private set;}
   public string Speaker {get;private set;}="";
   public string Line {get;private set;}="";
@@ -24,7 +25,7 @@ namespace ServiceGameV2 {
     if(s.Choices.Length==0)continue;
     Choices=s.Choices;int pick=-1;float auto=Time.time+.4f;
     while(pick<0){
-     if(d.IsSmoke&&Time.time>auto)pick=0;
+     if(d.IsSmoke&&Time.time>auto+(TourPacing?1.6f:0))pick=TourPacing?Mathf.Min(s.Choices.Length-1,(int)(Time.time*7)%s.Choices.Length):0;
      var k=Keyboard.current;
      if(k!=null){if(k.digit1Key.wasPressedThisFrame||k.numpad1Key.wasPressedThisFrame)pick=0;else if(s.Choices.Length>1&&(k.digit2Key.wasPressedThisFrame||k.numpad2Key.wasPressedThisFrame))pick=1;else if(s.Choices.Length>2&&(k.digit3Key.wasPressedThisFrame||k.numpad3Key.wasPressedThisFrame))pick=2;}
      yield return null;
@@ -37,7 +38,7 @@ namespace ServiceGameV2 {
   }
   static float Read(string line)=>Mathf.Clamp(line.Length*.05f,1.8f,4.6f);
   IEnumerator Hold(float seconds){
-   if(d.IsSmoke)seconds=Mathf.Min(seconds,.35f);
+   if(d.IsSmoke&&!TourPacing)seconds=Mathf.Min(seconds,.35f);
    float start=Time.time;
    while(Time.time-start<seconds){var k=Keyboard.current;if(k!=null&&Time.time-start>.4f&&(k.eKey.wasPressedThisFrame||k.spaceKey.wasPressedThisFrame))break;yield return null;}
   }

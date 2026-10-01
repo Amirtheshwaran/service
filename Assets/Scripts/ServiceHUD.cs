@@ -23,12 +23,13 @@ namespace ServiceGameV2 {
   void Line(Vector2 a,Vector2 b,float width,Color color){var t=Block(new Rect(a.x,a.y,Vector2.Distance(a,b),width),color).rectTransform;t.pivot=new Vector2(0,.5f);t.localRotation=Quaternion.Euler(0,0,-Mathf.Atan2(b.y-a.y,b.x-a.x)*Mathf.Rad2Deg);}
   string Context(){if(d.Busy||d.Horror.Caught)return "";if(d.Player.InCar)return d.CanFinish?"E   File shift report":d.Player.Speed<.8f?(d.Player.IsStarting?"Turning the ignition…":"E   Leave vehicle     /     Space   Ignition"):"";
    if(Vector3.Distance(d.Scene.View.transform.position,d.Scene.Car.position+Vector3.up)<3.5f)return "E   Enter vehicle";
-   if(d.NearbyNotice()>=0)return "E   Read the notice";
+   if(d.NoteOpen>=0)return "E   Stop reading";
+   if(d.NearbyNotice()>=0)return "E   Read the note";
    int front=d.NearbyKnockDoor();if(front>=0)return "E   Knock     /     U   No service";
    if(d.NearbyDoor()>=0)return "E / R   Leave the notice";
    return "";
   }
-  void LateUpdate(){if(!d||!canvas)return;bool intro=d.Phase==ServicePhase.Title&&d.Presentation&&d.Presentation.IntroVisible;string context=Context();bool card=ShiftCard;string state=card+"|"+(d.Horror.Active?d.Horror.Instruction+d.Horror.Headline:"")+"|"+d.Phase+"|"+d.PaperOpen+"|"+d.MapOpen+"|"+options+"|"+confirmNew+"|"+intro+"|"+d.Notice+"|"+d.Horror.Phase+"|"+context+"|"+d.NightIndex+"|"+(d.Vehicle?d.Vehicle.RadioOn+"/"+d.Vehicle.Station:"")+"|"+string.Join(",",d.Docket.Select(e=>(int)e.Result))+"|"+(d.Dialogue?d.Dialogue.StateKey:"");
+  void LateUpdate(){if(!d||!canvas)return;bool intro=d.Phase==ServicePhase.Title&&d.Presentation&&d.Presentation.IntroVisible;string context=Context();bool card=ShiftCard;string state=card+"|"+(d.Horror.Active?d.Horror.Instruction+d.Horror.Headline:"")+"|"+d.Phase+"|"+d.PaperOpen+"|"+d.MapOpen+"|"+options+"|"+confirmNew+"|"+intro+"|"+d.Notice+"|"+d.Horror.Phase+"|"+context+"|"+d.NightIndex+"|"+(d.Vehicle?d.Vehicle.RadioOn+"/"+d.Vehicle.Station:"")+"|"+string.Join(",",d.Docket.Select(e=>(int)e.Result))+"|"+(d.Dialogue?d.Dialogue.StateKey:"")+"|"+d.NoteOpen;
    if(last!=state){last=state;Rebuild(intro,context,card);}
    if(card&&cardShade){float t=d.ShiftCardTime;cardShade.color=new Color(0,0,0,1-Mathf.SmoothStep(0,1,(t-3.1f)/1.5f));cardWords.alpha=Mathf.SmoothStep(0,1,t/.9f)*(1-Mathf.SmoothStep(0,1,(t-2.5f)/.9f));}
    if(intro&&introShade){introShade.color=new Color(0,0,0,d.Presentation.IntroBackgroundAlpha);introWords.alpha=d.Presentation.IntroTextAlpha;}
@@ -45,7 +46,7 @@ namespace ServiceGameV2 {
   void ShiftTitle(){cardShade=Block(new Rect(-1000,-1000,3280,2720),Color.black);cardShade.raycastTarget=true;var words=Area("Shift title",new Rect(0,0,1280,720));cardWords=words.gameObject.AddComponent<CanvasGroup>();cardWords.blocksRaycasts=false;cardWords.alpha=0;
    Label(new Rect(0,292,1280,50),d.LongDate,30,null,words).alignment=TextAnchor.MiddleCenter;Label(new Rect(0,348,1280,30),d.ShiftTime+"   /   Hollis County",18,muted,words).alignment=TextAnchor.MiddleCenter;Label(new Rect(0,392,1280,26),new[]{"First shift","Second shift","Final shift"}[d.NightIndex],15,accent,words).alignment=TextAnchor.MiddleCenter;}
   void Epilogue(){Shade(1);Label(new Rect(190,150,900,40),"Hollis County, 1998",18,muted);Rule(190,204,58,accent);
-   var text=Label(new Rect(190,232,900,300),"Civil process routes in Hollis County were suspended that November, after a process server failed to return from an evening shift.\n\nThe county car was found parked at the depot the next morning, engine running, headlights on. The return of service had been filed and signed.\n\nOne address on that docket, 1 County Route 9, does not appear on any county survey. The road it sits on was closed in 1971.\n\nThe route was never reassigned.",20);text.alignment=TextAnchor.UpperLeft;text.lineSpacing=1.15f;
+   var text=Label(new Rect(190,232,900,300),ServiceScript.Epilogue,20);text.alignment=TextAnchor.UpperLeft;text.lineSpacing=1.15f;
    Action(new Rect(190,600,320,40),"Return to title",()=>d.Title());}
   void Shade(float alpha=.86f){Block(new Rect(-1000,-1000,3280,2720),new Color(.015f,.021f,.026f,alpha));}
   void Title(){if(options){Settings();return;}Shade(.1f);Block(new Rect(0,0,490,720),new Color(.015f,.022f,.026f,.67f));
@@ -61,9 +62,9 @@ namespace ServiceGameV2 {
   void Setting(float y,string caption,float value,float min,float max,System.Action<float> change,string format){Label(new Rect(95,y,280,30),caption,19);var number=Label(new Rect(424,y,105,30),format=="%"?Mathf.RoundToInt(value/max*100)+"%":value.ToString("0.00"),17,muted);number.alignment=TextAnchor.MiddleRight;
    var t=Area(caption+" slider",new Rect(95,y+34,434,18));var hit=t.gameObject.AddComponent<Image>();hit.color=Color.clear;var slider=t.gameObject.AddComponent<Slider>();slider.minValue=min;slider.maxValue=max;var back=Block(new Rect(0,7,434,3),new Color(.2f,.26f,.26f),t);var fillArea=Area("Slider track",new Rect(0,7,434,3),t);var fill=Block(new Rect(0,0,0,0),accent,fillArea);fill.rectTransform.anchorMin=new Vector2(0,.5f);fill.rectTransform.anchorMax=new Vector2(1,.5f);fill.rectTransform.pivot=new Vector2(0,.5f);fill.rectTransform.anchoredPosition=Vector2.zero;var handle=Block(new Rect(0,0,10,18),white,t);handle.rectTransform.anchorMin=handle.rectTransform.anchorMax=new Vector2(0,.5f);handle.rectTransform.pivot=new Vector2(.5f,.5f);slider.fillRect=fill.rectTransform;slider.handleRect=handle.rectTransform;slider.targetGraphic=handle;slider.value=value;slider.onValueChanged.AddListener(v=>{change(v);number.text=format=="%"?Mathf.RoundToInt(v/max*100)+"%":v.ToString("0.00");});}
   void Settings(){Shade(.96f);Label(new Rect(95,50,900,60),"Settings",42);Rule(95,128,1090);Setting(151,"Master volume",d.Audio.Volume,0,1,v=>d.Audio.Volume=v,"%");Setting(216,"Music",d.Audio.MusicVolume,0,1,v=>d.Audio.MusicVolume=v,"%");Setting(281,"Look sensitivity",d.Player.Sensitivity,.03f,.2f,v=>d.Player.Sensitivity=v,"");Setting(346,"Camera movement",d.Player.CameraMotion,0,1,v=>d.Player.CameraMotion=v,"%");Setting(411,"Motion blur",d.Player.MotionBlurAmount,0,.35f,v=>d.Player.MotionBlurAmount=v,"%");
-   Action(new Rect(95,484,445,34),"Lightning / impact flashes    "+(d.Storm.FlashesEnabled?"On":"Off"),()=>d.Storm.FlashesEnabled=!d.Storm.FlashesEnabled);Action(new Rect(95,531,445,34),"Display    "+(Screen.fullScreen?"Full screen":"Windowed"),()=>Screen.fullScreen=!Screen.fullScreen);
-   Label(new Rect(659,152,420,35),"Controls",24);string[] keys={"W A S D","Mouse","Shift","Ctrl","Space","Q / E","E","R / U","F","Tab / M","V / B","Esc"};string[] actions={"Move / drive","Look","Sprint / brake","Hold to crouch","Jump / ignition in car","Look behind while sprinting","Interact / knock","Leave notice / no service","Flashlight","Docket / route map","Radio power / station","Pause / close document"};for(int i=0;i<keys.Length;i++){Label(new Rect(659,201+i*30,112,28),keys[i],17,accent);Label(new Rect(797,201+i*30,390,28),actions[i],18);}
-   Rule(95,627,1090);Action(new Rect(95,642,300,40),"Back",()=>{options=false;d.SaveOptions();});Label(new Rect(659,647,520,32),"Camera movement and blur can be disabled independently.",15,muted);
+   Action(new Rect(95,484,445,34),"Lightning / impact flashes    "+(d.Storm.FlashesEnabled?"On":"Off"),()=>d.Storm.FlashesEnabled=!d.Storm.FlashesEnabled);Action(new Rect(95,531,445,34),"Display    "+(Screen.fullScreen?"Full screen":"Windowed"),()=>Screen.fullScreen=!Screen.fullScreen);if(d.Camcorder)Action(new Rect(95,578,445,34),"Camera filter    "+ServiceCamcorder.Names[d.Camcorder.Level],()=>d.Camcorder.Cycle());
+   Label(new Rect(659,152,420,35),"Controls",24);string[] keys={"W A S D","Mouse","Shift","Ctrl","Space","E","1 / 2 / 3","R / U","F","Tab / M","V / B","Esc"};string[] actions={"Move / drive","Look","Sprint / brake","Hold to crouch","Jump / ignition in car","Interact / knock / read","Choose a reply","Leave papers / no service","Flashlight","Docket / route map","Radio power / station","Pause / close document"};for(int i=0;i<keys.Length;i++){Label(new Rect(659,201+i*30,112,28),keys[i],17,accent);Label(new Rect(797,201+i*30,390,28),actions[i],18);}
+   Rule(95,627,1090);Action(new Rect(95,642,300,40),"Back",()=>{options=false;d.SaveOptions();});Label(new Rect(659,647,520,32),"Camera filter: Strong is the intended look.",15,muted);
   }
   void Documents(){Shade(.93f);Label(new Rect(64,40,680,60),d.MapOpen?"County road index":"Evening assignments",38);Label(new Rect(66,103,620,26),d.Date.ToLowerInvariant()+"  /  Hollis County civil process",16,muted);Action(new Rect(945,60,270,35),d.MapOpen?"Tab   Field docket":"M   Route map",()=>d.MapOpen=!d.MapOpen);Rule(64,148,1152);
    if(d.MapOpen){Map();return;}
@@ -88,7 +89,8 @@ namespace ServiceGameV2 {
   }
   void Playing(string context){bool talking=d.Dialogue&&d.Dialogue.Active;
    // Fears to Fathom style: a small centre dot on foot, prompts just under it, named subtitles and numbered replies while talking.
-   if(!d.Player.InCar&&!talking&&!d.Horror.Caught)Block(new Rect(638,358,4,4),new Color(1,1,1,.55f));
+   if(!d.Player.InCar&&!talking&&!d.Horror.Caught){Block(new Rect(638,358,4,4),new Color(1,1,1,.55f));if(context.Length>0&&d.NoteOpen<0)Ring(640,360,20);}
+   if(d.NoteOpen>=0&&!d.Player.InCar){HeldNote(d.NoteOpen);return;}
    if(context.Length>0&&!talking&&(d.Player.InCar||!d.Notice.Contains('\n'))){if(d.Player.InCar)Label(new Rect(160,658,960,35),context,19).alignment=TextAnchor.MiddleCenter;else Label(new Rect(340,376,600,30),context,17,new Color(.93f,.93f,.9f,.92f)).alignment=TextAnchor.MiddleCenter;}
    if(talking){var dl=d.Dialogue;Label(new Rect(205,552,870,26),dl.Speaker.ToUpperInvariant(),15,accent).alignment=TextAnchor.MiddleCenter;Label(new Rect(185,578,910,64),dl.Line,21).alignment=TextAnchor.MiddleCenter;
     if(dl.Choices.Length>0){Block(new Rect(360,412,560,dl.Choices.Length*38+22),new Color(0,0,0,.62f));for(int i=0;i<dl.Choices.Length;i++)Label(new Rect(384,423+i*38,520,34),(i+1)+"    "+dl.Choices[i],18);}
@@ -104,6 +106,28 @@ namespace ServiceGameV2 {
    }
    if(d.Horror.Phase==PursuitPhase.Attack){contactShade=Block(new Rect(-1000,-1000,3280,2720),Color.clear);}
    if(d.Horror.Phase==PursuitPhase.Caught){Shade(1);Label(new Rect(230,310,820,65),d.Horror.DeathLine,26).alignment=TextAnchor.MiddleCenter;Label(new Rect(230,388,820,30),"Retrying from the property gate…",17,muted).alignment=TextAnchor.MiddleCenter;}
+  }
+  // Fears to Fathom style: a ring around the dot when something can be used.
+  static Texture2D ringTex;
+  void Ring(float cx,float cy,float size){
+   if(!ringTex){const int n=64;ringTex=new Texture2D(n,n,TextureFormat.RGBA32,false){filterMode=FilterMode.Bilinear,wrapMode=TextureWrapMode.Clamp};var px=new Color[n*n];for(int y=0;y<n;y++)for(int x=0;x<n;x++){float r=Vector2.Distance(new Vector2(x+.5f,y+.5f),new Vector2(n*.5f,n*.5f));px[y*n+x]=new Color(1,1,1,Mathf.Clamp01(1-Mathf.Abs(r-27f)/2.4f));}ringTex.SetPixels(px);ringTex.Apply();}
+   var t=Area("Use ring",new Rect(cx-size*.5f,cy-size*.5f,size,size));var img=t.gameObject.AddComponent<RawImage>();img.texture=ringTex;img.color=new Color(1,1,1,.62f);img.raycastTarget=false;
+  }
+  // The handwritten note taped to a door, held up to read: each writer has their own paper, hand and ink.
+  static readonly string[] noteFont={"","Fonts/Notes/NothingYouCouldDo","Fonts/Notes/IndieFlower-Regular","Fonts/Notes/ReenieBeanie","Fonts/Notes/Kalam-Regular","Fonts/Notes/ShadowsIntoLight"};
+  static readonly Color[] notePaper={Color.white,new Color(.925f,.898f,.831f),new Color(.925f,.898f,.831f),new Color(.867f,.808f,.667f),new Color(.941f,.941f,.918f),new Color(.957f,.953f,.933f)};
+  static readonly Color[] noteInk={Color.black,new Color(.15f,.16f,.27f),new Color(.16f,.13f,.12f),new Color(.27f,.26f,.24f),new Color(.12f,.16f,.43f),new Color(.09f,.09f,.1f)};
+  static string Flow(string text){var parts=text.Split('\n');var sb=new System.Text.StringBuilder();foreach(var raw in parts){if(sb.Length==0)sb.Append(raw);else if(raw.StartsWith("- "))sb.Append("\n").Append(raw);else sb.Append(' ').Append(raw);}return sb.ToString();}
+  void HeldNote(int i){
+   i=Mathf.Clamp(i,0,5);var text=d.Property(i).NoticeText;if(string.IsNullOrEmpty(text))return;
+   Block(new Rect(-1000,-1000,3280,2720),new Color(0,0,0,.5f));
+   var shadow=Block(new Rect(466,78,360,476),new Color(0,0,0,.35f));shadow.rectTransform.localRotation=Quaternion.Euler(0,0,1.4f);
+   var paper=Block(new Rect(458,70,360,476),notePaper[i]);paper.rectTransform.localRotation=Quaternion.Euler(0,0,1.4f);
+   if(i==4){for(int y=62;y<470;y+=34)Block(new Rect(0,y,360,1.5f),new Color(.59f,.7f,.83f),paper.transform);Block(new Rect(40,0,1.5f,476),new Color(.81f,.47f,.47f),paper.transform);}
+   if(i==5){Block(new Rect(0,40,360,2),new Color(.82f,.43f,.43f),paper.transform);for(int y=74;y<470;y+=34)Block(new Rect(0,y,360,1.5f),new Color(.63f,.75f,.87f),paper.transform);}
+   var label=Label(new Rect(i==4?52:26,i==5||i==4?44:30,i==4?290:310,410),Flow(text),30,noteInk[i],paper.transform);
+   var hand=Resources.Load<Font>(noteFont[i]);if(hand)label.font=hand;label.alignment=TextAnchor.UpperLeft;label.resizeTextForBestFit=true;label.resizeTextMinSize=16;label.resizeTextMaxSize=i==3?30:34;label.lineSpacing=i==4||i==5?1.12f:1.02f;
+   Label(new Rect(340,586,600,26),"E   Stop reading",15,muted).alignment=TextAnchor.MiddleCenter;
   }
   void Report(){Shade(.96f);Label(new Rect(95,69,900,65),"Return of service",42);Label(new Rect(98,148,900,35),d.Date.ToLowerInvariant()+"  /  "+(d.EndedEarly?"Route closed early":"Route filed"),19,muted);Rule(95,211,1090);for(int i=0;i<d.Docket.Count;i++){var e=d.Docket[i];Label(new Rect(98,244+i*56,700,40),e.Address,22);Label(new Rect(858,244+i*56,330,40),Status(e.Result),18,e.Result==ServiceResult.Pending?muted:accent);}Rule(95,550,1090);Label(new Rect(98,572,700,32),"Trip recorded   "+d.TripMiles.ToString("0.0")+" mi",17,muted);Action(new Rect(98,631,600,40),d.NightIndex<2?"Continue to the next shift":"Go home",()=>d.NextShift());}
   public static string Status(ServiceResult result)=>result==ServiceResult.Served?"Served directly":result==ServiceResult.LeftAtDoor?"Notice left":result==ServiceResult.Unable?"Unable to serve":"Pending";
