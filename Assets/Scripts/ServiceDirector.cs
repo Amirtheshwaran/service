@@ -42,6 +42,8 @@ namespace ServiceGameV2
         public bool Busy { get; private set; }
         public ServiceVehiclePresentation Vehicle {get;private set;}
         public ServiceLife Life {get;private set;}
+        public ServiceRouteGuide Guide {get;private set;}
+        public ServiceOmens Omens {get;private set;}
         public ServiceDialogue Dialogue {get;private set;}
         public ServiceCamcorder Camcorder {get;private set;}
         public bool BellGone;
@@ -49,8 +51,12 @@ namespace ServiceGameV2
         bool dogLine, lightsLine, docketLine, barricadeLine, surveyLine; float depotIntroAt = -1;
         public int KnockCount {get;private set;}
         public bool IsFriendly(int index)=>index==0||(index==4&&NightIndex==0);
+        // V20 slow burn: night one has no monsters. Night two: Harrow's watcher, the Morrow chase, and Bell's door on the
+        // walk back (armed when the papers are left in his back room). Night three: Vale.
+        public bool EncounterTonight(int index){switch(index){case 3:return NightIndex==1;case 5:return NightIndex==1;case 1:return NightIndex==2;case 4:return false;default:return Property(index).HasEncounter;}}
         public bool IsSmoke { get; private set; }
         public bool IsTour { get; private set; }
+        public bool IsChaos { get; private set; }
         public bool InputBlocked => Phase != ServicePhase.Playing || PaperOpen || (Horror!=null&&(Horror.Caught||Horror.ForcedLook));
         public bool AllResolved => Docket.Count > 0 && Docket.TrueForAll(e => e.Result != ServiceResult.Pending);
         public bool CanFinish => (AllResolved || EndedEarly) && !Horror.Active && !Horror.Caught && Player.InCar && Player.Speed < .6f && ServiceInteraction.InDepot(Scene.Car.position, Scene.Depot.position);
@@ -97,11 +103,12 @@ namespace ServiceGameV2
             ConfigureNight(0);
             Player.EnterCar();
             Storm=gameObject.AddComponent<ServiceStorm>();Storm.Initialize(this);
-            Presentation=gameObject.AddComponent<ServicePresentation>();Presentation.Initialize(this);
+            Presentation=gameObject.AddComponent<ServicePresentation>();Presentation.Initialize(this);Guide=gameObject.AddComponent<ServiceRouteGuide>();Guide.Initialize(this);Omens=gameObject.AddComponent<ServiceOmens>();Omens.Initialize(this);gameObject.AddComponent<ServiceWorldEdge>().Initialize(this);
             Vehicle=gameObject.AddComponent<ServiceVehiclePresentation>();Vehicle.Initialize(this);
             Life=gameObject.AddComponent<ServiceLife>();Life.Initialize(this);
             SetCursor();
             IsSmoke = Array.IndexOf(Environment.GetCommandLineArgs(), "-serviceSmoke") >= 0;
+            IsChaos = !IsSmoke && Array.IndexOf(Environment.GetCommandLineArgs(), "-serviceChaos") >= 0;if(IsChaos)gameObject.AddComponent<ServiceV20Chaos>().Run(this);
             if(IsSmoke){if(Array.IndexOf(Environment.GetCommandLineArgs(),"-serviceSurvey")>=0)gameObject.AddComponent<ServiceV19Survey>().Run(this);else if(Array.IndexOf(Environment.GetCommandLineArgs(),"-serviceTour")>=0){IsTour=true;gameObject.AddComponent<ServiceV19Tour>().Run(this);}else if(Array.IndexOf(Environment.GetCommandLineArgs(),"-serviceV19")>=0)gameObject.AddComponent<ServiceV19Smoke>().Run(this);else if(Array.IndexOf(Environment.GetCommandLineArgs(),"-serviceV16")>=0)gameObject.AddComponent<ServiceV16Smoke>().Run(this);else if(Array.IndexOf(Environment.GetCommandLineArgs(),"-serviceVisual")>=0)gameObject.AddComponent<ServiceV15VisualSmoke>().Run(this);else gameObject.AddComponent<ServiceV5Smoke>().Run(this);}
         }
 
@@ -122,9 +129,11 @@ namespace ServiceGameV2
                 else if (Phase == ServicePhase.Paused) Resume();
             }
             if (Phase != ServicePhase.Playing) return;
-            if (Player.InCar && (Pressed(Key.Tab) || Pressed(Key.M)))
+            // V20: no drawn map. Tab takes up the clipboard, but only with the car stopped.
+            if (Player.InCar && Pressed(Key.Tab))
             {
-                ToggleDocument(Pressed(Key.M));
+                if (!PaperOpen && Player.Speed > 1.5f) Say(ServiceScript.NotWhileDriving);
+                else ToggleDocument(false);
             }
             float distance = Vector3.Distance(lastCarPosition, Scene.Car.position);
             if (distance < 12 && !OdometerFrozen) TripMiles += distance / 1609.344f;
@@ -179,7 +188,7 @@ namespace ServiceGameV2
             dogLine = lightsLine = docketLine = barricadeLine = surveyLine = false; depotIntroAt = Time.unscaledTime + (IsSmoke && !IsTour ? 0 : 5.2f);
             if(Dialogue)Dialogue.Cancel();
             ApplyScriptText(NightIndex);
-            ConfigureNight(NightIndex);if(Life)Life.ResetForShift();
+            ConfigureNight(NightIndex);if(Life)Life.ResetForShift();if(Guide)Guide.ResetForShift();if(Omens)Omens.ResetForShift();
             Horror.ResetEncounter();
             Player.ResetForShift(depotStart, depotRotation);
             lastCarPosition = Scene.Car.position;
@@ -318,14 +327,15 @@ namespace ServiceGameV2
             ServiceProperty p = Property(index);
             if(result==ServiceResult.Served){if(NearbyKnockDoor()==index)StartCoroutine(Knock(entry,p));return;}
             if(result==ServiceResult.LeftAtDoor&&(!AccessGranted(index)||IsFriendly(index))){Say(ServiceScript.KnockFirst);return;}
-            if(p.HasEncounter && !IsFriendly(index) && result!=ServiceResult.Unable){
+            if(p.HasEncounter && EncounterTonight(index) && !IsFriendly(index) && result!=ServiceResult.Unable){
                 if(NearbyDoor()!=index)return;
-                entry.Result=ServiceResult.LeftAtDoor;if(p.PostedPaper)p.PostedPaper.SetActive(true);Audio.Paper();var hands=Scene.View.GetComponentInChildren<ServiceHands>();if(hands)hands.Interact(false);Horror.Begin(index);return;
+                entry.Result=ServiceResult.LeftAtDoor;if(p.PostedPaper){p.PostedPaper.SetActive(true);ServicePaperPlacement.Settle(p.PostedPaper);}Audio.Paper();var hands=Scene.View.GetComponentInChildren<ServiceHands>();if(hands)hands.Interact(false);Horror.Begin(index);return;
             }
             entry.Result = result;
+            if (result == ServiceResult.LeftAtDoor && index == 4 && NightIndex == 1) Horror.ArmReturnAmbush();
             if (result == ServiceResult.LeftAtDoor)
             {
-                if (p.PostedPaper != null) p.PostedPaper.SetActive(true);
+                if (p.PostedPaper != null) { p.PostedPaper.SetActive(true); ServicePaperPlacement.Settle(p.PostedPaper); }
                 Audio.Paper();
                 if (!p.HasEncounter && !IsFriendly(index) && NightIndex > 0 && !string.IsNullOrEmpty(p.RevealLine))
                 {
@@ -337,6 +347,7 @@ namespace ServiceGameV2
             else Say(ServiceScript.NoContact);
         }
 
+        ServiceResidents residents;
         IEnumerator Knock(DocketEntry entry, ServiceProperty p)
         {
             Busy = true;
@@ -351,6 +362,7 @@ namespace ServiceGameV2
                 if(p.WindowLight)p.WindowLight.enabled=true;
                 Audio.DoorAt(p.Door.position);
                 Say("A floorboard creaks beyond the door.");
+                if(!residents)residents=FindAnyObjectByType<ServiceResidents>();if(residents)residents.Answer(p,true);
                 if(Life)Life.OpenDoor(p,true);
                 yield return new WaitForSeconds(1.1f);
                 var talk=ServiceScript.Doorstep(entry.Property,NightIndex);
@@ -360,10 +372,10 @@ namespace ServiceGameV2
                 if(hands)hands.Interact(false);
                 Audio.Paper();
                 if(entry.Property==0)Audio.DeliveryComplete();
-                if(entry.Property==4&&NightIndex==0)Horror.ArmReturnAmbush();
                 if(Life)Life.OpenDoor(p,false);
                 Audio.DoorAt(p.Door.position);
                 if(!string.IsNullOrEmpty(after))Say(after);
+                yield return new WaitForSeconds(.7f);if(residents)residents.Answer(p,false);
             }
             else if (NightIndex > 0)
             {
@@ -394,13 +406,13 @@ namespace ServiceGameV2
         }
         public void NextShift() { if (NightIndex < 2) BeginShift(NightIndex + 1); else { Phase = ServicePhase.Finished; SetCursor(); } }
         public bool InsideVilla {get {if(Player==null||Player.InCar)return false;return Array.Exists(Scene.Properties,p=>p.InteriorBounds.Contains(Scene.Walker.transform.position+Vector3.up*.3f));}}
-        string SavePrefix=>IsSmoke?"SERVICE.test.":"SERVICE.v5.";
+        string SavePrefix=>IsSmoke?"SERVICE.test.":IsChaos?"SERVICE.chaos.":"SERVICE.v5.";
         public bool HasSavedRoute=>PlayerPrefs.HasKey(SavePrefix+"night");
         void SaveRoute(){if(NightIndex<2){PlayerPrefs.SetInt(SavePrefix+"night",NightIndex+1);for(int i=0;i<6;i++)PlayerPrefs.SetInt(SavePrefix+"result"+i,(int)lastResults[i]);}else PlayerPrefs.DeleteKey(SavePrefix+"night");PlayerPrefs.Save();}
         public void ContinueRoute(){for(int i=0;i<6;i++)lastResults[i]=(ServiceResult)PlayerPrefs.GetInt(SavePrefix+"result"+i,0);BeginShift(Mathf.Clamp(PlayerPrefs.GetInt(SavePrefix+"night",0),0,2));}
         public void NewRoute(){PlayerPrefs.DeleteKey(SavePrefix+"night");Array.Clear(lastResults,0,lastResults.Length);PlayerPrefs.Save();BeginShift(0);}
-        public void SaveOptions(){if(IsSmoke)return;PlayerPrefs.SetFloat("SERVICE.volume",Audio.Volume);PlayerPrefs.SetFloat("SERVICE.music",Audio.MusicVolume);PlayerPrefs.SetFloat("SERVICE.sensitivity",Player.Sensitivity);PlayerPrefs.SetFloat("SERVICE.motion",Player.CameraMotion);PlayerPrefs.SetFloat("SERVICE.blur",Player.MotionBlurAmount);if(Storm)Storm.Save();PlayerPrefs.Save();}
-        void OnApplicationFocus(bool focused){if(!focused&&!IsSmoke&&Phase==ServicePhase.Playing)Pause();}
+        public void SaveOptions(){if(IsSmoke||IsChaos)return;PlayerPrefs.SetFloat("SERVICE.volume",Audio.Volume);PlayerPrefs.SetFloat("SERVICE.music",Audio.MusicVolume);PlayerPrefs.SetFloat("SERVICE.sensitivity",Player.Sensitivity);PlayerPrefs.SetFloat("SERVICE.motion",Player.CameraMotion);PlayerPrefs.SetFloat("SERVICE.blur",Player.MotionBlurAmount);if(Storm)Storm.Save();PlayerPrefs.Save();}
+        void OnApplicationFocus(bool focused){if(IsChaos)return;if(!focused&&!IsSmoke&&Phase==ServicePhase.Playing)Pause();}
         public void Pause() { if (Phase != ServicePhase.Playing) return; Phase = ServicePhase.Paused; Time.timeScale = 0; SetCursor(); }
         public void Resume() { if (Phase != ServicePhase.Paused) return; Phase = ServicePhase.Playing; Time.timeScale = 1; SetCursor(); }
         public void Title() { StopAllCoroutines(); Busy = false; if(Dialogue)Dialogue.Cancel(); Phase = ServicePhase.Title; PaperOpen = MapOpen = false; Time.timeScale = 1; Player.StopEngine(); Horror.ResetEncounter(); SetCursor(); }

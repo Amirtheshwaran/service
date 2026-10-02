@@ -9,6 +9,7 @@ namespace ServiceGameV2 {
   public GameObject LateRoad;
   public Transform LateThreshold;
   public Transform[] Route;
+  public Transform[] LateRoute; // V20: County Route 9 centre line (night three), continuing Route
   public TextMesh Odometer;
   public Renderer[] CarExterior;
   public ParticleSystem Rain;

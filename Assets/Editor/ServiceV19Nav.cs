@@ -88,3 +88,20 @@ namespace ServiceGameV2.Editor {
    log.AppendLine("BEAM shots at route point "+i);}
  }
 }
+namespace ServiceGameV2.Editor {
+ public static partial class ServiceV19Rebuild {
+  // V20: where the steering wheel rim sits relative to the driver's eye (DriverSeat), for authoring the driving arms.
+  public static void WheelProbe(){Open();var seat=county.DriverSeat;var w=county.SteeringWheel;var sb=new System.Text.StringBuilder();
+   sb.AppendLine($"SEAT pos {seat.position} rot {seat.rotation.eulerAngles} cam vfov {county.View.fieldOfView} near {county.View.nearClipPlane}");
+   sb.AppendLine($"WHEEL pivot seat-local {seat.InverseTransformPoint(w.position)} axis(seat) {seat.InverseTransformDirection(w.forward)} up(seat) {seat.InverseTransformDirection(w.up)} right(seat) {seat.InverseTransformDirection(w.right)}");
+   float rmax=0,rmin=9;Vector3 c=Vector3.zero;int n=0;
+   foreach(var mf in w.GetComponentsInChildren<MeshFilter>()){if(!mf.sharedMesh)continue;sb.AppendLine("MESH "+mf.name+" verts "+mf.sharedMesh.vertexCount);
+    foreach(var v in mf.sharedMesh.vertices){var p=w.InverseTransformPoint(mf.transform.TransformPoint(v));c+=p;n++;var r=new Vector2(p.x,p.y).magnitude;rmax=Mathf.Max(rmax,r);}}
+   c/=Mathf.Max(1,n);sb.AppendLine($"RIM radius(max xy) {rmax:F4} vertex centroid(pivot-local) {c}");
+   // rim tube: radius histogram to find the ring
+   var hist=new int[40];foreach(var mf in w.GetComponentsInChildren<MeshFilter>())if(mf.sharedMesh)foreach(var v in mf.sharedMesh.vertices){var p=w.InverseTransformPoint(mf.transform.TransformPoint(v));int k=Mathf.Clamp((int)(new Vector2(p.x,p.y).magnitude/rmax*39),0,39);hist[k]++;}
+   sb.AppendLine("RADIUS HIST "+string.Join(",",hist));
+   foreach(var t in county.Car.GetComponentsInChildren<Transform>(true))if(t.name.ToLower().Contains("mirror"))sb.AppendLine($"MIRROR {t.name} seat-local {seat.InverseTransformPoint(t.position)} path {AnimationUtility.CalculateTransformPath(t,county.Car)}");
+   System.IO.File.WriteAllText(System.IO.Path.Combine(Work,"Audit","wheel-probe.txt"),sb.ToString());}
+ }
+}

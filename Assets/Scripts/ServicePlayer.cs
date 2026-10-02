@@ -68,7 +68,7 @@ namespace ServiceGameV2
             if (InCar)
             {
                 yaw = Mathf.Clamp(yaw, -100, 100);
-                s.View.transform.localRotation = Quaternion.Euler(Mathf.Clamp(pitch,-35,48)+5, yaw, 0);
+                s.View.transform.localRotation = Quaternion.Euler(Mathf.Clamp(pitch,-35,48)+11, yaw, 0);
                 if (Pressed(Key.Space)) StartEngine();
                 UpdateGauges();
                 float throttle = d.IsSmoke ? SmokeThrottle : Axis(Key.S, Key.W);
@@ -95,7 +95,7 @@ namespace ServiceGameV2
         void Drive(float throttle, float steering)
         {
             steer=Mathf.MoveTowards(steer,steering,Time.deltaTime*(Mathf.Abs(steering)<.1f?3.3f:2.2f));
-            s.SteeringWheel.localRotation=wheelRest*Quaternion.Euler(0,0,-steer*135);
+            s.SteeringWheel.localRotation=wheelRest*Quaternion.Euler(0,0,-steer*110);
             
             bool brake=d.IsSmoke?SmokeBrake:Keyboard.current!=null&&Keyboard.current[Key.LeftShift].isPressed;
             // Opposite pedal input brakes first; reversal starts only after reaching rest.
@@ -161,7 +161,7 @@ namespace ServiceGameV2
                 float motion=CameraMotion*Mathf.Clamp01(Speed/6);
                 var offset=new Vector3(-steer*motion*.018f,Mathf.Sin(Time.time*17)*motion*.0015f,-acceleration*CameraMotion*.0015f);
                 s.View.transform.localPosition=Vector3.Lerp(s.View.transform.localPosition,offset,1-Mathf.Exp(-Time.deltaTime*8));
-                s.View.transform.localRotation=Quaternion.Euler(Mathf.Clamp(pitch,-35,48)+5+acceleration*CameraMotion*.09f,yaw,steer*motion*.65f);return;
+                s.View.transform.localRotation=Quaternion.Euler(Mathf.Clamp(pitch,-35,48)+11+acceleration*CameraMotion*.09f,yaw,steer*motion*.65f);return;
             }
             if(d.Horror.Caught||d.Horror.ForcedLook)return;
             float amount=motionBlend*CameraMotion, bob=Mathf.Sin(gait*2)*(Sprinting?.025f:.014f)*amount;
@@ -251,9 +251,11 @@ namespace ServiceGameV2
             s.CarBody.enabled = true;
             speed = gravity = previousSpeed = acceleration = steer = 0;
         }
+        // V20: put the walker back on solid ground (world-edge safety net); works in normal play.
+        public void RescueWalker(Vector3 point) { if (InCar) return; PlaceWalker(point + Vector3.up * .08f, s.Walker.transform.eulerAngles.y); }
         public void SmokePlaceWalker(Vector3 point)
         {
-            if (!d.IsSmoke) return;
+            if (!d.IsSmoke && !d.IsChaos) return;
             StopEngine(); PlaceWalker(point + Vector3.up * .08f, 0);
         }
         public void RestoreApproach(Vector3 point,float angle) { StopEngine(); SmokeWalk=Vector2.zero;SmokeSprint=false;PlaceWalker(point+Vector3.up*.08f,angle); }

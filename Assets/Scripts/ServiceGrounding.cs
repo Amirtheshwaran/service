@@ -5,6 +5,7 @@ namespace ServiceGameV2 {
  public sealed class ServiceGrounding:MonoBehaviour {
   Animator a;Transform[] feet;Vector3 rest;float offset;bool ready;
   public float FloorGap {get;private set;}
+  public Transform Ignore; // V20: the door leaf beside an answering resident
   void Start(){
    a=GetComponent<Animator>();rest=transform.localPosition;
    if(a.isHuman)feet=new[]{a.GetBoneTransform(HumanBodyBones.LeftToes),a.GetBoneTransform(HumanBodyBones.RightToes),a.GetBoneTransform(HumanBodyBones.LeftFoot),a.GetBoneTransform(HumanBodyBones.RightFoot)};
@@ -17,7 +18,7 @@ namespace ServiceGameV2 {
    var probe=(feet[2].position+feet[3].position)*.5f;probe.y=transform.position.y+1.2f;
    // The highest surface below the hips is the floor the resident stands on (not the storey beneath it).
    var self=transform.parent?transform.parent:transform;float floor=float.NegativeInfinity;
-   foreach(var h in Physics.RaycastAll(probe,Vector3.down,3f,~0,QueryTriggerInteraction.Ignore)){if(h.transform.IsChildOf(self))continue;if(h.point.y>floor)floor=h.point.y;}
+   float stand=self.position.y;foreach(var h in Physics.RaycastAll(probe,Vector3.down,3f,~0,QueryTriggerInteraction.Ignore)){if(h.transform.IsChildOf(self))continue;if(Ignore&&h.transform.IsChildOf(Ignore))continue;if(h.collider.GetComponentInParent<CharacterController>())continue;if(Mathf.Abs(h.point.y-stand)>.45f)continue;if(h.point.y>floor)floor=h.point.y;}
    if(float.IsNegativeInfinity(floor))return;
    FloorGap=sole-floor;
    offset=Mathf.Clamp(offset-FloorGap,-.6f,.6f);
