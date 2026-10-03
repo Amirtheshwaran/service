@@ -49,7 +49,9 @@ namespace ServiceGameV2 {
    foreach(var p in d.Scene.Properties){if(d.IsFriendly(p.Index)||seen[p.Index]||Vector3.Distance(d.Scene.Walker.transform.position,p.Door.position)>14)continue;seen[p.Index]=true;StartCoroutine(Flicker(p));}
   }
   IEnumerator Flicker(ServiceProperty p){if(!p.PorchLight)yield break;var light=p.PorchLight;float baseline=porch[p.Index];foreach(float value in new[]{.15f,1f,.1f,.2f,1f}){light.intensity=baseline*value;yield return new WaitForSeconds(.12f);}light.intensity=baseline;}
-  public void OpenDoor(ServiceProperty p,bool open,bool wide=false){if(p.DoorPanel){if(doors[p.Index]!=null)StopCoroutine(doors[p.Index]);doors[p.Index]=StartCoroutine(Door(p,open,wide));}}
-  IEnumerator Door(ServiceProperty p,bool open,bool wide){var start=p.DoorPanel.localRotation;var goal=rest[p.Index]*Quaternion.Euler(0,open?(d.IsFriendly(p.Index)&&!wide?Mathf.Sign(p.DoorSwing)*FriendlyOpen:p.DoorSwing):0,0);float time=0;while(time<.65f){time+=Time.deltaTime;p.DoorPanel.localRotation=Quaternion.Slerp(start,goal,Mathf.SmoothStep(0,1,time/.65f));yield return null;}p.DoorPanel.localRotation=goal;}
+  public float DoorOpenDegrees(int index){var p=d?d.Property(index):null;return p&&p.DoorPanel?Quaternion.Angle(rest[index],p.DoorPanel.localRotation):0;}
+  public void OpenDoor(ServiceProperty p,bool open,bool wide=false,float seconds=.65f){if(p.DoorPanel){if(doors[p.Index]!=null)StopCoroutine(doors[p.Index]);doors[p.Index]=StartCoroutine(Door(p,open,wide,seconds));}}
+  // A bang (short seconds) is thrown open and decelerates; an ordinary swing eases in and out.
+  IEnumerator Door(ServiceProperty p,bool open,bool wide,float seconds){var start=p.DoorPanel.localRotation;var goal=rest[p.Index]*Quaternion.Euler(0,open?(d.IsFriendly(p.Index)&&!wide?Mathf.Sign(p.DoorSwing)*FriendlyOpen:p.DoorSwing):0,0);seconds=Mathf.Max(.05f,seconds);float time=0;while(time<seconds){time+=Time.deltaTime;float t=Mathf.Clamp01(time/seconds);t=seconds<.3f?1-(1-t)*(1-t):Mathf.SmoothStep(0,1,t);p.DoorPanel.localRotation=Quaternion.Slerp(start,goal,t);yield return null;}p.DoorPanel.localRotation=goal;}
  }
 }

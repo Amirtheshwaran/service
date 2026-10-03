@@ -10,8 +10,8 @@ namespace ServiceGameV2 {
   public int ReturnAmbushes {get;private set;}
   public float SpawnPathDistance {get;private set;}
   public float ImpactAlpha=>Phase==PursuitPhase.Attack?Mathf.Max(0,1-Mathf.Abs(Elapsed-.52f)/.16f)*.23f:0;
-  bool armedReturn,returnEncounter,impactPlayed;float armedAt;
-  public void ArmReturnAmbush(){armedReturn=true;armedAt=Time.time;}
+  bool armedReturn,returnEncounter,impactPlayed,bellShut;float armedAt;
+  public void ArmReturnAmbush(){armedReturn=true;armedAt=Time.time;bellShut=false;}
 
   public float Elapsed {get;private set;}
   public int Captures {get;private set;}
@@ -28,7 +28,7 @@ namespace ServiceGameV2 {
   public float GazeSeconds=>gazeSeconds;
   void LateUpdate(){if(Agent&&animators!=null)foreach(var a in animators)if(a&&a.gameObject.activeInHierarchy){a.SetBool("Moving",Phase==PursuitPhase.Chase&&p.Encounter==EncounterKind.Pursuit&&Agent.velocity.sqrMagnitude>.08f);a.speed=Phase==PursuitPhase.Chase?Mathf.Clamp(Agent.velocity.magnitude/(p.CreatureVariant==3?4.8f:2.2f),.8f,p.CreatureVariant==3?1.4f:2.1f):1;}}
   public void Initialize(ServiceDirector director){d=director;nav=NavMesh.AddNavMeshData(d.Scene.Navigation);Agent=d.Scene.Entity.GetComponent<NavMeshAgent>();animators=d.Scene.Entity.GetComponentsInChildren<Animator>(true);ResetEncounter();}
-  public void ResetEncounter(){Phase=PursuitPhase.Dormant;Elapsed=LookAwaySeconds=movingFor=0;stillAnchored=false;ignitionEscape=false;armedReturn=returnEncounter=false;System.Array.Clear(approach,0,6);System.Array.Clear(cue,0,6);if(Agent&&Agent.isOnNavMesh)Agent.ResetPath();d.Scene.Entity.SetActive(false);d.Audio.Pursuit(false);foreach(var h in d.Scene.Properties){if(h.WindowLight)h.WindowLight.enabled=h.Index<2||d.NightIndex==0;if(h.EncounterLights!=null)foreach(var l in h.EncounterLights)if(l)l.enabled=true;}}
+  public void ResetEncounter(){bellShut=false;Phase=PursuitPhase.Dormant;Elapsed=LookAwaySeconds=movingFor=0;stillAnchored=false;ignitionEscape=false;armedReturn=returnEncounter=false;System.Array.Clear(approach,0,6);System.Array.Clear(cue,0,6);if(Agent&&Agent.isOnNavMesh)Agent.ResetPath();d.Scene.Entity.SetActive(false);d.Audio.Pursuit(false);foreach(var h in d.Scene.Properties){if(h.WindowLight)h.WindowLight.enabled=h.Index<2||d.NightIndex==0;if(h.EncounterLights!=null)foreach(var l in h.EncounterLights)if(l)l.enabled=true;}}
   static void DriveProgress(ServiceProperty p,Vector3 at,out float fromDoor,out float lateral){
    var r=p.ApproachRoute;fromDoor=0;lateral=float.MaxValue;if(r==null||r.Length<2){var o=at-p.Door.position;o.y=0;fromDoor=o.magnitude;lateral=0;return;}
    float total=0;for(int i=1;i<r.Length;i++)total+=Vector3.Distance(r[i-1],r[i]);
@@ -58,7 +58,9 @@ namespace ServiceGameV2 {
      var bell=d.Property(4);float dist=Vector3.Distance(d.Scene.Walker.transform.position,bell.Door.position);
      // V19 drives curve: measure progress along the drive itself (door end -> gate end), not along a straight line.
      DriveProgress(bell,d.Scene.Walker.transform.position,out float progress,out float lateral);
-     if(dist>9&&dist<30&&progress>8&&lateral<5){armedReturn=false;ReturnAmbushes++;d.BellGone=true;d.Say(ServiceScript.ReturnAmbush);d.Audio.HorrorAt("doorslam",bell.Door.position,.7f);d.Audio.HorrorAt("metalrattle",bell.SoundPoint.position,.32f);d.Life.OpenDoor(bell,true,true);BeginEncounter(4,true);return;}
+     var w=d.Scene.Walker.transform.position;var eye=d.Scene.View.transform;
+     if(!bellShut&&d.Life.DoorOpenDegrees(4)>5&&!bell.InteriorBounds.Contains(w+Vector3.up*.3f)&&dist>4&&(Vector3.Dot(eye.forward,(bell.Door.position-eye.position).normalized)<.2f||dist>14)){bellShut=true;d.Life.OpenDoor(bell,false,false,1.6f);}
+     if(bellShut&&d.Life.DoorOpenDegrees(4)<3&&dist>9&&dist<30&&progress>8&&lateral<5){armedReturn=false;ReturnAmbushes++;d.BellGone=true;d.Say(ServiceScript.ReturnAmbush);d.Audio.HorrorAt("doorslam",bell.Door.position,.7f);d.Audio.HorrorAt("metalrattle",bell.SoundPoint.position,.32f);d.Life.OpenDoor(bell,true,true,.18f);BeginEncounter(4,true);return;}
     }
     if(d.Player.InCar)return;foreach(var h in d.Scene.Properties)if(h.HasEncounter&&!d.IsFriendly(h.Index)&&d.ResultAt(h.Index)==ServiceResult.Pending&&Vector3.Distance(d.Scene.Walker.transform.position,h.Door.position)<18){approach[h.Index]+=Time.deltaTime;if(approach[h.Index]>3&&cue[h.Index]==0){cue[h.Index]++;d.Audio.HorrorAt(h.Index%2==0?"metalrattle":"woodstress",h.SoundPoint.position,.16f);}if(approach[h.Index]>11&&cue[h.Index]==1){cue[h.Index]++;d.Audio.HorrorAt("taps",h.SoundPoint.position,.19f);}}return;}
    Elapsed+=Time.deltaTime;
@@ -68,7 +70,7 @@ namespace ServiceGameV2 {
     if(Elapsed>=1.25f){Phase=PursuitPhase.Caught;Elapsed=0;}return;
    }
    if(ForcedLook)d.Player.GlanceAt(Agent.transform.position+Vector3.up*1.2f,Elapsed>=1.05f);
-   if(Caught){if(Elapsed>3.4f){Captures++;int index=p.Index;ResetEncounter();d.RetryProperty(index);d.Player.RestoreApproach(p.Gate.position,p.Gate.eulerAngles.y);d.Say(d.IsFriendly(index)?ServiceScript.RetryAtGateServed:ServiceScript.RetryAtGate);}return;}
+   if(Caught){if(Elapsed>3.4f){Captures++;int index=p.Index;ResetEncounter();d.RetryProperty(index);d.Player.RestoreApproach(p.Gate.position,p.Gate.eulerAngles.y);d.Say(d.IsFriendly(index)?ServiceScript.RetryAtGateServed:ServiceScript.RetryAtGate);if(d.Timecard)d.Timecard.Rewound();}return;}
    if(p.Encounter==EncounterKind.LookAway){
     if(Elapsed<1){lastWalker=d.Scene.Walker.transform.position;return;}Phase=PursuitPhase.Chase;
     // Horizontal velocity is measured by the controller, independent of Shift, head bob and ground settling.

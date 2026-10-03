@@ -53,6 +53,7 @@ namespace ServiceGameV2
             var volume=GetComponentInChildren<UnityEngine.Rendering.Volume>();
             if(volume){var profile=volume.profile;if(!profile.TryGet(out blur))blur=profile.Add<UnityEngine.Rendering.Universal.MotionBlur>(true);blur.mode.Override(UnityEngine.Rendering.Universal.MotionBlurMode.CameraOnly);blur.intensity.Override(MotionBlurAmount);blur.clamp.Override(.035f);}
             s.View.nearClipPlane = .035f;
+            {var block=new GameObject("V21 parked body (walker blocker)");block.layer=8;block.transform.SetParent(s.Car,false);var box=block.AddComponent<BoxCollider>();box.center=new Vector3(0,.78f,0);box.size=new Vector3(1.44f,1.3f,3.6f);if(s.CarBody)Physics.IgnoreCollision(s.CarBody,box);}
             s.View.fieldOfView = 68;
         }
 
@@ -64,7 +65,7 @@ namespace ServiceGameV2
             Vector2 look = Mouse.current == null || d.IsSmoke ? Vector2.zero : Mouse.current.delta.ReadValue();
             float backTarget=LookBackTarget;
             if(backTarget==0&&Mathf.Abs(lookBack)<5)yaw += look.x * Sensitivity;
-            pitch = Mathf.Clamp(pitch - look.y * Sensitivity, -65, 70);
+            pitch = Mathf.Clamp(pitch - look.y * Sensitivity, InCar ? -35 : -65, InCar ? 48 : 70);
             if (InCar)
             {
                 yaw = Mathf.Clamp(yaw, -100, 100);
@@ -80,7 +81,8 @@ namespace ServiceGameV2
                 s.Walker.transform.rotation = Quaternion.Euler(0, yaw, 0);
                 lookBack=Mathf.MoveTowards(lookBack,backTarget,720*Time.deltaTime);
                 s.View.transform.localRotation = Quaternion.Euler(pitch, lookBack, 0);
-                Walk(d.IsSmoke ? SmokeWalk : new Vector2(Axis(Key.A, Key.D), Axis(Key.S, Key.W)));
+                bool held = d.Busy || (d.Dialogue && d.Dialogue.Active);
+                Walk(held ? Vector2.zero : d.IsSmoke ? SmokeWalk : new Vector2(Axis(Key.A, Key.D), Axis(Key.S, Key.W)), !held);
             }
             d.Audio.EngineSpeed(Speed);
         }
@@ -106,7 +108,7 @@ namespace ServiceGameV2
             acceleration=Mathf.Lerp(acceleration,(speed-previousSpeed)/Mathf.Max(.001f,Time.deltaTime),1-Mathf.Exp(-Time.deltaTime*5));previousSpeed=speed;
             float wheelAngle=steer*Mathf.Lerp(29,15,Mathf.InverseLerp(3,14,Speed));
             float yawRate=speed/2.5f*Mathf.Tan(wheelAngle*Mathf.Deg2Rad)*Mathf.Rad2Deg;
-            s.Car.Rotate(0,yawRate*Time.deltaTime,0,Space.World);
+            if(Mathf.Abs(yawRate)>.01f){var turned=Quaternion.Euler(0,yawRate*Time.deltaTime,0)*s.Car.rotation;if(YawBlocked(turned)&&yawBlockedFor<1.2f){yawBlockedFor+=Time.deltaTime;speed=Mathf.MoveTowards(speed,0,2*Time.deltaTime);LastVehicleObstruction="Turning clearance";}else{s.Car.rotation=turned;if(!YawBlocked(turned))yawBlockedFor=0;}}else yawBlockedFor=0;
             gravity=s.CarBody.isGrounded?-2:Mathf.Max(-20,gravity-20*Time.deltaTime);
             Vector3 before=s.Car.position;
             float impactSpeed=Speed;
@@ -127,10 +129,21 @@ namespace ServiceGameV2
             }
         }
 
-        void Walk(Vector2 input)
+        // V21: the body box (as swept by the forward BoxCast) may not swing into a pole, trunk, fence or wall. Ground and
+        // road surfaces don't count, nor anything the box already overlapped before the turn.
+        static readonly Collider[] turnNow=new Collider[24],turnNext=new Collider[24];float yawBlockedFor;
+        bool YawBlocked(Quaternion next){
+            // a slightly inset body: a corner grazing a thin post (a mailbox by a drive) is allowed, a swing into a trunk is not
+            var c=s.Car.position+Vector3.up*.85f;var half=new Vector3(.64f,.38f,1.58f);int mask=~((1<<8)|(1<<9)|(1<<10));
+            int n1=Physics.OverlapBoxNonAlloc(c,half,turnNow,s.Car.rotation,mask,QueryTriggerInteraction.Ignore);int n2=Physics.OverlapBoxNonAlloc(c,half,turnNext,next,mask,QueryTriggerInteraction.Ignore);
+            for(int i=0;i<n2;i++){var col=turnNext[i];if(col is TerrainCollider||col.GetComponentInParent<ServiceSurface>()||col.transform.IsChildOf(s.Car))continue;bool already=false;for(int j=0;j<n1;j++)if(turnNow[j]==col){already=true;break;}if(!already)return true;}
+            return false;
+        }
+
+        void Walk(Vector2 input, bool free = true)
         {
             input = Vector2.ClampMagnitude(input, 1);
-            bool crouch=d.IsSmoke?SmokeCrouch:Keyboard.current!=null&&Keyboard.current[Key.LeftCtrl].isPressed;
+            bool crouch=d.IsSmoke?SmokeCrouch:Keyboard.current!=null&&Keyboard.current[Key.LeftCtrl].isPressed;if(!free)crouch=Crouched;
             if(crouch)Crouched=true;
             else if(Crouched&&CanStand())Crouched=false;
             s.Walker.height=Crouched?1.12f:1.8f;s.Walker.center=new Vector3(0,s.Walker.height*.5f,0);
@@ -138,7 +151,7 @@ namespace ServiceGameV2
             if(OnStairs)jumpUntil=groundedUntil=0;
             Vector3 move = (s.Walker.transform.right * input.x + s.Walker.transform.forward * input.y) * (Crouched?1.55f:Sprinting ? 5.5f : 3.25f);
             if(s.Walker.isGrounded){groundedUntil=Time.time+.1f;if(gravity<0){if(lastVertical< -4)landing=Mathf.Min(.1f,-lastVertical*.008f);gravity=-2;}}
-            if(d.IsSmoke?SmokeJump:Pressed(Key.Space)){if(!OnStairs)jumpUntil=Time.time+.12f;SmokeJump=false;}
+            if(free&&(d.IsSmoke?SmokeJump:Pressed(Key.Space))){if(!OnStairs)jumpUntil=Time.time+.12f;SmokeJump=false;}
             if(jumpUntil>Time.time&&groundedUntil>Time.time&&!Crouched&&!OnStairs){gravity=5.8f;jumpUntil=groundedUntil=0;}
             else gravity=Mathf.Max(-25,gravity-20*Time.deltaTime);
             Vector3 prior=s.Walker.transform.position;lastVertical=gravity;var flags=s.Walker.Move((move+Vector3.up*gravity)*Time.deltaTime);if((flags&CollisionFlags.Above)!=0&&gravity>0)gravity=0;
@@ -215,7 +228,8 @@ namespace ServiceGameV2
         {
             if (exit == null) return false;
             Vector3 p = exit.position;
-            return !Physics.CheckCapsule(p + Vector3.up * .4f, p + Vector3.up * 1.5f, .28f, ~(1 << 8), QueryTriggerInteraction.Ignore);
+            if (Physics.Raycast(p + Vector3.up * 2, Vector3.down, out RaycastHit ground, 4, ~(1 << 8), QueryTriggerInteraction.Ignore)) p.y = Mathf.Max(p.y, ground.point.y);
+            return !Physics.CheckCapsule(p + Vector3.up * .42f, p + Vector3.up * 1.5f, .28f, ~(1 << 8), QueryTriggerInteraction.Ignore);
         }
         void PlaceWalker(Vector3 point, float angle)
         {
@@ -265,6 +279,7 @@ namespace ServiceGameV2
         }
         public void FocusOn(Vector3 point,float blend){
             var offset=point-s.View.transform.position;
+            if(InCar){var local=s.DriverSeat.InverseTransformDirection(offset);float ty=Mathf.Atan2(local.x,local.z)*Mathf.Rad2Deg,tp=-Mathf.Atan2(local.y,new Vector2(local.x,local.z).magnitude)*Mathf.Rad2Deg-11;yaw=Mathf.LerpAngle(yaw,Mathf.Clamp(ty,-100,100),blend);pitch=Mathf.Lerp(pitch,Mathf.Clamp(tp,-35,48),blend);return;}
             float targetYaw=Mathf.Atan2(offset.x,offset.z)*Mathf.Rad2Deg;
             float targetPitch=-Mathf.Atan2(offset.y,new Vector2(offset.x,offset.z).magnitude)*Mathf.Rad2Deg;
             yaw=Mathf.LerpAngle(yaw,targetYaw,blend);pitch=Mathf.Lerp(pitch,Mathf.Clamp(targetPitch,-50,50),blend);

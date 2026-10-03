@@ -39,7 +39,8 @@ namespace ServiceGameV2 {
    if(contactShade)contactShade.color=new Color(.65f,.62f,.56f,d.Storm.FlashesEnabled?d.Horror.ImpactAlpha:0);
    if(carPin){var pos=ServiceRouteMap.Project(d.Scene.Car.position,worldBounds,mapPanel);carPin.anchoredPosition=new Vector2(pos.x,-pos.y);carHeading.localRotation=Quaternion.Euler(0,0,-d.Scene.Car.eulerAngles.y);}
   }
-  bool ShiftCard=>d.Phase==ServicePhase.Playing&&d.ShiftCardTime<4.6f;
+  // V21: night cards are typed by ServiceTimecard.
+  bool ShiftCard=>false;
   void Rebuild(bool intro,string context,bool card){if(root){root.gameObject.SetActive(false);Destroy(root.gameObject);}firstButton=null;carPin=carHeading=null;introShade=contactShade=cardShade=null;cardWords=null;MapPins=MapSegments=0;root=Area("Screen",new Rect(0,0,1280,720),canvas.transform);root.anchorMin=root.anchorMax=root.pivot=new Vector2(.5f,.5f);root.anchoredPosition=Vector2.zero;
    if(intro){introShade=Block(new Rect(-1000,-1000,3280,2720),Color.black);var words=Area("Headphones",new Rect(0,0,1280,720));introWords=words.gameObject.AddComponent<CanvasGroup>();Label(new Rect(0,290,1280,52),"Headphones recommended",30,null,words).alignment=TextAnchor.MiddleCenter;Label(new Rect(0,348,1280,35),"For directional sound, use headphones.",18,muted,words).alignment=TextAnchor.MiddleCenter;Label(new Rect(0,636,1280,30),"Press any key to continue",15,muted,words).alignment=TextAnchor.MiddleCenter;return;}
    if(d.Phase==ServicePhase.Title){if(!menus)Title();}else if(d.Phase==ServicePhase.Paused){if(!menus)Pause();}else if(d.Phase==ServicePhase.Finished)Epilogue();else if(d.Phase==ServicePhase.Report)Report();else if(d.PaperOpen)Documents();else Playing(context);

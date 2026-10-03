@@ -26,6 +26,8 @@ namespace ServiceGameV2 {
    Refresh();
   }
   AudioSource Loop(string name,string clip,float volume){var o=new GameObject(name);o.transform.SetParent(d.Scene.Car,false);var source=o.AddComponent<AudioSource>();source.clip=Resources.LoadAll<AudioClip>("Audio/V12/"+clip).FirstOrDefault();source.loop=true;source.playOnAwake=false;source.volume=volume;source.spatialBlend=0;return source;}
+  public bool RadioAudible=>d&&d.Phase==ServicePhase.Playing&&!d.PaperOpen&&RadioOn&&d.Player.InCar;
+  public void ResetRadio(){RadioOn=false;Refresh();}
   public void ToggleRadio(){d.Audio.HorrorAt("switch",d.Scene.View.transform.position,.12f);RadioOn=!RadioOn;Refresh();}
   public void NextStation(){Station=(Station+1)%stations.Length;RadioOn=true;Refresh();}
   void Refresh(){if(display)display.text=RadioOn?(Station==0?"88.5 FM":Station==1?"104.2 FM":"91.7 FM"):"RADIO OFF";if(RadioOn&&stations[Station]){radio.clip=stations[Station];radio.Play();}else radio.Stop();}

@@ -1,60 +1,60 @@
-SERVICE ??asset credits
+SERVICE — asset credits
 
 Audio uses human recordings and human sound design. No generative AI media. The horror drone is a pre-existing 2019 sound-design recording.
 Edits: trimming, channel downmix, level adjustment, short fades and loop crossfades.
 
-night-crickets ??OwlStorm
+night-crickets — OwlStorm
 https://freesound.org/people/OwlStorm/sounds/320145/
 CC0 https://creativecommons.org/publicdomain/zero/1.0/
 
-dog-bark ??ipears1
+dog-bark — ipears1
 https://freesound.org/people/ipears1/sounds/118072/
 CC0 https://creativecommons.org/publicdomain/zero/1.0/
 
-footsteps-gravel ??Anthousai
+footsteps-gravel — Anthousai
 https://freesound.org/people/Anthousai/sounds/398778/
 CC0 https://creativecommons.org/publicdomain/zero/1.0/
 
-car-engine-idle ??jpkweli
+car-engine-idle — jpkweli
 https://freesound.org/people/jpkweli/sounds/154758/
 CC0 https://creativecommons.org/publicdomain/zero/1.0/
 
-paper-flip ??gynation
+paper-flip — gynation
 https://freesound.org/people/gynation/sounds/82379/
 CC0 https://creativecommons.org/publicdomain/zero/1.0/
 
-wind-trees ??NomadApe
+wind-trees — NomadApe
 https://freesound.org/people/NomadApe/sounds/444921/
 CC0 https://creativecommons.org/publicdomain/zero/1.0/
 
-car-engine-fail ??jerry.berumen
+car-engine-fail — jerry.berumen
 https://freesound.org/people/jerry.berumen/sounds/511685/
 CC0 https://creativecommons.org/publicdomain/zero/1.0/
 
-car-door-close ??AdrianoAnjos
+car-door-close — AdrianoAnjos
 https://freesound.org/people/AdrianoAnjos/sounds/607260/
 CC0 https://creativecommons.org/publicdomain/zero/1.0/
 
-door-knock ??HunteR4708
+door-knock — HunteR4708
 https://freesound.org/people/HunteR4708/sounds/256513/
 CC0 https://creativecommons.org/publicdomain/zero/1.0/
 
-car-engine-start ??soundmary
+car-engine-start — soundmary
 https://freesound.org/people/soundmary/sounds/128188/
 CC BY 4.0 https://creativecommons.org/licenses/by/4.0/
 
-Courier Prime ??Alan Dague-Greene / Google Fonts. SIL Open Font License 1.1.
+Courier Prime — Alan Dague-Greene / Google Fonts. SIL Open Font License 1.1.
 https://github.com/google/fonts/tree/main/ofl/courierprime
 
-Flooded Grounds 1.1 ??Sandro T. Standard Unity Asset Store EULA.
+Flooded Grounds 1.1 — Sandro T. Standard Unity Asset Store EULA.
 https://assetstore.unity.com/packages/3d/environments/flooded-grounds-48529
 Licensed to the acquiring Unity account. Do not redistribute its raw source assets separately.
 
 V3 additions:
-Barlow ??Jeremy Tribby. SIL Open Font License 1.1.
+Barlow — Jeremy Tribby. SIL Open Font License 1.1.
 https://github.com/google/fonts/tree/main/ofl/barlow
 
-Creep Horror Creature ??AC Game Assets. Standard Unity Asset Store EULA.
+Creep Horror Creature — AC Game Assets. Standard Unity Asset Store EULA.
 https://assetstore.unity.com/packages/3d/characters/creatures/creep-horror-creature-244853
 Licensed to the acquiring Unity account; raw assets may not be redistributed as a library.
 
@@ -75,25 +75,25 @@ Recordings distributed unchanged. Selected footsteps, breathing, gasps, forest w
 Additional rattle, taps, leaf rustle, wind howl: Flooded Grounds by Sandro T, Standard Unity Asset Store EULA.
 Per-file sources: Assets/Resources/Audio/V5/sources.json
 
-V6 ART ADDITIONS ??acquired through the user's Unity Asset Store account
-Conifers [BOTD] ??forst ??Standard Unity Asset Store EULA
+V6 ART ADDITIONS — acquired through the user's Unity Asset Store account
+Conifers [BOTD] — forst — Standard Unity Asset Store EULA
 https://assetstore.unity.com/packages/3d/vegetation/trees/conifers-botd-142076
-Rock and Boulders 2 ??Manufactura K4 ??Standard Unity Asset Store EULA
+Rock and Boulders 2 — Manufactura K4 — Standard Unity Asset Store EULA
 https://assetstore.unity.com/packages/3d/props/exterior/rock-and-boulders-2-6947
-Demon Horror Creature with Weapon ??AC Game Assets ??Standard Unity Asset Store EULA
+Demon Horror Creature with Weapon — AC Game Assets — Standard Unity Asset Store EULA
 https://assetstore.unity.com/packages/3d/characters/creatures/demon-horror-creature-with-weapon-247792
 
 V7: Additional unchanged Nox Sound CC0 recordings: cicadas and six leaf-footstep recordings used as off-path brush movement. Per-file attribution in Audio/V5/sources.json.
 
 V9 STORM AND MUSIC
-This House and The Descent ??Kevin MacLeod (incompetech.com). Licensed under Creative Commons: By Attribution 4.0 License, https://creativecommons.org/licenses/by/4.0/ . Original recordings unchanged; chase playback starts at 12 seconds. https://incompetech.com/music/royalty-free/
-Loud Thunder sounds ??Rvgerxini, CC0. https://freesound.org/people/Rvgerxini/sounds/620529/ . Four edited mono excerpts with fades.
-Rain, mud and water footsteps ??Nox Sound Essentials, CC0. Recordings unchanged.
+This House and The Descent — Kevin MacLeod (incompetech.com). Licensed under Creative Commons: By Attribution 4.0 License, https://creativecommons.org/licenses/by/4.0/ . Original recordings unchanged; chase playback starts at 12 seconds. https://incompetech.com/music/royalty-free/
+Loud Thunder sounds — Rvgerxini, CC0. https://freesound.org/people/Rvgerxini/sounds/620529/ . Four edited mono excerpts with fades.
+Rain, mud and water footsteps — Nox Sound Essentials, CC0. Recordings unchanged.
 Additional native shrub and grass meshes and rain particle texture: Flooded Grounds / Sandro T, Unity Asset Store EULA.
 Per-file V9 attribution: Assets/Resources/Audio/V9/sources.json
 
 V10 SCANNED WOODLAND
-Poly Haven ??CC0: https://polyhaven.com/license
+Poly Haven — CC0: https://polyhaven.com/license
 https://polyhaven.com/a/fern_02
 https://polyhaven.com/a/dead_tree_trunk_02
 https://polyhaven.com/a/tree_stump_01
@@ -106,26 +106,26 @@ https://polyhaven.com/a/bark_brown_02
 Source maps and models supplied by Poly Haven artists. Texture channels packed for Unity URP; fern alpha combined with diffuse; authored model variants/LODs selected for runtime. Per-file source URLs and checksums in Assets/ServiceArt/ScannedWoodland/*/source.json.
 
 V11 EXPERIENCE ASSETS
-[Animated] Wolf ??CoinCoin, Creative Commons Attribution 4.0.
+[Animated] Wolf — CoinCoin, Creative Commons Attribution 4.0.
 https://opengameart.org/content/animated-wolf
 https://creativecommons.org/licenses/by/4.0/
 Authored model, texture and animations. Used as a yard canine; scaled, converted
 to Unity legacy animation and URP material. Run playback slowed for pacing.
 
-George Street Shuffle and Local Forecast - Elevator ??Kevin MacLeod
+George Street Shuffle and Local Forecast - Elevator — Kevin MacLeod
 (incompetech.com). Licensed under Creative Commons: By Attribution 4.0 License.
 https://creativecommons.org/licenses/by/4.0/
 https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1300035
 https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1300012
 Recordings unchanged; spatial speaker filtering applied at runtime.
 
-Leather White ??Poly Haven, CC0.
+Leather White — Poly Haven, CC0.
 https://polyhaven.com/a/leather_white
 https://polyhaven.com/license
 Scanned texture maps packed and tinted for Unity's existing cabin material.
 
 V12 DRIVING AND FOLEY ASSETS
-Rigged Car ??Racoon Media / eracoon.
+Rigged Car — Racoon Media / eracoon.
 https://opengameart.org/content/rigged-car
 Archive license: Creative Commons Attribution 4.0.
 https://creativecommons.org/licenses/by/4.0/
@@ -140,7 +140,7 @@ interior loop, driving interior loop and dashboard switch. Exact source file
 mapping in Assets/Resources/Audio/V12/sources.json. No synthesized recordings.
 Existing AC Game Assets Creep and Demon punch animations used for captures.
 
-Car Concept steering components ??Darmstadt Graphics Group GmbH; Eric Chadwick
+Car Concept steering components — Darmstadt Graphics Group GmbH; Eric Chadwick
 (glTF conversion), original model by Unity Fan. CC BY 4.0.
 https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/CarConcept
 https://creativecommons.org/licenses/by/4.0/
@@ -152,13 +152,13 @@ Racoon's unused navigation display removed; UVs refitted for scanned leather.
 V13 REPAIR / RUNNING FOLEY
 The V12 Racoon car and Car Concept wheel are no longer used in the playable
 scene. Their source-project files remain for historical recovery, with licenses.
-Nox Sound / Essentials Series ??39 unchanged CC0 running-step recordings.
+Nox Sound / Essentials Series — 39 unchanged CC0 running-step recordings.
 https://nox-sound-design.itch.io/essentials-series-sfx-nox-sound
 Source mapping: Assets/Resources/Audio/V13/sources.json.
 AC Game Assets Demon Horror Creature: existing authored Run1 animation.
 
-V14 AUTHORED CABIN ??PRIVATE, NONCOMMERCIAL BUILD
-Ford Crown Victoria with Interior ??Tyble, BlendSwap.
+V14 AUTHORED CABIN — PRIVATE, NONCOMMERCIAL BUILD
+Ford Crown Victoria with Interior — Tyble, BlendSwap.
 https://blendswap.com/blend/16239 (original archive ID 81414)
 Creative Commons Attribution 3.0; bundled license additionally marks this
 asset as fan art and prohibits commercial use. Do not sell or commercially
@@ -171,11 +171,11 @@ No generated replacement meshes or image/audio assets were added in V14.
 Functional instrument and radio lettering uses the existing Barlow font.
 
 V15 additions:
-City Kit (Roads), Kenney ??CC0. https://kenney.nl/assets/city-kit-roads
-Animated Animals Vol.2, Quaternius ??CC0. https://opengameart.org/content/animated-animales-low-poly
-Some of the sounds in this project were created by ViRiX Dreamcore soundcloud.com/virix ??CC BY 3.0. https://opengameart.org/content/ui-and-item-sound-effect-jingles-sample-2 ; Item2A unchanged.
+City Kit (Roads), Kenney — CC0. https://kenney.nl/assets/city-kit-roads
+Animated Animals Vol.2, Quaternius — CC0. https://opengameart.org/content/animated-animales-low-poly
+Some of the sounds in this project were created by ViRiX Dreamcore soundcloud.com/virix — CC BY 3.0. https://opengameart.org/content/ui-and-item-sound-effect-jingles-sample-2 ; Item2A unchanged.
 Jazz Brunch, Kevin MacLeod (incompetech.com), CC BY 4.0 https://creativecommons.org/licenses/by/4.0/ https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1700074 ; third radio station, file unchanged.
-Nox Sound vehicle trunk impact ??CC0 Essentials Series; unchanged recording used for low-speed body collision.
+Nox Sound vehicle trunk impact — CC0 Essentials Series; unchanged recording used for low-speed body collision.
 
 V15 Flooded Grounds truck adaptation: the original authored rear tonneau
 panel is detached and lowered as the bed liner in Blender. The original
@@ -183,20 +183,20 @@ body, rim, textures, UVs and three LODs are retained. Editable adaptation:
 Sources/V15/CountyTruck-open-bed.blend. Source package license unchanged.
 
 V16 AUTHORED CHARACTERS AND HANDS
-PSX First Person Arms ??Drillimpact, CC0.
+PSX First Person Arms — Drillimpact, CC0.
 https://drillimpact.itch.io/psx-first-person-arms-free
 Author-supplied mesh, painted texture and relax/jab/grab animation clips.
 Re-exported from original .blend to FBX in metric units; fitted to player camera.
 No generated replacement mesh or texture.
 
-Sophia idling and Nathan walking ??Renderpeople Free Animated People samples.
+Sophia idling and Nathan walking — Renderpeople Free Animated People samples.
 https://renderpeople.com/free-3d-people/
 https://renderpeople.com/general-terms-and-conditions/
 Renderpeople licence permits incorporation into games. The rendered/compiled
 characters are part of this player build; raw model files are not redistributed.
 Original scanned textures and recorded animation are used.
 
-German Shepard ??Pawel Walasiewicz, BlenderKit royalty-free asset.
+German Shepard — Pawel Walasiewicz, BlenderKit royalty-free asset.
 https://www.blenderkit.com/asset-gallery-detail/d45d4039-660e-460d-b6e6-b3c2a4742a6c/
 https://www.blenderkit.com/docs/licenses/
 Original model, seated rig pose and painted coat/eye/normal textures.
@@ -207,18 +207,63 @@ Quaternius dog in this build. Raw source is not included in the player archive.
 V16 scene repairs reuse Flooded Grounds door/furniture meshes and BOTD conifers;
 source package licences remain applicable. No image-generator assets were used.
 
-V17 ADDITIONS (September 29, 2026) - all downloaded by the project owner; no AI-generated media
-- "Just man" by vrimen (Sketchfab), CC BY 4.0 - https://sketchfab.com/3d-models/just-man-e77a26778dc14b3c8f4838fe6a827dc3 - Bell resident and depot worker (worker jacket colour-tinted in Unity).
-- "An Elderly Man" by BELAZ (@asset_for_games, Sketchfab), CC BY 4.0 - https://sketchfab.com/3d-models/an-elderly-man-60cca77799e249e39ef53e3112baa4a7 - Correll resident.
-- "Pine trees pack (lowpoly, game ready, LODs)" by LOLIPOP (Sketchfab), CC BY 4.0 - https://sketchfab.com/3d-models/pine-trees-pack-lowpoly-game-ready-lods-e1e9c07b8e2e445c943fec660beefba2 - forest pines.
-- "Mid Poly Dead Pine Tree" by sujirour (Sketchfab), CC BY 4.0 - https://sketchfab.com/3d-models/mid-poly-dead-pine-tree-84b73e8b6efb4ca7b47409c89689927a - dead snags.
-- "German Shepherd 3D Dog Model (Free)" by RetroStyle Games (itch.io), free for personal/commercial projects - https://retrostylegames.itch.io/german-shepherd-3d-dog-model-free - Correll's dog (model, textures, breathing/idle clips).
-- Poly Haven (CC0): dead_tree_trunk, dry_branches_medium_01, rock_moss_set_01, rock_moss_set_02 - https://polyhaven.com (decimated in Blender for real-time use).
-- Unity Starter Assets - Third Person (Unity Technologies, Asset Store EULA): humanoid Idle and Walk_N clips retargeted to the residents.
-- Freesound (CC0): "Night Crickets Ambience on Rural Property" by OwlStorm - https://freesound.org/people/OwlStorm/sounds/320145/ ; "Dogs barking far with echo in a small village at night" by felix.blume - https://freesound.org/people/felix.blume/sounds/705299/ (both trimmed).
+V19 (monsters-only overhaul)
+Poly Haven models, CC0 (https://polyhaven.com/license), downloaded through the
+Poly Haven API with their authored textures; ARM maps repacked for URP Lit only:
+Chandelier_02, ClassicConsole_01, CoffeeTable_01, GothicCommode_01, GreenChair_01, Ottoman_01, WoodenTable_01, WoodenTable_03, alarm_clock_01, anthurium_botany_01, antique_ceramic_vase_01, binder_notebook, binoculars, book_encyclopedia_set_01, brass_candleholders, bull_head, caged_hanging_light, ceiling_fan, ceramic_vase_01, ceramic_vase_03, chess_set, cigarette_pack, coffee_table_round_01, concrete_road_barrier, concrete_road_barrier_02, dartboard, decorative_book_set_01, desk_lamp_arm_01, dining_chair_02, dining_table, drawer_cabinet, electric_stove, fancy_picture_frame_01, fancy_picture_frame_02, fishermans_hat, folding_wooden_stool, gothic_coffee_table, hanging_picture_frame_01, hanging_picture_frame_02, hanging_picture_frame_03, hatchet, industrial_wall_lamp, industrial_wall_sconce, jug_01, lantern_chandelier_01, mantel_clock_01, metal_trash_can, modern_arm_chair_01, office_notepads, old_bed_frame, ornate_mirror_01, painted_wooden_bench, painted_wooden_cabinet, painted_wooden_cabinet_02, painted_wooden_chair_01, painted_wooden_chair_02, painted_wooden_nightstand, painted_wooden_shelves, painted_wooden_sofa, painted_wooden_stool, painted_wooden_table, planter_pot_clay, plastic_broom, portable_cassette_player, postcard_set_01, pot_enamel_01, pull_chain_light_socket, round_spectacles, round_wooden_table_01, round_wooden_table_02, rubber_boots, side_table_01, side_table_tall_01, small_plastic_torch, small_wooden_table_01, sofa_02, sofa_03, spinning_wheel_01, standing_picture_frame_01, standing_picture_frame_02, steel_frame_shelves_02, street_lamp_01, street_lamp_02, tea_set_01, television_02, throw_pillows_01, tree_stump_01, vintage_cabinet_01, vintage_crutches_01, vintage_day_bed, vintage_electric_kettle, vintage_grandfather_clock_01, vintage_lighter, vintage_microwave, vintage_oil_lamp, vintage_radio_transceiver, vintage_suitcase, vintage_telephone_wall_clock, vintage_wooden_drawer_01, wall_clock, wicker_basket_01, wicker_basket_02, wine_bottles_01, wooden_axe, wooden_bookshelf_worn, wooden_bowl_01, wooden_bucket_01, wooden_crate_01, wooden_table_02.
+Poly Haven textures, CC0: asphalt_02, forest_ground_04, forest_leaves_04,
+gravel_road, mud_forest, stony_dirt_path, worn_asphalt (ground and roads),
+ribbed_corduroy (jacket sleeve painted over the PSX arms texture).
+EasyRoads3D Free v3 (Unity Asset Store licence): road textures only. The road
+ribbons are built by the project's own editor script because the free version
+refuses scripted API calls.
+Flooded Grounds (Unity Asset Store licence): rugs, paintings, table lamp, beds,
+cabinets, dining table, shelf stand and vases re-wrapped at real-world scale;
+Villa2 door leaves refitted per opening at Morrow House. Built-in Standard
+materials moved to URP Lit.
+PSX First Person Arms, Drillimpact, CC0: re-posed in Blender (Hold, Knock,
+Reach) holding the Poly Haven small plastic torch.
+Sound: torch click from the NOX Sound "Vehicle_Car_Button_Mono_02", CC0.
+Fonts, SIL Open Font License 1.1 (licence texts in Assets/ServiceArt/V19/Fonts):
+Barlow (street and depot signs), Nothing You Could Do, Indie Flower, Reenie
+Beanie, Kalam, Shadows Into Light (the handwritten door notes).
+Sign faces and door notes are typeset from those fonts on flat colours and ruled
+lines (Sources/V19/signs.py). No image generator, AI or procedural scenery tools
+were used.
 
-V18 ADDITIONS (September 29, 2026)
-- Poly Haven (CC0) furniture in the delivery rooms and the late cabin: ArmChair_01, ClassicNightstand_01, Rockingchair_01, Shelf_01, Sofa_01, WoodenChair_01, cardboard_box_01 - https://polyhaven.com/models
-- Unity Starter Assets - Third Person (Unity Technologies, Asset Store EULA): humanoid Run_N clip for the human pursuer.
-- The man who follows you (Daniel Bell, tree-line figure, human pursuer) reuses "Just man" by vrimen (CC BY 4.0), credited above.
-- All V18 dialogue and inner-voice lines are original written text; no synthesized voices.
+V20 (menus, navigation, roads, hands)
+- "Blue mailbox on a wooden stand" by Rylae Shylna (Sketchfab user risteralline), CC BY 4.0,
+  https://sketchfab.com/3d-models/none-6034ec0be4d24890ad7a939c97d52650 - the numbered mailbox at every drive.
+  Textures resized to 1024 px and the ORM map repacked for URP Lit; the model is otherwise unchanged.
+- "Electrical Powerline Pole (Free Asset)" by tiedtke, CC BY 4.0,
+  https://sketchfab.com/3d-models/none-001a960897dd46c9a6a439e5fb1167f8 - the utility poles and wires along the
+  county road. Textures resized to 1024 px.
+- VT323 (The VT323 Project Authors, Peter Hull), SIL Open Font License 1.1 (licence text in
+  Assets/ServiceArt/V20/Fonts/VT323-OFL.txt) - menu and on-screen-display lettering.
+- Menu sounds: NOX Sound "Essentials Series" Vehicle_Car_Button_Mono_01/02, Vehicle_Truck_Buttons_Interior_Mono_09/15
+  and Vehicle_Car_Keys_Mono_01, CC0 (already credited above for the torch click).
+- 911 address plates and mailbox name strips are typeset from Barlow and Kalam (SIL OFL) on flat colour
+  (Sources/V20/guide_assets.py). The worn county asphalt is the V19 county asphalt texture with its paint faded and
+  wheel paths darkened (Sources/V20/road_worn.py). No image generator, AI or procedural scenery tool was used.
+- Driving hands: the same PSX First Person Arms (Drillimpact, CC0), posed in Blender onto the steering-wheel rim at
+  nine wheel angles (Sources/V19/arms_pose.py).
+
+V21 (doorsteps, gestures, time cards, pursuit dread, grass, dice, roads)
+- "Fuzzy dice" by jediscoob, Sketchfab, CC BY 4.0,
+  https://sketchfab.com/3d-models/none-1857c309986a41d48f2747bdf799e125 - the pair of dice on the rear-view mirror.
+  The die mesh is scaled to 7 cm; its fuzz is drawn from a 14,000-point subset of the author's own fuzz point cloud
+  (Sources/V21/fuzzy_dice/export_dice.py). Texture unchanged.
+- Music: "Anxiety" (pursuit score) and "Penumbra" (the stand-still watcher), Kevin MacLeod (incompetech.com),
+  Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  ("The Descent", credited earlier, is no longer the pursuit track.)
+- Sound, NOX Sound "Essentials Series", CC0 (cut and trimmed only, Sources/V21/audio_prep.py):
+  Footsteps_Grass_Tall_Movement_01-09 (walking through grass and brush), Voice_Male_V1_Breath_Mouth_Fast_Sequence
+  _01-03 (the player's breathing in a pursuit), Voice_Male_V2_Breath_Shocked_01-05 (the sting when something shows
+  itself), Atmosphere_Drone_Hum_Eerie_Loop (the dread bed under a pursuit), and the transient of
+  Vehicle_Car_Button_Mono_01-04 (the typewriter-style key clicks of the time cards).
+- Hands: the PSX First Person Arms (Drillimpact, CC0) gain Knock (re-timed to the knock recording), Give, Place,
+  Push and Torch, posed in Blender (Sources/V19/arms_pose.py, Sources/V21/arms_v21.py).
+- Verge grass along the county road and Route 9: Flooded Grounds grass prefabs (Unity Asset Store licence), placed
+  along the verges with the county's existing URP grass material.
+- The time cards are typed in Courier Prime (SIL OFL, credited earlier). The tape-damage effect is a shader pass
+  on the camcorder filter. No image generator, AI or procedural scenery tool was used.

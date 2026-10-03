@@ -6,6 +6,7 @@ namespace ServiceGameV2 {
  // goes by. Positions are measured along the county road from the depot (ServiceProperty.RoadDistance), so "ahead",
  // "behind" and "on your left" are true for whichever way the car is pointing.
  public sealed class ServiceRouteGuide:MonoBehaviour {
+  Transform[] bridged; // V21: the last county-road point joined to County Route 9, so distances past the barricade count the gap
   ServiceDirector d;int saidApproach=-1,saidMissed=-1,lastTarget=-2;float nextCheck;
   public int Target {get;private set;}=-1;   // property index, or -1 for the depot when the docket is clear
   public string Objective {get;private set;}=""; public string Direction {get;private set;}="";
@@ -16,22 +17,32 @@ namespace ServiceGameV2 {
   public void Initialize(ServiceDirector director){d=director;}
   public void ResetForShift(){saidApproach=saidMissed=-1;lastTarget=-2;Objective=Direction="";}
   // The next stop in docket order that is still pending (the docket is written in road order from the depot).
-  int NextStop(){foreach(var e in d.Docket)if(e.Result==ServiceResult.Pending)return e.Property;return -1;}
+  int NextStop(){if(d.EndedEarly)return -1;foreach(var e in d.Docket)if(e.Result==ServiceResult.Pending)return e.Property;return -1;}
   // Position along the road: main road from the depot, then County Route 9 past the barricade.
   float Along(Vector3 at,out Vector3 tangent){
    var tg=Vector3.forward;float best=float.MaxValue,run=0,arc=0;var q=at;q.y=0;
    void Walk(Transform[] pts,float offset){if(pts==null)return;float r=0;for(int i=1;i<pts.Length;i++){if(!pts[i-1]||!pts[i])continue;var a=pts[i-1].position;var b=pts[i].position;a.y=b.y=0;var ab=b-a;float len=ab.magnitude;if(len<1e-4f)continue;float t=Mathf.Clamp01(Vector3.Dot(q-a,ab)/(len*len));float dd=(q-(a+ab*t)).sqrMagnitude;if(dd<best){best=dd;arc=offset+r+t*len;tg=ab/len;}r+=len;}run=offset+r;}
-   Walk(d.Scene.Route,0);if(d.NightIndex>=2&&d.Scene.LateRoute!=null&&d.Scene.LateRoute.Length>1)Walk(d.Scene.LateRoute,run);
+   Walk(d.Scene.Route,0);if(d.NightIndex>=2&&d.Scene.LateRoute!=null&&d.Scene.LateRoute.Length>1){if(bridged==null){bridged=new Transform[d.Scene.LateRoute.Length+1];bridged[0]=d.Scene.Route[d.Scene.Route.Length-1];System.Array.Copy(d.Scene.LateRoute,0,bridged,1,d.Scene.LateRoute.Length);}Walk(bridged,run);}
    tangent=tg;return arc;}
   void Update(){
    if(!d||d.Phase!=ServicePhase.Playing||Time.time<nextCheck)return;nextCheck=Time.time+.25f;
-   Target=NextStop();if(Target!=lastTarget){lastTarget=Target;saidApproach=saidMissed=-1;}
    var car=d.Scene.Car;bool inCar=d.Player.InCar;var me=inCar?car.position:d.Scene.Walker.transform.position;
+   Target=NextStop();
+   // V21: at the door of (or inside) a house still on the docket, visited out of order, that house is the one being
+   // guided; anywhere else the docket order stands (so walking past a drive does not flip the line back and forth)
+   if(!inCar&&Target>=0){float best=float.MaxValue;foreach(var e in d.Docket){if(e.Result!=ServiceResult.Pending)continue;var h=d.Property(e.Property);if(!h||!h.Door)continue;
+     float dist=Vector3.Distance(me,h.Door.position);if((h.InteriorBounds.Contains(me+Vector3.up*.3f)||dist<6)&&dist<best){best=dist;Target=e.Property;}}}
+   if(Target!=lastTarget){lastTarget=Target;saidApproach=saidMissed=-1;}
    if(Target<0){Objective="RETURN TO THE DEPOT";Direction=d.CanFinish?"":!inCar?"BACK TO THE CAR":Heading(me,car.forward,0,0,false);return;}
    var p=d.Property(Target);Objective="NEXT  "+Address[Target]+(Who[Target].Length>0?"  ·  "+Who[Target]:"");
    if(!p.Mailbox){Direction="";return;}
    // On foot at the property, the drive and the porch light do the work.
-   if(!inCar&&Vector3.Distance(me,p.Door.position)<p.ApproachRouteLength()+12){Direction="UP THE DRIVE TO THE HOUSE";return;}
+   if(!inCar&&Vector3.Distance(me,p.Door.position)<p.ApproachRouteLength()+12){
+    // V21: indoors and on the step the line says what is left to do there
+    // inside means past the door line too (the interior bounds take in the porch)
+    var outward=p.Door.position-p.InteriorBounds.center;outward.y=0;outward=outward.sqrMagnitude<.01f?p.Door.forward:outward.normalized;
+    bool inside=p.InteriorBounds.Contains(me+Vector3.up*.3f)&&Vector3.Dot(me-p.Door.position,outward)< -.3f,open=d.AccessGranted(Target)&&!d.IsFriendly(Target);
+    Direction=inside?(open?"LEAVE THE PAPERS ON THE TABLE":""):Vector3.Distance(me,p.Door.position)<3.2f?(open?"LEAVE THE PAPERS INSIDE":d.AccessGranted(Target)?"":"KNOCK AT THE DOOR"):"UP THE DRIVE TO THE HOUSE";return;}
    // on foot anywhere else, the way on is the car
    if(!inCar){Direction="BACK TO THE CAR";return;}
    Direction=Heading(me,inCar?car.forward:d.Scene.View.transform.forward,p.RoadDistance,p.RoadSide,true);

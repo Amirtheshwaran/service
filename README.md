@@ -6,12 +6,10 @@ First-person horror game with free-roam driving/walking and no combat, built in 
 
 You play as a civil process server working night shifts in rural Hollis County. Your job is to drive out and deliver court documents to people who usually don't want to receive them. Every shift gives you a docket of addresses to locate and serve using your car, a flashlight, and your judgment. If a place feels wrong, you can't fight back; you just leave.
 
-The horror is focused on slow burn and atmosphere rather than cheap jump scares. In this build (v16), the first shift covers five locations across the county:
-- Correll residence (friendly delivery; knock at the front door, resident response, seated German Shepherd)
-- Harrow Lodge (interior delivery; read the entrance notice for room directions; when breathing begins, turn away and stand completely still for 8 seconds; avoid sustained eye contact)
-- Vale House (upstairs study delivery with inward-swinging door and pursuit escape back to the car)
-- Bell residence (friendly delivery at front entrance, resident response, followed by return-path ambush and delayed vehicle ignition escape)
-- Morrow House (manor with an upstairs gallery delivery, entrance door interaction, accelerated pursuit, and roadwork hurdles)
+The horror is focused on slow burn and atmosphere rather than cheap jump scares. In this build (v21), the story unfolds across three night shifts:
+- Night 1 (October 1st, 1998): Ordinary civil service work across five rural properties. Subtle atmospheric omens, doorstep resident interactions, and an unsettling figure along the tree line.
+- Night 2 (October 4th, 1998): Escalated tension and wrongness. Harrow Lodge watcher encounter (turn away and stand completely still), Bell residence note and pursuit escape back to the car, and Morrow House pursuit.
+- Night 3 (October 9th, 1998): Severe fog and unmapped route past the county road closure, leading to the unsurveyed final parcel.
 
 ## How to Play / Run in Unity
 
@@ -37,45 +35,36 @@ Built with Unity 6 (6000.6.0f1) using URP.
 | Ctrl | Hold to crouch (on foot) |
 | V / B | Radio power / cycle through 3 stations (in car) |
 | Shift | Sprint on foot / brake while driving |
-| Q / E | Hold while sprinting to look behind over shoulder |
-| Tab | Open docket clipboard (in car) |
-| M | Open route map (in car, follows curved roads and return lane) |
+| Tab | Open docket clipboard (in car, while stopped) |
 | Esc | Pause menu / close papers |
 
-## Gameplay & Settings
+## Gameplay & Features
 
-- **Settings Menu**: Press `Esc` while playing to access configuration options for master sound volume, music volume, mouse look sensitivity, camera gait bob, and camera motion blur.
-- **Route Saves**: Completed delivery shifts save automatically upon filing your report at the county depot. Unfinished mid-shift progress resets if the game is closed.
-- **Shift Progression**: The route features three evening shifts with escalating delivery conditions and altered road access.
-
-## v16.1 Fixes
-
-- Pressing E at the car while sprinting now gets you in. Before, E also triggered the look-behind, so you had to let go of Shift mid-chase.
-- The car now scrapes along fences, kerbs and verges and slows down. Before, any side contact stopped it dead. It can also always reverse out of a house's clearance zone.
-- F no longer switches the flashlight on inside the cockpit. When you step out, the flashlight comes back the way you left it (on by default).
-- Lines spoken during an encounter ("It's at the door.", "Come on. Turn over.") now appear as subtitles. Before, they were hidden.
-- Encounter prompts are shorter: a small objective at the top left and an inner-voice subtitle, instead of large "RUN" headlines.
-- Restarting a shift or getting caught no longer turns every window light on regardless of the night. Restarting during a porch-light flicker no longer leaves the light dimmed for good.
-- Each shift now opens with a date/time title card. After the final shift report there is a short epilogue. The unsurveyed parcel on the final night has its own closing line.
-- Performance: stair checks no longer search the whole scene every frame, and the first-person hands no longer look up their renderers every frame.
+- **Camcorder Aesthetic**: VHS/camcorder visual filter with adjustable grain, fringing, vignette, and gamma-space color grading.
+- **First-Person Hands & Gestures**: Overhand flashlight grip, dedicated gestures for knocking, handing over papers, placing documents on desks, and pushing doors, plus dynamic steering wheel hands with crossing poses.
+- **Typewriter Time Cards & Stamps**: Fears to Fathom style typed date and time opening cards, corner arrival stamps, and rewind sequence cards.
+- **Audio & Pursuit Dread**: Adaptive pursuit tension score ("Anxiety" and "Penumbra" by Kevin MacLeod), rising drones, panic breathing audio, tall-grass foley, and VHS tape-damage glitch effects.
+- **Wayfinding**: Reflective blue rural mailboxes with 911 numbers and family names at each driveway, dynamic on-screen route guidance, and handwritten docket clipboard.
+- **Settings Menu**: Press `Esc` while playing to access configuration options for video, audio, controls, mouse look sensitivity, camera filter intensity, and brightness.
+- **Route Saves**: Completed delivery shifts save automatically upon filing your report at the county depot.
 
 ## Project Layout
 
-- Assets/Scenes/HollisCounty.unity: Main scene with the road network, return lane, and county properties.
-- Assets/Scripts/: Gameplay scripts (player movement, first-person hands, crouch/jump, car controller, surface footsteps, storm effects, radio, route map, audio, and encounter logic).
-- Assets/ServiceArt/: Shaders, materials, meshes, scanned woodland assets, and scene assets.
-- Assets/Editor/: Build tools, doorway inspection, and scene layout utilities.
+- Assets/Scenes/HollisCounty.unity: Main scene with the road network, rural properties, and county depot.
+- Assets/Scripts/: Gameplay scripts (player locomotion, interaction gestures, car physics, route guidance, dialog/notes, VHS post-processing, and horror encounter logic).
+- Assets/ServiceArt/: Shaders, materials, meshes, scanned woodland assets, furniture, mailboxes, and scene assets.
+- Assets/Editor/: Build tools, doorway inspection, layout toolkits, and test runners.
 
 ## Asset Credits
 
-- Environment: Flooded Grounds by Sandro T, Conifers [BOTD], Rocks and Boulders 2 (Unity Asset Store), Poly Haven CC0 scanned woodland assets (ground textures, timber, stumps, ferns, leather), and Kenney City Kit Roads (CC0).
+- Environment & Props: Flooded Grounds by Sandro T, Conifers [BOTD], Rocks and Boulders 2 (Unity Asset Store), Poly Haven CC0 scanned woodland assets and furniture, and Kenney City Kit Roads (CC0).
 - Monster models: Creep Horror Creature by AC Game Assets, and Demon Horror Creature with Weapon.
 - First-person arms: PSX First Person Arms by Drillimpact (CC0).
-- Resident NPCs: Sophia and Nathan by Renderpeople (royalty-free game use).
-- Domestic dog: German Shepherd by Pawel Walasiewicz (BlenderKit royalty-free).
+- Resident NPCs: BELAZ elderly man and vrimen resident model (CC BY 4.0), with animations from Unity Starter Assets.
+- Domestic dog: German Shepherd by RetroStyle Games (itch.io).
+- Props: Blue rural mailbox by Rylae Shylna (CC BY 4.0), electrical powerline poles by tiedtke (CC BY 4.0), and fuzzy dice by jediscoob (CC BY 4.0).
 - Vehicle cabin: Ford Crown Victoria interior by Tyble (CC BY 3.0 fan art, noncommercial).
-- Music: "This House", "The Descent", "George Street Shuffle", "Local Forecast - Elevator", and "Jazz Brunch" by Kevin MacLeod (incompetech.com), licensed under CC BY 4.0.
+- Music: "Anxiety", "Penumbra", "This House", "The Descent", "George Street Shuffle", "Local Forecast - Elevator", and "Jazz Brunch" by Kevin MacLeod (incompetech.com), licensed under CC BY 4.0.
 - Audio: Human field recordings and sound effects from Freesound, Nox Sound Essentials, and ViRiX Dreamcore (CC0 / CC BY 4.0 / CC BY 3.0).
-- Fonts: Courier Prime and Barlow (SIL Open Font License).
-- Full links and source details are in ASSET-CREDITS.txt, Assets/Resources/Audio/V5/sources.json, Assets/Resources/Audio/V9/sources.json, Assets/Resources/Audio/Radio/, Assets/Resources/Audio/V13/sources.json, and Assets/ServiceArt/ScannedWoodland/*/source.json.
-
+- Fonts: Courier Prime, Barlow, VT323, and handwritten fonts (SIL Open Font License).
+- Full links and source details are in ASSET-CREDITS.txt.

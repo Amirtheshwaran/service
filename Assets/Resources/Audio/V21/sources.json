@@ -1,0 +1,156 @@
+[
+ {
+  "pool": "type",
+  "source": "Essentials_Series_NOX_SOUND/Vehicle_Essentials_NOX_SOUND/Vehicle_Essential_Car/Vehicle_Car_Button_Mono_01.wav",
+  "count": 2,
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "type",
+  "source": "Essentials_Series_NOX_SOUND/Vehicle_Essentials_NOX_SOUND/Vehicle_Essential_Car/Vehicle_Car_Button_Mono_02.wav",
+  "count": 2,
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "type",
+  "source": "Essentials_Series_NOX_SOUND/Vehicle_Essentials_NOX_SOUND/Vehicle_Essential_Car/Vehicle_Car_Button_Mono_03.wav",
+  "count": 2,
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "type",
+  "source": "Essentials_Series_NOX_SOUND/Vehicle_Essentials_NOX_SOUND/Vehicle_Essential_Car/Vehicle_Car_Button_Mono_04.wav",
+  "count": 2,
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "grassfoley",
+  "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Grass/Foley_Grass/Footsteps_Grass_Tall_Movement_01.wav",
+  "count": 1,
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "grassfoley",
+  "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Grass/Foley_Grass/Footsteps_Grass_Tall_Movement_02.wav",
+  "count": 1,
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "grassfoley",
+  "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Grass/Foley_Grass/Footsteps_Grass_Tall_Movement_03.wav",
+  "count": 1,
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "grassfoley",
+  "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Grass/Foley_Grass/Footsteps_Grass_Tall_Movement_04.wav",
+  "count": 1,
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "grassfoley",
+  "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Grass/Foley_Grass/Footsteps_Grass_Tall_Movement_05.wav",
+  "count": 1,
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "grassfoley",
+  "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Grass/Foley_Grass/Footsteps_Grass_Tall_Movement_06.wav",
+  "count": 1,
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "grassfoley",
+  "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Grass/Foley_Grass/Footsteps_Grass_Tall_Movement_07.wav",
+  "count": 1,
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "grassfoley",
+  "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Grass/Foley_Grass/Footsteps_Grass_Tall_Movement_08.wav",
+  "count": 1,
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "grassfoley",
+  "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Grass/Foley_Grass/Footsteps_Grass_Tall_Movement_09.wav",
+  "count": 1,
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "panic",
+  "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Male/Voice_Male_Breath/Voice_Male_V1_Breath_Mouth_Fast_Sequence_Mono_01.wav",
+  "count": 1,
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "panic",
+  "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Male/Voice_Male_Breath/Voice_Male_V1_Breath_Mouth_Fast_Sequence_Mono_02.wav",
+  "count": 1,
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "panic",
+  "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Male/Voice_Male_Breath/Voice_Male_V1_Breath_Mouth_Fast_Sequence_Mono_03.wav",
+  "count": 1,
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "shock",
+  "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Male/Voice_Male_Breath/Voice_Male_V2_Breath_Shocked_Mono_01.wav",
+  "count": 1,
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "shock",
+  "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Male/Voice_Male_Breath/Voice_Male_V2_Breath_Shocked_Mono_02.wav",
+  "count": 1,
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "shock",
+  "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Male/Voice_Male_Breath/Voice_Male_V2_Breath_Shocked_Mono_03.wav",
+  "count": 1,
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "shock",
+  "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Male/Voice_Male_Breath/Voice_Male_V2_Breath_Shocked_Mono_04.wav",
+  "count": 1,
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "shock",
+  "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Male/Voice_Male_Breath/Voice_Male_V2_Breath_Shocked_Mono_05.wav",
+  "count": 1,
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "drone",
+  "source": "Essentials_Series_NOX_SOUND/Sample_A_Sound_Effect/Atmosphere_Drone_Hum_Eerie_Loop_Stereo.wav",
+  "count": 1,
+  "author": "Nox Sound",
+  "license": "CC0"
+ }
+]

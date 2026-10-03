@@ -22,6 +22,8 @@ Shader "Service/Camcorder"
         _Vignette ("Vignette", Range(0, 2)) = 1.05
         _Fringe ("Chromatic fringe (texels)", Range(0, 4)) = 1.1
         _Strength ("Overall strength", Range(0, 1)) = 1
+        _Glitch ("Tape damage (threat)", Range(0, 1)) = 0
+        _GlitchTime ("Tape damage clock", Float) = 0
     }
     SubShader
     {
@@ -36,7 +38,7 @@ Shader "Service/Camcorder"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.core/Runtime/Utilities/Blit.hlsl"
 
-            float _Grain, _GrainFps, _Levels, _Dither, _Saturation, _Contrast, _Exposure, _Vignette, _Fringe, _Strength, _Toe, _ToePower;
+            float _Grain, _GrainFps, _Levels, _Dither, _Saturation, _Contrast, _Exposure, _Vignette, _Fringe, _Strength, _Toe, _ToePower, _Glitch, _GlitchTime;
             float4 _Lift, _Tint;
 
             // Dave Hoskins' hash-without-sine: well distributed for integer pixel coordinates.
@@ -47,10 +49,28 @@ Shader "Service/Camcorder"
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
                 float2 uv = input.texcoord;
                 float2 texel = _BlitTexture_TexelSize.x > 0 ? _BlitTexture_TexelSize.xy : _ScreenSize.zw;
+                // V21 tape damage while something is close (ServiceDread drives _Glitch). Like a camcorder tape chewed
+                // in the deck: the picture tears sideways in bands that jump a dozen times a second, a tracking band rolls
+                // down the frame, the colour channels slip apart and the frame shudders vertically.
+                float tick = floor(_GlitchTime * 14.0);
+                float glitchOn = _Glitch * step(Hash(float2(tick, 3.1)), _Glitch * _Glitch * 0.9 + 0.08);
+                float bandH = lerp(0.015, 0.07, Hash(float2(tick, 7.7)));
+                float band = floor(uv.y / bandH);
+                float tear = (Hash(float2(band, tick)) - 0.5) * step(Hash(float2(band * 1.7, tick + 0.5)), glitchOn * 0.4);
+                float roll = frac(_GlitchTime * 0.23);
+                float rollBand = (1.0 - saturate(abs(uv.y - roll) / 0.02)) * saturate(_Glitch * 1.5 - 0.15);
+                uv.x += tear * 0.09 * glitchOn + rollBand * _Glitch * (Hash(float2(floor(uv.y * 240.0), tick)) - 0.5) * 0.03;
+                uv.y += (Hash(float2(tick, 11.0)) - 0.5) * 0.012 * glitchOn * step(0.7, Hash(float2(tick, 13.0)));
+                uv = saturate(uv);
                 float2 fromCentre = uv - 0.5;
-                // Chromatic fringe grows toward the frame edges, like a cheap lens.
-                float2 shift = fromCentre * texel * _Fringe * 2.0 * saturate(length(fromCentre) * 2.2);
+                // Chromatic fringe grows toward the frame edges, like a cheap lens (and slips sideways under tape damage).
+                float2 shift = fromCentre * texel * _Fringe * 2.0 * saturate(length(fromCentre) * 2.2) + float2(texel.x * 7.0 * glitchOn, 0);
                 float3 source = SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_PointClamp, uv).rgb;
+                if (_Glitch > 0.001)
+                {
+                    float3 split = float3(SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_PointClamp, uv + float2(texel.x * 6.0 * glitchOn, 0)).r, source.g, SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_PointClamp, uv - float2(texel.x * 6.0 * glitchOn, 0)).b);
+                    source = lerp(source, split, saturate(glitchOn * 2.0));
+                }
                 float3 c;
                 c.r = SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_PointClamp, uv + shift).r;
                 c.g = source.g;
@@ -87,7 +107,17 @@ Shader "Service/Camcorder"
                 g = floor(saturate(g) * levels + 0.5 + threshold * _Dither) / levels;
                 c = pow(g, 2.2);
 
-                return float4(lerp(source, saturate(c), _Strength), 1);
+                float3 outc = lerp(source, saturate(c), _Strength);
+                if (_Glitch > 0.001)
+                {
+                    // the tracking band and torn lines carry snow; the whole frame loses colour as it gets worse
+                    float2 cell = floor(input.texcoord / texel);
+                    float snow = Hash(cell + tick * 17.0);
+                    outc = lerp(outc, snow.xxx * 0.45, saturate(rollBand * 0.55 + abs(tear) * glitchOn * 0.12));
+                    float l = dot(outc, float3(0.2126, 0.7152, 0.0722));
+                    outc = lerp(outc, l.xxx, _Glitch * 0.35);
+                }
+                return float4(outc, 1);
             }
             ENDHLSL
         }

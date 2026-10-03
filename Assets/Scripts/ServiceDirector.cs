@@ -42,6 +42,9 @@ namespace ServiceGameV2
         public bool Busy { get; private set; }
         public ServiceVehiclePresentation Vehicle {get;private set;}
         public ServiceLife Life {get;private set;}
+        public ServiceDread Dread {get;private set;}
+        public ServiceTimecard Timecard {get;private set;}
+        public ServiceFoliage Foliage {get;private set;}
         public ServiceRouteGuide Guide {get;private set;}
         public ServiceOmens Omens {get;private set;}
         public ServiceDialogue Dialogue {get;private set;}
@@ -57,7 +60,7 @@ namespace ServiceGameV2
         public bool IsSmoke { get; private set; }
         public bool IsTour { get; private set; }
         public bool IsChaos { get; private set; }
-        public bool InputBlocked => Phase != ServicePhase.Playing || PaperOpen || (Horror!=null&&(Horror.Caught||Horror.ForcedLook));
+        public bool InputBlocked => Phase != ServicePhase.Playing || PaperOpen || (Horror!=null&&(Horror.Caught||Horror.ForcedLook)) || (Timecard!=null&&Timecard.Blocking);
         public bool AllResolved => Docket.Count > 0 && Docket.TrueForAll(e => e.Result != ServiceResult.Pending);
         public bool CanFinish => (AllResolved || EndedEarly) && !Horror.Active && !Horror.Caught && Player.InCar && Player.Speed < .6f && ServiceInteraction.InDepot(Scene.Car.position, Scene.Depot.position);
         readonly bool[] noticeRead = new bool[6];
@@ -65,7 +68,7 @@ namespace ServiceGameV2
         public string VisitNotes(int index)=>NoticeRead(index)?Property(index).Instructions:"Visit the address. Speak to the occupant or check for a posted notice.";
         readonly bool[] accessGranted = new bool[6];
         public bool AccessGranted(int index)=>index>=0&&index<accessGranted.Length&&accessGranted[index];
-        readonly float[] linger = new float[6], unseen = new float[6];
+        readonly float[] linger = new float[6], unseen = new float[6]; bool stallArmed;
         readonly bool[] changed = new bool[6], dogHeard = new bool[6];
         readonly ServiceResult[] lastResults = new ServiceResult[6];
         readonly Quaternion[] doorRest = new Quaternion[6];
@@ -103,7 +106,7 @@ namespace ServiceGameV2
             ConfigureNight(0);
             Player.EnterCar();
             Storm=gameObject.AddComponent<ServiceStorm>();Storm.Initialize(this);
-            Presentation=gameObject.AddComponent<ServicePresentation>();Presentation.Initialize(this);Guide=gameObject.AddComponent<ServiceRouteGuide>();Guide.Initialize(this);Omens=gameObject.AddComponent<ServiceOmens>();Omens.Initialize(this);gameObject.AddComponent<ServiceWorldEdge>().Initialize(this);
+            Presentation=gameObject.AddComponent<ServicePresentation>();Presentation.Initialize(this);Guide=gameObject.AddComponent<ServiceRouteGuide>();Guide.Initialize(this);Omens=gameObject.AddComponent<ServiceOmens>();Omens.Initialize(this);Dread=gameObject.AddComponent<ServiceDread>();Dread.Initialize(this);Timecard=gameObject.AddComponent<ServiceTimecard>();Timecard.Initialize(this);Foliage=gameObject.AddComponent<ServiceFoliage>();Foliage.Initialize(this);gameObject.AddComponent<ServiceWorldEdge>().Initialize(this);
             Vehicle=gameObject.AddComponent<ServiceVehiclePresentation>();Vehicle.Initialize(this);
             Life=gameObject.AddComponent<ServiceLife>();Life.Initialize(this);
             SetCursor();
@@ -124,9 +127,10 @@ namespace ServiceGameV2
             if (Pressed(Key.Escape))
             {
                 if(HUD&&HUD.Back())return;
-                if (PaperOpen) { PaperOpen = false; SetCursor(); }
+                // V21: a paused game resumes first (to the clipboard if it was open), then Esc closes the clipboard.
+                if (Phase == ServicePhase.Paused) Resume();
+                else if (PaperOpen) { PaperOpen = false; SetCursor(); }
                 else if (Phase == ServicePhase.Playing) Pause();
-                else if (Phase == ServicePhase.Paused) Resume();
             }
             if (Phase != ServicePhase.Playing) return;
             // V20: no drawn map. Tab takes up the clipboard, but only with the car stopped.
@@ -146,9 +150,9 @@ namespace ServiceGameV2
             if (NoteOpen >= 0) { var np = Property(NoteOpen); if (Player.InCar || Horror.Active || Horror.Caught || np.NoticePoint == null || Vector3.Distance(Scene.View.transform.position, np.NoticePoint.position) > 3.2f) NoteOpen = -1; }
             if (!PaperOpen && !Horror.Active && !Horror.Caught) EvaluateCues(Time.deltaTime);
             if (InputBlocked || Busy) return;
-            if (Pressed(Key.F) && Scene.Flashlight != null && !Player.InCar) { Scene.Flashlight.enabled = !Scene.Flashlight.enabled; var click = Resources.Load<AudioClip>("Audio/V19/torch_click"); if (click) AudioSource.PlayClipAtPoint(click, Scene.View.transform.position, .45f); }
+            if (Pressed(Key.F)) ToggleTorch();
             // E also looks over the right shoulder while sprinting, so reaching the car must not depend on releasing Shift first.
-            bool nearCar = !Player.InCar && Vector3.Distance(Scene.View.transform.position, Scene.Car.position + Vector3.up) < 3.5f;
+            bool nearCar = CanEnterCar;
             if (Pressed(Key.E) && nearCar) Player.EnterCar();
             else if (Pressed(Key.E)&&!Player.InteractionSuppressed)
             {
@@ -167,6 +171,9 @@ namespace ServiceGameV2
             }
         }
 
+        // V21: the car is entered from outside, with a clear line to it; a door, note or table being looked at wins.
+        public bool CanEnterCar=>!Player.InCar&&!InsideVilla&&Vector3.Distance(Scene.View.transform.position,Scene.Car.position+Vector3.up)<3.5f&&ServiceInteraction.Clear(Scene.View.transform.position,Scene.Car.position+Vector3.up*.9f,Scene.Car,Scene.Walker.transform)&&NoteOpen<0&&NearbyNotice()<0&&NearbyKnockDoor()<0&&NearbyDoor()<0;
+        public void ToggleTorch(){ if (Scene.Flashlight == null || Player.InCar) return; Scene.Flashlight.enabled = !Scene.Flashlight.enabled; Gesture("Torch"); var click = Resources.Load<AudioClip>("Audio/V19/torch_click"); if (click) AudioSource.PlayClipAtPoint(click, Scene.View.transform.position, .45f); }
         public void ToggleDocument(bool map){if(Horror.Active||Horror.Caught){Say("No time for the map.");return;}if(map){bool close=PaperOpen&&MapOpen;MapOpen=PaperOpen=!close;}else{PaperOpen=!PaperOpen||MapOpen;MapOpen=false;}if(PaperOpen)Player.HoldVehicle();Audio.SyncVehicleAudio();SetCursor();}
         static bool Pressed(Key key) { return Keyboard.current != null && Keyboard.current[key].wasPressedThisFrame; }
 
@@ -183,18 +190,21 @@ namespace ServiceGameV2
             TripMiles = 0;
             EnvironmentChanges = 0;
             Notice = "";
-            NoteOpen=-1;Array.Clear(noticeRead,0,6); Array.Clear(accessGranted,0,6); Array.Clear(linger, 0, 6); Array.Clear(unseen, 0, 6);
+            NoteOpen=-1;Array.Clear(noticeRead,0,6); Array.Clear(accessGranted,0,6); Array.Clear(linger, 0, 6); stallArmed = false; Array.Clear(unseen, 0, 6);
             Array.Clear(changed, 0, 6); Array.Clear(dogHeard, 0, 6); Array.Clear(arrived, 0, 6); Array.Clear(inside, 0, 6); BellGone = false;
-            dogLine = lightsLine = docketLine = barricadeLine = surveyLine = false; depotIntroAt = Time.unscaledTime + (IsSmoke && !IsTour ? 0 : 5.2f);
+            dogLine = lightsLine = docketLine = barricadeLine = surveyLine = false; depotIntroAt = Time.unscaledTime + (IsSmoke && !IsTour ? 0 : 8.4f);
             if(Dialogue)Dialogue.Cancel();
+            ResetResidents();
             ApplyScriptText(NightIndex);
-            ConfigureNight(NightIndex);if(Life)Life.ResetForShift();if(Guide)Guide.ResetForShift();if(Omens)Omens.ResetForShift();
+            ConfigureNight(NightIndex);if(Life)Life.ResetForShift();if(Guide)Guide.ResetForShift();if(Omens)Omens.ResetForShift();if(Dread)Dread.ResetForShift();
             Horror.ResetEncounter();
             Player.ResetForShift(depotStart, depotRotation);
             lastCarPosition = Scene.Car.position;
             PaperOpen = true; MapOpen = false;
             nextDog = Time.time + 4;
             shiftStartedAt = IsSmoke && !IsTour ? -99 : Time.unscaledTime;
+            // V21: the night opens on a typed time card (date, then the time) over black.
+            if(Timecard){Timecard.Clear();if(!(IsSmoke&&!IsTour))Timecard.NightStart();}
             SetCursor();
         }
 
@@ -239,7 +249,7 @@ namespace ServiceGameV2
             if (depotIntroAt > 0 && Time.unscaledTime > depotIntroAt && !PaperOpen) { depotIntroAt = -1; Say(ServiceScript.DepotIntro[NightIndex]); }
             if (NightIndex == 2 && !barricadeLine && Scene.LateThreshold != null && Player.InCar && Vector3.Distance(Scene.Car.position, Scene.LateThreshold.position) < 38) { barricadeLine = true; Say(ServiceScript.BarricadeGone); }
             if (OdometerFrozen && !surveyLine) { surveyLine = true; Say(ServiceScript.PastTheSurvey); }
-            if (AllResolved && !docketLine && !Horror.Active && !Horror.Caught && !Busy) { docketLine = true; Say(ServiceScript.AllVisitsRecorded); }
+            if (AllResolved && !docketLine && !Horror.Active && !Horror.Caught && !Busy && string.IsNullOrEmpty(Notice)) { docketLine = true; Say(ServiceScript.AllVisitsRecorded); }
         }
 
         void EvaluateCues(float dt)
@@ -254,7 +264,7 @@ namespace ServiceGameV2
                 bool pending = Docket.Exists(e => e.Property == p.Index && e.Result == ServiceResult.Pending);
                 if (distance < 16 && !arrived[i] && pending) { arrived[i] = true; var line = ServiceScript.Arrival(p.Index, NightIndex); if (line != null && string.IsNullOrEmpty(Notice)) Say(line); }
                 if (!inside[i] && pending && p.InteriorBounds.Contains(Scene.Walker.transform.position + Vector3.up * .3f) && Vector3.Dot(Scene.Walker.transform.position - p.Door.position, Outward(p)) < -0.8f) { inside[i] = true; var t = ServiceScript.For(p.Index); if (t != null && !string.IsNullOrEmpty(t.Inside)) Say(t.Inside); if (p.Index == 2) StartCoroutine(Later(7.5f, ServiceScript.ParcelInside)); }
-                if (NightIndex > 0 && linger[i] > 24) Player.IgnitionDelayPending = true;
+                if (NightIndex > 0 && !stallArmed && !IsFriendly(p.Index) && !(p.Index == 4 && NightIndex == 1) && linger[i] > 24) { stallArmed = true; Player.IgnitionDelayPending = true; }
                 if (i == 0 && distance > 11 && Time.time > nextDog)
                 {
                     if(Life)Life.Bark();
@@ -273,13 +283,14 @@ namespace ServiceGameV2
                 Vector3 target = p.PorchLight != null ? p.PorchLight.transform.position : p.Door.position + Vector3.up * 2;
                 bool looking = Vector3.Dot(Scene.View.transform.forward, (target - Scene.View.transform.position).normalized) > .35f;
                 unseen[i] = looking ? 0 : unseen[i] + dt;
-                if (!changed[i] && unseen[i] > 3.8f && p.PorchLight != null)
+                // V21: only out in the yard (the light is the porch's) and never in the middle of an action or a line
+                if (!changed[i] && unseen[i] > 3.8f && p.PorchLight != null && !Busy && !p.InteriorBounds.Contains(Scene.Walker.transform.position + Vector3.up * .3f))
                 {
                     p.PorchLight.enabled = !p.PorchLight.enabled;
                     if (p.WindowLight != null) p.WindowLight.enabled = !p.WindowLight.enabled;
                     changed[i] = true;
                     EnvironmentChanges++;
-                    if (!lightsLine && distance < 26) { lightsLine = true; Say(ServiceScript.LightsChanged); }
+                    if (!lightsLine && distance < 26 && string.IsNullOrEmpty(Notice)) { lightsLine = true; Say(ServiceScript.LightsChanged); }
                 }
             }
         }
@@ -292,6 +303,7 @@ namespace ServiceGameV2
             // and once read the note has to be looked at squarely to pick it up again.
             var eye=Scene.View.transform;
             foreach(var entry in Docket){var p=Property(entry.Property);if(entry.Result!=ServiceResult.Pending||!p.NoticePoint||!p.NoticePoint.gameObject.activeInHierarchy||string.IsNullOrEmpty(p.NoticeText)||!ServiceInteraction.Reachable(Scene.View,p.NoticePoint.position,2.7f,p.NoticePoint.parent))continue;
+             if(Life&&Life.DoorOpenDegrees(p.Index)>25)continue; // V21: the door is open; the note went with it
              float aim=Vector3.Dot(eye.forward,(p.NoticePoint.position-eye.position).normalized);
              if(noticeRead[p.Index]&&aim<.975f)continue;
              if(!AccessGranted(p.Index)&&p.KnockPoint&&p.DoorPanel&&ServiceInteraction.Reachable(Scene.View,p.KnockPoint.position,2.4f,p.DoorPanel)&&Vector3.Dot(eye.forward,(p.KnockPoint.position-eye.position).normalized)>aim+.004f)continue;
@@ -306,9 +318,10 @@ namespace ServiceGameV2
             foreach(var entry in Docket){var p=Property(entry.Property);if(entry.Result==ServiceResult.Pending&&!AccessGranted(p.Index)&&p.DoorPanel&&p.KnockPoint&&ServiceInteraction.Reachable(Scene.View,p.KnockPoint.position,2.4f,p.DoorPanel))return p.Index;}
             return -1;
         }
+        public const float TableReach=1.8f;
         public int NearbyDoor(){
             if(Player.InCar)return -1;
-            foreach(var e in Docket){var p=Property(e.Property);if(e.Result==ServiceResult.Pending&&AccessGranted(e.Property)&&!IsFriendly(e.Property)&&p.DeliveryPoint&&ServiceInteraction.Reachable(Scene.View,p.DeliveryPoint.position+Vector3.up*.09f,2.25f,null))return e.Property;}
+            foreach(var e in Docket){var p=Property(e.Property);if(e.Result==ServiceResult.Pending&&AccessGranted(e.Property)&&!IsFriendly(e.Property)&&p.DeliveryPoint&&ServiceInteraction.Reachable(Scene.View,p.DeliveryPoint.position+Vector3.up*.09f,TableReach,null))return e.Property;}
             return -1;
         }
         public int NearbyProperty()
@@ -329,30 +342,60 @@ namespace ServiceGameV2
             if(result==ServiceResult.LeftAtDoor&&(!AccessGranted(index)||IsFriendly(index))){Say(ServiceScript.KnockFirst);return;}
             if(p.HasEncounter && EncounterTonight(index) && !IsFriendly(index) && result!=ServiceResult.Unable){
                 if(NearbyDoor()!=index)return;
-                entry.Result=ServiceResult.LeftAtDoor;if(p.PostedPaper){p.PostedPaper.SetActive(true);ServicePaperPlacement.Settle(p.PostedPaper);}Audio.Paper();var hands=Scene.View.GetComponentInChildren<ServiceHands>();if(hands)hands.Interact(false);Horror.Begin(index);return;
+                StartCoroutine(Place(entry,p,true));return;
             }
+            if (result == ServiceResult.LeftAtDoor) { StartCoroutine(Place(entry,p,false)); return; }
             entry.Result = result;
-            if (result == ServiceResult.LeftAtDoor && index == 4 && NightIndex == 1) Horror.ArmReturnAmbush();
-            if (result == ServiceResult.LeftAtDoor)
-            {
-                if (p.PostedPaper != null) { p.PostedPaper.SetActive(true); ServicePaperPlacement.Settle(p.PostedPaper); }
-                Audio.Paper();
-                if (!p.HasEncounter && !IsFriendly(index) && NightIndex > 0 && !string.IsNullOrEmpty(p.RevealLine))
-                {
-                    Audio.KnockAt(p.SoundPoint != null ? p.SoundPoint.position : p.Door.position, .35f);
-                    Say(p.RevealLine);
-                }
-                else { Audio.DeliveryComplete(); Say(ServiceScript.EnvelopeLeft); }
-            }
-            else Say(ServiceScript.NoContact);
+            Say(ServiceScript.NoContact);
         }
+        // V21: leaving the papers is the hand's doing. The player holds still while the left hand brings the papers down;
+        // at the moment it lets go (PlaceLead) the copy slides from just under the view onto its clear patch of the table,
+        // lands with the paper sound, and only then does the house answer (the line, the docket, the encounter).
+        public float PlaceSlide=.32f;
+        IEnumerator Place(DocketEntry entry,ServiceProperty p,bool encounter){
+            Busy=true;int index=p.Index;int captures=Horror.Captures;
+            // a capture (or anything that reset the house) while the hand is busy cancels the delivery
+            bool Interrupted()=>Horror.Caught||Horror.Captures!=captures||entry.Result!=ServiceResult.Pending;
+            var hands=Scene.View.GetComponentInChildren<ServiceHands>();if(hands)hands.Play("Place");
+            if(hands&&hands.Visible)yield return new WaitForSeconds(hands.PlaceLead);
+            if(hands)hands.ReleasePaper();
+            if(Interrupted()){Busy=false;yield break;}
+            if(p.PostedPaper){
+                var paper=p.PostedPaper;var tr=paper.transform;paper.SetActive(true);ServicePaperPlacement.Settle(paper,Scene.View.transform.position);
+                Vector3 endP=tr.position;Quaternion endR=tr.rotation;
+                if(hands&&hands.Visible){
+                    // from just below the bottom of the frame, where the hand took the papers, onto the table
+                    var cam=Scene.View.transform;var cx=Scene.View;float half=Mathf.Tan(cx.fieldOfView*.5f*Mathf.Deg2Rad);
+                    var flat=Vector3.ProjectOnPlane(endP-cam.position,Vector3.up);float reach=Mathf.Clamp(flat.magnitude*.55f,.35f,.8f);
+                    Vector3 startP=cam.position+cam.forward*reach-cam.up*(reach*half*1.25f);
+                    if(startP.y<endP.y+.05f)startP.y=endP.y+.05f;
+                    Quaternion startR=Quaternion.AngleAxis(-28,Vector3.Cross(Vector3.up,(endP-cam.position).normalized))*endR;
+                    for(float t=0;t<PlaceSlide;t+=Time.deltaTime){float k=t/PlaceSlide;float e=1-(1-k)*(1-k)*(1-k);
+                        tr.SetPositionAndRotation(Vector3.Lerp(startP,endP,e)+Vector3.up*Mathf.Sin(k*Mathf.PI)*.04f,Quaternion.Slerp(startR,endR,e));yield return null;}
+                    tr.SetPositionAndRotation(endP,endR);
+                }
+            }
+            Busy=false;
+            if(Interrupted()){if(p.PostedPaper)p.PostedPaper.SetActive(false);yield break;}
+            if(Phase!=ServicePhase.Playing&&Phase!=ServicePhase.Paused)yield break;
+            entry.Result=ServiceResult.LeftAtDoor;Audio.Paper();PapersPlaced++;
+            if(encounter){if(!Horror.Active&&!Horror.Caught)Horror.Begin(index);yield break;}
+            if (index == 4 && NightIndex == 1) Horror.ArmReturnAmbush();
+            if (!p.HasEncounter && !IsFriendly(index) && NightIndex > 0 && !string.IsNullOrEmpty(p.RevealLine))
+            {
+                Audio.KnockAt(p.SoundPoint != null ? p.SoundPoint.position : p.Door.position, .35f);
+                Say(p.RevealLine);
+            }
+            else { Audio.DeliveryComplete(); Say(ServiceScript.EnvelopeLeft); }
+        }
+        public int PapersPlaced {get;private set;}
 
         ServiceResidents residents;
         IEnumerator Knock(DocketEntry entry, ServiceProperty p)
         {
             Busy = true;
             KnockCount++;
-            var hands=Scene.View.GetComponentInChildren<ServiceHands>();if(hands)hands.Interact(true);
+            var hands=Scene.View.GetComponentInChildren<ServiceHands>();if(hands)hands.Play("Knock");
             if(hands&&hands.Visible)yield return new WaitForSeconds(hands.KnockLead);
             Audio.KnockAt(p.Door.position);
             yield return new WaitForSeconds(1.2f);
@@ -364,14 +407,19 @@ namespace ServiceGameV2
                 Say("A floorboard creaks beyond the door.");
                 if(!residents)residents=FindAnyObjectByType<ServiceResidents>();if(residents)residents.Answer(p,true);
                 if(Life)Life.OpenDoor(p,true);
-                yield return new WaitForSeconds(1.1f);
+                // V21: the resident waits back in the hall until the leaf is open, then steps up into the doorway.
+                float answerWait=0;while(answerWait<2.6f&&residents&&!residents.InDoorway(p.Index)){answerWait+=Time.deltaTime;yield return null;}
+                yield return new WaitForSeconds(.25f);
                 var talk=ServiceScript.Doorstep(entry.Property,NightIndex);
                 if(talk.HasValue&&Dialogue)yield return Dialogue.Run(talk.Value.speaker,talk.Value.steps);
                 string after=talk.HasValue?talk.Value.after:"";
                 entry.Result = ServiceResult.Served;
-                if(hands)hands.Interact(false);
+                if(hands)hands.Play("Give");
+                if(hands&&hands.Visible)yield return new WaitForSeconds(hands.GiveLead);
                 Audio.Paper();
                 if(entry.Property==0)Audio.DeliveryComplete();
+                // V21: they step back clear of the leaf before shutting it.
+                if(residents)yield return residents.StepBack(p);
                 if(Life)Life.OpenDoor(p,false);
                 Audio.DoorAt(p.Door.position);
                 if(!string.IsNullOrEmpty(after))Say(after);
@@ -382,11 +430,20 @@ namespace ServiceGameV2
                 yield return new WaitForSeconds(.75f);
                 Audio.KnockAt(p.SoundPoint != null ? p.SoundPoint.position : p.Door.position + p.Door.forward * .6f, .52f);
             }
-            else Say(ServiceScript.NoAnswer);
-            if(!IsFriendly(entry.Property)&&p.DoorPanel){if(Life)Life.OpenDoor(p,true);Say(NoticeRead(p.Index)?ServiceScript.LatchGivesNoteRead:ServiceScript.LatchGives);}
+            else
+            {
+                // V21: let the silence land before the latch gives.
+                Say(ServiceScript.NoAnswer);
+                yield return new WaitForSeconds(2.2f);
+                if (Phase != ServicePhase.Playing) { Busy = false; yield break; }
+            }
+            if(!IsFriendly(entry.Property)&&p.DoorPanel){if(hands)hands.Play("Push");if(hands&&hands.Visible)yield return new WaitForSeconds(hands.PushLead);if(Life)Life.OpenDoor(p,true);Say(NoticeRead(p.Index)?ServiceScript.LatchGivesNoteRead:ServiceScript.LatchGives);}
             Busy = false;
         }
 
+        // V21: the copy appears on the table when the hand lets go of it, not while the hand is still carrying it in.
+        void Gesture(string name){var hands=Scene.View.GetComponentInChildren<ServiceHands>();if(hands)hands.Play(name);}
+        void ResetResidents(){if(!residents)residents=FindAnyObjectByType<ServiceResidents>();if(residents)residents.ResetAll();}
         public void Say(string text) { if (string.IsNullOrEmpty(text)) return; Notice = text; noticeUntil = Time.unscaledTime + Mathf.Clamp(1.6f + text.Length * .055f, 3.2f, 6.5f); }
         public void RetryVilla(){RetryProperty(1);}
         public void RetryProperty(int index){var entry=Docket.Find(e=>e.Property==index);if(entry!=null)entry.Result=IsFriendly(index)?ServiceResult.Served:ServiceResult.Pending;if(Property(index).PostedPaper)Property(index).PostedPaper.SetActive(false);Busy=false;PaperOpen=MapOpen=false;accessGranted[index]=true;if(Life)Life.OpenDoor(Property(index),true);Player.IgnitionDelayPending=false;}
@@ -399,6 +456,7 @@ namespace ServiceGameV2
             SaveRoute();
             Phase = ServicePhase.Report;
             PaperOpen = false;
+            if(Timecard)Timecard.NightEnd();
             Player.StopEngine();
             Audio.StopDog();
             SetCursor();
@@ -414,8 +472,9 @@ namespace ServiceGameV2
         public void SaveOptions(){if(IsSmoke||IsChaos)return;PlayerPrefs.SetFloat("SERVICE.volume",Audio.Volume);PlayerPrefs.SetFloat("SERVICE.music",Audio.MusicVolume);PlayerPrefs.SetFloat("SERVICE.sensitivity",Player.Sensitivity);PlayerPrefs.SetFloat("SERVICE.motion",Player.CameraMotion);PlayerPrefs.SetFloat("SERVICE.blur",Player.MotionBlurAmount);if(Storm)Storm.Save();PlayerPrefs.Save();}
         void OnApplicationFocus(bool focused){if(IsChaos)return;if(!focused&&!IsSmoke&&Phase==ServicePhase.Playing)Pause();}
         public void Pause() { if (Phase != ServicePhase.Playing) return; Phase = ServicePhase.Paused; Time.timeScale = 0; SetCursor(); }
-        public void Resume() { if (Phase != ServicePhase.Paused) return; Phase = ServicePhase.Playing; Time.timeScale = 1; SetCursor(); }
-        public void Title() { StopAllCoroutines(); Busy = false; if(Dialogue)Dialogue.Cancel(); Phase = ServicePhase.Title; PaperOpen = MapOpen = false; Time.timeScale = 1; Player.StopEngine(); Horror.ResetEncounter(); SetCursor(); }
+        public int ResumedFrame = -1;
+        public void Resume() { if (Phase != ServicePhase.Paused) return; Phase = ServicePhase.Playing; Time.timeScale = 1; ResumedFrame = Time.frameCount; SetCursor(); }
+        public void Title() { StopAllCoroutines(); Busy = false; if(Timecard)Timecard.Clear(); if(Dread)Dread.ResetForShift(); ResetResidents(); if(Life)Life.ResetForShift(); if(Vehicle)Vehicle.ResetRadio(); if(Dialogue)Dialogue.Cancel(); Phase = ServicePhase.Title; PaperOpen = MapOpen = false; Time.timeScale = 1; Player.StopEngine(); Horror.ResetEncounter(); SetCursor(); }
         public void SetCursor() { bool locked = Phase == ServicePhase.Playing && !PaperOpen && !IsSmoke; Cursor.lockState = locked ? CursorLockMode.Locked : CursorLockMode.None; Cursor.visible = !locked; }
         void OnDestroy() { if(Audio&&Player)SaveOptions();AudioListener.pause=false;Time.timeScale = 1; Cursor.lockState = CursorLockMode.None; Cursor.visible = true; }
     }

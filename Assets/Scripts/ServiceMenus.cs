@@ -35,6 +35,7 @@ namespace ServiceGameV2 {
    tick=Resources.Load<AudioClip>("Audio/V20/ui/tick");confirm=Resources.Load<AudioClip>("Audio/V20/ui/confirm");back=Resources.Load<AudioClip>("Audio/V20/ui/back");begin=Resources.Load<AudioClip>("Audio/V20/ui/begin");staticHiss=Resources.Load<AudioClip>("Audio/V5/static/static_1");
    BuildTitle();BuildPause();BuildOptions();BuildConfirm();
    fade=Block(canvas.transform as RectTransform,new Rect(-400,-400,2080,1520),Color.black);fade.color=new Color(0,0,0,0);fade.raycastTarget=false;
+   {var ft=fade.rectTransform;ft.anchorMin=Vector2.zero;ft.anchorMax=Vector2.one;ft.pivot=new Vector2(.5f,.5f);ft.offsetMin=new Vector2(-40,-40);ft.offsetMax=new Vector2(40,40);}
    tapeStart=0;
    foreach(var p in AllPages())Hide(p,true);
   }
@@ -46,7 +47,8 @@ namespace ServiceGameV2 {
   Text Words(RectTransform parent,Rect r,string text,int size,Color c,TextAnchor anchor=TextAnchor.MiddleLeft){var t=Area(parent,text.Length>24?text.Substring(0,24):text,r);var l=t.gameObject.AddComponent<Text>();l.font=osd;l.text=text;l.fontSize=size;l.color=c;l.alignment=anchor;l.horizontalOverflow=HorizontalWrapMode.Overflow;l.verticalOverflow=VerticalWrapMode.Overflow;l.raycastTarget=false;return l;}
   Page NewPage(string name){var p=new Page();p.Root=Area(canvas.transform,name,new Rect(0,0,1280,720));p.Root.anchorMin=p.Root.anchorMax=p.Root.pivot=new Vector2(.5f,.5f);p.Root.anchoredPosition=Vector2.zero;p.Group=p.Root.gameObject.AddComponent<CanvasGroup>();return p;}
   // A soft left-hand darkening so the lettering reads over the moving picture (stacked bands, no generated texture).
-  void LeftShade(RectTransform parent,float strength){for(int i=0;i<12;i++){float a=strength*(1-i/12f);Block(parent,new Rect(i*58,-40,58,800),new Color(0,0,0,a*.55f));}}
+  // V21: the darkest band runs out to the screen's left edge and every band spans the full height at any aspect ratio.
+  void LeftShade(RectTransform parent,float strength){for(int i=0;i<12;i++){float a=strength*(1-i/12f);float x0=i==0?-3000:i*58;Block(parent,new Rect(x0,-2000,i*58+58-x0,4720),new Color(0,0,0,a*.55f));}}
   Item AddItem(Page p,float x,float y,string label,int size,Action submit,string hint=""){
    var it=new Item{Submit=submit,Hint=hint};it.Root=Area(p.Root,label,new Rect(x,y,760,size+10));
    it.Caret=Words(it.Root,new Rect(0,0,40,size+10),"▶",Mathf.RoundToInt(size*.72f),white);
@@ -148,7 +150,7 @@ namespace ServiceGameV2 {
   public void SmokeOptions(bool open){if(open)OpenOptions();else if(overlay==View.Options)Close(View.Options);}
   void OpenOptions(){Sound(confirm);overlay=View.Options;SetTab(tab);Skip();}
   void Ask(string question,Action yes){Sound(confirm);confirmReturn=overlay;confirmAction=yes;confirmText.text=question;overlay=View.Confirm;confirmPage.Selected=0;Skip();}
-  void Close(View v){Sound(back);if(v==View.Confirm)overlay=confirmReturn==View.Options?View.Options:View.None;else if(v==View.Options)overlay=View.None;Skip();}
+  void Close(View v){Sound(back);if(v==View.Confirm){var u=confirmReturn==View.Options?(tabs.Count>tab?tabs[tab]:null):PageOf(baseView);if(u!=null)foreach(var it in u.Items)it.Reveal=0;}if(v==View.Confirm)overlay=confirmReturn==View.Options?View.Options:View.None;else if(v==View.Options)overlay=View.None;Skip();}
   void Begin(Action act){if(busy)return;busy=true;Sound(begin);StartCoroutine(BeginRoutine(act));}
   System.Collections.IEnumerator BeginRoutine(Action act){playOsd.text="PLAY ▶";fadeTarget=1;float t=0;while(t<.75f){t+=Dt;yield return null;}overlay=View.None;act();yield return null;fadeTarget=0;busy=false;}
   void Skip(){skip=.16f;if(staticHiss&&shown!=View.None)ui.PlayOneShot(staticHiss,.08f);}
@@ -169,7 +171,7 @@ namespace ServiceGameV2 {
    if(want!=shown){
     // Base screens stay visible under an overlay (pause behind its confirm; title behind options and confirm).
     foreach(var p in AllPages()){bool keep=(p==PageOf(want))||(p==PageOf(baseView)&&want==View.Confirm&&confirmReturn!=View.Options)||(p==options&&want==View.Confirm&&confirmReturn==View.Options);if(!keep&&p.Root.gameObject.activeSelf)Hide(p,false);else if(keep&&!p.Root.gameObject.activeSelf)Show(p);}
-    if(want==View.Title||want==View.Pause){var p=PageOf(want);p.Selected=0;}
+    if(want==View.Title||want==View.Pause){var p=PageOf(want);p.Selected=p==title&&!d.HasSavedRoute?1:0;}
     shown=want;
    }
    fadeAlpha=Mathf.MoveTowards(fadeAlpha,fadeTarget,dt*(fadeTarget>fadeAlpha?2.2f:1.4f));fade.color=new Color(0,0,0,fadeAlpha);
@@ -187,7 +189,7 @@ namespace ServiceGameV2 {
    // OSD clock and counter
    var tape=TimeSpan.FromSeconds(now-tapeStart);counter.text=$"SP  {(int)tape.TotalHours}:{tape.Minutes:00}:{tape.Seconds:00}";
    int night=d.HasSavedRoute?Mathf.Clamp(PlayerPrefs.GetInt("SERVICE.v5.night",0),0,2):0;
-   string[] dates={"OCT. 01 1998","OCT. 04 1998","OCT. 09 1998"};string[] times={"PM 9:48","PM 10:21","PM 11:02"};
+   string[] dates={"OCT. 01 1998","OCT. 04 1998","OCT. 09 1998"};string[] times={"PM 9:48","PM 10:21","PM 11:57"};
    dateOsd.text=dates[night];int m=(int)(tape.TotalMinutes);timeOsd.text=times[night].Substring(0,times[night].Length)+(blink?" ":" ");
    continueSub.text=d.HasSavedRoute?"NIGHT "+(night+1)+"  ·  "+dates[night]:"";
    title.Items[0].Label.color=d.HasSavedRoute?title.Items[0].Label.color:faint;
@@ -199,7 +201,7 @@ namespace ServiceGameV2 {
    titleRed.rectTransform.anchoredPosition=new Vector2(96-2.2f+jit,-128);titleCyan.rectTransform.anchoredPosition=new Vector2(96+2.2f-jit*.5f,-128);
    titleMain.color=new Color(white.r,white.g,white.b,Mathf.PerlinNoise(now*5f,1.7f)>.86f?.82f:1);
    var under=shown==View.Confirm?(confirmReturn==View.Options?tabs[tab]:PageOf(baseView)):null;
-   foreach(var bp in new[]{title,pause,tabs.Count>tab?tabs[tab]:null})if(bp!=null)foreach(var it in bp.Items){var g=it.Root.GetComponent<CanvasGroup>();if(g&&bp==under)g.alpha=Mathf.MoveTowards(g.alpha,.06f,dt*6);}
+   foreach(var bp in new[]{title,pause,tabs.Count>tab?tabs[tab]:null})if(bp!=null)foreach(var it in bp.Items){var g=it.Root.GetComponent<CanvasGroup>();if(g&&bp==under)g.alpha=Mathf.MoveTowards(g.alpha,0,dt*6);}
    var page=Active();if(page==null)return;
    for(int i=0;i<page.Items.Count;i++){var it=page.Items[i];bool sel=i==page.Selected;
     it.Reveal=Mathf.Min(1,it.Reveal+dt*5f*(i<2?1:Mathf.Clamp01(Mathf.Max(0,(PageAge(page)-i*.06f))*8)));
@@ -207,7 +209,7 @@ namespace ServiceGameV2 {
     it.Label.rectTransform.anchoredPosition=new Vector2(36+it.Slide,0);
     bool disabled=page==title&&i==0&&!d.HasSavedRoute;
     it.Label.color=Color.Lerp(it.Label.color,disabled?faint:sel?white:dim,1-Mathf.Exp(-dt*16));
-    it.Caret.color=new Color(1,1,1,sel&&(blink||it.Shift!=null)?1:0);
+    it.Caret.color=new Color(1,1,1,sel&&!disabled&&(blink||it.Shift!=null)?1:0);
     if(it.Value!=null){it.Value.text=it.ValueText();it.Value.color=sel?amber:new Color(amber.r,amber.g,amber.b,.7f);}
     var cg=it.Root.GetComponent<CanvasGroup>();if(!cg)cg=it.Root.gameObject.AddComponent<CanvasGroup>();cg.alpha=it.Reveal;}
    if(shown==View.Options&&optionsHint){var s=page.Items.Count>0?page.Items[Mathf.Clamp(page.Selected,0,page.Items.Count-1)].Hint:"";optionsHint.text=s;}
@@ -229,7 +231,7 @@ namespace ServiceGameV2 {
    if(Mouse.current==null)return;var mp=Mouse.current.position.ReadValue();bool moved=(mp-lastMouse).sqrMagnitude>4;lastMouse=mp;
    for(int i=0;i<n;i++){var r=page.Items[i].Root;if(!RectTransformUtility.RectangleContainsScreenPoint(r,mp,null))continue;
     if(moved&&page.Selected!=i&&!(page==title&&i==0&&!d.HasSavedRoute)){page.Selected=i;Sound(tick,.5f);}
-    if(Mouse.current.leftButton.wasPressedThisFrame&&page.Selected==i){var x=page.Items[i];if(x.Shift!=null){RectTransformUtility.ScreenPointToLocalPointInRectangle(r,mp,null,out var local);x.Shift(local.x<560?-1:1);Sound(tick,.8f);}else{Sound(confirm);x.Submit?.Invoke();}}
+    if(Mouse.current.leftButton.wasPressedThisFrame&&page.Selected==i&&!(page==title&&i==0&&!d.HasSavedRoute)){var x=page.Items[i];if(x.Shift!=null){RectTransformUtility.ScreenPointToLocalPointInRectangle(r,mp,null,out var local);x.Shift(local.x<560?-1:1);Sound(tick,.8f);}else{Sound(confirm);x.Submit?.Invoke();}}
     break;}
   }
   int MouseOver(Text[] labels){if(Mouse.current==null)return -1;var mp=Mouse.current.position.ReadValue();for(int i=0;i<labels.Length;i++)if(RectTransformUtility.RectangleContainsScreenPoint(labels[i].rectTransform,mp,null))return i;return -1;}

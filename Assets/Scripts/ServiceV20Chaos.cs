@@ -60,7 +60,15 @@ namespace ServiceGameV2 {
    if(d.Phase==ServicePhase.Playing&&d.InputBlocked&&!d.PaperOpen&&d.NoteOpen<0&&!(d.Dialogue&&d.Dialogue.Active)){if(blockedSince<0)blockedSince=Time.realtimeSinceStartup;else if(Time.realtimeSinceStartup-blockedSince>45)Fault("stuck","input blocked for 45 s with nothing open");}else blockedSince=-1;
    if(d.NoteOpen>=0&&d.PaperOpen)Fault("overlap","held note and clipboard open together");
    if(d.Horror.Active&&d.Horror.Agent&&d.Horror.Phase==PursuitPhase.Chase&&d.Horror.Agent.isActiveAndEnabled&&!d.Horror.Agent.isOnNavMesh)Fault("agent","chaser off the navmesh");
+   // V21 invariants: no door leaf through a resident, no stuck time card, no tape damage without a threat, no audio leak
+   if(!residents)residents=FindAnyObjectByType<ServiceResidents>();if(residents&&residents.LastClearance<-.02f){Fault("resident-leaf",$"door leaf passed {-residents.LastClearance:F2} m into a resident");residents.ResetClearance();}
+   // a card freezes while paused (by design): count only unpaused time
+   if(d.Timecard&&d.Timecard.Cards!=cardCount){cardCount=d.Timecard.Cards;cardTime=0;}
+   if(d.Timecard&&d.Timecard.Blocking){if(d.Phase!=ServicePhase.Paused)cardTime+=Time.unscaledDeltaTime;if(cardTime>12)Fault("timecard",$"time card up for {cardTime:F0} s of play");}else cardTime=0;
+   if(d.Phase==ServicePhase.Playing&&!d.Horror.Active&&!d.Horror.Caught&&ServiceCamcorder.Glitch>.3f){if(glitchSince<0)glitchSince=Time.realtimeSinceStartup;else if(Time.realtimeSinceStartup-glitchSince>6)Fault("glitch","tape damage with nothing near for 6 s");}else glitchSince=-1;
+   if(frames%120==0){int sources=FindObjectsByType<AudioSource>(FindObjectsSortMode.None).Length;if(sources>320)Fault("audio-leak",sources+" audio sources alive");}
   }
+  ServiceResidents residents;float cardTime,glitchSince=-1;int cardCount;
   // ---------- the run
   IEnumerator Main(){
    yield return Real(2f);var minutes=4f;var ma=Environment.GetCommandLineArgs().FirstOrDefault(x=>x.StartsWith("-chaosMinutes="));if(ma!=null)float.TryParse(ma.Substring(14),out minutes);

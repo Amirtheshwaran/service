@@ -28,6 +28,15 @@ namespace ServiceGameV2.Editor {
      var cc=new GameObject("Hands close camera").AddComponent<Camera>();tmp.Add(cc.gameObject);cc.CopyFrom(pc);cc.gameObject.AddComponent<UnityEngine.Rendering.Universal.UniversalAdditionalCameraData>().renderPostProcessing=false;cc.nearClipPlane=.002f;
      cc.transform.position=pc.transform.position;cc.transform.LookAt(tcen);cc.fieldOfView=20;Shoot(cc,Path.Combine(dir,"zoom-hold.png"),960,720);
      foreach(var (tag,off) in new[]{("side-in",-pc.transform.right*.09f+pc.transform.up*.02f),("side-out",pc.transform.right*.09f+pc.transform.up*.03f),("top",pc.transform.up*.09f+pc.transform.forward*.01f),("front",pc.transform.forward*.11f+pc.transform.up*.02f)}){cc.transform.position=tcen+off;cc.transform.LookAt(tcen);cc.fieldOfView=45;Shoot(cc,Path.Combine(dir,$"{tag}-hold.png"),720,540);}}}var knock=anim?anim.GetClip("Knock"):null;
+    // V21: every interaction at its moment of contact, with the papers shown where the clip carries them
+    var hs=vm.GetComponentInChildren<ServiceHands>();var envR=hs&&hs.Envelope?hs.Envelope.GetComponentsInChildren<Renderer>(true):new Renderer[0];
+    var giveR=hs&&hs.EnvelopeGive?hs.EnvelopeGive.GetComponentsInChildren<Renderer>(true):new Renderer[0];
+    foreach(var (clip,frame,paper) in new[]{("Knock",12,false),("Knock",14,false),("Give",13,true),("Give",18,true),("Give",27,false),("Place",10,true),("Place",19,true),("Push",12,false),("Push",19,false),("Torch",5,false)}){
+     var c=anim?anim.GetClip(clip):null;if(!c)continue;foreach(var r in envR)r.enabled=paper&&clip=="Place";foreach(var r in giveR)r.enabled=paper&&clip=="Give";c.SampleAnimation(anim.gameObject,(frame-1)/30f);
+     // batch-mode renders do not re-skin: bake the sampled pose into a plain mesh for the shot
+     var smr=vm.GetComponentInChildren<SkinnedMeshRenderer>();var baked=new Mesh();smr.BakeMesh(baked,true);var bo=new GameObject("baked arms");bo.transform.SetParent(smr.transform,false);bo.AddComponent<MeshFilter>().sharedMesh=baked;var br=bo.AddComponent<MeshRenderer>();br.sharedMaterials=smr.sharedMaterials;bo.layer=smr.gameObject.layer;smr.enabled=false;
+     try{Shoot(pc,Path.Combine(dir,$"v21-{clip.ToLowerInvariant()}-{frame:00}.png"),960,540);}finally{smr.enabled=true;Object.DestroyImmediate(bo);Object.DestroyImmediate(baked);}}
+    foreach(var r in envR)r.enabled=false;foreach(var r in giveR)r.enabled=false;
     if(knock){knock.SampleAnimation(anim.gameObject,17f/30f);Shoot(pc,Path.Combine(dir,"view-knock.png"),1280,720);var reach=anim.GetClip("Reach");if(reach){reach.SampleAnimation(anim.gameObject,reach.length*.55f);Shoot(pc,Path.Combine(dir,"view-reach.png"),1280,720);}var hold=anim.GetClip("Hold");if(hold)hold.SampleAnimation(anim.gameObject,0);}
    }finally{vm.SetParent(cam.transform,false);vm.localPosition=lp;vm.localRotation=lr;vm.localScale=ls;foreach(var g in tmp)Object.DestroyImmediate(g);Restore(muted);}
   }
@@ -96,6 +105,23 @@ namespace ServiceGameV2.Editor {
    var fistWant=new Vector3(HandScreen.x*hx*depth,HandScreen.y*hy*depth,depth);vm.localPosition+=fistWant-fistNow;
    log.AppendLine($"HANDS framed: vfov {vfov:F0}, lens axis {lensAxis} -> {want}, fist {fistNow} -> {fistWant}");
    var hands=arms.AddComponent<ServiceHands>();hands.Rig=anim;hands.Sway=vm;hands.Torch=torch.transform;
+   // V21: the papers in the left hand for Give and Place: a letter-size stack in the county stationery the posted copies
+   // use, seated on the paper_grip marker (between thumb and index finger, exported by arms_pose.py) and sticking out
+   // past the fingertips.
+   var pg=Mk("paper_grip");
+   if(pg){var src=county.Properties.Select(p=>p.PostedPaper).FirstOrDefault(x=>x&&x.GetComponent<Renderer>());
+    var env=GameObject.CreatePrimitive(PrimitiveType.Cube);env.name="Papers in hand (county stationery)";Object.DestroyImmediate(env.GetComponent<Collider>());
+    env.transform.SetParent(pg,false);var ls=pg.lossyScale;Vector3 world=new Vector3(.006f,.17f,.23f);
+    env.transform.localScale=new Vector3(world.x/Mathf.Max(ls.x,1e-5f)*armsScale,world.y/Mathf.Max(ls.y,1e-5f)*armsScale,world.z/Mathf.Max(ls.z,1e-5f)*armsScale);
+    env.transform.localPosition=new Vector3(0,-.03f/Mathf.Max(ls.y,1e-5f)*armsScale,.085f/Mathf.Max(ls.z,1e-5f)*armsScale);env.transform.localRotation=Quaternion.identity;
+    var er=env.GetComponent<Renderer>();if(src)er.sharedMaterial=src.GetComponent<Renderer>().sharedMaterial;er.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;er.receiveShadows=false;
+    foreach(var t in env.GetComponentsInChildren<Transform>(true))t.gameObject.layer=arms.layer;hands.Envelope=env.transform;log.AppendLine($"HANDS papers in hand at paper_grip (lossy {ls}, arms scale {armsScale:F3})");
+    // held out to a resident: the sheet faces them (its back to us), gripped at its edge and hanging out to the left of
+    // the hand - clear of the torch beam (in front of the lens it flared to a white blob in the V21 tour)
+    var held=Object.Instantiate(env,pg);held.name="Papers held out (county stationery)";Vector3 hw=new Vector3(.23f,.17f,.006f);
+    held.transform.localScale=new Vector3(hw.x/Mathf.Max(ls.x,1e-5f)*armsScale,hw.y/Mathf.Max(ls.y,1e-5f)*armsScale,hw.z/Mathf.Max(ls.z,1e-5f)*armsScale);
+    held.transform.localPosition=new Vector3(-.10f/Mathf.Max(ls.x,1e-5f)*armsScale,.03f/Mathf.Max(ls.y,1e-5f)*armsScale,.012f/Mathf.Max(ls.z,1e-5f)*armsScale);held.transform.localRotation=Quaternion.identity;hands.EnvelopeGive=held.transform;}
+   else log.AppendLine("HANDS no paper_grip marker in the arms FBX");
    EditorUtility.SetDirty(county);
    HandsPreview();
   }

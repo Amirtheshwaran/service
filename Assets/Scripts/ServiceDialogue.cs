@@ -10,6 +10,8 @@ namespace ServiceGameV2 {
    public Step(string line,string[] choices=null,string[] replies=null){Line=line;Choices=choices??new string[0];Replies=replies;}
   }
   ServiceDirector d;
+  // V21: keys pressed in the pause menu (or on the frame it closes) must not reach the conversation.
+  bool Live=>d.Phase==ServicePhase.Playing&&Time.frameCount>d.ResumedFrame;
   public static bool TourPacing; // review tour: real reading pace even under -serviceSmoke
   public bool Active {get;private set;}
   public string Speaker {get;private set;}="";
@@ -27,7 +29,7 @@ namespace ServiceGameV2 {
     while(pick<0){
      if(d.IsSmoke&&Time.time>auto+(TourPacing?1.6f:0))pick=TourPacing?Mathf.Min(s.Choices.Length-1,(int)(Time.time*7)%s.Choices.Length):0;
      var k=Keyboard.current;
-     if(k!=null){if(k.digit1Key.wasPressedThisFrame||k.numpad1Key.wasPressedThisFrame)pick=0;else if(s.Choices.Length>1&&(k.digit2Key.wasPressedThisFrame||k.numpad2Key.wasPressedThisFrame))pick=1;else if(s.Choices.Length>2&&(k.digit3Key.wasPressedThisFrame||k.numpad3Key.wasPressedThisFrame))pick=2;}
+     if(k!=null&&Live){if(k.digit1Key.wasPressedThisFrame||k.numpad1Key.wasPressedThisFrame)pick=0;else if(s.Choices.Length>1&&(k.digit2Key.wasPressedThisFrame||k.numpad2Key.wasPressedThisFrame))pick=1;else if(s.Choices.Length>2&&(k.digit3Key.wasPressedThisFrame||k.numpad3Key.wasPressedThisFrame))pick=2;}
      yield return null;
     }
     onChoice?.Invoke(pick);Choices=new string[0];
@@ -40,7 +42,7 @@ namespace ServiceGameV2 {
   IEnumerator Hold(float seconds){
    if(d.IsSmoke&&!TourPacing)seconds=Mathf.Min(seconds,.35f);
    float start=Time.time;
-   while(Time.time-start<seconds){var k=Keyboard.current;if(k!=null&&Time.time-start>.4f&&(k.eKey.wasPressedThisFrame||k.spaceKey.wasPressedThisFrame))break;yield return null;}
+   while(Time.time-start<seconds){var k=Keyboard.current;if(k!=null&&Live&&Time.time-start>.4f&&(k.eKey.wasPressedThisFrame||k.spaceKey.wasPressedThisFrame))break;yield return null;}
   }
  }
 }

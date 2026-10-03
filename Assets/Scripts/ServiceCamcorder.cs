@@ -18,7 +18,10 @@ namespace ServiceGameV2 {
   public void Preview(int level){Level=Mathf.Clamp(level,0,3);Apply();}
   public void Cycle(){Level=(Level+1)%Names.Length;PlayerPrefs.SetInt(Pref,Level);Apply();}
   public void Set(int level){Level=Mathf.Clamp(level,0,3);PlayerPrefs.SetInt(Pref,Level);Apply();}
-  void Update(){if(Screen.height!=lastHeight||Level!=lastLevel)Apply();}
+  // V21: tape damage while a threat is close (set by ServiceDread each frame, 0..1). It shows even with the filter off.
+  public static float Glitch;
+  void Update(){if(Screen.height!=lastHeight||Level!=lastLevel)Apply();if(mat){mat.SetFloat("_Glitch",Mathf.Clamp01(Glitch));mat.SetFloat("_GlitchTime",Time.unscaledTime);}}
+  void OnDestroy(){Glitch=0;if(mat)mat.SetFloat("_Glitch",0);}
   void Apply(){
    lastHeight=Screen.height;lastLevel=Level;
    var asset=GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;

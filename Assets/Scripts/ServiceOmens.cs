@@ -12,6 +12,7 @@ namespace ServiceGameV2 {
   public int Fired {get;private set;} // for the regression test
   public void Initialize(ServiceDirector director){d=director;}
   public void ResetForShift(){
+   if(glimpseUntil>0&&d.Scene.Entity){var ag=d.Scene.Entity.GetComponent<UnityEngine.AI.NavMeshAgent>();if(ag)ag.enabled=true;}
    wasAtHarrow=porchDone=upstairsSaid=radioDone=radioHeard=treelineDone=fogSaid=false;insideVale=0;upstairsBeats=0;glimpseUntil=0;glimpseSaidAt=-1;Fired=0;fogNow=RenderSettings.fogDensity;
    if(radio)radio.Stop();
    if(d.NightIndex==0){var p=d.Property(5);var clip=Resources.Load<AudioClip>("Audio/V5/static/static_1");if(clip){if(!radio){var g=new GameObject("Morrow radio (static)");radio=g.AddComponent<AudioSource>();}
@@ -46,8 +47,11 @@ namespace ServiceGameV2 {
    if(!fogSaid&&k>0&&d.Player.InCar&&Quiet&&d.NightIndex==1){fogSaid=true;Fired++;d.Say(ServiceScript.OmenFog);}
   }
   void Treeline(){
-   var ent=d.Scene.Entity;if(treelineDone||!ent||!d.AllResolved||!d.Player.InCar||d.Horror.Active||d.Horror.Caught)return;
-   var car=d.Scene.Car;if(glimpseUntil<=0){
+   var ent=d.Scene.Entity;if(treelineDone||!ent)return;var car=d.Scene.Car;
+   // a glimpse already showing ends the moment the player is out of the car (it is never there when you go to look)
+   if(glimpseUntil>0&&(!d.Player.InCar||d.Horror.Active||d.Horror.Caught)){EndGlimpse();return;}
+   if(!d.AllResolved||!d.Player.InCar||d.Horror.Active||d.Horror.Caught)return;
+   if(glimpseUntil<=0){
     if(d.Player.Speed<4||d.Scene.Route==null||d.Scene.Route.Length<4)return;
     // heading back toward the depot, in the woods between the houses
     var start=d.Scene.Route[0].position;float fromDepot=Vector3.Distance(car.position,start);if(fromDepot<110||fromDepot>300)return;
@@ -60,8 +64,9 @@ namespace ServiceGameV2 {
     foreach(var a in ent.GetComponentsInChildren<Animator>())if(a&&a.isActiveAndEnabled){a.SetBool("Moving",false);a.speed=.6f;}
     return;}
    // gone before you're level with it
-   if(Time.time>glimpseUntil||Vector3.Distance(car.position,glimpseAt)<13){ent.SetActive(false);var agent=ent.GetComponent<UnityEngine.AI.NavMeshAgent>();if(agent)agent.enabled=true;treelineDone=true;glimpseSaidAt=Time.time+1.4f;}
+   if(Time.time>glimpseUntil||Vector3.Distance(car.position,glimpseAt)<13)EndGlimpse();
   }
+  void EndGlimpse(){var ent=d.Scene.Entity;if(ent){ent.SetActive(false);var agent=ent.GetComponent<UnityEngine.AI.NavMeshAgent>();if(agent)agent.enabled=true;}treelineDone=true;glimpseUntil=0;glimpseSaidAt=Time.time+1.4f;}
   void LateUpdate(){if(glimpseSaidAt>0&&Time.time>glimpseSaidAt&&Quiet){glimpseSaidAt=-1;d.Say(ServiceScript.OmenTreeline);}}
  }
 }

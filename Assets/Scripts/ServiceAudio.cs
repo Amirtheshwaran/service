@@ -25,15 +25,17 @@ namespace ServiceGameV2
         static bool silentTest;
         readonly List<AudioSource> forestPockets=new List<AudioSource>();
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        static void TestSilence(){silentTest=System.Array.Exists(System.Environment.GetCommandLineArgs(),a=>a=="-serviceSmoke"||a=="-silent")||System.Environment.GetEnvironmentVariable("SERVICE_SILENT_TEST")=="1";if(silentTest)AudioListener.volume=0;}
+        static void TestSilence(){silentTest=System.Array.Exists(System.Environment.GetCommandLineArgs(),a=>a=="-serviceSmoke"||a=="-silent")||System.Environment.GetEnvironmentVariable("SERVICE_SILENT_TEST")=="1";if(TourAudio)silentTest=false;if(silentTest)AudioListener.volume=0;}
+        // V21: the review tour can record the game's sound with the picture (-tourAudio); then the game is not silenced.
+        public static bool TourAudio=>System.Array.Exists(System.Environment.GetCommandLineArgs(),a=>a=="-tourAudio");
         public float Volume = .8f;
         public void Initialize(ServiceDirector director)
         {
             d = director;
-            silentTest|=d.IsSmoke;AudioListener.volume=silentTest?0:Volume;
+            silentTest|=d.IsSmoke&&!TourAudio;AudioListener.volume=silentTest?0:Volume;
             AudioListener.pause=false;if(!d.IsSmoke)Volume=Mathf.Clamp01(PlayerPrefs.GetFloat("SERVICE.volume",.8f));
             if(!d.IsSmoke)MusicVolume=Mathf.Clamp01(PlayerPrefs.GetFloat("SERVICE.music",.7f));
-            tension=Source("Horror pursuit score",d.Scene.View.transform,0);tension.clip=Pick("chase");tension.loop=true;tension.volume=0;
+            tension=Source("Horror pursuit score",d.Scene.View.transform,0);tension.clip=Resources.Load<AudioClip>("Audio/V21/chase/Anxiety")??Pick("chase");tension.loop=true;tension.volume=0;
             music=Source("Traversal score",d.Scene.View.transform,0);music.clip=Pick("traversal");music.loop=true;music.volume=0;if(music.clip)music.Play();
             rain=Source("Recorded rainfall",d.Scene.View.transform,0);rain.clip=Pick("rain");rain.loop=true;rain.volume=0;rainFilter=rain.gameObject.AddComponent<AudioLowPassFilter>();if(rain.clip)rain.Play();
             engine = Source("Recorded engine", d.Scene.Car, 0);
@@ -76,7 +78,7 @@ namespace ServiceGameV2
             return clip;
         }
         AudioClip Pick(string name){
-            if(!pools.TryGetValue(name,out var pool)){pool=Resources.LoadAll<AudioClip>("Audio/V15/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V13/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V12/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V9/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V5/"+name);pools[name]=pool;}
+            if(!pools.TryGetValue(name,out var pool)){pool=Resources.LoadAll<AudioClip>("Audio/V21/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V15/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V13/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V12/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V9/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V5/"+name);pools[name]=pool;}
             if(pool.Length==0)return Clip(name);
             int last=previous.TryGetValue(name,out var n)?n:-1;int index=Random.Range(0,pool.Length);if(pool.Length>1&&index==last)index=(index+1)%pool.Length;previous[name]=index;return pool[index];
         }
@@ -87,7 +89,7 @@ namespace ServiceGameV2
             AudioListener.pause=d.Phase==ServicePhase.Paused;
             if(AudioListener.pause)return;
             if(tension!=null){tension.volume=Mathf.MoveTowards(tension.volume,pursuing?.38f*MusicVolume:0,Time.unscaledDeltaTime*.3f);if(!pursuing&&tension.volume<=0&&tension.isPlaying)tension.Stop();}
-            if(music)music.volume=Mathf.MoveTowards(music.volume,pursuing||(d.Vehicle&&d.Vehicle.RadioOn&&d.Player.InCar)?0:(d.Phase==ServicePhase.Title?.16f:.085f)*MusicVolume,Time.unscaledDeltaTime*.065f);
+            if(music)music.volume=Mathf.MoveTowards(music.volume,pursuing||(d.Vehicle&&d.Vehicle.RadioAudible)?0:(d.Phase==ServicePhase.Title?.16f:.085f)*MusicVolume,Time.unscaledDeltaTime*.065f);
             bool sheltered=d.Storm&&d.Storm.Sheltered;
             if(rain){rain.volume=Mathf.MoveTowards(rain.volume,sheltered?.045f:.17f,Time.unscaledDeltaTime*.2f);rainFilter.cutoffFrequency=Mathf.MoveTowards(rainFilter.cutoffFrequency,sheltered?1600:18000,Time.unscaledDeltaTime*16000);}
             bool inside = d.Player == null || d.Player.InCar;
@@ -122,6 +124,8 @@ namespace ServiceGameV2
             LastSurface=SurfaceAt(position);bool wet=d.Storm&&d.Storm.IsRaining&&!d.Storm.Covered(position);
             LastFootstepPool=wet?(LastSurface=="grass"||LastSurface=="gravel"?"wetmud":LastSurface=="stone"?"wetstone":"wood"):LastSurface;
             At(LastFootstepPool,position,LastSurface=="wood"?.12f:.19f);
+            // V21: grass and brush brushing your legs on the same step, louder the taller it is and the faster you go
+            if(d.Foliage&&LastSurface!="wood"&&LastSurface!="stone"){float depth=d.Foliage.Depth(position);if(depth>.05f){float pace=d.Player.Sprinting?1:d.Player.Crouched?.45f:.7f;var clip=Pick("grassfoley");if(clip){var s=Source("Recorded grassfoley",transform,1);s.transform.position=position+Vector3.up*.35f;s.clip=clip;s.minDistance=1.2f;s.maxDistance=14;s.pitch=Random.Range(.9f,1.1f);s.volume=Mathf.Lerp(.08f,.3f,depth)*pace;s.Play();Destroy(s.gameObject,clip.length+.1f);d.Foliage.Rustles++;}}}
         }
         public void Thunder(bool sheltered){At("thunder",d.Scene.View.transform.position+Vector3.up*5,sheltered?.19f:.43f);}
         public void MonsterFootstep(Vector3 position){
@@ -157,6 +161,6 @@ namespace ServiceGameV2
         public void Paper() { AudioClip clip = Clip("paper"); if (clip != null) cabin.PlayOneShot(clip, .2f); }
         public void HorrorAt(string clip,Vector3 position,float volume){At(clip,position,volume);}
         public void SilenceThreat(){foreach(var source in GetComponentsInChildren<AudioSource>())if(source.name=="Recorded breath"||source.name=="Recorded growl"||source.name=="Recorded reveal"||source.name=="Recorded monsterstep"){source.Stop();Destroy(source.gameObject);}}
-        public void Pursuit(bool on){pursuing=on;if(on&&tension.clip!=null&&!tension.isPlaying){tension.time=Mathf.Min(12,tension.clip.length*.15f);tension.Play();}}
+        public void Pursuit(bool on){pursuing=on;if(on&&tension.clip!=null&&!tension.isPlaying){tension.time=tension.clip.name=="Anxiety"?Random.Range(0f,40f):Mathf.Min(12,tension.clip.length*.15f);tension.Play();}}
     }
 }
