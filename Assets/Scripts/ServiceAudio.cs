@@ -125,7 +125,7 @@ namespace ServiceGameV2
             LastFootstepPool=wet?(LastSurface=="grass"||LastSurface=="gravel"?"wetmud":LastSurface=="stone"?"wetstone":"wood"):LastSurface;
             At(LastFootstepPool,position,LastSurface=="wood"?.12f:.19f);
             // V21: grass and brush brushing your legs on the same step, louder the taller it is and the faster you go
-            if(d.Foliage&&LastSurface!="wood"&&LastSurface!="stone"){float depth=d.Foliage.Depth(position);if(depth>.05f){float pace=d.Player.Sprinting?1:d.Player.Crouched?.45f:.7f;var clip=Pick("grassfoley");if(clip){var s=Source("Recorded grassfoley",transform,1);s.transform.position=position+Vector3.up*.35f;s.clip=clip;s.minDistance=1.2f;s.maxDistance=14;s.pitch=Random.Range(.9f,1.1f);s.volume=Mathf.Lerp(.08f,.3f,depth)*pace;s.Play();Destroy(s.gameObject,clip.length+.1f);d.Foliage.Rustles++;}}}
+            if(d.Foliage&&LastSurface!="wood"&&LastSurface!="stone"){float depth=d.Foliage.Depth(position);if(depth>.05f){float pace=d.Player.Sprinting?1:d.Player.Running?.85f:d.Player.Crouched?.45f:.7f;var clip=Pick("grassfoley");if(clip){var s=Source("Recorded grassfoley",transform,1);s.transform.position=position+Vector3.up*.35f;s.clip=clip;s.minDistance=1.2f;s.maxDistance=14;s.pitch=Random.Range(.9f,1.1f);s.volume=Mathf.Lerp(.08f,.3f,depth)*pace;s.Play();Destroy(s.gameObject,clip.length+.1f);d.Foliage.Rustles++;}}}
         }
         public void Thunder(bool sheltered){At("thunder",d.Scene.View.transform.position+Vector3.up*5,sheltered?.19f:.43f);}
         public void MonsterFootstep(Vector3 position){
@@ -139,11 +139,14 @@ namespace ServiceGameV2
             if(blocked){source.volume*=.6f;source.gameObject.AddComponent<AudioLowPassFilter>().cutoffFrequency=1700;}
             source.Play();MonsterSteps++;MonsterStepSurfaces.Add(surface);Destroy(source.gameObject,clip.length+.1f);
         }
-        public void DogAt(Vector3 position, float volume)
+        public void DogAt(Vector3 position, float volume, float pitch = 1)
         {
-            dog.Stop(); dog.transform.position = position; dog.clip = Clip("dog"); dog.volume = volume;
+            dog.Stop(); dog.transform.position = position; dog.clip = Clip("dog"); dog.volume = volume; dog.pitch = pitch;
             if (dog.clip != null) dog.Play();
         }
+        // V22: the bark travels with a running dog
+        public void DogFollow(Vector3 position) { if (dog != null && dog.isPlaying) dog.transform.position = position; }
+        public bool DogPlaying => dog != null && dog.isPlaying;
         public void StopDog() { if (dog != null && dog.isPlaying) dog.Stop(); }
         public bool EngineAudible=>engine&&engine.isPlaying&&!engine.mute;
         public int CollisionsPlayed {get;private set;}

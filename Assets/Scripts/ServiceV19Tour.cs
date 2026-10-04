@@ -13,6 +13,11 @@ namespace ServiceGameV2 {
    var a=Environment.GetCommandLineArgs().FirstOrDefault(x=>x.StartsWith("-tourOnly="));only=a==null?null:a.Substring(10);
    realtime=ServiceAudio.TourAudio;if(realtime){var listener=FindAnyObjectByType<AudioListener>();if(listener)tap=listener.gameObject.AddComponent<ServiceAudioTap>();}else Time.captureFramerate=24;
    StartCoroutine(Capture());StartCoroutine(Guard());}
+  // what the night-one hall glimpse at Vale sees on the way up (height over the door, distance, place in the view, clear sight)
+  void ValeTrace(ServiceProperty p){var w=d.Scene.Walker.transform.position;var eye=d.Scene.View.transform.position;float up=w.y-p.Door.position.y;if(up<1.2f)return;
+   if(!ServiceOmens.ValePoints(p,eye,out var e,out _,d.Scene.Walker.transform)){Note($"vale trace up {up:F2} no points");return;}
+   var vp=d.Scene.View.WorldToViewportPoint(e+Vector3.up*1.2f);bool clear=ServiceInteraction.Clear(eye,e+Vector3.up*1.4f,null,d.Scene.Walker.transform);
+   Note($"vale trace in {p.InteriorBounds.Contains(w+Vector3.up*.9f)} up {up:F2} dist {Vector3.Distance(eye,e):F1} vp ({vp.x:F2},{vp.y:F2},{vp.z:F1}) clear {clear} walker {w} E {e}");}
   void Note(string s){log.Add($"[{Time.time:F1}] {s}");File.WriteAllLines(Path.Combine(dir,"tour-log.txt"),log);}
   IEnumerator Guard(){var stack=new Stack<IEnumerator>();stack.Push(Main());
    while(stack.Count>0){object next=null;bool more=false;try{more=stack.Peek().MoveNext();if(more)next=stack.Peek().Current;}catch(Exception e){Note("ERROR "+e);more=false;stack.Clear();break;}if(!more){stack.Pop();continue;}if(next is IEnumerator nested)stack.Push(nested);else yield return next;}
@@ -21,8 +26,9 @@ namespace ServiceGameV2 {
   bool Want(string id)=>only==null||id.StartsWith(only);
   void Begin(string name){End();if(string.IsNullOrEmpty(ffmpegPath)||!File.Exists(ffmpegPath)){Note("no ffmpeg: "+ffmpegPath);return;}
    int w=Screen.width&~1,h=Screen.height&~1;buffer=new byte[w*h*4];
-   var psi=new System.Diagnostics.ProcessStartInfo(ffmpegPath,$"-y -loglevel error -f rawvideo -pix_fmt rgba -s {w}x{h} -r 24 -i - -vf vflip,scale=960:540 -c:v libx264 -preset {(realtime?"veryfast":"medium")} -crf 31 -pix_fmt yuv420p -movflags +faststart \"{Path.Combine(dir,name+(realtime?".video.mp4":".mp4"))}\""){UseShellExecute=false,RedirectStandardInput=true,CreateNoWindow=true};
-   ff=System.Diagnostics.Process.Start(psi);ffIn=ff.StandardInput.BaseStream;recording=true;frames=0;recName=name;recStart=Time.realtimeSinceStartup;if(realtime&&tap)tap.StartFile(Path.Combine(dir,name+".wav"));Note("REC "+name+$" {w}x{h}"+(realtime?" (real time, with sound)":""));}
+   var psi=new System.Diagnostics.ProcessStartInfo(ffmpegPath,$"-y -loglevel error -f rawvideo -pix_fmt rgba -s {w}x{h} -r 24 -i - -vf vflip,scale=960:540 -c:v libx264 -preset {(realtime?"ultrafast":"medium")} -crf 31 -pix_fmt yuv420p -movflags +faststart \"{Path.Combine(dir,name+(realtime?".video.mp4":".mp4"))}\""){UseShellExecute=false,RedirectStandardInput=true,CreateNoWindow=true};
+   ff=System.Diagnostics.Process.Start(psi);ffIn=ff.StandardInput.BaseStream;recording=true;frames=0;recName=name;recStart=Time.realtimeSinceStartup;slip=slipSaid=0;if(realtime&&tap)tap.StartFile(Path.Combine(dir,name+".wav"));Note("REC "+name+$" {w}x{h}"+(realtime?" (real time, with sound)":""));}
+  float slip,slipSaid;
   void End(){if(!recording)return;recording=false;if(realtime&&tap)tap.StopFile();try{ffIn.Flush();ffIn.Close();ff.WaitForExit(60000);}catch(Exception e){Note("ffmpeg close "+e.Message);}Note($"END {frames} frames ({frames/24f:F1}s)");ff=null;
    if(realtime){var v=Path.Combine(dir,recName+".video.mp4");var a=Path.Combine(dir,recName+".wav");var o=Path.Combine(dir,recName+".mp4");
     try{var mux=System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(ffmpegPath,$"-y -loglevel error -i \"{v}\" -i \"{a}\" -c:v copy -c:a aac -b:a 128k -shortest -movflags +faststart \"{o}\""){UseShellExecute=false,CreateNoWindow=true});mux.WaitForExit(120000);
@@ -32,6 +38,9 @@ namespace ServiceGameV2 {
     if(tex.width>=w&&tex.height>=h){var px=tex.GetPixels32();int k=0;for(int y=0;y<h;y++){int row=y*tex.width;for(int x=0;x<w;x++){var c=px[row+x];buffer[k++]=c.r;buffer[k++]=c.g;buffer[k++]=c.b;buffer[k++]=255;}}
      // in real time the video keeps pace with the clock (and the sound): a slow frame is held for as long as it took
      int want=realtime?Mathf.Max(frames+(frames==0?1:0),Mathf.FloorToInt((Time.realtimeSinceStartup-recStart)*24)):frames+1;
+     // never chase more than half a second: if the encoder falls behind, the slip is absorbed (and logged) instead of
+     // padding ever more frames, which slowed the game until it all but stopped (V22 tour, section 05)
+     if(want-frames>12){slip+=(want-frames-12)/24f;recStart+=(want-frames-12)/24f;want=frames+12;if(slip-slipSaid>1){slipSaid=slip;Note($"video slipped {slip:F1}s behind the sound");}}
      try{while(frames<want){ffIn.Write(buffer,0,buffer.Length);frames++;}}catch(Exception e){Note("pipe "+e.Message);recording=false;}}
     Destroy(tex);}}
   // Frame-counted so it also runs while the game is paused (one frame = 1/24 s of video).
@@ -93,8 +102,17 @@ namespace ServiceGameV2 {
    int start=Mathf.Clamp(north?gi-6:gi+6,0,line.Count-1);var lane=Lane(line,!north);int s=Nearest(lane,line[start]),e=Nearest(lane,line[gi]);
    var seg=new List<Vector3>();if(s<=e)for(int i=s;i<=e;i++)seg.Add(lane[i]);else for(int i=s;i>=e;i--)seg.Add(lane[i]);
    var first=seg[0];var next=seg.Count>1?seg[1]:gate;d.Player.TeleportCar(first+Vector3.up*.3f,Quaternion.LookRotation(Flat(next-first)));yield return Wait(.5f);
-   seg.Add(Vector3.Lerp(seg[seg.Count-1],gate,.5f));seg.Add(gate);
+   IntoDrive(seg,p,line);
    yield return Drive(seg,9,label);
+  }
+  // V22: the car keeps to the road and the drive pull-off (ServiceRoadCorridor), so turn in at the drive mouth rather
+  // than cutting across the verge: lane points up to 9 m short of the mouth, then the mouth, the drive start, the gate.
+  static void IntoDrive(List<Vector3> seg,ServiceProperty p,List<Vector3> road){
+   var gate=p.Gate.position;var a0=p.ApproachRoute!=null&&p.ApproachRoute.Length>0?p.ApproachRoute[0]:gate;var q=Flat(a0);
+   var mouth=Flat(road[0]);float bd=float.MaxValue;for(int i=1;i<road.Count;i++){var a=Flat(road[i-1]);var b=Flat(road[i]);var ab=b-a;float t=Mathf.Clamp01(Vector3.Dot(q-a,ab)/Mathf.Max(ab.sqrMagnitude,1e-6f));var c=a+ab*t;float dd=(q-c).sqrMagnitude;if(dd<bd){bd=dd;mouth=c;}}
+   var into=(q-mouth).normalized;
+   while(seg.Count>2&&Vector3.Distance(Flat(seg[seg.Count-1]),mouth)<9)seg.RemoveAt(seg.Count-1);
+   seg.Add(mouth+into*1.2f);seg.Add(a0);seg.Add(gate);
   }
   IEnumerator ExitCar(){if(d.Player.InCar){d.Player.StopEngine();yield return Wait(.6f);if(!d.Player.TryExitCar())Note("could not exit car");yield return Wait(1f);}}
   IEnumerator ToDoor(ServiceProperty p){var c=DoorCentre(p);yield return Walk(c+DoorNormal(p)*1.7f,"to the door "+p.Index);yield return Look(c+Vector3.up*1.45f,1.2f);}
@@ -112,7 +130,11 @@ namespace ServiceGameV2 {
    while(d.Busy&&Time.time<t)yield return null;yield return Wait(1.2f);}
   IEnumerator Deliver(ServiceProperty p){yield return Walk(p.TableApproach.position,"door to table "+p.Index);yield return Look(p.DeliveryPoint.position,1.2f);yield return Wait(1.2f);
    if(d.NearbyDoor()!=p.Index)Note("table not reachable at "+p.Index);d.Attempt(p.Index,ServiceResult.LeftAtDoor);{float until=Time.time+4;while(d.Busy&&Time.time<until)yield return null;}yield return Wait(.4f);}
-  IEnumerator Flee(ServiceProperty p){var o=Outward(p);yield return Walk(p.Door.position+o*1.8f,"flee to the door "+p.Index,true,25);yield return LookBack(7f);yield return Walk(d.Scene.Car.position-d.Scene.Car.right*2.2f,"flee to the car "+p.Index,true,30,()=>d.Horror.Caught);
+  // V22: with stamina the flight has no slack for standing still: glance back over the shoulder while running (Q)
+  IEnumerator Glance(float after){float t=Time.time+after;while(Time.time<t&&d.Horror.Active)yield return null;if(!d.Horror.Active)yield break;var a=d.Horror.Agent;float dist=a?Vector3.Distance(a.transform.position,d.Scene.Walker.transform.position):-1;
+   d.Player.SmokeLookBack=-1;yield return Wait(.8f);d.Player.SmokeLookBack=0;Note($"glanced back while running ({dist:F1} m behind, stamina {d.Player.Stamina:F2}{(d.Player.Winded?", winded":"")})");}
+  IEnumerator Flee(ServiceProperty p){var o=Outward(p);yield return Walk(p.Door.position+o*1.8f,"flee to the door "+p.Index,true,25);StartCoroutine(Glance(1.5f));yield return Walk(d.Scene.Car.position-d.Scene.Car.right*2.2f,"flee to the car "+p.Index,true,30,()=>d.Horror.Caught);
+   d.Player.SmokeLookBack=0;{var ag=d.Horror.Agent;Note($"at the car: creature {(ag?Vector3.Distance(ag.transform.position,d.Scene.Walker.transform.position):-1):F1} m behind, stamina {d.Player.Stamina:F2}, winded {d.Player.WindedCount} times, caught {d.Horror.Caught}");}
    d.Player.EnterCar();yield return Wait(.4f);float t=Time.time+6;while(Time.time<t&&!d.Horror.Caught){d.Player.SmokeThrottle=-1;d.Player.SmokeSteering=.3f;yield return null;}d.Player.SmokeThrottle=0;d.Player.SmokeSteering=0;d.Player.SmokeBrake=true;yield return Wait(1.5f);d.Player.SmokeBrake=false;Note($"after flight: caught={d.Horror.Caught} active={d.Horror.Active} phase={d.Horror.Phase}");}
   IEnumerator Main(){
    yield return Wait(1.5f);var ui=d.transform.Find("Service interface");if(ui)ui.gameObject.SetActive(true);
@@ -140,13 +162,19 @@ namespace ServiceGameV2 {
     foreach(var l in FindObjectsByType<Light>(FindObjectsSortMode.None))if(l.enabled&&Vector3.Distance(l.transform.position,d.Scene.View.transform.position)<4)Note($"near light {l.name} {l.type} int {l.intensity} at {l.transform.position} parent {(l.transform.parent?l.transform.parent.name:"-")}");
     End();yield break;}
    if(Want("01")){d.BeginShift(0);Begin("01-shift-start-and-road");yield return Wait(1f);yield return CardDone();yield return Wait(1f);d.PaperOpen=false;d.SetCursor();yield return Wait(1.5f);yield return ArriveAt(P(0),"road to Correll");End();}
-   if(Want("02")){if(only!=null){d.BeginShift(0);d.PaperOpen=false;NoCard();yield return ArriveAt(P(0),"road to Correll");}Begin("02-correll-doorstep");yield return ExitCar();if(d.Life&&d.Life.DogPresent){yield return Look(d.Life.DogHome+Vector3.up*.5f,1f);yield return Wait(2f);Note("dog at "+d.Life.DogHome);}yield return ToDoor(P(0));yield return Knock(P(0));yield return Wait(1f);yield return Walk(d.Scene.Car.position-d.Scene.Car.right*2.2f,"back to the car");d.Player.EnterCar();yield return Wait(1.5f);End();}
+   if(Want("02")){if(only!=null){d.BeginShift(0);d.PaperOpen=false;NoCard();yield return ArriveAt(P(0),"road to Correll");}Begin("02-correll-doorstep");yield return ExitCar();if(d.Scene.Flashlight)d.Scene.Flashlight.enabled=true;if(d.Life&&d.Life.DogPresent){yield return Walk(P(0).Door.position+Outward(P(0))*1.8f,"up the drive until Rex comes",false,25,()=>d.Life.Mode!=ServiceLife.DogMode.Home);d.Player.SmokeWalk=Vector2.zero;Note("dog "+d.Life.Mode+" at "+d.Life.DogPosition);yield return Look(d.Life.DogPosition+Vector3.up*.4f,.6f);float tt=Time.time+6,te=-1,dtr=0;while(Time.time<tt&&(te<0||Time.time<te)){var dl=d.Life.DogPosition+Vector3.up*.4f-d.Scene.View.transform.position;d.Player.SmokeLook(Mathf.MoveTowardsAngle(Yaw,Mathf.Atan2(dl.x,dl.z)*Mathf.Rad2Deg,200*Time.deltaTime),Mathf.MoveTowards(Pitch,-Mathf.Atan2(dl.y,new Vector2(dl.x,dl.z).magnitude)*Mathf.Rad2Deg,120*Time.deltaTime));if(te<0&&d.Life.Mode!=ServiceLife.DogMode.Charge&&d.Life.Mode!=ServiceLife.DogMode.Home)te=Time.time+3f;if(Time.time>dtr){dtr=Time.time+.5f;Note($"dog {d.Life.Mode} at {d.Life.DogPosition} {Vector3.Distance(d.Life.DogPosition,d.Scene.Walker.transform.position):F1} m from you, travel {d.Life.DogTravel:F1}, walker {d.Scene.Walker.transform.position}, {d.Life.PathInfo}");}yield return null;}Note("dog "+d.Life.Mode+" at "+d.Life.DogPosition+" barks "+d.Life.Barks);}yield return ToDoor(P(0));yield return Knock(P(0));yield return Wait(1f);yield return Walk(d.Scene.Car.position-d.Scene.Car.right*2.2f,"back to the car");d.Player.EnterCar();yield return Wait(1.5f);End();}
    // ---- NIGHT ONE: nothing happens. Things a tired process server can explain away.
    if(Want("03")){d.BeginShift(0);d.PaperOpen=false;NoCard();d.Docket.Find(e=>e.Property==0).Result=ServiceResult.Served;Begin("03-night1-harrow-porch-light");yield return ArriveAt(P(3),"Harrow drive");yield return ExitCar();yield return Wait(.8f);d.ToggleTorch();yield return Wait(1.4f);d.ToggleTorch();yield return Wait(.8f);var p=P(3);yield return ToDoor(p);yield return ReadNote(p);yield return Knock(p);
     yield return Deliver(p);yield return Wait(2f);Note("harrow encounter active="+d.Horror.Active);yield return Walk(p.Door.position+Outward(p)*1.8f,"out of Harrow");yield return Walk(p.Door.position+Outward(p)*16f,"down the drive");yield return Wait(.6f);
     yield return Look(p.Door.position+Vector3.up*1.6f,1.2f);yield return Wait(3f);Note("porch light on="+(p.PorchLight&&p.PorchLight.enabled)+" omens "+(d.Omens?d.Omens.Fired:-1));yield return Walk(d.Scene.Car.position-d.Scene.Car.right*2.2f,"Harrow car");End();}
-   if(Want("04")){d.BeginShift(0);d.PaperOpen=false;NoCard();foreach(var i in new[]{0,3})d.Docket.Find(e=>e.Property==i).Result=ServiceResult.Served;Begin("04-night1-vale-upstairs");var p=P(1);yield return ArriveAt(p,"Vale drive");yield return ExitCar();yield return ToDoor(p);yield return ReadNote(p);yield return Knock(p);yield return Deliver(p);
-    yield return Wait(2f);yield return Look(p.InteriorBounds.center+Vector3.up*3f,1.5f);yield return Wait(4f);Note("vale omens "+(d.Omens?d.Omens.Fired:-1)+" encounter "+d.Horror.Active);yield return Walk(p.Door.position+Outward(p)*1.8f,"out of Vale");yield return Walk(d.Scene.Car.position-d.Scene.Car.right*2.2f,"Vale car");End();}
+   if(Want("04")){d.BeginShift(0);d.PaperOpen=false;NoCard();foreach(var i in new[]{0,3})d.Docket.Find(e=>e.Property==i).Result=ServiceResult.Served;Begin("04-night1-vale-upstairs");var p=P(1);yield return ArriveAt(p,"Vale drive");yield return ExitCar();yield return ToDoor(p);yield return ReadNote(p);yield return Knock(p);
+    // V22: up the stairs and along the hall toward the study - something steps out at the end of it
+    if(d.Scene.Flashlight)d.Scene.Flashlight.enabled=true;
+    float vtr=0;yield return Walk(p.TableApproach.position,"up to the study "+p.Index,false,40,()=>{if(Time.time>vtr){vtr=Time.time+.15f;ValeTrace(p);}return d.Omens&&d.Omens.ValeStage>0;});
+    if(d.Omens&&d.Omens.ValeStage>0){d.Player.SmokeWalk=Vector2.zero;Note("vale glimpse at "+d.Omens.ValeTo);yield return Look(d.Omens.ValeTo+Vector3.up*1.3f,.6f);float gt=Time.time+7;while(d.Omens.ValeStage>0&&Time.time<gt){d.Player.SmokeLook(Yaw,Pitch);yield return null;}Note("vale glimpses "+d.Omens.ValeGlimpses);yield return Wait(1.5f);}
+    else Note("no vale glimpse on the way up");
+    yield return Deliver(p);
+    yield return Wait(2f);Note("vale omens "+(d.Omens?d.Omens.Fired:-1)+" encounter "+d.Horror.Active);yield return Walk(p.Door.position+Outward(p)*1.8f,"out of Vale");yield return Walk(d.Scene.Car.position-d.Scene.Car.right*2.2f,"Vale car");End();}
    if(Want("05")){d.BeginShift(0);d.PaperOpen=false;NoCard();foreach(var i in new[]{0,3,1,4})d.Docket.Find(e=>e.Property==i).Result=ServiceResult.Served;Begin("05-night1-morrow-radio-and-the-drive-home");var p=P(5);yield return ArriveAt(p,"Morrow drive");yield return ExitCar();yield return ToDoor(p);yield return ReadNote(p);yield return Knock(p);yield return Deliver(p);yield return Wait(2.5f);
     Note("morrow omens "+(d.Omens?d.Omens.Fired:-1));yield return Walk(p.Door.position+Outward(p)*1.8f,"out of Morrow");yield return Walk(d.Scene.Car.position-d.Scene.Car.right*2.2f,"Morrow car");d.Player.EnterCar();yield return Wait(1f);
     // home: south along the lane to the depot
@@ -159,20 +187,23 @@ namespace ServiceGameV2 {
     if(d.Horror.Active&&d.Horror.Agent){var e=d.Horror.Agent.transform.position;var awayP=d.Scene.View.transform.position*2-e;awayP.y=d.Scene.View.transform.position.y;yield return Look(awayP,.9f);float t=Time.time+16;while(d.Horror.Active&&!d.Horror.Caught&&Time.time<t)yield return null;Note($"watcher: caught={d.Horror.Caught} active={d.Horror.Active}");}
     yield return Wait(2f);if(!d.Horror.Caught){yield return Walk(p.Door.position+Outward(p)*1.8f,"out of Harrow");yield return Walk(d.Scene.Car.position-d.Scene.Car.right*2.2f,"Harrow car");}yield return Wait(1f);End();}
    if(Want("07")){d.BeginShift(1);d.PaperOpen=false;NoCard();foreach(var i in new[]{0,3,1})d.Docket.Find(e=>e.Property==i).Result=ServiceResult.Served;Begin("07-night2-bell-back-room-and-the-door");var p=P(4);yield return ArriveAt(p,"Bell drive");yield return ExitCar();yield return ToDoor(p);yield return ReadNote(p);yield return Knock(p);yield return Deliver(p);yield return Wait(1.5f);
-    yield return Walk(p.Door.position+Outward(p)*1.8f,"out of the house");yield return Walk(d.Scene.Car.position-d.Scene.Car.right*2.2f,"Bell drive back",false,45,()=>d.Horror.Active);
+    yield return Walk(p.Door.position+Outward(p)*1.8f,"out of the house");
+    // V22: pull his door shut behind you - it still bangs open once you are down the drive
+    {yield return Look(p.OpeningCentre+Vector3.up*1.5f,.8f);yield return Wait(.4f);int leaf=d.NearbyLeaf();if(leaf==4){d.ToggleDoor(4);yield return Wait(1.6f);Note("closed Bell's door: "+d.Life.DoorOpenDegrees(4).ToString("F0")+" deg");}else Note("no close-door at Bell (NearbyLeaf="+leaf+")");}
+    yield return Walk(d.Scene.Car.position-d.Scene.Car.right*2.2f,"Bell drive back",false,45,()=>d.Horror.Active);
     if(d.Horror.Active){Note("Bell return ambush");yield return Wait(.3f);var a=d.Horror.Agent;yield return Look((a?a.transform.position:p.Door.position)+Vector3.up*1.5f,.5f);yield return Wait(.9f);yield return Walk(d.Scene.Car.position-d.Scene.Car.right*2.2f,"run to the car",true,25,()=>d.Horror.Caught);}
     d.Player.EnterCar();yield return Wait(.4f);float t=Time.time+5;while(Time.time<t&&!d.Horror.Caught){d.Player.SmokeThrottle=-1;d.Player.SmokeSteering=.3f;yield return null;}d.Player.SmokeThrottle=0;d.Player.SmokeSteering=0;Note($"Bell end: caught={d.Horror.Caught}");yield return Wait(1.5f);End();}
-   if(Want("08")){d.BeginShift(1);d.PaperOpen=false;NoCard();foreach(var i in new[]{0,3,1,4})d.Docket.Find(e=>e.Property==i).Result=ServiceResult.Served;Begin("08-night2-morrow-chase");var p=P(5);yield return ArriveAt(p,"Morrow drive");yield return ExitCar();yield return ToDoor(p);yield return ReadNote(p);yield return Knock(p);yield return Deliver(p);yield return Wait(1.0f);
+   if(Want("08")){d.BeginShift(1);d.PaperOpen=false;NoCard();foreach(var i in new[]{0,3,1,4})d.Docket.Find(e=>e.Property==i).Result=ServiceResult.Served;Begin("08-night2-morrow-chase");var p=P(5);yield return ArriveAt(p,"Morrow drive");yield return ExitCar();yield return ToDoor(p);yield return ReadNote(p);yield return Knock(p);yield return Deliver(p);yield return Wait(.3f);
     if(d.Horror.Agent&&d.Horror.Active)yield return Look(d.Horror.Agent.transform.position+Vector3.up*1.4f,.5f);yield return Flee(p);yield return Wait(2f);End();}
    if(Want("09")){d.BeginShift(0);d.PaperOpen=false;NoCard();foreach(var e in d.Docket)e.Result=ServiceResult.Served;Begin("09-depot-report");var line=RoadLine();int dep=Nearest(line,new Vector3(-8,0,-5));var lane=Lane(line,true);int s0=Mathf.Clamp(Nearest(lane,line[Mathf.Min(dep+8,line.Count-1)]),0,lane.Count-1);
     var seg=new List<Vector3>();for(int i=s0;i<lane.Count&&seg.Count<12;i++)seg.Add(lane[i]);seg.Add(new Vector3(-8,0,-1));d.Player.TeleportCar(seg[0]+Vector3.up*.3f,Quaternion.LookRotation(Flat(seg[1]-seg[0])));yield return Wait(.5f);yield return Drive(seg,9,"into the depot");yield return Wait(1f);
     if(d.CanFinish){d.TryFinishShift();Note("report filed");}else Note("cannot file the report here: "+d.Scene.Car.position);yield return Wait(11f);End();}
    // ---- NIGHT THREE: Vale, and an address that does not exist.
-   if(Want("10")){d.BeginShift(2);d.PaperOpen=false;Begin("10-night3-vale-chase");yield return CardDone();var p=P(1);yield return ArriveAt(p,"Vale drive");yield return ExitCar();yield return ToDoor(p);yield return ReadNote(p);yield return Knock(p);yield return Deliver(p);yield return Wait(1.0f);
+   if(Want("10")){d.BeginShift(2);d.PaperOpen=false;Begin("10-night3-vale-chase");yield return CardDone();var p=P(1);yield return ArriveAt(p,"Vale drive");yield return ExitCar();yield return ToDoor(p);yield return ReadNote(p);yield return Knock(p);yield return Deliver(p);yield return Wait(.3f);
     if(d.Horror.Agent&&d.Horror.Active)yield return Look(d.Horror.Agent.transform.position+Vector3.up*1.4f,.5f);yield return Flee(p);yield return Wait(2f);End();}
    if(Want("11")){d.BeginShift(2);NoCard();Begin("11-night3-the-parcel");yield return Wait(1f);d.PaperOpen=false;d.SetCursor();d.Docket.Find(e=>e.Property==1).Result=ServiceResult.Served;
     var late=LateLine();var line=RoadLine();var north=Lane(line,false);int n0=Mathf.Max(0,north.Count-10);var seg=north.Skip(n0).ToList();
-    if(late.Count>4)seg.AddRange(Lane(late,false));var p=P(2);int cut=Nearest(seg,p.Gate.position);seg=seg.Take(cut+1).ToList();seg.Add(p.Gate.position);
+    if(late.Count>4)seg.AddRange(Lane(late,false));var p=P(2);int cut=Nearest(seg,p.Gate.position);seg=seg.Take(cut+1).ToList();IntoDrive(seg,p,late.Count>4?late:line);
     d.Player.TeleportCar(seg[0]+Vector3.up*.3f,Quaternion.LookRotation(Flat(seg[1]-seg[0])));yield return Wait(.5f);yield return Drive(seg,10,"Route 9 to the parcel",true,140);
     yield return ExitCar();yield return ToDoor(p);yield return ReadNote(p);yield return Knock(p);yield return Deliver(p);yield return Wait(5f);yield return Look(p.Door.position+Vector3.up*1.4f,1.2f);yield return Wait(3f);
     foreach(var e in d.Docket)e.Result=ServiceResult.Served;d.Player.TeleportCar(new Vector3(-10,.3f,-1),Quaternion.Euler(0,0,0));d.Player.EnterCar();yield return Wait(.5f);d.Player.StopEngine();yield return Wait(.5f);if(d.CanFinish)d.TryFinishShift();yield return Wait(4f);d.NextShift();yield return Wait(14f);End();}

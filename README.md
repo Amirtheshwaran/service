@@ -6,8 +6,8 @@ First-person horror game with free-roam driving/walking and no combat, built in 
 
 You play as a civil process server working night shifts in rural Hollis County. Your job is to drive out and deliver court documents to people who usually don't want to receive them. Every shift gives you a docket of addresses to locate and serve using your car, a flashlight, and your judgment. If a place feels wrong, you can't fight back; you just leave.
 
-The horror is focused on slow burn and atmosphere rather than cheap jump scares. In this build (v21), the story unfolds across three night shifts:
-- Night 1 (October 1st, 1998): Ordinary civil service work across five rural properties. Subtle atmospheric omens, doorstep resident interactions, and an unsettling figure along the tree line.
+The horror is focused on slow burn and atmosphere rather than cheap jump scares. In this build (v22), the story unfolds across three night shifts:
+- Night 1 (October 1st, 1998): Ordinary civil service work across five rural properties. Subtle atmospheric omens, doorstep resident interactions, an unsettling figure along the tree line, and a corridor encounter at Vale House.
 - Night 2 (October 4th, 1998): Escalated tension and wrongness. Harrow Lodge watcher encounter (turn away and stand completely still), Bell residence note and pursuit escape back to the car, and Morrow House pursuit.
 - Night 3 (October 9th, 1998): Severe fog and unmapped route past the county road closure, leading to the unsurveyed final parcel.
 
@@ -27,19 +27,24 @@ Built with Unity 6 (6000.6.0f1) using URP.
 | --- | --- |
 | WASD | Walk / Drive (S reverses car) |
 | Mouse | Look around (including inside cockpit) |
-| E | Read notice / knock / enter or exit car, interact, file report at depot |
+| E | Read notice / knock / enter or exit car, close door, interact, file report |
 | R | Leave documents on the delivery table |
 | U | Mark address as unable to serve |
 | F | Flashlight (on foot) |
 | Space | Jump on foot (disabled on stairs) / turn ignition key (in car) |
 | Ctrl | Hold to crouch (on foot) |
 | V / B | Radio power / cycle through 3 stations (in car) |
-| Shift | Sprint on foot / brake while driving |
+| Shift | Forward sprint (with breath depletion) / brake while driving |
 | Tab | Open docket clipboard (in car, while stopped) |
-| Esc | Pause menu / close papers |
+| Esc | Pause menu / close papers or held note |
 
 ## Gameplay & Features
 
+- **Note Transcripts & Legibility Plates**: Inspecting a handwritten doorstep note displays a typed transcript with signature attribution underneath. Interaction prompts sit on shaded backdrop plates with targeting reticles to maintain legibility in direct flashlight beams.
+- **Door Closing & Reopening**: Players can pull house entrance doors shut from the outside doorstep after entry, or reopen them prior to completing deliveries.
+- **Road Boundary Corridor & Pull-offs**: Soft boundary guidance keeps the vehicle within drivable road corridors and mailbox pull-offs without dead stops, supporting tight three-point turns.
+- **Forward Sprint Pacing & Stamina**: Forward-only sprint mechanics with stamina depletion and audible breathing audio cues (approx. 6 seconds calm, 10 seconds in pursuit), replacing unlimited sprint.
+- **Resident & Creature Behavior**: Rex charges barking down Correll driveway before accompanying the player to the steps; brief upstairs hall encounter at Vale House on night one.
 - **Camcorder Aesthetic**: VHS/camcorder visual filter with adjustable grain, fringing, vignette, and gamma-space color grading.
 - **First-Person Hands & Gestures**: Overhand flashlight grip, dedicated gestures for knocking, handing over papers, placing documents on desks, and pushing doors, plus dynamic steering wheel hands with crossing poses.
 - **Typewriter Time Cards & Stamps**: Fears to Fathom style typed date and time opening cards, corner arrival stamps, and rewind sequence cards.

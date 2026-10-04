@@ -12,6 +12,9 @@ namespace ServiceGameV2 {
   public float ImpactAlpha=>Phase==PursuitPhase.Attack?Mathf.Max(0,1-Mathf.Abs(Elapsed-.52f)/.16f)*.23f:0;
   bool armedReturn,returnEncounter,impactPlayed,bellShut;float armedAt;
   public void ArmReturnAmbush(){armedReturn=true;armedAt=Time.time;bellShut=false;}
+  // V22: the player pulled a door shut (or opened it). A Bell door shut by hand counts as shut, so the bang still comes;
+  // opening it again lets the house shut it in its own time.
+  public void DoorChanged(int index,bool open){if(index==4&&armedReturn)bellShut=!open;}
 
   public float Elapsed {get;private set;}
   public int Captures {get;private set;}
@@ -38,6 +41,8 @@ namespace ServiceGameV2 {
   public void Begin(){Begin(1);}
   public void Begin(int index){BeginEncounter(index,false);}
   void BeginEncounter(int index,bool returning){
+   if(d.Player)d.Player.GiveAdrenaline(.7f); // V22: every pursuit starts with at least 7 s of sprint in you
+   if(d.Omens)d.Omens.CancelGlimpses();if(Agent&&!Agent.enabled)Agent.enabled=true; // V22: never start while a glimpse holds the creature
    if(Active||Caught||(!returning&&d.IsFriendly(index)))return;returnEncounter=returning;p=d.Property(index);if(!p.HasEncounter)return;
    d.Scene.Entity.transform.SetPositionAndRotation(p.EntitySpawn.position,p.EntitySpawn.rotation);
    if(d.Scene.EntityVariants!=null)for(int i=0;i<d.Scene.EntityVariants.Length;i++)d.Scene.EntityVariants[i].SetActive(i==p.CreatureVariant);
@@ -59,6 +64,7 @@ namespace ServiceGameV2 {
      // V19 drives curve: measure progress along the drive itself (door end -> gate end), not along a straight line.
      DriveProgress(bell,d.Scene.Walker.transform.position,out float progress,out float lateral);
      var w=d.Scene.Walker.transform.position;var eye=d.Scene.View.transform;
+     if(!bellShut&&d.Life.DoorOpenDegrees(4)<=5&&!d.Life.DoorMoving(4)&&!bell.InteriorBounds.Contains(w+Vector3.up*.3f)&&dist>4)bellShut=true; // already shut
      if(!bellShut&&d.Life.DoorOpenDegrees(4)>5&&!bell.InteriorBounds.Contains(w+Vector3.up*.3f)&&dist>4&&(Vector3.Dot(eye.forward,(bell.Door.position-eye.position).normalized)<.2f||dist>14)){bellShut=true;d.Life.OpenDoor(bell,false,false,1.6f);}
      if(bellShut&&d.Life.DoorOpenDegrees(4)<3&&dist>9&&dist<30&&progress>8&&lateral<5){armedReturn=false;ReturnAmbushes++;d.BellGone=true;d.Say(ServiceScript.ReturnAmbush);d.Audio.HorrorAt("doorslam",bell.Door.position,.7f);d.Audio.HorrorAt("metalrattle",bell.SoundPoint.position,.32f);d.Life.OpenDoor(bell,true,true,.18f);BeginEncounter(4,true);return;}
     }

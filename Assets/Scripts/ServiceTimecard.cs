@@ -78,7 +78,7 @@ namespace ServiceGameV2 {
   void Update(){
    if(d&&d.Phase==ServicePhase.Playing)played+=Time.unscaledDeltaTime;
    // the corner stamp never sits over an encounter, a capture, a card or a menu
-   if(stamp!=null&&d&&(d.Horror.Active||d.Horror.Caught||Blocking||d.Phase!=ServicePhase.Playing&&d.Phase!=ServicePhase.Paused)){StopCoroutine(stamp);stamp=null;cornerWords.alpha=0;cornerA.text=cornerB.text="";}
+   if(stamp!=null&&d&&(d.Horror.Active||d.Horror.Caught||Blocking||d.NoteOpen>=0||d.Phase!=ServicePhase.Playing&&d.Phase!=ServicePhase.Paused)){StopCoroutine(stamp);stamp=null;cornerWords.alpha=0;cornerA.text=cornerB.text="";}
    if(!d||d.Phase!=ServicePhase.Playing||d.Player.InCar||Blocking||d.Horror.Active||d.Horror.Caught)return;
    var at=d.Scene.Walker.transform.position;
    foreach(var e in d.Docket){var p=d.Property(e.Property);if(stamped[p.Index]||!p.Door)continue;var dd=p.Door.position-at;dd.y=0;if(dd.magnitude>24)continue;stamped[p.Index]=true;Stamp(e.Address.ToUpperInvariant(),Time12(Clock));break;}

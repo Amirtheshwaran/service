@@ -10,6 +10,10 @@ namespace ServiceGameV2 {
   readonly Color white=new Color(.88f,.89f,.86f),muted=new Color(.53f,.58f,.57f),accent=new Color(.72f,.57f,.36f),panel=new Color(.035f,.045f,.048f,.97f),ink=new Color(.16f,.20f,.19f),mapPaper=new Color(.63f,.65f,.59f);
   public int MapPins {get;private set;} public int MapSegments {get;private set;}
   ServiceMenus menus;bool vt;
+  // V22: the note under the crosshair (from Context, once per frame) and the corner marks drawn round it on screen
+  int noteTarget=-1;RectTransform noteMark;Image promptPlate;Text promptLabel;
+  public string NoteTranscript {get;private set;}="";
+  public int NoteMarked=>noteMark&&noteMark.gameObject.activeSelf?noteTarget:-1;
   public void Initialize(ServiceDirector director){d=director;sans=Resources.Load<Font>("Fonts/VT323-Regular");vt=sans;if(!sans)sans=Resources.Load<Font>("Fonts/Barlow-Regular");document=Resources.Load<Font>("Fonts/CourierPrime-Regular");
    var o=new GameObject("Service interface",typeof(RectTransform),typeof(Canvas),typeof(CanvasScaler),typeof(GraphicRaycaster));o.transform.SetParent(transform,false);canvas=o.GetComponent<Canvas>();canvas.renderMode=RenderMode.ScreenSpaceOverlay;canvas.sortingOrder=50;var scaler=o.GetComponent<CanvasScaler>();scaler.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;scaler.referenceResolution=new Vector2(1280,720);scaler.screenMatchMode=CanvasScaler.ScreenMatchMode.Expand;
    if(!FindAnyObjectByType<EventSystem>()){var events=new GameObject("Interface input",typeof(EventSystem),typeof(InputSystemUIInputModule));events.transform.SetParent(transform);events.GetComponent<InputSystemUIInputModule>().AssignDefaultActions();}
@@ -25,11 +29,13 @@ namespace ServiceGameV2 {
   void Rule(float x,float y,float w,Color? color=null){Block(new Rect(x,y,w,1),color??new Color(.23f,.29f,.28f));}
   void Line(Vector2 a,Vector2 b,float width,Color color){var t=Block(new Rect(a.x,a.y,Vector2.Distance(a,b),width),color).rectTransform;t.pivot=new Vector2(0,.5f);t.localRotation=Quaternion.Euler(0,0,-Mathf.Atan2(b.y-a.y,b.x-a.x)*Mathf.Rad2Deg);}
   string Context(){if(d.Busy||d.Horror.Caught)return "";if(d.Player.InCar)return d.CanFinish?"E   File shift report":d.Player.Speed<.8f?(d.Player.IsStarting?"Turning the ignition…":"E   Leave vehicle     /     Space   Ignition"):"";
-   if(Vector3.Distance(d.Scene.View.transform.position,d.Scene.Car.position+Vector3.up)<3.5f)return "E   Enter vehicle";
+   noteTarget=-1;
+   if(d.CanEnterCar)return "E   Enter vehicle";
    if(d.NoteOpen>=0)return "E   Stop reading";
-   if(d.NearbyNotice()>=0)return "E   Read the note";
+   noteTarget=d.NearbyNotice();if(noteTarget>=0)return "E   Read the note";
    int front=d.NearbyKnockDoor();if(front>=0)return "E   Knock     /     U   No service";
    if(d.NearbyDoor()>=0)return "E / R   Leave the notice";
+   int leaf=d.NearbyLeaf();if(leaf>=0)return d.Life.DoorOpenDegrees(leaf)>25?"E   Close the door":"E   Open the door";
    return "";
   }
   void LateUpdate(){if(!d||!canvas)return;bool intro=d.Phase==ServicePhase.Title&&d.Presentation&&d.Presentation.IntroVisible;string context=Context();bool card=ShiftCard;string state=card+"|"+(d.Horror.Active?d.Horror.Instruction+d.Horror.Headline:"")+"|"+d.Phase+"|"+d.PaperOpen+"|"+d.MapOpen+"|"+options+"|"+confirmNew+"|"+intro+"|"+d.Notice+"|"+d.Horror.Phase+"|"+context+"|"+d.NightIndex+"|"+(d.Vehicle?d.Vehicle.RadioOn+"/"+d.Vehicle.Station:"")+"|"+string.Join(",",d.Docket.Select(e=>(int)e.Result))+"|"+(d.Dialogue?d.Dialogue.StateKey:"")+"|"+d.NoteOpen+"|"+(d.Guide?d.Guide.Objective+d.Guide.Direction:"")+"|"+(d.Player.InCar&&d.NightIndex==0&&d.ShiftCardTime<28);
@@ -37,11 +43,12 @@ namespace ServiceGameV2 {
    if(card&&cardShade){float t=d.ShiftCardTime;cardShade.color=new Color(0,0,0,1-Mathf.SmoothStep(0,1,(t-3.1f)/1.5f));cardWords.alpha=Mathf.SmoothStep(0,1,t/.9f)*(1-Mathf.SmoothStep(0,1,(t-2.5f)/.9f));}
    if(intro&&introShade){introShade.color=new Color(0,0,0,d.Presentation.IntroBackgroundAlpha);introWords.alpha=d.Presentation.IntroTextAlpha;}
    if(contactShade)contactShade.color=new Color(.65f,.62f,.56f,d.Storm.FlashesEnabled?d.Horror.ImpactAlpha:0);
+   if(noteMark)PlaceNoteMark();
    if(carPin){var pos=ServiceRouteMap.Project(d.Scene.Car.position,worldBounds,mapPanel);carPin.anchoredPosition=new Vector2(pos.x,-pos.y);carHeading.localRotation=Quaternion.Euler(0,0,-d.Scene.Car.eulerAngles.y);}
   }
   // V21: night cards are typed by ServiceTimecard.
   bool ShiftCard=>false;
-  void Rebuild(bool intro,string context,bool card){if(root){root.gameObject.SetActive(false);Destroy(root.gameObject);}firstButton=null;carPin=carHeading=null;introShade=contactShade=cardShade=null;cardWords=null;MapPins=MapSegments=0;root=Area("Screen",new Rect(0,0,1280,720),canvas.transform);root.anchorMin=root.anchorMax=root.pivot=new Vector2(.5f,.5f);root.anchoredPosition=Vector2.zero;
+  void Rebuild(bool intro,string context,bool card){if(root){root.gameObject.SetActive(false);Destroy(root.gameObject);}firstButton=null;carPin=carHeading=null;noteMark=null;promptPlate=null;promptLabel=null;NoteTranscript="";introShade=contactShade=cardShade=null;cardWords=null;MapPins=MapSegments=0;root=Area("Screen",new Rect(0,0,1280,720),canvas.transform);root.anchorMin=root.anchorMax=root.pivot=new Vector2(.5f,.5f);root.anchoredPosition=Vector2.zero;
    if(intro){introShade=Block(new Rect(-1000,-1000,3280,2720),Color.black);var words=Area("Headphones",new Rect(0,0,1280,720));introWords=words.gameObject.AddComponent<CanvasGroup>();Label(new Rect(0,290,1280,52),"Headphones recommended",30,null,words).alignment=TextAnchor.MiddleCenter;Label(new Rect(0,348,1280,35),"For directional sound, use headphones.",18,muted,words).alignment=TextAnchor.MiddleCenter;Label(new Rect(0,636,1280,30),"Press any key to continue",15,muted,words).alignment=TextAnchor.MiddleCenter;return;}
    if(d.Phase==ServicePhase.Title){if(!menus)Title();}else if(d.Phase==ServicePhase.Paused){if(!menus)Pause();}else if(d.Phase==ServicePhase.Finished)Epilogue();else if(d.Phase==ServicePhase.Report)Report();else if(d.PaperOpen)Documents();else Playing(context);
    if(card)ShiftTitle();
@@ -110,31 +117,64 @@ namespace ServiceGameV2 {
   }
   void Playing(string context){bool talking=d.Dialogue&&d.Dialogue.Active;
    // Fears to Fathom style: a small centre dot on foot, prompts just under it, named subtitles and numbered replies while talking.
-   if(!d.Player.InCar&&!talking&&!d.Horror.Caught){Block(new Rect(638,358,4,4),new Color(1,1,1,.55f));if(context.Length>0&&d.NoteOpen<0)Ring(640,360,20);}
+   // V22: the dot has a dark rim and the use-ring a dark halo, so both read against a torch-lit door or a white note
+   if(!d.Player.InCar&&!talking&&!d.Horror.Caught){Block(new Rect(637,357,6,6),new Color(0,0,0,.45f));Block(new Rect(638,358,4,4),new Color(1,1,1,.62f));if(context.Length>0&&d.NoteOpen<0){Ring(640,360,27,new Color(0,0,0,.55f));Ring(640,360,23,new Color(1,1,1,.92f));}}
+   if(noteTarget>=0&&d.NoteOpen<0&&!d.Player.InCar&&!talking)NoteMark();
    if(d.NoteOpen>=0&&!d.Player.InCar){HeldNote(d.NoteOpen);return;}
-   if(context.Length>0&&!talking&&(d.Player.InCar||!d.Notice.Contains('\n'))){if(d.Player.InCar)Label(new Rect(160,658,960,35),context,19).alignment=TextAnchor.MiddleCenter;else Label(new Rect(340,376,600,30),context,17,new Color(.93f,.93f,.9f,.92f)).alignment=TextAnchor.MiddleCenter;}
-   if(talking){var dl=d.Dialogue;Label(new Rect(205,552,870,26),dl.Speaker.ToUpperInvariant(),15,accent).alignment=TextAnchor.MiddleCenter;Label(new Rect(185,578,910,64),dl.Line,21).alignment=TextAnchor.MiddleCenter;
+   if(context.Length>0&&!talking&&(d.Player.InCar||!d.Notice.Contains('\n'))){if(d.Player.InCar)Label(new Rect(160,658,960,35),context,19).alignment=TextAnchor.MiddleCenter;else Prompt(context);}
+   if(talking){var dl=d.Dialogue;Label(new Rect(205,552,870,26),dl.Speaker.ToUpperInvariant(),15,accent).alignment=TextAnchor.MiddleCenter;Shade(Label(new Rect(185,578,910,64),dl.Line,21)).alignment=TextAnchor.MiddleCenter;
     if(dl.Choices.Length>0){Block(new Rect(360,412,560,dl.Choices.Length*38+22),new Color(0,0,0,.62f));for(int i=0;i<dl.Choices.Length;i++)Label(new Rect(384,423+i*38,520,34),(i+1)+"    "+dl.Choices[i],18);}
     return;}if(d.Player.InCar){bool hints=d.NightIndex==0&&d.ShiftCardTime<28;if(hints)Label(new Rect(724,25,512,28),"TAB  CLIPBOARD      V  RADIO      B  TUNE",13,muted).alignment=TextAnchor.MiddleRight;if(d.Vehicle&&d.Vehicle.RadioOn)Label(new Rect(724,hints?55:25,512,27),d.Vehicle.StationName,15,accent).alignment=TextAnchor.MiddleRight;}
    // V20 objective (top left, Fears to Fathom style): the next address and where it lies from here.
    if(!d.Horror.Active&&d.Guide&&d.Guide.Objective.Length>0&&d.NoteOpen<0&&!d.Horror.Caught){Label(new Rect(44,28,760,26),d.Guide.Objective,15,new Color(.93f,.93f,.89f,.86f));if(d.Guide.Direction.Length>0)Label(new Rect(44,55,760,24),d.Guide.Direction,13,accent);}
    if(d.Horror.Active){
     if(!string.IsNullOrEmpty(d.Horror.Headline)){Label(new Rect(44,34,500,26),d.Horror.Headline.ToUpperInvariant(),15,accent);Rule(44,62,40,accent);}
-    var line=Label(new Rect(205,568,870,78),string.IsNullOrEmpty(d.Notice)?d.Horror.Instruction:d.Notice,21);line.alignment=TextAnchor.MiddleCenter;line.fontStyle=FontStyle.Italic;
+    var line=Shade(Label(new Rect(205,568,870,78),string.IsNullOrEmpty(d.Notice)?d.Horror.Instruction:d.Notice,21));line.alignment=TextAnchor.MiddleCenter;line.fontStyle=FontStyle.Italic;
    }
    else if(!string.IsNullOrEmpty(d.Notice)&&!d.Horror.Caught){
     bool posted=d.Notice.Contains("\n");
     if(posted){Block(new Rect(298,399,684,230),panel);Rule(322,419,636,accent);Label(new Rect(328,433,624,178),d.Notice,22).alignment=TextAnchor.MiddleLeft;}
-    else Label(new Rect(205,568,870,78),d.Notice,20).alignment=TextAnchor.MiddleCenter;
+    else Shade(Label(new Rect(205,568,870,78),d.Notice,20)).alignment=TextAnchor.MiddleCenter;
    }
    if(d.Horror.Phase==PursuitPhase.Attack){contactShade=Block(new Rect(-1000,-1000,3280,2720),Color.clear);}
    if(d.Horror.Phase==PursuitPhase.Caught){Shade(1);Label(new Rect(58,34,400,40),"◀◀ REWIND",25);Label(new Rect(190,290,900,90),d.Horror.DeathLine,26).alignment=TextAnchor.MiddleCenter;Label(new Rect(190,392,900,30),"RETRYING FROM THE PROPERTY GATE",15,muted).alignment=TextAnchor.MiddleCenter;}
   }
   // Fears to Fathom style: a ring around the dot when something can be used.
   static Texture2D ringTex;
-  void Ring(float cx,float cy,float size){
+  // V22: the prompt on a dark plate the width of its text, with an outline, so the hand torch cannot wash it out
+  void Prompt(string text){
+   var plate=Block(new Rect(340,378,600,28),new Color(0,0,0,.58f));
+   var lbl=Shade(Label(new Rect(340,376,600,30),text,17,new Color(.97f,.97f,.94f,1)));lbl.alignment=TextAnchor.MiddleCenter;
+   float w=Mathf.Min(600,lbl.preferredWidth)+34;plate.rectTransform.anchoredPosition=new Vector2(640-w*.5f,-378);plate.rectTransform.sizeDelta=new Vector2(w,28);
+   promptPlate=plate;promptLabel=lbl;if(noteMark)PlaceNoteMark();
+  }
+  // the prompt sits just under whatever is marked (never over the note or its corner marks)
+  void PromptAt(float y){if(promptPlate)promptPlate.rectTransform.anchoredPosition=new Vector2(promptPlate.rectTransform.anchoredPosition.x,-y);if(promptLabel)promptLabel.rectTransform.anchoredPosition=new Vector2(340,-(y-2f));}
+  static Text Shade(Text t){var o=t.gameObject.AddComponent<Outline>();o.effectColor=new Color(0,0,0,.85f);o.effectDistance=new Vector2(1.5f,-1.5f);return t;}
+  // V22: four corner marks around the note being aimed at (placed every frame in LateUpdate)
+  void NoteMark(){
+   noteMark=Area("Note marker",new Rect(0,0,10,10));noteMark.anchorMin=noteMark.anchorMax=noteMark.pivot=new Vector2(.5f,.5f);
+   foreach(var (ax,ay) in new[]{(0f,0f),(1f,0f),(0f,1f),(1f,1f)}){
+    var corner=Area("Corner",new Rect(0,0,14,14),noteMark);corner.anchorMin=corner.anchorMax=new Vector2(ax,ay);corner.pivot=new Vector2(ax,ay);corner.anchoredPosition=Vector2.zero;
+    float hy=ay<.5f?12:0,vx=ax<.5f?0:12; // the L sits on the corner's two outer edges
+    Block(new Rect(-1,hy-1,16,4),new Color(0,0,0,.6f),corner);Block(new Rect(vx-1,-1,4,16),new Color(0,0,0,.6f),corner);
+    Block(new Rect(0,hy,14,2),new Color(1,1,1,.9f),corner);Block(new Rect(vx,0,2,14),new Color(1,1,1,.9f),corner);}
+   PlaceNoteMark();
+  }
+  readonly Vector3[] corners=new Vector3[8];
+  void PlaceNoteMark(){
+   if(!noteMark)return;var p=noteTarget>=0?d.Property(noteTarget):null;var rs=p&&p.NoticePoint?p.NoticePoint.GetComponentsInChildren<Renderer>():null;
+   if(rs==null||rs.Length==0){noteMark.gameObject.SetActive(false);PromptAt(378);return;}
+   var b=rs[0].bounds;foreach(var r in rs)b.Encapsulate(r.bounds);var cam=d.Scene.View;Vector2 lo=new Vector2(float.MaxValue,float.MaxValue),hi=new Vector2(float.MinValue,float.MinValue);
+   for(int i=0;i<8;i++){var c=new Vector3((i&1)==0?b.min.x:b.max.x,(i&2)==0?b.min.y:b.max.y,(i&4)==0?b.min.z:b.max.z);var sp=cam.WorldToScreenPoint(c);if(sp.z<=.05f){noteMark.gameObject.SetActive(false);PromptAt(378);return;}
+    RectTransformUtility.ScreenPointToLocalPointInRectangle(root,sp,null,out var lp);lo=Vector2.Min(lo,lp);hi=Vector2.Max(hi,lp);}
+   noteMark.gameObject.SetActive(true);var size=hi-lo+new Vector2(18,18);size=Vector2.Max(size,new Vector2(34,34));noteMark.anchoredPosition=(lo+hi)*.5f;noteMark.sizeDelta=size;
+   float bottom=360f-(noteMark.anchoredPosition.y-size.y*.5f);PromptAt(Mathf.Clamp(bottom+6f,378f,650f));
+  }
+  void Ring(float cx,float cy,float size){Ring(cx,cy,size,new Color(1,1,1,.62f));}
+  void Ring(float cx,float cy,float size,Color color){
    if(!ringTex){const int n=64;ringTex=new Texture2D(n,n,TextureFormat.RGBA32,false){filterMode=FilterMode.Bilinear,wrapMode=TextureWrapMode.Clamp};var px=new Color[n*n];for(int y=0;y<n;y++)for(int x=0;x<n;x++){float r=Vector2.Distance(new Vector2(x+.5f,y+.5f),new Vector2(n*.5f,n*.5f));px[y*n+x]=new Color(1,1,1,Mathf.Clamp01(1-Mathf.Abs(r-27f)/2.4f));}ringTex.SetPixels(px);ringTex.Apply();}
-   var t=Area("Use ring",new Rect(cx-size*.5f,cy-size*.5f,size,size));var img=t.gameObject.AddComponent<RawImage>();img.texture=ringTex;img.color=new Color(1,1,1,.62f);img.raycastTarget=false;
+   var t=Area("Use ring",new Rect(cx-size*.5f,cy-size*.5f,size,size));var img=t.gameObject.AddComponent<RawImage>();img.texture=ringTex;img.color=color;img.raycastTarget=false;
   }
   // The handwritten note taped to a door, held up to read: each writer has their own paper, hand and ink.
   static readonly string[] noteFont={"","Fonts/Notes/NothingYouCouldDo","Fonts/Notes/IndieFlower-Regular","Fonts/Notes/ReenieBeanie","Fonts/Notes/Kalam-Regular","Fonts/Notes/ShadowsIntoLight"};
@@ -150,7 +190,14 @@ namespace ServiceGameV2 {
    if(i==5){Block(new Rect(0,40,360,2),new Color(.82f,.43f,.43f),paper.transform);for(int y=74;y<470;y+=34)Block(new Rect(0,y,360,1.5f),new Color(.63f,.75f,.87f),paper.transform);}
    var label=Label(new Rect(i==4?52:26,i==5||i==4?44:30,i==4?290:310,410),Flow(text),30,noteInk[i],paper.transform);
    var hand=Resources.Load<Font>(noteFont[i]);if(hand)label.font=hand;label.alignment=TextAnchor.UpperLeft;label.resizeTextForBestFit=true;label.resizeTextMinSize=16;label.resizeTextMaxSize=i==3?30:34;label.lineSpacing=i==4||i==5?1.12f:1.02f;
-   Label(new Rect(340,586,600,26),"E   Stop reading",15,muted).alignment=TextAnchor.MiddleCenter;
+   // V22: the same note typed out underneath, so a scrawled hand is never the only way to read it
+   var lines=text.Split('\n');string signer=null;var body=new System.Text.StringBuilder();
+   foreach(var raw in lines){var l=raw.Trim();if(l.StartsWith("- ")){signer=l.Substring(2).Trim();continue;}if(l.Length==0)continue;if(body.Length>0)body.Append(' ');body.Append(l);}
+   NoteTranscript=body.ToString();
+   Block(new Rect(150,556,980,112),new Color(0,0,0,.66f));
+   Label(new Rect(180,561,920,22),signer==null?"NOTE ON THE DOOR":"NOTE  ·  "+signer.ToUpperInvariant(),13,accent).alignment=TextAnchor.MiddleCenter;
+   var typed=Shade(Label(new Rect(180,584,920,80),NoteTranscript,17,white,null,true));typed.alignment=TextAnchor.UpperCenter;typed.resizeTextForBestFit=true;typed.resizeTextMinSize=12;typed.resizeTextMaxSize=17;typed.lineSpacing=1.05f;
+   Label(new Rect(340,676,600,24),"E   Stop reading",15,muted).alignment=TextAnchor.MiddleCenter;
   }
   void Report(){Shade(.96f);Label(new Rect(95,69,900,65),"Return of service",42);Label(new Rect(98,148,900,35),d.Date.ToLowerInvariant()+"  /  "+(d.EndedEarly?"Route closed early":"Route filed"),19,muted);Rule(95,211,1090);for(int i=0;i<d.Docket.Count;i++){var e=d.Docket[i];Label(new Rect(98,244+i*56,700,40),e.Address,22);Label(new Rect(858,244+i*56,330,40),Status(e.Result),18,e.Result==ServiceResult.Pending?muted:accent);}Rule(95,550,1090);Label(new Rect(98,572,700,32),"Trip recorded   "+d.TripMiles.ToString("0.0")+" mi",17,muted);Action(new Rect(98,631,600,40),d.NightIndex<2?"Continue to the next shift":"Go home",()=>d.NextShift());}
   public static string Status(ServiceResult result)=>result==ServiceResult.Served?"Served directly":result==ServiceResult.LeftAtDoor?"Notice left":result==ServiceResult.Unable?"Unable to serve":"Pending";

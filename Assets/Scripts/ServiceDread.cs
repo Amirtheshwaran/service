@@ -10,7 +10,7 @@ namespace ServiceGameV2 {
  //  - The stand-still watcher gets a slow dark bed instead (Kevin MacLeod "Penumbra", CC-BY).
  public sealed class ServiceDread:MonoBehaviour {
   ServiceDirector d;AudioSource drone,panic,watch,tape;AudioDistortionFilter grit;AudioClip[] panicClips,shockClips,breathClips;
-  float threat,spike,nextBehind,staticFor;PursuitPhase lastPhase;
+  float threat,spike,nextBehind,staticFor;PursuitPhase lastPhase;bool windedSaid;
   public float Threat=>threat;public float GlitchLevel {get;private set;}public int BehindCues {get;private set;}public int Stings {get;private set;}
   public void Initialize(ServiceDirector director){
    d=director;var cam=d.Scene.View.transform;
@@ -48,8 +48,13 @@ namespace ServiceGameV2 {
    if(drone.isPlaying){drone.pitch=Mathf.Lerp(1f,.86f,threat);grit.distortionLevel=Mathf.Clamp01((threat-.55f)*1.6f)*.55f;}
    Fade(watch,watcher?.32f*d.Audio.MusicVolume:0,watcher?.25f:.4f);
    // your own breathing: fast and ragged while it is after you, settling after
-   if(chase&&panicClips.Length>0&&(!panic.isPlaying||panic.clip==null)){panic.clip=panicClips[Random.Range(0,panicClips.Length)];}
-   Fade(panic,chase&&!d.Player.InCar?Mathf.Lerp(.16f,.34f,Mathf.Clamp01(d.Player.HorizontalSpeed/5f)):h.Active?.08f:0,chase?.6f:.12f);
+   // V22: out of breath (stamina), even with nothing behind you; louder and rougher when winded
+   var pl=d.Player;bool blown=!pl.InCar&&!watcher&&(pl.Winded||pl.Stamina<.6f);float exert=Mathf.Max(Mathf.Clamp01(pl.HorizontalSpeed/5f),1-pl.Stamina);
+   if((chase||blown)&&panicClips.Length>0&&(!panic.isPlaying||panic.clip==null)){panic.clip=panicClips[Random.Range(0,panicClips.Length)];}
+   Fade(panic,chase&&!pl.InCar?Mathf.Lerp(.16f,.40f,exert):h.Active?.08f:blown?Mathf.Lerp(0,.14f,1-pl.Stamina):0,chase?.6f:.25f);
+   if(panic.isPlaying)panic.pitch=pl.Winded?.93f:1f;
+   if(chase&&pl.Winded&&!windedSaid&&string.IsNullOrEmpty(d.Notice)){windedSaid=true;d.Say(ServiceScript.ChaseWinded);}
+   if(!h.Active)windedSaid=false;
    // tape static rides the worst tears
    staticFor-=Time.deltaTime;if(glitch>.45f&&Random.value<Time.deltaTime*glitch*3)staticFor=Random.Range(.08f,.22f);
    Fade(tape,staticFor>0?.14f*glitch:0,6);
@@ -60,6 +65,8 @@ namespace ServiceGameV2 {
     BehindCues++;spike=Mathf.Max(spike,.35f);}
   }
   void Sting(float volume){if(shockClips==null||shockClips.Length==0)return;var clip=shockClips[Random.Range(0,shockClips.Length)];var src=d.Scene.View.GetComponent<AudioSource>();if(!src){src=d.Scene.View.gameObject.AddComponent<AudioSource>();src.spatialBlend=0;src.playOnAwake=false;}src.PlayOneShot(clip,volume);Stings++;}
+  // V22: a short spike of tape damage for a scripted scare outside a pursuit (the Vale glimpse)
+  public void Pulse(float amount){spike=Mathf.Max(spike,amount);}
   public void ResetForShift(){threat=spike=0;ServiceCamcorder.Glitch=0;foreach(var s in new[]{drone,panic,watch,tape})if(s){s.Stop();s.volume=0;}}
  }
 }

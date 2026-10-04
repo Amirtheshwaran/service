@@ -42,7 +42,7 @@ namespace ServiceGameV2 {
     // inside means past the door line too (the interior bounds take in the porch)
     var outward=p.Door.position-p.InteriorBounds.center;outward.y=0;outward=outward.sqrMagnitude<.01f?p.Door.forward:outward.normalized;
     bool inside=p.InteriorBounds.Contains(me+Vector3.up*.3f)&&Vector3.Dot(me-p.Door.position,outward)< -.3f,open=d.AccessGranted(Target)&&!d.IsFriendly(Target);
-    Direction=inside?(open?"LEAVE THE PAPERS ON THE TABLE":""):Vector3.Distance(me,p.Door.position)<3.2f?(open?"LEAVE THE PAPERS INSIDE":d.AccessGranted(Target)?"":"KNOCK AT THE DOOR"):"UP THE DRIVE TO THE HOUSE";return;}
+    Direction=inside?(open?"LEAVE THE PAPERS ON THE TABLE":""):Vector3.Distance(me,p.Door.position)<3.2f?(open?(d.ShutByPlayer(Target)?"OPEN THE DOOR":"LEAVE THE PAPERS INSIDE"):d.AccessGranted(Target)?"":"KNOCK AT THE DOOR"):"UP THE DRIVE TO THE HOUSE";return;}
    // on foot anywhere else, the way on is the car
    if(!inCar){Direction="BACK TO THE CAR";return;}
    Direction=Heading(me,inCar?car.forward:d.Scene.View.transform.forward,p.RoadDistance,p.RoadSide,true);

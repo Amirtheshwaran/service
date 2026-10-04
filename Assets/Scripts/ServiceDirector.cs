@@ -67,6 +67,9 @@ namespace ServiceGameV2
         public bool NoticeRead(int index)=>index>=0&&index<6&&noticeRead[index];
         public string VisitNotes(int index)=>NoticeRead(index)?Property(index).Instructions:"Visit the address. Speak to the occupant or check for a posted notice.";
         readonly bool[] accessGranted = new bool[6];
+        readonly bool[] shutByPlayer = new bool[6]; // V22: doors the player pulled shut (they may open them again)
+        public bool ShutByPlayer(int i)=>i>=0&&i<6&&shutByPlayer[i];
+        public int DoorsShut {get;private set;}
         public bool AccessGranted(int index)=>index>=0&&index<accessGranted.Length&&accessGranted[index];
         readonly float[] linger = new float[6], unseen = new float[6]; bool stallArmed;
         readonly bool[] changed = new bool[6], dogHeard = new bool[6];
@@ -129,6 +132,7 @@ namespace ServiceGameV2
                 if(HUD&&HUD.Back())return;
                 // V21: a paused game resumes first (to the clipboard if it was open), then Esc closes the clipboard.
                 if (Phase == ServicePhase.Paused) Resume();
+                else if (NoteOpen >= 0) { NoteOpen = -1; Audio.Paper(); } // V22: Esc puts a held note down first
                 else if (PaperOpen) { PaperOpen = false; SetCursor(); }
                 else if (Phase == ServicePhase.Playing) Pause();
             }
@@ -160,7 +164,7 @@ namespace ServiceGameV2
                 else if (Player.InCar) Player.TryExitCar();
                 else if(NoteOpen>=0){NoteOpen=-1;Audio.Paper();}
                 else if(NearbyNotice()>=0)ReadNotice(NearbyNotice());
-                else { int front=NearbyKnockDoor();if(front>=0)Attempt(front,ServiceResult.Served);else {int i=NearbyDoor();if(i>=0)Attempt(i,ServiceResult.LeftAtDoor);} }
+                else { int front=NearbyKnockDoor();if(front>=0)Attempt(front,ServiceResult.Served);else {int i=NearbyDoor();if(i>=0)Attempt(i,ServiceResult.LeftAtDoor);else{int leaf=NearbyLeaf();if(leaf>=0)ToggleDoor(leaf);}} }
             }
             if (!Player.InCar)
             {
@@ -172,7 +176,33 @@ namespace ServiceGameV2
         }
 
         // V21: the car is entered from outside, with a clear line to it; a door, note or table being looked at wins.
-        public bool CanEnterCar=>!Player.InCar&&!InsideVilla&&Vector3.Distance(Scene.View.transform.position,Scene.Car.position+Vector3.up)<3.5f&&ServiceInteraction.Clear(Scene.View.transform.position,Scene.Car.position+Vector3.up*.9f,Scene.Car,Scene.Walker.transform)&&NoteOpen<0&&NearbyNotice()<0&&NearbyKnockDoor()<0&&NearbyDoor()<0;
+        public bool CanEnterCar=>!Player.InCar&&!InsideVilla&&Vector3.Distance(Scene.View.transform.position,Scene.Car.position+Vector3.up)<3.5f&&ServiceInteraction.Clear(Scene.View.transform.position,Scene.Car.position+Vector3.up*.9f,Scene.Car,Scene.Walker.transform)&&NoteOpen<0&&NearbyNotice()<0&&NearbyKnockDoor()<0&&NearbyDoor()<0&&NearbyLeaf()<0;
+        // V22: the door of a house you let yourself into, from the step outside: shut it behind you, or open it again.
+        // Only at non-friendly doors (residents close their own), never while busy, reading, in an encounter or a car.
+        public int NearbyLeaf(){
+            if(Player.InCar||Busy||Horror.Active||Horror.Caught||NoteOpen>=0||!Life||(Dialogue&&Dialogue.Active))return -1;
+            var w=Scene.Walker.transform.position;
+            foreach(var e in Docket){var p=Property(e.Property);int i=p.Index;
+                if(!p.DoorPanel||IsFriendly(i)||!AccessGranted(i)||Life.DoorMoving(i))continue;
+                bool open=Life.DoorOpenDegrees(i)>25;if(!open&&!shutByPlayer[i])continue;
+                // closing an open leaf needs you clear of its sweep; a shut leaf (they all swing inward) opens from right against it
+                float step=Vector3.Dot(w-p.OpeningCentre,-p.Inward);if(step<(open?.55f:0f)||step>2.6f)continue;
+                var flat=w-p.OpeningCentre;flat.y=0;if(flat.magnitude>3.2f)continue;
+                var eye=Scene.View.transform.position;var aimAt=p.OpeningCentre+Vector3.up*Mathf.Clamp(eye.y-p.OpeningCentre.y,.9f,1.6f);
+                if(!ServiceInteraction.Reachable(Scene.View,aimAt,3.2f,p.DoorPanel))continue;
+                return i;}
+            return -1;}
+        public bool ToggleDoor(int i){if(NearbyLeaf()!=i)return false;StartCoroutine(SwingDoor(i));return true;}
+        IEnumerator SwingDoor(int i){
+            Busy=true;var p=Property(i);bool close=Life.DoorOpenDegrees(i)>25;
+            var hands=Scene.View.GetComponentInChildren<ServiceHands>();if(hands)hands.Play("Push");
+            if(hands&&hands.Visible)yield return new WaitForSeconds(hands.PushLead);
+            shutByPlayer[i]=close;if(close)DoorsShut++;if(Horror)Horror.DoorChanged(i,!close);
+            if(!close)Audio.DoorAt(p.Door.position);
+            Life.OpenDoor(p,!close,false,close?.9f:.8f);
+            yield return new WaitForSeconds(close?.9f:.8f);
+            if(close)Audio.DoorAt(p.Door.position);
+            Busy=false;}
         public void ToggleTorch(){ if (Scene.Flashlight == null || Player.InCar) return; Scene.Flashlight.enabled = !Scene.Flashlight.enabled; Gesture("Torch"); var click = Resources.Load<AudioClip>("Audio/V19/torch_click"); if (click) AudioSource.PlayClipAtPoint(click, Scene.View.transform.position, .45f); }
         public void ToggleDocument(bool map){if(Horror.Active||Horror.Caught){Say("No time for the map.");return;}if(map){bool close=PaperOpen&&MapOpen;MapOpen=PaperOpen=!close;}else{PaperOpen=!PaperOpen||MapOpen;MapOpen=false;}if(PaperOpen)Player.HoldVehicle();Audio.SyncVehicleAudio();SetCursor();}
         static bool Pressed(Key key) { return Keyboard.current != null && Keyboard.current[key].wasPressedThisFrame; }
@@ -190,7 +220,7 @@ namespace ServiceGameV2
             TripMiles = 0;
             EnvironmentChanges = 0;
             Notice = "";
-            NoteOpen=-1;Array.Clear(noticeRead,0,6); Array.Clear(accessGranted,0,6); Array.Clear(linger, 0, 6); stallArmed = false; Array.Clear(unseen, 0, 6);
+            NoteOpen=-1;Array.Clear(noticeRead,0,6); Array.Clear(accessGranted,0,6); Array.Clear(shutByPlayer,0,6); Array.Clear(linger, 0, 6); stallArmed = false; Array.Clear(unseen, 0, 6);
             Array.Clear(changed, 0, 6); Array.Clear(dogHeard, 0, 6); Array.Clear(arrived, 0, 6); Array.Clear(inside, 0, 6); BellGone = false;
             dogLine = lightsLine = docketLine = barricadeLine = surveyLine = false; depotIntroAt = Time.unscaledTime + (IsSmoke && !IsTour ? 0 : 8.4f);
             if(Dialogue)Dialogue.Cancel();
@@ -265,14 +295,14 @@ namespace ServiceGameV2
                 if (distance < 16 && !arrived[i] && pending) { arrived[i] = true; var line = ServiceScript.Arrival(p.Index, NightIndex); if (line != null && string.IsNullOrEmpty(Notice)) Say(line); }
                 if (!inside[i] && pending && p.InteriorBounds.Contains(Scene.Walker.transform.position + Vector3.up * .3f) && Vector3.Dot(Scene.Walker.transform.position - p.Door.position, Outward(p)) < -0.8f) { inside[i] = true; var t = ServiceScript.For(p.Index); if (t != null && !string.IsNullOrEmpty(t.Inside)) Say(t.Inside); if (p.Index == 2) StartCoroutine(Later(7.5f, ServiceScript.ParcelInside)); }
                 if (NightIndex > 0 && !stallArmed && !IsFriendly(p.Index) && !(p.Index == 4 && NightIndex == 1) && linger[i] > 24) { stallArmed = true; Player.IgnitionDelayPending = true; }
-                if (i == 0 && distance > 11 && Time.time > nextDog)
+                if (i == 0 && distance > 11 && Time.time > nextDog && !(Life && Life.DogBusy))
                 {
                     if(Life)Life.Bark();
-                    if (!dogLine && string.IsNullOrEmpty(Notice)) { dogLine = true; Say(ServiceScript.DogBarks); }
+                    SayDogLine();
                     nextDog = Time.time + (dogHeard[i] ? 11 : 5.4f);
                     dogHeard[i] = true;
                 }
-                if (distance < 11) Audio.StopDog();
+                if (distance < 11 && !(Life && Life.DogBusy)) Audio.StopDog();
                 if (NightIndex == 0)
                 {
                     if (i == 0 && linger[i] > 3 && p.Curtains != null)
@@ -411,6 +441,7 @@ namespace ServiceGameV2
                 float answerWait=0;while(answerWait<2.6f&&residents&&!residents.InDoorway(p.Index)){answerWait+=Time.deltaTime;yield return null;}
                 yield return new WaitForSeconds(.25f);
                 var talk=ServiceScript.Doorstep(entry.Property,NightIndex);
+                if(entry.Property==0&&Life)Life.Hush(); // V22: "Rex, hush."
                 if(talk.HasValue&&Dialogue)yield return Dialogue.Run(talk.Value.speaker,talk.Value.steps);
                 string after=talk.HasValue?talk.Value.after:"";
                 entry.Result = ServiceResult.Served;
@@ -444,9 +475,10 @@ namespace ServiceGameV2
         // V21: the copy appears on the table when the hand lets go of it, not while the hand is still carrying it in.
         void Gesture(string name){var hands=Scene.View.GetComponentInChildren<ServiceHands>();if(hands)hands.Play(name);}
         void ResetResidents(){if(!residents)residents=FindAnyObjectByType<ServiceResidents>();if(residents)residents.ResetAll();}
+        public void SayDogLine(){if(!dogLine&&string.IsNullOrEmpty(Notice)){dogLine=true;Say(ServiceScript.DogBarks);}}
         public void Say(string text) { if (string.IsNullOrEmpty(text)) return; Notice = text; noticeUntil = Time.unscaledTime + Mathf.Clamp(1.6f + text.Length * .055f, 3.2f, 6.5f); }
         public void RetryVilla(){RetryProperty(1);}
-        public void RetryProperty(int index){var entry=Docket.Find(e=>e.Property==index);if(entry!=null)entry.Result=IsFriendly(index)?ServiceResult.Served:ServiceResult.Pending;if(Property(index).PostedPaper)Property(index).PostedPaper.SetActive(false);Busy=false;PaperOpen=MapOpen=false;accessGranted[index]=true;if(Life)Life.OpenDoor(Property(index),true);Player.IgnitionDelayPending=false;}
+        public void RetryProperty(int index){if(index>=0&&index<6)shutByPlayer[index]=false;var entry=Docket.Find(e=>e.Property==index);if(entry!=null)entry.Result=IsFriendly(index)?ServiceResult.Served:ServiceResult.Pending;if(Property(index).PostedPaper)Property(index).PostedPaper.SetActive(false);Busy=false;PaperOpen=MapOpen=false;accessGranted[index]=true;if(Life)Life.OpenDoor(Property(index),true);Player.IgnitionDelayPending=false;}
         public void RequestEarlyFinish() { if (Phase == ServicePhase.Playing) { EndedEarly = true; PaperOpen = false; Say(ServiceScript.RouteClosedEarly); SetCursor(); } }
         IEnumerator Later(float seconds, string line) { yield return new WaitForSeconds(seconds); if (Phase == ServicePhase.Playing && !Horror.Active) Say(line); }
         public bool TryFinishShift()

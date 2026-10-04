@@ -13,6 +13,10 @@ namespace ServiceGameV2
         public bool OnStairs {get;private set;}
         public float HorizontalSpeed {get;private set;}
         float nextCollision;
+        ServiceRoadCorridor roads;readonly bool[] saidPark=new bool[6];
+        public int KerbContacts {get;private set;}
+        public bool OnCorridor=>roads==null||roads.Excess(s.Car.position)<=.5f;
+        public ServiceRoadCorridor Roads=>roads;
         public string LastVehicleObstruction {get;private set;}
         public float Speed => Mathf.Abs(speed);
         public float Sensitivity = .095f;
@@ -34,9 +38,28 @@ namespace ServiceGameV2
         public float LookBackAngle=>lookBack;
         float lookBack;
         public static float ResolveLookBack(bool running,bool car,bool blocked,bool left,bool right)=>!running||car||blocked||left==right?0:left?-155:155;
-        float LookBackTarget=>ResolveLookBack(Sprinting,InCar,d.InputBlocked,d.IsSmoke?SmokeLookBack<0:Keyboard.current!=null&&Keyboard.current[Key.Q].isPressed,d.IsSmoke?SmokeLookBack>0:Keyboard.current!=null&&Keyboard.current[Key.E].isPressed);
+        float LookBackTarget=>ResolveLookBack(Running,InCar,d.InputBlocked,d.IsSmoke?SmokeLookBack<0:Keyboard.current!=null&&Keyboard.current[Key.Q].isPressed,d.IsSmoke?SmokeLookBack>0:Keyboard.current!=null&&Keyboard.current[Key.E].isPressed);
         public bool InteractionSuppressed=>LookBackTarget!=0||Mathf.Abs(lookBack)>1;
-        public bool Sprinting => !InCar && !Crouched && (d.IsSmoke ? SmokeSprint : Keyboard.current != null && Keyboard.current[Key.LeftShift].isPressed);
+        // V22: stamina - see Sources/V22/patch_stamina.py. Running = Shift with forward input; Sprinting = running with breath.
+        public const float SprintSpeed=5.5f,WindedSpeed=4.6f,WalkSpeed=3.25f,CrouchSpeed=1.55f;
+        public float Stamina {get;private set;}=1;
+        public bool Winded {get;private set;}
+        public int WindedCount {get;private set;}
+        public bool SmokeEndlessStamina;
+        float lastInputY,exertedAt;
+        bool ShiftHeld=>d.IsSmoke?SmokeSprint:Keyboard.current!=null&&Keyboard.current[Key.LeftShift].isPressed;
+        public bool Running=>!InCar&&!Crouched&&ShiftHeld&&lastInputY>.3f;
+        public bool Sprinting=>Running&&!Winded;
+        public void GiveAdrenaline(float floor){Stamina=Mathf.Max(Stamina,floor);if(Stamina>=.3f)Winded=false;}
+        public void SmokeSetStamina(float v){if(d.IsSmoke){Stamina=Mathf.Clamp01(v);Winded=Stamina<=0;}}
+        void RefillStamina(){Stamina=1;Winded=false;exertedAt=-99;}
+        void TickStamina(float dt){
+            if(SmokeEndlessStamina){Stamina=1;Winded=false;return;}
+            bool exerting=!InCar&&!d.InputBlocked&&Sprinting&&HorizontalSpeed>1f;
+            if(exerting){Stamina-=dt*(d.Horror!=null&&d.Horror.Active?.1f:1f/6f);exertedAt=Time.time;if(Stamina<=0){Stamina=0;if(!Winded){Winded=true;WindedCount++;}}}
+            else if(Time.time-exertedAt>.5f){float rate=InCar||d.InputBlocked?.5f:HorizontalSpeed<.2f?.35f:Running?.12f:.2f;Stamina=Mathf.Min(1,Stamina+rate*dt);}
+            if(Winded&&Stamina>=.3f)Winded=false;
+        }
         ServiceDirector d;
         CountyScene s;
         float yaw, pitch, speed, gravity, footstep, startAt;
@@ -45,7 +68,7 @@ namespace ServiceGameV2
 
         public void Initialize(ServiceDirector director)
         {
-            d = director; s = d.Scene;
+            d = director; s = d.Scene; roads=new ServiceRoadCorridor(s);
             if(!d.IsSmoke)Sensitivity=Mathf.Clamp(PlayerPrefs.GetFloat("SERVICE.sensitivity",.095f),.03f,.2f);
             wheelRest=s.SteeringWheel.localRotation;
             fullMask = s.View.cullingMask | (1 << 8);
@@ -61,6 +84,7 @@ namespace ServiceGameV2
         {
             if (s == null || d.Phase != ServicePhase.Playing) return;
             if (IsStarting && !d.PaperOpen && Time.time >= startAt) { IsStarting = false; EngineRunning = true; d.Audio.Engine(true); }
+            TickStamina(Time.deltaTime);
             if (d.InputBlocked) { HoldVehicle(); return; }
             Vector2 look = Mouse.current == null || d.IsSmoke ? Vector2.zero : Mouse.current.delta.ReadValue();
             float backTarget=LookBackTarget;
@@ -113,8 +137,28 @@ namespace ServiceGameV2
             Vector3 before=s.Car.position;
             float impactSpeed=Speed;
             Vector3 travel=s.Car.forward*speed*Time.deltaTime;
+            // V22: the road, the drive pull-offs and the depot yard only (ServiceRoadCorridor) - a soft kerb, never a trap:
+            // the leading end may not move further out of the corridor; it slides along the edge and bleeds speed instead.
+            if(roads!=null&&travel.sqrMagnitude>1e-8f&&roads.Excess(before)<8){
+                var lead=before+s.Car.forward*(speed>=0?1.5f:-1.5f);float e0=roads.Excess(lead);float e1=roads.Excess(lead+travel,out var outward);
+                if(e1>0&&e1>e0-1e-4f){
+                    bool driveEnd=roads.LastAtDriveEnd;int prop=roads.LastProperty;
+                    var slide=travel-outward*Mathf.Max(0,Vector3.Dot(travel,outward));
+                    if(slide.sqrMagnitude>1e-10f&&roads.Excess(lead+slide)>Mathf.Max(0,e0)+1e-3f)slide=Vector3.zero;
+                    float kept=slide.magnitude/travel.magnitude;travel=slide;
+                    // nose (or tail) square to the kerb but steering away from it: creep, so the wheels can swing it round
+                    // (a dead stop left no speed to turn with - a three-point turn on the lane sat still for 12 s, V22 tour)
+                    var right=s.Car.right;right.y=0;bool away=kept<.3f&&Mathf.Abs(steer)>.2f&&Mathf.Abs(throttle)>.1f&&steer*Vector3.Dot(right.normalized,outward)<.05f;
+                    if(away)speed=Mathf.MoveTowards(speed,Mathf.Sign(throttle)*1.3f,30f*Time.deltaTime);
+                    else speed=Mathf.MoveTowards(speed,0,(kept<.3f?30f:(1-kept)*18f+1.5f)*Time.deltaTime);
+                    if(Mathf.Abs(speed)>5f)speed=Mathf.MoveTowards(speed,Mathf.Sign(speed)*5f,10*Time.deltaTime);
+                    if(kept>.3f){var along=slide.normalized*(speed>=0?1:-1);along.y=0;if(along.sqrMagnitude>.01f){float yaw=Quaternion.LookRotation(along).eulerAngles.y;s.Car.rotation=Quaternion.RotateTowards(s.Car.rotation,Quaternion.Euler(0,yaw,0),(1-kept)*30*Time.deltaTime);}}
+                    LastVehicleObstruction="Kerb";KerbContacts++;
+                    if(driveEnd&&prop>=0&&prop<6&&!saidPark[prop]&&string.IsNullOrEmpty(d.Notice)){saidPark[prop]=true;d.Say(ServiceScript.ParkAndWalk);}
+                }
+            }
             bool estate=d.Scene.Properties.BlocksVehicle(before,before+travel,1.35f);
-            bool solid=Physics.BoxCast(before+Vector3.up*.85f,new Vector3(.78f,.42f,1.85f),speed<0?-s.Car.forward:s.Car.forward,out var hit,s.Car.rotation,travel.magnitude+.06f,~((1<<8)|(1<<9)|(1<<10)),QueryTriggerInteraction.Ignore);
+            bool solid=Physics.BoxCast(before+Vector3.up*.85f,new Vector3(.78f,.42f,1.85f),travel.sqrMagnitude>1e-10f?travel.normalized:(speed<0?-s.Car.forward:s.Car.forward),out var hit,s.Car.rotation,travel.magnitude+.06f,~((1<<8)|(1<<9)|(1<<10)),QueryTriggerInteraction.Ignore);
             var collision=s.CarBody.Move((estate||solid?Vector3.zero:travel)+Vector3.up*gravity*Time.deltaTime);
             bool side=(collision&CollisionFlags.Sides)!=0;
             if(side&&!estate&&!solid&&travel.sqrMagnitude>1e-6f){
@@ -142,26 +186,26 @@ namespace ServiceGameV2
 
         void Walk(Vector2 input, bool free = true)
         {
-            input = Vector2.ClampMagnitude(input, 1);
+            input = Vector2.ClampMagnitude(input, 1);lastInputY=input.y;
             bool crouch=d.IsSmoke?SmokeCrouch:Keyboard.current!=null&&Keyboard.current[Key.LeftCtrl].isPressed;if(!free)crouch=Crouched;
             if(crouch)Crouched=true;
             else if(Crouched&&CanStand())Crouched=false;
             s.Walker.height=Crouched?1.12f:1.8f;s.Walker.center=new Vector3(0,s.Walker.height*.5f,0);
             OnStairs=ServiceStairZone.Contains(s.Walker.transform.position);
             if(OnStairs)jumpUntil=groundedUntil=0;
-            Vector3 move = (s.Walker.transform.right * input.x + s.Walker.transform.forward * input.y) * (Crouched?1.55f:Sprinting ? 5.5f : 3.25f);
+            Vector3 move = (s.Walker.transform.right * input.x + s.Walker.transform.forward * input.y) * (Crouched?CrouchSpeed:Sprinting?SprintSpeed:Running?WindedSpeed:WalkSpeed);
             if(s.Walker.isGrounded){groundedUntil=Time.time+.1f;if(gravity<0){if(lastVertical< -4)landing=Mathf.Min(.1f,-lastVertical*.008f);gravity=-2;}}
-            if(free&&(d.IsSmoke?SmokeJump:Pressed(Key.Space))){if(!OnStairs)jumpUntil=Time.time+.12f;SmokeJump=false;}
-            if(jumpUntil>Time.time&&groundedUntil>Time.time&&!Crouched&&!OnStairs){gravity=5.8f;jumpUntil=groundedUntil=0;}
+            if(free&&(d.IsSmoke?SmokeJump:Pressed(Key.Space))){if(!OnStairs&&Stamina>=.1f)jumpUntil=Time.time+.12f;SmokeJump=false;}
+            if(jumpUntil>Time.time&&groundedUntil>Time.time&&!Crouched&&!OnStairs){gravity=5.8f;jumpUntil=groundedUntil=0;if(!SmokeEndlessStamina)Stamina=Mathf.Max(0,Stamina-.08f);}
             else gravity=Mathf.Max(-25,gravity-20*Time.deltaTime);
             Vector3 prior=s.Walker.transform.position;lastVertical=gravity;var flags=s.Walker.Move((move+Vector3.up*gravity)*Time.deltaTime);if((flags&CollisionFlags.Above)!=0&&gravity>0)gravity=0;
             var delta=s.Walker.transform.position-prior;delta.y=0;HorizontalSpeed=delta.magnitude/Mathf.Max(Time.deltaTime,.001f);
-            motionBlend=Mathf.MoveTowards(motionBlend,input.magnitude*(s.Walker.isGrounded?1:0),Time.deltaTime*6);gait+=Time.deltaTime*(Sprinting?12:Crouched?6:8);
+            motionBlend=Mathf.MoveTowards(motionBlend,input.magnitude*(s.Walker.isGrounded?1:0),Time.deltaTime*6);gait+=Time.deltaTime*(Sprinting?12:Running?10:Crouched?6:8);
             footstep -= Time.deltaTime;
             if (input.sqrMagnitude > .1f && s.Walker.isGrounded && footstep <= 0)
             {
                 d.Audio.Footstep(s.Walker.transform.position);
-                footstep = Crouched?.8f:Sprinting ? .32f : .53f;
+                footstep = Crouched?.8f:Sprinting ? .32f : Running ? .4f : .53f;
             }
         }
         bool CanStand(){foreach(var hit in Physics.OverlapCapsule(s.Walker.transform.position+Vector3.up*.35f,s.Walker.transform.position+Vector3.up*1.52f,.27f,~((1<<8)|(1<<9)),QueryTriggerInteraction.Ignore))if(hit!=s.Walker&&!hit.transform.IsChildOf(s.Walker.transform))return false;return true;}
@@ -169,7 +213,7 @@ namespace ServiceGameV2
             if(!s)return;bool active=d.Phase==ServicePhase.Playing&&!d.PaperOpen;
             if(blur)blur.intensity.value=active?MotionBlurAmount:0;
             if(!active)return;
-            s.View.fieldOfView=Mathf.Lerp(s.View.fieldOfView,!InCar&&Sprinting?74:68,1-Mathf.Exp(-Time.deltaTime*6));
+            s.View.fieldOfView=Mathf.Lerp(s.View.fieldOfView,!InCar&&Sprinting?74:!InCar&&Running?70:68,1-Mathf.Exp(-Time.deltaTime*6));
             if(InCar){
                 float motion=CameraMotion*Mathf.Clamp01(Speed/6);
                 var offset=new Vector3(-steer*motion*.018f,Mathf.Sin(Time.time*17)*motion*.0015f,-acceleration*CameraMotion*.0015f);
@@ -177,10 +221,10 @@ namespace ServiceGameV2
                 s.View.transform.localRotation=Quaternion.Euler(Mathf.Clamp(pitch,-35,48)+11+acceleration*CameraMotion*.09f,yaw,steer*motion*.65f);return;
             }
             if(d.Horror.Caught||d.Horror.ForcedLook)return;
-            float amount=motionBlend*CameraMotion, bob=Mathf.Sin(gait*2)*(Sprinting?.025f:.014f)*amount;
+            float amount=motionBlend*CameraMotion, bob=Mathf.Sin(gait*2)*(Sprinting?.025f:Running?.03f:.014f)*amount;
             var target=new Vector3(Mathf.Sin(gait)*.018f*amount,(Crouched?1.02f:1.65f)+bob-landing*CameraMotion,0);
             s.View.transform.localPosition=Vector3.Lerp(s.View.transform.localPosition,target,1-Mathf.Exp(-Time.deltaTime*14));
-            s.View.transform.localRotation=Quaternion.Euler(pitch+Mathf.Sin(gait)*amount*.45f,lookBack,Mathf.Cos(gait)*amount*(Sprinting?1.15f:.45f));landing=Mathf.MoveTowards(landing,0,Time.deltaTime*.45f);
+            s.View.transform.localRotation=Quaternion.Euler(pitch+Mathf.Sin(gait)*amount*.45f,lookBack,Mathf.Cos(gait)*amount*(Sprinting?1.15f:Running?1.35f:.45f));landing=Mathf.MoveTowards(landing,0,Time.deltaTime*.45f);
         }
 
         public void StartEngine()
@@ -234,7 +278,7 @@ namespace ServiceGameV2
         void PlaceWalker(Vector3 point, float angle)
         {
             Crouched=false;motionBlend=landing=0;SmokeCrouch=SmokeJump=false;s.Walker.height=1.8f;s.Walker.center=Vector3.up*.9f;
-            lookBack=0;SmokeLookBack=0;
+            lookBack=0;SmokeLookBack=0;RefillStamina();
             // Stepping out of the car restores the torch the player last had on foot (on by default).
             if(InCar&&s.Flashlight)s.Flashlight.enabled=torch;
             walked=true;
@@ -254,7 +298,7 @@ namespace ServiceGameV2
         }
         public void ResetForShift(Vector3 point, Quaternion rotation)
         {
-            StopEngine(); IgnitionDelayPending = false; SmokeThrottle = 0;
+            StopEngine(); IgnitionDelayPending = false; SmokeThrottle = 0; System.Array.Clear(saidPark,0,saidPark.Length); RefillStamina();
             TeleportCar(point, rotation);
             EnterCar();
         }

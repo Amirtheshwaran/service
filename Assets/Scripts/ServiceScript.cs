@@ -51,12 +51,15 @@ namespace ServiceGameV2 {
   public const string Epilogue="Civil process routes in Hollis County were suspended that November, after a process server failed to return from an evening shift.\n\nThe county car was found parked at the depot the next morning, engine running, headlights on. The return of service had been filed and signed.\n\nOne address on that docket, 1 County Route 9, does not appear on any county survey. The road it sits on was closed in 1971.\n\nThe route was never reassigned.";
   public const string DogBarks="Easy. I'm not here for you.";
   public const string LightsChanged="That light. It wasn't like that a minute ago. Timer, probably.";
-  public const string OmenUpstairs="Footsteps. Upstairs. The note said not to come up. I'm not coming up.";
+  public const string OmenUpstairs="Footsteps. Overhead. \"No need to come find me,\" the note said. Fine by me.";
   public const string OmenUpstairsNight2="That was a door. Up there. Hard. Leave it on the desk and go.";
   public const string OmenRadio="...The radio's off. It was on when I came in. Wasn't it?";
   public const string OmenTreeline="There was somebody standing at the treeline. There was. Wasn't there?";
   public const string OmenFog="Fog's coming in off the low ground. Of course it is.";
   public const string NotWhileDriving="Not while I'm driving.";
+  public const string ParkAndWalk="The car won't fit up there. I'll walk the rest.";
+  public const string OmenValeHall="Somebody was standing at the end of that hall. Just standing there. Looking at me.";
+  public const string ChaseWinded="Can't breathe. Keep going. Keep going.";
   public static readonly string[] DepotIntro=new[]{"Five stops. Home by one if the rain lets up. It won't.","Same five addresses. On a Sunday. I almost called in sick.","Two stops tonight. Vale again, and a road I've never driven."};
  }
 }

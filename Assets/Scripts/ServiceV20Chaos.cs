@@ -40,12 +40,18 @@ namespace ServiceGameV2 {
   IEnumerator Look(float seconds,Vector2 perFrame){float t=Time.realtimeSinceStartup+seconds;while(Time.realtimeSinceStartup<t){mouseDelta=perFrame;Push();yield return null;}}
   IEnumerator Real(float s){float t=Time.realtimeSinceStartup+s;while(Time.realtimeSinceStartup<t){Push();yield return null;}}
   // ---------- invariants, every frame
+  float offroadFor,dogCloseFor,valeFor;
   void Update(){
    if(d==null)return;frames++;float dt=Time.realtimeSinceStartup-lastFrame;lastFrame=Time.realtimeSinceStartup;if(frames>30&&dt>.75f)Fault("hitch",$"{dt:F2} s frame");
    var w=d.Scene.Walker?d.Scene.Walker.transform.position:Vector3.zero;var car=d.Scene.Car;
    if(float.IsNaN(w.x)||float.IsNaN(w.y))Fault("nan","walker position NaN");
    if(car&&(float.IsNaN(car.position.x)||float.IsNaN(car.position.y)))Fault("nan","car position NaN");
    var t=Terrain.activeTerrain;
+   // V22: a driven car stays on the road, a drive pull-off or the depot yard (a little scrape over the edge is fine)
+   if(car&&d.Phase==ServicePhase.Playing&&d.Player.InCar&&d.Player.Roads!=null&&d.Player.Roads.Excess(car.position)>1.5f){offroadFor+=dt;if(offroadFor>1f){Fault("offroad","car off the road at "+car.position+" (excess "+d.Player.Roads.Excess(car.position).ToString("F1")+" m)");offroadFor=-30;}}else if(offroadFor>0)offroadFor=0;
+   // V22: Rex keeps his distance and stays out of the house; the Vale glimpse never outlives its few seconds
+   if(d.Life&&d.Life.DogBusy&&d.Phase==ServicePhase.Playing&&!d.Player.InCar){var dp=d.Life.DogPosition;if(Vector2.Distance(new Vector2(dp.x,dp.z),new Vector2(w.x,w.z))<1.2f){dogCloseFor+=dt;if(dogCloseFor>.6f){Fault("dog","Rex on top of the player at "+dp);dogCloseFor=-30;}}else if(dogCloseFor>0)dogCloseFor=0;if(ServiceLife.Indoors(d.Property(0),dp))Fault("dog","Rex inside Correll's house at "+dp);}
+   if(d.Omens&&d.Omens.ValeStage>0){valeFor+=dt;if(valeFor>9f){Fault("glimpse","the Vale glimpse has held the creature for 9 s");valeFor=-60;}}else valeFor=0;
    if(t&&d.Phase==ServicePhase.Playing){
     if(!d.Player.InCar){float g=t.SampleHeight(w)+t.transform.position.y;if(w.y<g-1.2f)Fault("fell","walker under the ground at "+w);var tb=t.terrainData.size;var to=t.transform.position;if(w.x<to.x-5||w.z<to.z-5||w.x>to.x+tb.x+5||w.z>to.z+tb.z+5)Fault("bounds","walker left the world at "+w);}
     if(car){float gc=t.SampleHeight(car.position)+t.transform.position.y;if(car.position.y<gc-1.5f)Fault("fell","car under the ground at "+car.position);if(Vector3.Dot(car.up,Vector3.up)<.35f)Fault("flipped","car on its side/roof at "+car.position);if(d.Player.Speed>40)Fault("speed","car at "+d.Player.Speed+" m/s");}
@@ -94,7 +100,8 @@ namespace ServiceGameV2 {
   IEnumerator CarAbuse(){
    d.BeginShift(0);yield return Real(6f);d.PaperOpen=false;d.SetCursor();
    yield return Tap(Key.Space);yield return Real(1.5f);
-   var carStart=d.Scene.Car.position;yield return Hold(9f,Key.W,Key.D);yield return Hold(4f,Key.W,Key.A);Note("after full throttle into the woods: car "+d.Scene.Car.position);if(Vector3.Distance(carStart,d.Scene.Car.position)<5)Fault("input","13 s of injected throttle moved the car less than 5 m - the test is not driving the game");
+   // V22: the car keeps to the road and yard now, so measure distance driven (odometer), not how far it got from the start
+   var carStart=d.Scene.Car.position;float miles0=d.TripMiles;yield return Hold(9f,Key.W,Key.D);yield return Hold(4f,Key.W,Key.A);float driven=(d.TripMiles-miles0)*1609.344f;Note($"after full throttle at the woods: car {d.Scene.Car.position}, driven {driven:F0} m, on the road/yard {d.Player.OnCorridor}, kerb contacts {d.Player.KerbContacts}");if(driven<5)Fault("input","13 s of injected throttle drove the car less than 5 m - the test is not driving the game");
    yield return Hold(3f,Key.S);yield return Hold(5f,Key.W);
    for(int i=0;i<10;i++){yield return Tap(Key.E);yield return Real(.12f);}Note("enter/exit spam: in car "+d.Player.InCar);
    for(int i=0;i<20;i++){yield return Tap(Key.F);yield return Tap(Key.V);yield return Tap(Key.B);}
