@@ -140,6 +140,8 @@ namespace ServiceGameV2 {
     var dn=d.Life.DogPosition;d.Player.SmokePlaceWalker(dn+FlatV(dn-p.Door.position).normalized*1.5f); // the yard side of him (he never climbs the steps to you)
     yield return new WaitForSeconds(.4f);yield return Face(d.Life.PetPoint);yield return null;
     var hearth=p.GetComponentInChildren<ServiceHearth>();Require(hearth&&hearth.Lit&&hearth.Glow&&hearth.Glow.enabled,"A fire burning in Correll's hearth on night one");
+    {float tf=Time.time+1.5f;while(hearth.LiveFlames<6&&Time.time<tf)yield return null;}
+    Require(hearth.FireBox&&hearth.FireBox.activeInHierarchy&&hearth.LiveFlames>5,"...flames you can see in its firebox ("+hearth.LiveFlames+" flame sprites)");
     Require(d.CanPetDog,"\"Pet Rex\" offered once Walter has hushed him ("+d.Life.Mode+")");int pets=d.Life.Pets;Require(d.TryPetDog(),"Pet him");t=Time.time+4;float petNear=99;while(d.Busy&&Time.time<t){petNear=Mathf.Min(petNear,FlatV(d.Life.DogPosition-d.Scene.Walker.transform.position).magnitude);yield return null;}
     Require(petNear<1f,"Rex comes in under your hand to be petted ("+petNear.ToString("F2")+" m, "+d.Life.PetStop+")");
     Require(d.Life.Pets==pets+1&&(d.Notice==ServiceScript.PetRex[0]||d.Notice==ServiceScript.PetRexAgain),"...he stands for it ('"+d.Notice+"')");yield return Shot("v23-pet-rex");}
@@ -154,7 +156,11 @@ namespace ServiceGameV2 {
     Require(d.Omens.DoorBeats==1,"A few steps on, Harrow's door creaks");t=Time.time+10;while(d.Omens.DoorBeatRunning&&Time.time<t)yield return null;
     int after=p.GetComponentsInChildren<Light>().Count(l=>l.enabled);Require(d.Life.DoorOpenDegrees(3)>40&&!d.ShutByPlayer(3),"...and swings open by itself ("+d.Life.DoorOpenDegrees(3).ToString("F0")+" deg)");
     Require(lit>0&&after==0,$"...and the lights go out ({lit} lit before, {after} after)");yield return Shot("v23-door-beat");
-    d.BeginShift(0);yield return null;yield return null;Require(p.GetComponentsInChildren<Light>().Count(l=>l.enabled)>0,"The lights are back for the next shift");}
+    var hz=p.GetComponentInChildren<ServiceHearth>();
+    if(hz){float tf=Time.time+2.5f;while(hz.LiveFlames>0&&Time.time<tf)yield return null;Require(!hz.Lit&&hz.LiveFlames==0&&hz.FireBox&&hz.FireBox.activeInHierarchy,"...and Harrow's fire dies down to embers ("+hz.LiveFlames+" flames left)");}
+    d.BeginShift(0);yield return null;yield return null;Require(p.GetComponentsInChildren<Light>().Count(l=>l.enabled)>0,"The lights are back for the next shift");
+    if(hz){float tf=Time.time+1.5f;while(hz.LiveFlames<6&&Time.time<tf)yield return null;Require(hz.Lit&&hz.LiveFlames>5,"...and the fire is going again ("+hz.LiveFlames+" flames)");
+     d.BeginShift(1);yield return null;yield return null;Require(!hz.Tonight&&hz.FireBox&&!hz.FireBox.activeInHierarchy,"Night two nobody keeps Harrow's fire: the iron cover is back over the hearth");d.BeginShift(0);yield return null;}}
    // -- books: leave the papers in Vale's study and a volume comes off the shelf
    {ServiceBooks.Force=true;d.BeginShift(0);d.PaperOpen=false;var p=d.Property(1);var o=Outward(p);d.Player.SmokePlaceWalker(p.Door.position+o*1.6f);yield return new WaitForSeconds(.4f);yield return Face(p.KnockPoint.position);d.Attempt(1,ServiceResult.Served);float t=Time.time+15;while(d.Busy&&Time.time<t)yield return null;
     d.Player.SmokePlaceWalker(p.TableApproach.position);yield return new WaitForSeconds(.3f);yield return Face(p.DeliveryPoint.position);int falls=d.Books.Falls;d.Attempt(1,ServiceResult.LeftAtDoor);t=Time.time+9;while(d.Books.Falls==falls&&Time.time<t)yield return null;
@@ -227,15 +233,27 @@ namespace ServiceGameV2 {
     // ...and from there, full lock swings the nose round along the edge (the start of a three-point turn)
     float yaw0=d.Scene.Car.eulerAngles.y;hits=d.Audio.CollisionsPlayed;until=Time.time+5;while(Time.time<until){d.Player.SmokeThrottle=1;d.Player.SmokeSteering=1;yield return null;}d.Player.SmokeThrottle=0;d.Player.SmokeSteering=0;
     float turned=Mathf.Abs(Mathf.DeltaAngle(yaw0,d.Scene.Car.eulerAngles.y));Require(turned>40&&d.Player.OnCorridor&&d.Audio.CollisionsPlayed==hits,"Nose to the kerb, full lock turns the car round along it ("+turned.ToString("F0")+" degrees in 5 s)");
-    // V23: the whole drive is driveable, to the parking pad by the house; the car stops short of the footpath to the steps
+    // V24: an invisible wall a car length into the drive - the car pulls off the road and stops there; the rest is on foot
     var p=d.Property(3);d.Player.TeleportCar(p.Gate.position+Vector3.up*.3f,Quaternion.LookRotation(FlatV(p.Gate.forward)));d.Player.StartEngine();yield return new WaitForSeconds(1.2f);bool said=false;
-    var R=p.ApproachRoute;var footEnd=R[R.Length-1];until=Time.time+16;float stuck=0;Vector3 lastCar=d.Scene.Car.position;
+    var R=p.ApproachRoute;var footEnd=R[R.Length-1];until=Time.time+16;float stuck=0;Vector3 lastCar=d.Scene.Car.position;int kerbAtGate=d.Player.KerbContacts;
     while(Time.time<until){var c=d.Scene.Car.position;int ni=0;float nd=1e9f;for(int i=0;i<R.Length;i++){float dd=Vector3.Distance(FlatV(R[i]),FlatV(c));if(dd<nd){nd=dd;ni=i;}}
      var tgt=R[Mathf.Min(R.Length-1,ni+3)];var fw=FlatV(d.Scene.Car.forward);var to=FlatV(tgt-c);d.Player.SmokeSteering=Mathf.Clamp(Vector3.SignedAngle(fw,to,Vector3.up)/28f,-1,1);d.Player.SmokeThrottle=d.Player.Speed<5?.8f:.1f;
      if(d.Notice==ServiceScript.ParkAndWalk)said=true;stuck=Vector3.Distance(c,lastCar)<.02f?stuck+Time.deltaTime:0;lastCar=c;if(stuck>1.2f)break;yield return null;}
     d.Player.SmokeThrottle=0;d.Player.SmokeSteering=0;d.Player.SmokeBrake=true;yield return new WaitForSeconds(.8f);d.Player.SmokeBrake=false;
     float upDrive=Vector3.Distance(FlatV(d.Scene.Car.position),FlatV(p.Gate.position));float toFoot=Vector3.Distance(FlatV(d.Scene.Car.position),FlatV(footEnd));
-    Require(upDrive>20f&&toFoot>3f&&d.Player.OnCorridor&&(said||d.Player.LastVehicleObstruction=="Kerb"),"The car drives all the way up Harrow's drive to the pad and stops short of the footpath ("+upDrive.ToString("F0")+" m up, "+toFoot.ToString("F1")+" m from the steps)");yield return Shot("v23-car-drive-end");
+    Require(upDrive>2.5f&&upDrive<7f&&toFoot>25f&&d.Player.OnCorridor&&d.Player.KerbContacts>kerbAtGate,"Harrow's drive: full throttle up it, the car stops at the wall by the road ("+upDrive.ToString("F1")+" m past the gate, "+toFoot.ToString("F0")+" m left to walk to the steps, said '"+said+"')");yield return Shot("v24-car-drive-wall");
+    {string reaches="";bool allShort=true;for(int i=0;i<6;i++){float rch=d.Player.Roads.ReachOf(i),wl=d.Player.Roads.WalkLeftOf(i);reaches+=$" p{i} {rch:F1} up/{wl:F0} to walk";if(rch>ServiceRoadCorridor.PullOff+.01f||rch<=0||wl<ServiceRoadCorridor.MinWalk-.05f)allShort=false;}
+     Require(allShort,"Every drive's wall is a pull-off by the road, never the house (m up each drive / least walk from the bonnet:"+reaches+")");}
+    // Route 9's drive is only 8 m: drive straight at the cabin and the bonnet stops well short of its steps
+    {d.BeginShift(2);d.PaperOpen=false;yield return null;yield return null;var q=d.Property(2);var RQ=q.ApproachRoute;var steps=RQ[RQ.Length-1];
+     d.Player.TeleportCar(q.Gate.position+Vector3.up*.3f,Quaternion.LookRotation(FlatV(steps-q.Gate.position)));d.Player.StartEngine();yield return new WaitForSeconds(1.2f);
+     int k0=d.Player.KerbContacts;float u2=Time.time+9,st=0;var lc=d.Scene.Car.position;
+     while(Time.time<u2){var c=d.Scene.Car.position;var to=FlatV(steps-c);d.Player.SmokeSteering=Mathf.Clamp(Vector3.SignedAngle(FlatV(d.Scene.Car.forward),to,Vector3.up)/28f,-1,1);d.Player.SmokeThrottle=d.Player.Speed<4?.8f:.1f;
+      st=Vector3.Distance(c,lc)<.02f?st+Time.deltaTime:0;lc=c;if(st>1.2f)break;yield return null;}
+     d.Player.SmokeThrottle=0;d.Player.SmokeSteering=0;d.Player.SmokeBrake=true;yield return new WaitForSeconds(.6f);d.Player.SmokeBrake=false;
+     float nose=FlatV(steps-(d.Scene.Car.position+d.Scene.Car.forward*1.85f)).magnitude;
+     Require(d.Player.KerbContacts>k0&&nose>=5f,$"Route 9: driving straight at the cabin, the bonnet stops {nose:F1} m short of its steps (wall {d.Player.Roads.ReachOf(2):F1} m up the drive)");yield return Shot("v24-route9-wall");
+     d.BeginShift(0);d.PaperOpen=false;yield return null;}
     d.Player.TeleportCar(p.Gate.position+Vector3.up*.3f,Quaternion.LookRotation(FlatV(p.Gate.forward)));d.Player.StartEngine();yield return new WaitForSeconds(1.2f);float peak=0;
     until=Time.time+3;while(Time.time<until){d.Player.SmokeThrottle=-1;peak=Mathf.Max(peak,d.Player.Speed);yield return null;}d.Player.SmokeThrottle=0;
     Require(peak>3f,"Reversing out of a pull-off reaches escape speed ("+peak.ToString("F1")+" m/s)");}

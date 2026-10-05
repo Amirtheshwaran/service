@@ -57,7 +57,7 @@ namespace ServiceGameV2 {
   public const string OmenTreeline="There was somebody standing at the treeline. There was. Wasn't there?";
   public const string OmenFog="Fog's coming in off the low ground. Of course it is.";
   public const string NotWhileDriving="Not while I'm driving.";
-  public const string ParkAndWalk="End of the drive. I'll walk from here.";
+  public const string ParkAndWalk="Drive's all mud past here. Not getting the car stuck. I'll walk up.";
   public const string OmenValeHall="Somebody was standing at the end of that hall. Just standing there. Looking at me.";
   public const string ChaseWinded="Can't breathe. Keep going. Keep going.";
   public static readonly string[] DepotIntro=new[]{"Five stops. Home by one if the rain lets up. It won't.","Same five addresses. On a Sunday. I almost called in sick.","Two stops tonight. Vale again, and a road I've never driven."};

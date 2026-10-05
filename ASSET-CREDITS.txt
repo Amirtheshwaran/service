@@ -267,3 +267,20 @@ V21 (doorsteps, gestures, time cards, pursuit dread, grass, dice, roads)
   along the verges with the county's existing URP grass material.
 - The time cards are typed in Courier Prime (SIL OFL, credited earlier). The tape-damage effect is a shader pass
   on the camcorder filter. No image generator, AI or procedural scenery tool was used.
+
+V23
+- Sound, NOX Sound "Essentials Series", CC0 (cut and trimmed only, Sources/V23/audio_prep.py; per-file list in
+  Resources/Audio/V23/sources.json): Voice_Male_V1/V2_Throat_Cleaning and Voice_Male_V1_Cough_Multiple (the resident
+  behind the door before "Who's there?"), Footsteps_Wood_Jump_Land_01-02 (a book hitting the floor),
+  Footsteps_DirtyGround_Run_01-03 (wiping your boots on Morrow's mat), Ambiance_Firecamp_Small_Loop_Mono (the
+  hearth crackle), Vehicle_Car_Button_Mono_03 (the light switches clicking off in the night-one door scare).
+- Books on the shelves: Poly Haven "book_encyclopedia_set_01" (CC0, already imported in V19), placed in rows on the
+  empty bookcases. Doormat: the Flooded Grounds Prop_Rug_D (Unity Asset Store licence), scaled down.
+- Grass: the same Flooded Grounds grass prefabs as V21, redistributed evenly. No image generator, AI or procedural
+  scenery tool was used; the hearth is a flickering light, not a generated flame.
+
+V24
+- Fire: Kenney "Particle Pack" 1.1 by Kenney Vleugels (www.kenney.nl), CC0 (licence copied to
+  Assets/ServiceArt/V24/Fire/Kenney/License.txt; archive in Sources/kenney_particle-pack.zip). Sprites used unchanged:
+  flame_05 and flame_06 (flame tongues), flame_02 (the fire's body), fire_01 (the ember bed). They burn in a dark firebox
+  quad laid over each fireplace's iron cover, drawn by a small additive shader (Service/FireAdditive).

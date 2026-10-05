@@ -6,8 +6,8 @@ First-person horror game with free-roam driving/walking and no combat, built in 
 
 You play as a civil process server working night shifts in rural Hollis County. Your job is to drive out and deliver court documents to people who usually don't want to receive them. Every shift gives you a docket of addresses to locate and serve using your car, a flashlight, and your judgment. If a place feels wrong, you can't fight back; you just leave.
 
-The horror is focused on slow burn and atmosphere rather than cheap jump scares. In this build (v22), the story unfolds across three night shifts:
-- Night 1 (October 1st, 1998): Ordinary civil service work across five rural properties. Subtle atmospheric omens, doorstep resident interactions, an unsettling figure along the tree line, and a corridor encounter at Vale House.
+The horror is focused on slow burn and atmosphere rather than cheap jump scares. In this build (v24), the story unfolds across three night shifts:
+- Night 1 (October 1st, 1998): Ordinary civil service work across five rural properties. Subtle atmospheric omens, doorstep resident calls, an unsettling figure along the tree line, and an upstairs corridor encounter at Vale House.
 - Night 2 (October 4th, 1998): Escalated tension and wrongness. Harrow Lodge watcher encounter (turn away and stand completely still), Bell residence note and pursuit escape back to the car, and Morrow House pursuit.
 - Night 3 (October 9th, 1998): Severe fog and unmapped route past the county road closure, leading to the unsurveyed final parcel.
 
@@ -27,24 +27,26 @@ Built with Unity 6 (6000.6.0f1) using URP.
 | --- | --- |
 | WASD | Walk / Drive (S reverses car) |
 | Mouse | Look around (including inside cockpit) |
-| E | Read notice / knock / enter or exit car, close door, interact, file report |
+| E | Read notice / knock / enter or exit car, close door, pet Rex, wipe feet, interact, file report |
 | R | Leave documents on the delivery table |
 | U | Mark address as unable to serve |
 | F | Flashlight (on foot) |
-| Space | Jump on foot (disabled on stairs) / turn ignition key (in car) |
+| Space | Jump on foot (supports diagonal stairs) / turn ignition key (in car) |
 | Ctrl | Hold to crouch (on foot) |
 | V / B | Radio power / cycle through 3 stations (in car) |
-| Shift | Forward sprint (with breath depletion) / brake while driving |
+| Shift | Forward sprint (with stamina meter and breath depletion) / brake while driving |
 | Tab | Open docket clipboard (in car, while stopped) |
 | Esc | Pause menu / close papers or held note |
 
 ## Gameplay & Features
 
+- **Visible Hearth Fires**: Cabin fireplaces at Correll's, Harrow Lodge, and Route 9 feature animated flame tongues, ember beds, and crackling audio. Hearth fires die down to faint embers during atmospheric scares.
+- **Driveway Pull-offs & Foot Navigation**: Cars pull off approximately a car length into each drive before encountering muddy ground barriers, requiring deliveries and retreat runs to be completed on foot.
 - **Note Transcripts & Legibility Plates**: Inspecting a handwritten doorstep note displays a typed transcript with signature attribution underneath. Interaction prompts sit on shaded backdrop plates with targeting reticles to maintain legibility in direct flashlight beams.
-- **Door Closing & Reopening**: Players can pull house entrance doors shut from the outside doorstep after entry, or reopen them prior to completing deliveries.
-- **Road Boundary Corridor & Pull-offs**: Soft boundary guidance keeps the vehicle within drivable road corridors and mailbox pull-offs without dead stops, supporting tight three-point turns.
-- **Forward Sprint Pacing & Stamina**: Forward-only sprint mechanics with stamina depletion and audible breathing audio cues (approx. 6 seconds calm, 10 seconds in pursuit), replacing unlimited sprint.
-- **Resident & Creature Behavior**: Rex charges barking down Correll driveway before accompanying the player to the steps; brief upstairs hall encounter at Vale House on night one.
+- **Torch Auto-Iris & Stamina Meter**: Flashlight exposure eases down automatically at close range to prevent glare on notes and doors. An on-foot HUD stamina meter indicates exertion and breath depletion.
+- **Rex Behaviors & Petting**: Rex charges barking down the driveway before escorting the player to the steps. He features solid colliders, steps aside dynamically on porch approaches, and can be petted once calmed.
+- **Resident Audio & Doorstep Responses**: Residents call out through the door with throat-clearing before answering. Front doors can be pulled shut from the outside after entry.
+- **Atmospheric Scares**: Delayed door creaks and room-by-room light cuts on night-one departures, falling shelf books after document placement, and Morrow House entrance mat wiping mechanics.
 - **Camcorder Aesthetic**: VHS/camcorder visual filter with adjustable grain, fringing, vignette, and gamma-space color grading.
 - **First-Person Hands & Gestures**: Overhand flashlight grip, dedicated gestures for knocking, handing over papers, placing documents on desks, and pushing doors, plus dynamic steering wheel hands with crossing poses.
 - **Typewriter Time Cards & Stamps**: Fears to Fathom style typed date and time opening cards, corner arrival stamps, and rewind sequence cards.
@@ -63,6 +65,7 @@ Built with Unity 6 (6000.6.0f1) using URP.
 ## Asset Credits
 
 - Environment & Props: Flooded Grounds by Sandro T, Conifers [BOTD], Rocks and Boulders 2 (Unity Asset Store), Poly Haven CC0 scanned woodland assets and furniture, and Kenney City Kit Roads (CC0).
+- Fire particles: Kenney Particle Pack 1.1 by Kenney Vleugels (CC0).
 - Monster models: Creep Horror Creature by AC Game Assets, and Demon Horror Creature with Weapon.
 - First-person arms: PSX First Person Arms by Drillimpact (CC0).
 - Resident NPCs: BELAZ elderly man and vrimen resident model (CC BY 4.0), with animations from Unity Starter Assets.
