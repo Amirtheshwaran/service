@@ -4,6 +4,11 @@
   "font": "NothingYouCouldDo.ttf",
   "paper": "stationery"
  },
+ "note-p1-n2.png": {
+  "property": 1,
+  "font": "NothingYouCouldDo.ttf",
+  "paper": "stationery"
+ },
  "note-p2.png": {
   "property": 2,
   "font": "IndieFlower-Regular.ttf",
@@ -25,6 +30,11 @@
   "paper": "ruled"
  },
  "note-p5.png": {
+  "property": 5,
+  "font": "ShadowsIntoLight.ttf",
+  "paper": "card"
+ },
+ "note-p5-n2.png": {
   "property": 5,
   "font": "ShadowsIntoLight.ttf",
   "paper": "card"

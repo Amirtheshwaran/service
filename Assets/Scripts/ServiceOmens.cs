@@ -17,6 +17,7 @@ namespace ServiceGameV2 {
   public void ResetForShift(){
    if(glimpseUntil>0&&d.Scene.Entity){var ag=d.Scene.Entity.GetComponent<UnityEngine.AI.NavMeshAgent>();if(ag)ag.enabled=true;}
    if(ValeStage>0)EndVale(false);valeDone=false;ValeStage=0;ValeGlimpses=0;valeUpFor=valeClearFor=0;valeCreaked=false;valeSaidAt=-1;valeSeenFor=0;
+   foreach(var l in killed)if(l)l.enabled=true;killed.Clear();foreach(var h in FindObjectsByType<ServiceHearth>(FindObjectsInactive.Include,FindObjectsSortMode.None))h.Relight();doorBeatHouse=-1;doorBeatAt=-1;doorBeatDone=false;DoorBeatRunning=false;
    wasAtHarrow=porchDone=upstairsSaid=radioDone=radioHeard=treelineDone=fogSaid=false;insideVale=0;upstairsBeats=0;glimpseUntil=0;glimpseSaidAt=-1;Fired=0;fogNow=RenderSettings.fogDensity;
    if(radio)radio.Stop();
    if(d.NightIndex==0){var p=d.Property(5);var clip=Resources.Load<AudioClip>("Audio/V5/static/static_1");if(clip){if(!radio){var g=new GameObject("Morrow radio (static)");radio=g.AddComponent<AudioSource>();}
@@ -27,6 +28,7 @@ namespace ServiceGameV2 {
   void Update(){
    if(!d||d.Phase!=ServicePhase.Playing)return;var walker=d.Scene.Walker.transform.position;
    if(d.NightIndex==0){
+    DoorBeat();
     // Harrow: the porch light goes out behind you
     if(Vector3.Distance(walker,d.Property(3).Door.position)<8)wasAtHarrow=true;
     if(!porchDone&&wasAtHarrow&&d.ResultAt(3)!=ServiceResult.Pending){var p=d.Property(3);if(!d.Player.InCar&&Vector3.Distance(walker,p.Door.position)>14){porchDone=true;Fired++;if(p.PorchLight)p.PorchLight.enabled=false;if(p.WindowLight)p.WindowLight.enabled=false;d.Audio.HorrorAt("woodstress",p.Door.position,.18f);if(Quiet)d.Say(ServiceScript.LightsChanged);}}
@@ -40,6 +42,30 @@ namespace ServiceGameV2 {
    }else if(d.NightIndex==1){Upstairs(true);Fog(.031f,.047f);}
    else Fog(.035f,.052f);
   }
+  // V23 night one: shut a served house's door behind you and a few steps on it creaks, swings open on its own and the
+  // lights go out room by room toward the door, the porch light last. Once a night, at the first house you shut yourself.
+  readonly System.Collections.Generic.List<Light> killed=new System.Collections.Generic.List<Light>();int doorBeatHouse=-1;float doorBeatAt=-1;bool doorBeatDone;
+  public int DoorBeats {get;private set;}public bool DoorBeatRunning {get;private set;}public int DoorBeatHouse=>doorBeatHouse;
+  void DoorBeat(){
+   if(doorBeatDone)return;var walker=d.Scene.Walker.transform.position;
+   if(doorBeatHouse<0){foreach(int i in new[]{3,1,5})if(d.ShutByPlayer(i)&&d.ResultAt(i)!=ServiceResult.Pending){doorBeatHouse=i;doorBeatAt=-1;break;}if(doorBeatHouse<0)return;}
+   var p=d.Property(doorBeatHouse);if(!d.ShutByPlayer(doorBeatHouse)){doorBeatHouse=-1;return;}
+   var flat=walker-p.Door.position;flat.y=0;float dist=flat.magnitude;
+   if(d.Player.InCar||dist<5f||dist>34f||ServiceLife.Indoors(p,walker)||d.Busy||d.Horror.Active||d.Horror.Caught||(d.Dialogue&&d.Dialogue.Active)){if(dist<5f)doorBeatAt=-1;return;}
+   if(doorBeatAt<0){doorBeatAt=Time.time+Random.Range(1.1f,2.2f);return;}
+   if(Time.time<doorBeatAt)return;
+   doorBeatDone=true;DoorBeats++;Fired++;if(doorBeatHouse==3)porchDone=true;StartCoroutine(DoorBeatRun(p));}
+  System.Collections.IEnumerator DoorBeatRun(ServiceProperty p){
+   DoorBeatRunning=true;
+   d.Audio.HorrorAt("woodstress",p.Door.position+Vector3.up,.6f);yield return new WaitForSeconds(.45f);
+   d.DoorOpenedByItself(p.Index);if(d.Life)d.Life.OpenDoor(p,true,false,2.8f);if(d.Dread)d.Dread.Pulse(.35f);
+   yield return new WaitForSeconds(1.6f);
+   var lights=new System.Collections.Generic.List<Light>();foreach(var l in p.GetComponentsInChildren<Light>())if(l.enabled&&l!=p.PorchLight)lights.Add(l);
+   lights.Sort((a,b)=>Vector3.Distance(b.transform.position,p.Door.position).CompareTo(Vector3.Distance(a.transform.position,p.Door.position)));
+   if(p.PorchLight&&p.PorchLight.enabled)lights.Add(p.PorchLight);
+   foreach(var l in lights){if(!l)continue;l.enabled=false;killed.Add(l);d.Audio.HorrorAt("lightsout",l.transform.position,.22f);yield return new WaitForSeconds(Random.Range(.28f,.5f));}
+   foreach(var h in p.GetComponentsInChildren<ServiceHearth>())h.Snuff();
+   yield return new WaitForSeconds(.9f);if(Quiet)d.Say(ServiceScript.OmenDoorOpened);DoorBeatRunning=false;}
   void Upstairs(bool hard){
    if(d.ResultAt(1)!=ServiceResult.Pending&&upstairsBeats>=2)return;
    if(!Inside(1)){return;}insideVale+=Time.deltaTime;var p=d.Property(1);var above=(p.SoundPoint?p.SoundPoint.position:p.InteriorBounds.center)+Vector3.up*3.2f;

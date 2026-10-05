@@ -36,6 +36,8 @@ namespace ServiceGameV2 {
    int front=d.NearbyKnockDoor();if(front>=0)return "E   Knock     /     U   No service";
    if(d.NearbyDoor()>=0)return "E / R   Leave the notice";
    int leaf=d.NearbyLeaf();if(leaf>=0)return d.Life.DoorOpenDegrees(leaf)>25?"E   Close the door":"E   Open the door";
+   if(d.CanPetDog)return "E   Pet Rex";
+   if(d.CanWipeFeet)return "E   Wipe your feet";
    return "";
   }
   void LateUpdate(){if(!d||!canvas)return;bool intro=d.Phase==ServicePhase.Title&&d.Presentation&&d.Presentation.IntroVisible;string context=Context();bool card=ShiftCard;string state=card+"|"+(d.Horror.Active?d.Horror.Instruction+d.Horror.Headline:"")+"|"+d.Phase+"|"+d.PaperOpen+"|"+d.MapOpen+"|"+options+"|"+confirmNew+"|"+intro+"|"+d.Notice+"|"+d.Horror.Phase+"|"+context+"|"+d.NightIndex+"|"+(d.Vehicle?d.Vehicle.RadioOn+"/"+d.Vehicle.Station:"")+"|"+string.Join(",",d.Docket.Select(e=>(int)e.Result))+"|"+(d.Dialogue?d.Dialogue.StateKey:"")+"|"+d.NoteOpen+"|"+(d.Guide?d.Guide.Objective+d.Guide.Direction:"")+"|"+(d.Player.InCar&&d.NightIndex==0&&d.ShiftCardTime<28);
@@ -44,8 +46,26 @@ namespace ServiceGameV2 {
    if(intro&&introShade){introShade.color=new Color(0,0,0,d.Presentation.IntroBackgroundAlpha);introWords.alpha=d.Presentation.IntroTextAlpha;}
    if(contactShade)contactShade.color=new Color(.65f,.62f,.56f,d.Storm.FlashesEnabled?d.Horror.ImpactAlpha:0);
    if(noteMark)PlaceNoteMark();
+   StaminaMeter();
    if(carPin){var pos=ServiceRouteMap.Project(d.Scene.Car.position,worldBounds,mapPanel);carPin.anchoredPosition=new Vector2(pos.x,-pos.y);carHeading.localRotation=Quaternion.Euler(0,0,-d.Scene.Car.eulerAngles.y);}
   }
+  // V23: a breath meter, bottom right, on foot only - always there, dim while you are rested, bright while it drains,
+  // red and pulsing once you are winded. It lives on its own layer so the HUD rebuilds do not touch it.
+  RectTransform staminaLayer;Image staminaFill;Text staminaLabel;CanvasGroup staminaGroup;float staminaBusy=-9;
+  public float StaminaShown=>staminaGroup?staminaGroup.alpha:0;public float StaminaFillWidth=>staminaFill?staminaFill.rectTransform.sizeDelta.x:0;
+  void StaminaMeter(){
+   if(!staminaLayer){staminaLayer=Area("Stamina layer",new Rect(0,0,1280,720),canvas.transform);staminaLayer.anchorMin=staminaLayer.anchorMax=staminaLayer.pivot=new Vector2(.5f,.5f);staminaLayer.anchoredPosition=Vector2.zero;
+    staminaGroup=staminaLayer.gameObject.AddComponent<CanvasGroup>();staminaGroup.blocksRaycasts=false;staminaGroup.interactable=false;staminaGroup.alpha=0;
+    staminaLabel=Label(new Rect(1050,660,200,20),"STAMINA",14,new Color(1,1,1,.85f),staminaLayer);staminaLabel.alignment=TextAnchor.LowerLeft;Shade(staminaLabel);
+    Block(new Rect(1050,684,192,8),new Color(0,0,0,.6f),staminaLayer);staminaFill=Block(new Rect(1052,686,188,4),Color.white,staminaLayer);}
+   staminaLayer.SetAsLastSibling();
+   var p=d.Player;bool show=d.Phase==ServicePhase.Playing&&p&&!p.InCar&&!d.PaperOpen&&d.NoteOpen<0&&!d.Horror.Caught&&!(d.Timecard&&d.Timecard.Blocking)&&!(d.Dialogue&&d.Dialogue.Active);
+   float st=p?Mathf.Clamp01(p.Stamina):1;if(p&&(st<.995f||p.Running))staminaBusy=Time.unscaledTime;
+   float target=!show?0:Time.unscaledTime-staminaBusy<2f?1f:.38f;
+   staminaGroup.alpha=Mathf.MoveTowards(staminaGroup.alpha,target,Time.unscaledDeltaTime*(target>staminaGroup.alpha?5f:1.5f));
+   staminaFill.rectTransform.sizeDelta=new Vector2(188*st,4);
+   bool winded=p&&p.Winded;staminaFill.color=winded?new Color(.86f,.24f,.2f,.75f+.25f*Mathf.Sin(Time.unscaledTime*9f)):st<.3f?new Color(.95f,.72f,.42f,.95f):new Color(1,1,1,.92f);
+   staminaLabel.text=winded?"OUT OF BREATH":"STAMINA";}
   // V21: night cards are typed by ServiceTimecard.
   bool ShiftCard=>false;
   void Rebuild(bool intro,string context,bool card){if(root){root.gameObject.SetActive(false);Destroy(root.gameObject);}firstButton=null;carPin=carHeading=null;noteMark=null;promptPlate=null;promptLabel=null;NoteTranscript="";introShade=contactShade=cardShade=null;cardWords=null;MapPins=MapSegments=0;root=Area("Screen",new Rect(0,0,1280,720),canvas.transform);root.anchorMin=root.anchorMax=root.pivot=new Vector2(.5f,.5f);root.anchoredPosition=Vector2.zero;

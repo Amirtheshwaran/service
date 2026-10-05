@@ -35,7 +35,7 @@ namespace ServiceGameV2
             silentTest|=d.IsSmoke&&!TourAudio;AudioListener.volume=silentTest?0:Volume;
             AudioListener.pause=false;if(!d.IsSmoke)Volume=Mathf.Clamp01(PlayerPrefs.GetFloat("SERVICE.volume",.8f));
             if(!d.IsSmoke)MusicVolume=Mathf.Clamp01(PlayerPrefs.GetFloat("SERVICE.music",.7f));
-            tension=Source("Horror pursuit score",d.Scene.View.transform,0);tension.clip=Resources.Load<AudioClip>("Audio/V21/chase/Anxiety")??Pick("chase");tension.loop=true;tension.volume=0;
+            tension=Source("Horror pursuit score",d.Scene.View.transform,0);var chase23=Resources.LoadAll<AudioClip>("Audio/V23/chase");tension.clip=chase23.Length>0?chase23[0]:Resources.Load<AudioClip>("Audio/V21/chase/Anxiety")??Pick("chase");tension.loop=true;tension.volume=0;
             music=Source("Traversal score",d.Scene.View.transform,0);music.clip=Pick("traversal");music.loop=true;music.volume=0;if(music.clip)music.Play();
             rain=Source("Recorded rainfall",d.Scene.View.transform,0);rain.clip=Pick("rain");rain.loop=true;rain.volume=0;rainFilter=rain.gameObject.AddComponent<AudioLowPassFilter>();if(rain.clip)rain.Play();
             engine = Source("Recorded engine", d.Scene.Car, 0);
@@ -78,7 +78,7 @@ namespace ServiceGameV2
             return clip;
         }
         AudioClip Pick(string name){
-            if(!pools.TryGetValue(name,out var pool)){pool=Resources.LoadAll<AudioClip>("Audio/V21/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V15/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V13/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V12/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V9/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V5/"+name);pools[name]=pool;}
+            if(!pools.TryGetValue(name,out var pool)){pool=Resources.LoadAll<AudioClip>("Audio/V23/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V21/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V15/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V13/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V12/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V9/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V5/"+name);pools[name]=pool;}
             if(pool.Length==0)return Clip(name);
             int last=previous.TryGetValue(name,out var n)?n:-1;int index=Random.Range(0,pool.Length);if(pool.Length>1&&index==last)index=(index+1)%pool.Length;previous[name]=index;return pool[index];
         }
@@ -88,7 +88,7 @@ namespace ServiceGameV2
             SyncVehicleAudio();
             AudioListener.pause=d.Phase==ServicePhase.Paused;
             if(AudioListener.pause)return;
-            if(tension!=null){tension.volume=Mathf.MoveTowards(tension.volume,pursuing?.38f*MusicVolume:0,Time.unscaledDeltaTime*.3f);if(!pursuing&&tension.volume<=0&&tension.isPlaying)tension.Stop();}
+            if(tension!=null){tension.volume=Mathf.MoveTowards(tension.volume,pursuing?.55f*MusicVolume:0,Time.unscaledDeltaTime*(pursuing?.9f:.3f));if(!pursuing&&tension.volume<=0&&tension.isPlaying)tension.Stop();}
             if(music)music.volume=Mathf.MoveTowards(music.volume,pursuing||(d.Vehicle&&d.Vehicle.RadioAudible)?0:(d.Phase==ServicePhase.Title?.16f:.085f)*MusicVolume,Time.unscaledDeltaTime*.065f);
             bool sheltered=d.Storm&&d.Storm.Sheltered;
             if(rain){rain.volume=Mathf.MoveTowards(rain.volume,sheltered?.045f:.17f,Time.unscaledDeltaTime*.2f);rainFilter.cutoffFrequency=Mathf.MoveTowards(rainFilter.cutoffFrequency,sheltered?1600:18000,Time.unscaledDeltaTime*16000);}

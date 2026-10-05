@@ -5,15 +5,17 @@ namespace ServiceGameV2 {
  // Drives the Fears to Fathom style camera: internal resolution follows the screen so the pixel size stays
  // constant (~400 px tall frame at full strength), and the camcorder material strength follows the option.
  public sealed class ServiceCamcorder:MonoBehaviour {
-  public const string Pref="SERVICE.camcorder";
+  // V23: "feel free to downgrade the graphics for the horror vibe" - Extreme (270-line picture) is the new default;
+  // a fresh key so the old saved Strong does not keep it back. Options > Video still offers all four.
+  public const string Pref="SERVICE.camcorder23";
   public static readonly string[] Names={"Off","Subtle","Strong","Extreme"};
   static readonly float[] Heights={0,720,380,270};
-  public int Level {get;private set;}=2;
+  public int Level {get;private set;}=3;
   // V20: picture brightness (Options > Video), multiplies the camcorder exposure. Saved as SERVICE.brightness.
   public static float Brightness {get;private set;}=1;
   public void SetBrightness(float value){Brightness=Mathf.Clamp(value,.6f,1.6f);PlayerPrefs.SetFloat("SERVICE.brightness",Brightness);Apply();}
   Material mat;int lastHeight=-1,lastLevel=-1;
-  void Start(){Level=Mathf.Clamp(PlayerPrefs.GetInt(Pref,2),0,3);Brightness=Mathf.Clamp(PlayerPrefs.GetFloat("SERVICE.brightness",1),.6f,1.6f);foreach(var r in Resources.FindObjectsOfTypeAll<Material>())if(r.shader&&r.shader.name=="Service/Camcorder"){mat=r;break;}Apply();}
+  void Start(){Level=Mathf.Clamp(PlayerPrefs.GetInt(Pref,3),0,3);Brightness=Mathf.Clamp(PlayerPrefs.GetFloat("SERVICE.brightness",1),.6f,1.6f);foreach(var r in Resources.FindObjectsOfTypeAll<Material>())if(r.shader&&r.shader.name=="Service/Camcorder"){mat=r;break;}Apply();}
   // Survey and tests preview a level without touching the player's saved choice.
   public void Preview(int level){Level=Mathf.Clamp(level,0,3);Apply();}
   public void Cycle(){Level=(Level+1)%Names.Length;PlayerPrefs.SetInt(Pref,Level);Apply();}
@@ -27,8 +29,10 @@ namespace ServiceGameV2 {
    var asset=GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
    // Whole-number upscale factors keep every low-res pixel the same size on screen.
    if(asset){int factor=Level==0?1:Mathf.Max(1,Mathf.RoundToInt(Screen.height/Heights[Level]));asset.renderScale=1f/factor;asset.upscalingFilter=Level==0||factor==1?UpscalingFilterSelection.Auto:UpscalingFilterSelection.Point;}
-   if(mat){mat.SetFloat("_Strength",Level==0?0:1);mat.SetFloat("_Grain",Level==1?.022f:Level==2?.04f:.06f);mat.SetFloat("_Levels",Level==1?160:Level==2?72:44);mat.SetFloat("_Dither",Level==3?.8f:.6f);mat.SetFloat("_Fringe",Level==1?.6f:Level==2?1.1f:1.5f);mat.SetFloat("_Vignette",Level==1?.8f:Level==2?1.05f:1.25f);
-    mat.SetFloat("_Toe",Level==1?.25f:Level==2?.35f:.4f);mat.SetFloat("_ToePower",Level==1?1.4f:Level==2?1.9f:2.1f);mat.SetFloat("_Contrast",1.04f);mat.SetFloat("_Exposure",1.18f*Brightness);mat.SetColor("_Lift",new Color(.010f,.013f,.020f,1));mat.SetFloat("_Grain",Level==1?.02f:Level==2?.045f:.07f);mat.SetFloat("_Levels",Level==1?160:Level==2?64:36);}
+   if(mat){mat.SetFloat("_Strength",Level==0?0:1);mat.SetFloat("_Grain",Level==1?.022f:Level==2?.04f:.06f);mat.SetFloat("_Levels",Level==1?160:Level==2?72:44);mat.SetFloat("_Dither",Level==3?.8f:.6f);mat.SetFloat("_Fringe",Level==1?.6f:Level==2?1.1f:1.5f);mat.SetFloat("_Vignette",Level==1?.8f:Level==2?1.05f:1.12f);
+    // V23: Extreme keeps Strong's shadow curve - its own steeper toe, 36 levels and heavier vignette rounded a night road
+    // and the whole car interior to black (tour 14); the downgrade is the 270-line picture, grain, fringe and banding
+    mat.SetFloat("_Toe",Level==1?.25f:.35f);mat.SetFloat("_ToePower",Level==1?1.4f:1.9f);mat.SetFloat("_Contrast",1.04f);mat.SetFloat("_Exposure",1.18f*Brightness);mat.SetColor("_Lift",new Color(.010f,.013f,.020f,1));mat.SetFloat("_Grain",Level==1?.02f:Level==2?.045f:.07f);mat.SetFloat("_Levels",Level==1?160:Level==2?64:48);}
   }
  }
 }

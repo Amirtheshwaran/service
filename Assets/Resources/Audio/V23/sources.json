@@ -1,0 +1,86 @@
+[
+ {
+  "pool": "voiceinside",
+  "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Male/Voice_Male_Throat_Cleaning/Voice_Male_V1_Throat_Cleaning_Mono_01.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "voiceinside",
+  "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Male/Voice_Male_Throat_Cleaning/Voice_Male_V1_Throat_Cleaning_Mono_02.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "voiceinside",
+  "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Male/Voice_Male_Throat_Cleaning/Voice_Male_V1_Throat_Cleaning_Mono_03.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "voiceinside",
+  "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Male/Voice_Male_Throat_Cleaning/Voice_Male_V2_Throat_Cleaning_Mono_01.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "voiceinside",
+  "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Male/Voice_Male_Throat_Cleaning/Voice_Male_V2_Throat_Cleaning_Mono_02.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "voiceinside",
+  "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Male/Voice_Male_Cough/Voice_Male_V1_Cough_Multiple_Mono_01.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "voiceinside",
+  "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Male/Voice_Male_Cough/Voice_Male_V1_Cough_Multiple_Mono_02.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "bookfall",
+  "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Wood/Footsteps_Wood_Jump/Footsteps_Wood_Jump_Land_01.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "bookfall",
+  "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Wood/Footsteps_Wood_Jump/Footsteps_Wood_Jump_Land_02.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "wipe",
+  "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_DirtyGround/Footsteps_DirtyGround_Run/Footsteps_DirtyGround_Run_01.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "wipe",
+  "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_DirtyGround/Footsteps_DirtyGround_Run/Footsteps_DirtyGround_Run_02.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "wipe",
+  "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_DirtyGround/Footsteps_DirtyGround_Run/Footsteps_DirtyGround_Run_03.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "fire",
+  "source": "Essentials_Series_NOX_SOUND/Nature_Essentials_NOX_SOUND/Ambiance_Firecamp_Small_Loop_Mono.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "lightsout",
+  "source": "Essentials_Series_NOX_SOUND/Vehicle_Essentials_NOX_SOUND/Vehicle_Essential_Car/Vehicle_Car_Button_Mono_03.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ }
+]

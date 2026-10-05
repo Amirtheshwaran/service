@@ -38,6 +38,10 @@ namespace ServiceGameV2 {
    float along=0,best=float.MaxValue,bestAlong=0;for(int i=1;i<r.Length;i++){var a=r[i-1];var b=r[i];a.y=b.y=at.y;var ab=b-a;float len=ab.magnitude;if(len<1e-4f)continue;float t=Mathf.Clamp01(Vector3.Dot(at-a,ab)/(len*len));float dd=Vector3.Distance(at,a+ab*t);if(dd<best){best=dd;bestAlong=along+t*len;}along+=len;}
    lateral=best;fromDoor=total-bestAlong;
   }
+  public float WatcherDistance {get;private set;}
+  Vector3 FartherSpawn(Vector3 spawn){var w=d.Scene.Walker.transform.position;var away=spawn-w;away.y=0;if(away.sqrMagnitude<.01f)away=-d.Scene.View.transform.forward;away.Normalize();
+   foreach(float k in new[]{6.5f,6f,5.5f,5f}){var c=w+away*k;c.y=spawn.y;if(NavMesh.SamplePosition(c,out var h,.9f,NavMesh.AllAreas)&&Mathf.Abs(h.position.y-spawn.y)<.6f&&p.InteriorBounds.Contains(h.position+Vector3.up*.5f)&&ServiceInteraction.Clear(d.Scene.View.transform.position,h.position+Vector3.up*1.4f,null,d.Scene.Walker.transform)){WatcherDistance=k;return h.position;}}
+   WatcherDistance=Vector3.Distance(new Vector3(w.x,0,w.z),new Vector3(spawn.x,0,spawn.z));return spawn;}
   public void Begin(){Begin(1);}
   public void Begin(int index){BeginEncounter(index,false);}
   void BeginEncounter(int index,bool returning){
@@ -49,11 +53,14 @@ namespace ServiceGameV2 {
    d.Scene.Entity.SetActive(true);
    var spawn=returning?p.TableApproach.position:p.EntitySpawn.position;
    if(p.Encounter==EncounterKind.Pursuit&&!returning)spawn=ExtendedSpawn(spawn);
+   // V23: the watcher stood almost on top of you ("kinda too close"): it now stands 5-6.5 m off, on the same floor
+   else if(p.Encounter==EncounterKind.LookAway&&!returning)spawn=FartherSpawn(spawn);
    if(!NavMesh.SamplePosition(spawn,out var hit,2,NavMesh.AllAreas))throw new System.InvalidOperationException("Presence outside navigation at "+index);
    ignitionEscape=returning;carContact=gazeSeconds=0; if(returning)d.Player.IgnitionDelayPending=true;stillAnchored=false;movingFor=0;
    Agent.Warp(hit.position);SpawnPathDistance=PathLength(hit.position,d.Scene.Walker.transform.position);Agent.speed=5.25f;var facing=d.Scene.Walker.transform.position-hit.position;facing.y=0;if(facing.sqrMagnitude>.01f)Agent.transform.rotation=Quaternion.LookRotation(facing);Agent.isStopped=true;Phase=PursuitPhase.Reveal;Elapsed=repath=steps=LookAwaySeconds=0;growl=5;lastWalker=d.Scene.Walker.transform.position;
    if(p.WindowLight)p.WindowLight.enabled=false;if(p.EncounterLights!=null)foreach(var l in p.EncounterLights)if(l)l.enabled=l.transform.position.y<p.TableApproach.position.y-1;
-   d.Scene.Flashlight.enabled=true;d.Audio.HorrorAt(p.Encounter==EncounterKind.LookAway?"breath":"reveal",hit.position,.52f);d.Audio.Pursuit(p.Encounter==EncounterKind.Pursuit);
+   d.Scene.Flashlight.enabled=true;d.Audio.HorrorAt(p.Encounter==EncounterKind.LookAway?"breath":"reveal",hit.position,.52f);// V23: Bell's return ambush is a chase too (his house is a look-away house, so it ran in silence)
+   d.Audio.Pursuit(returning||p.Encounter==EncounterKind.Pursuit);
   }
   void Update(){
    if(d==null||d.Phase!=ServicePhase.Playing||d.PaperOpen)return;

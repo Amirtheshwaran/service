@@ -12,7 +12,8 @@ namespace ServiceGameV2 {
   public int Barks {get;private set;}
   public float ClosestApproach {get;private set;}=99;
   public Vector3 DogPosition=>dog?dog.position:Vector3.zero;
-  bool charged;float nextBark,nextPath,modeSince,porchSince,weaveFlip;int weaveSide=1;Vector3 porchSpot,goalCache;bool porchPicked;string curState;
+  CapsuleCollider dogBody;bool ghost;float pressedFor;public bool BodyYielded=>ghost;public int Yields {get;private set;}
+  bool charged;Vector3 escortGoal;float nextBark,nextPath,modeSince,porchSince,weaveFlip;int weaveSide=1;Vector3 porchSpot,goalCache;bool porchPicked;string curState;
   readonly UnityEngine.AI.NavMeshPath path=new UnityEngine.AI.NavMeshPath();Vector3[] corners=new Vector3[0];int corner;
   const float RunRef=4f; // ground speed the run loop shows at speed 1: Audit/dog22.txt measures the paw's reach (0.53 m per 0.4 s cycle); a gallop covers about three times that
   public Vector3 DogHome=>home;
@@ -29,6 +30,9 @@ namespace ServiceGameV2 {
     foreach(Transform c in dog)if(c.name.Contains("seated"))c.gameObject.SetActive(false);
     dogAnim=dog.GetComponentsInChildren<Animator>(true).FirstOrDefault(a=>a.runtimeAnimatorController);model=dogAnim?dogAnim.transform:(dog.childCount>0?dog.GetChild(0):null);
     home=YardSpot(d.Property(0));dog.position=home;FaceWalk(true);
+    // V23: a body you cannot walk through (you used to shove him along by walking into him)
+    var body=new GameObject("V23 dog body");body.transform.SetParent(dog,false);body.transform.localPosition=new Vector3(0,.42f,0);
+    var cap=body.AddComponent<CapsuleCollider>();cap.direction=2;cap.radius=.24f;cap.height=1.05f;var rb=body.AddComponent<Rigidbody>();rb.isKinematic=true;rb.useGravity=false;dogBody=cap;
    }
   }
   // Off to the side of Correll's porch, on the grass, away from the walk from the drive to the door.
@@ -49,7 +53,8 @@ namespace ServiceGameV2 {
   void State(string name){if(name==curState)return;if(dogAnim&&dogAnim.isActiveAndEnabled&&dogAnim.HasState(0,Animator.StringToHash(name))){curState=name;dogAnim.CrossFadeInFixedTime(name,name=="Run"?.15f:.35f);}}
   public void Bark(){if(!dog||DogBusy)return;d.Audio.DogAt(dog.position+Vector3.up*.4f,.32f);barkUntil=Time.time+2.2f;if(!playing){playing=true;State("Playing");}}
   void Update(){if(!d||d.Phase!=ServicePhase.Playing||d.PaperOpen)return;
-   bool rex=dog&&model&&Rex();
+   bool rex=dog&&model&&(petting||Rex()); // V23: a pet owns him while it lasts
+   YieldBody();
    if(dog&&model&&!rex){
     // The dog watches whoever is walking up: it turns its body toward the player in short, unhurried turns and
     // shifts between its breathing and playful idles, rather than sitting in the path like a statue.
@@ -62,6 +67,13 @@ namespace ServiceGameV2 {
    if(d.Player.InCar)return;
    foreach(var p in d.Scene.Properties){if(d.IsFriendly(p.Index)||seen[p.Index]||Vector3.Distance(d.Scene.Walker.transform.position,p.Door.position)>14)continue;seen[p.Index]=true;StartCoroutine(Flicker(p));}
   }
+  // V23: he is solid, but never a wall: pressed against him while he cannot get out of the way (steps, a porch rail),
+  // his body lets you by until you are clear of him
+  void YieldBody(){if(!dogBody||!d.Scene.Walker)return;float gap=Flat(dog.position-d.Scene.Walker.transform.position).magnitude;
+   bool pressing=!d.Player.InCar&&gap<dogBody.radius+d.Scene.Walker.radius+.12f&&d.Player.HorizontalSpeed<.35f;
+   pressedFor=pressing?pressedFor+Time.deltaTime:0;
+   if(!ghost&&pressedFor>.35f){ghost=true;Yields++;Physics.IgnoreCollision(d.Scene.Walker,dogBody,true);}
+   else if(ghost&&gap>1.1f){ghost=false;Physics.IgnoreCollision(d.Scene.Walker,dogBody,false);}}
   // V22: true while the charge owns the dog this frame.
   bool Rex(){
    var p=d.Property(0);var w=d.Scene.Walker.transform.position;var door=p.Door.position;var dw=Flat(w-door).magnitude;
@@ -77,10 +89,14 @@ namespace ServiceGameV2 {
    Vector3 goal=dog.position;float speed=0;var toW=Flat(w-dog.position);float dist=toW.magnitude;
    switch(Mode){
     case DogMode.Charge:goal=w+Flat3(dog.position-w).normalized*2.6f;speed=6.5f;if(dist<3.4f)Go(DogMode.Escort);break;
-    case DogMode.Escort:{if(Time.time>weaveFlip){weaveSide=-weaveSide;weaveFlip=Time.time+Random.Range(2.2f,3.4f);}
-     var fwd=Flat3(d.Scene.Walker.transform.forward);if(fwd.sqrMagnitude<.01f)fwd=Flat3(door-w);goal=w+Quaternion.AngleAxis(weaveSide*25,Vector3.up)*fwd.normalized*4f; // in front of you, in the torch (at 55 degrees he ran at the edge of the view)
-     // your pace plus the gap: by the gap alone he trailed his spot by 1.5 m at a walk, under the bottom of the view
-     speed=Mathf.Clamp(d.Player.HorizontalSpeed+Flat(goal-dog.position).magnitude*2.5f,0,7.5f);if(dw<4.5f)Go(DogMode.Porch);break;}
+    case DogMode.Escort:{bool moving=d.Player.HorizontalSpeed>.4f;if(moving&&Time.time>weaveFlip){weaveSide=-weaveSide;weaveFlip=Time.time+Random.Range(2.6f,4f);}
+     // V23: ahead of you on the way to the door - by where you are headed, not where you look (by your facing he ran in
+     // circles whenever you looked round); a new spot only once the old one has drifted, and none while you stand still
+     var way=Flat3(door-w);if(way.sqrMagnitude<.01f)way=Flat3(d.Scene.Walker.transform.forward);way.Normalize();
+     var want=w+Quaternion.AngleAxis(weaveSide*22,Vector3.up)*way*4f;
+     if(escortGoal==Vector3.zero||(moving&&Flat(want-escortGoal).magnitude>1f)||Flat(escortGoal-w).magnitude<2.2f)escortGoal=want;goal=escortGoal;
+     // your pace plus the gap (by the gap alone he trailed his spot by 1.5 m at a walk, under the bottom of the view)
+     speed=Mathf.Clamp(d.Player.HorizontalSpeed+Flat(goal-dog.position).magnitude*2f,0,6.5f);if(dw<4.5f)Go(DogMode.Porch);break;}
     case DogMode.Porch:{if(!porchPicked){porchPicked=true;porchSpot=PorchSpot(p,w);porchSince=Time.time;}goal=porchSpot;speed=3f;
      if(dw>8)Go(DogMode.Escort);break;}
     case DogMode.Hushed:goal=dog.position;speed=0;
@@ -98,10 +114,17 @@ namespace ServiceGameV2 {
     var step=Vector3.ClampMagnitude(Flat3(target-dog.position),speed*Time.deltaTime);var next=dog.position+step;
     bool g=Ground(ref next),ins=g&&(Indoors(p,next)||OnBuilt),hi=g&&next.y>=door.y-.4f,jump=g&&Mathf.Abs(next.y-dog.position.y)>=.35f,edge=false; // the step runs between navmesh path corners, so it is on the mesh already; a NavMesh.Raycast from a corner
     // (corners sit on the mesh edge) grazed the boundary and refused every step - Rex froze mid-charge (V22 tour)
-    if(g&&!ins&&!hi&&!jump&&!edge){moved=step.magnitude;dog.position=next;}else BlockedBy[!g?0:ins?1:hi?2:jump?3:4]++;
+    // never a step of his own to inside the 1.5 m he keeps from you (a 6.5 m/s charge on a slow frame ended at 1.1)
+    bool onYou=Flat(next-w).magnitude<1.5f&&Flat(next-w).magnitude<Flat(dog.position-w).magnitude;
+    if(g&&!ins&&!hi&&!jump&&!edge&&!onYou){moved=step.magnitude;dog.position=next;}else BlockedBy[!g?0:ins?1:hi?2:jump?3:4]++;
    }
-   // keep 1.6 m off the walker
-   var away=Flat3(dog.position-w);if(away.magnitude<1.6f){var push=w+(away.sqrMagnitude>.01f?away.normalized:-Flat3(d.Scene.Walker.transform.forward).normalized)*1.6f;if(Ground(ref push)&&!OnBuilt&&!Indoors(p,push)&&push.y<door.y-.4f&&Mathf.Abs(push.y-dog.position.y)<.35f&&!UnityEngine.AI.NavMesh.Raycast(dog.position,push,out _,UnityEngine.AI.NavMesh.AllAreas))dog.position=push;}
+   // V23: no shove (walking into him used to slide him along): he steps aside on his own when you come close
+   var away=Flat3(dog.position-w);if(away.magnitude<1.5f&&!petting){var a=away.sqrMagnitude>.01f?away.normalized:-Flat3(d.Scene.Walker.transform.forward).normalized;
+    // straight away first; where that is the steps or the porch (the foot of the steps), sideways off the line you walk, or back past you
+    var head=Flat3(d.Scene.Walker.velocity);if(head.sqrMagnitude<.04f)head=Flat3(door-w);if(head.sqrMagnitude<.01f)head=a;head.Normalize();var perp=Vector3.Cross(Vector3.up,head);if(Vector3.Dot(perp,a)<0)perp=-perp;
+    float len=Mathf.Min(4.5f*Time.deltaTime,1.6f-away.magnitude);
+    foreach(var dir in new[]{a,perp,(perp-head*.6f).normalized,-perp,(-perp-head*.6f).normalized}){var to=dog.position+dir*len;
+     if(Ground(ref to)&&!OnBuilt&&!Indoors(p,to)&&to.y<door.y-.4f&&Mathf.Abs(to.y-dog.position.y)<.35f){moved+=Flat(to-dog.position).magnitude;dog.position=to;break;}}}
    ClosestApproach=Mathf.Min(ClosestApproach,Flat(dog.position-w).magnitude);
    float v=moved/Mathf.Max(Time.deltaTime,1e-4f);DogTravel+=moved;
    // face where he runs, or you when he stands
@@ -114,7 +137,29 @@ namespace ServiceGameV2 {
    d.Audio.DogFollow(dog.position+Vector3.up*.45f);
    return true;
   }
-  void Go(DogMode m){if(Mode==m)return;Mode=m;modeSince=Time.time;nextPath=0;if(m!=DogMode.Porch)porchPicked=false;if(m==DogMode.Escort)weaveFlip=Time.time+Random.Range(1.2f,2.2f);if(m==DogMode.Home){if(dogAnim)dogAnim.speed=1;State("Breathing");nextIdle=Time.time+Random.Range(3f,6f);}}
+  void Go(DogMode m){if(Mode==m)return;Mode=m;modeSince=Time.time;nextPath=0;escortGoal=Vector3.zero;if(m!=DogMode.Porch)porchPicked=false;if(m==DogMode.Escort)weaveFlip=Time.time+Random.Range(1.2f,2.2f);if(m==DogMode.Home){if(dogAnim)dogAnim.speed=1;State("Breathing");nextIdle=Time.time+Random.Range(3f,6f);}}
+  // V23: pet Rex - only when he is calm (at home, or hushed, or at the steps once Walter has him) and you are right by him
+  bool petting;public bool Petting=>petting;public int Pets {get;private set;}
+  public bool CanPet(Vector3 w){if(!dog||!model||petting||d.Player.InCar||d.Busy||d.Horror.Active||d.Horror.Caught)return false;if(Time.time<barkUntil+.4f)return false;
+   bool calm=Mode==DogMode.Home||Mode==DogMode.Hushed||(Mode==DogMode.Porch&&Time.time-porchSince>30f);if(!calm)return false;
+   // on his level: from the porch or the steps he cannot come up to your hand (he never climbs them), so step down to him
+   var cc=d.Scene.Walker;if(cc&&Mathf.Abs(cc.bounds.min.y-dog.position.y)>.3f)return false;
+   var to=Flat3(dog.position-w);return to.magnitude<1.75f&&to.magnitude>.4f;}
+  public Transform DogTransform=>dog;
+  public void SmokePlaceDog(Vector3 at){if(!dog)return;var q=at;if(Ground(ref q))dog.position=q;}
+  public Vector3 PetPoint=>dog?dog.position+Vector3.up*.55f:Vector3.zero;
+  public string PetStop="";string lastTop="";
+  public System.Collections.IEnumerator Pet(){PetStop="reached";petting=true;Pets++;if(dogAnim)dogAnim.speed=1;float t=0;
+   // he comes in under your hand first: up to your feet over open ground (he keeps a step off you otherwise)
+   var home=d.Property(0);float tc=0;
+   while(tc<1.4f){tc+=Time.deltaTime;var to=Flat3(d.Scene.Walker.transform.position-dog.position);if(to.magnitude<=.75f)break;
+    if(to.sqrMagnitude>.01f)dog.rotation=Quaternion.RotateTowards(dog.rotation,Quaternion.LookRotation(to),420*Time.deltaTime);
+    var next=dog.position+to.normalized*Mathf.Min(1.5f*Time.deltaTime,to.magnitude-.75f);
+    bool gok=Ground(ref next);if(!gok||OnBuilt||Indoors(home,next)||Mathf.Abs(next.y-dog.position.y)>=.35f){PetStop=!gok?"no ground":OnBuilt?"built "+lastTop:Indoors(home,next)?"indoors":$"height {next.y-dog.position.y:F2}";break;}
+    dog.position=next;State("Playing");yield return null;}
+   State("Breathing");
+   while(t<2.2f){t+=Time.deltaTime;var to=Flat3(d.Scene.Walker.transform.position-dog.position);if(to.sqrMagnitude>.01f)dog.rotation=Quaternion.RotateTowards(dog.rotation,Quaternion.LookRotation(to),200*Time.deltaTime);yield return null;}
+   State("Playing");nextIdle=Time.time+3.2f;petting=false;}
   public void Hush(){if(Mode==DogMode.Home||Mode==DogMode.Hushed)return;Go(DogMode.Hushed);d.Audio.StopDog();}
   public bool DogSeen=>AnyVisible();
   public string PathInfo=>$"path {path.status} {corners.Length} corners, at {corner}, end {(corners.Length>0?corners[corners.Length-1]:Vector3.zero)}, goal {goalCache}, refused {string.Join("/",BlockedBy)}";
@@ -126,10 +171,10 @@ namespace ServiceGameV2 {
    foreach(float s in new[]{1f,-1f})foreach(float o in new[]{3.2f,4.2f}){var at=c+outw*o+side*s*2.4f;var test=at;if(!Ground(ref test)||OnBuilt||test.y>p.Door.position.y-.4f||Indoors(p,test))continue;float sc=Flat(test-w).magnitude;if(sc>score){score=sc;best=test;}}
    return best;}
   bool Ground(ref Vector3 at){var hits=Physics.RaycastAll(at+Vector3.up*1.5f,Vector3.down,4f,~((1<<8)|(1<<9)),QueryTriggerInteraction.Ignore);float best=float.NegativeInfinity;
-   Collider top=null;foreach(var h in hits){if(h.collider is CharacterController||h.collider.transform.IsChildOf(d.Scene.Walker.transform))continue;if(h.point.y>best){best=h.point.y;top=h.collider;}}
+   Collider top=null;foreach(var h in hits){if(h.collider is CharacterController||h.collider.transform.IsChildOf(d.Scene.Walker.transform)||dog&&h.collider.transform.IsChildOf(dog))continue;if(h.point.y>best){best=h.point.y;top=h.collider;}}
    if(float.IsNegativeInfinity(best)){var t=Terrain.activeTerrain;if(!t)return false;best=t.SampleHeight(at)+t.transform.position.y;}
    // a porch, its steps or a house floor: wood (or unmarked) built ground, not the yard, the drive or the terrain
-   OnBuilt=top!=null&&!(top is TerrainCollider)&&(top.GetComponentInParent<ServiceSurface>() is var sf&&(sf==null||sf.Kind=="wood"));
+   OnBuilt=top!=null&&!(top is TerrainCollider)&&(top.GetComponentInParent<ServiceSurface>() is var sf&&(sf==null||sf.Kind=="wood"));lastTop=top?top.name:"terrain";
    at.y=best;return true;}
   bool OnBuilt;
   // inside the house = within its bounds and not out in front of the door's wall (the bounds take in the porch and yard)

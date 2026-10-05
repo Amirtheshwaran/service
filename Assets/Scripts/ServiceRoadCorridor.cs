@@ -7,7 +7,7 @@ namespace ServiceGameV2 {
  // ServicePlayer.Drive: the car scrapes along it and slows, it never crashes, and moving back in is always allowed.
  // Widths are the editor road stages' own (ServiceV19Roads MainHalf/LateHalf, ServiceV21Roads ApronHalf).
  public sealed class ServiceRoadCorridor {
-  public const float MainHalf=3.1f,LateHalf=2.6f,RoadMargin=.9f,DriveMargin=.25f,DriveReach=9f;
+  public const float MainHalf=3.1f,LateHalf=2.6f,RoadMargin=.9f,DriveMargin=.25f,DriveReach=9f,DriveStandOff=2.5f;
   static float ApronHalf(float s)=>(1.55f+1.1f*Mathf.Exp(-Mathf.Max(s,0)/1.7f))*1.18f;
   struct Piece{public Vector2[] p;public float[] s;public int kind;public int property;}
   readonly CountyScene scene;readonly List<Piece> pieces=new List<Piece>();
@@ -23,8 +23,11 @@ namespace ServiceGameV2 {
     var along=p.Index==2&&late.Count>1?late:road;var a0=p.ApproachRoute[0];var mouth=Closest(along,a0);
     var pts=new List<Vector3>{mouth};var sv=new List<float>{3-Flat(a0-mouth).magnitude};float acc=3;
     pts.Add(a0);sv.Add(acc);
+    // V23: the whole drive is driveable now, up to the parking end by the house ("roads stop and start abruptly" - the
+    // car used to be held 9 m up a drive that plainly went on); it stops short of the steps.
+    float total=3;for(int i=1;i<p.ApproachRoute.Length;i++)total+=Flat(p.ApproachRoute[i]-p.ApproachRoute[i-1]).magnitude;float reach=p.DriveLength>0?p.DriveLength:Mathf.Max(DriveReach,total-DriveStandOff);
     for(int i=1;i<p.ApproachRoute.Length;i++){float seg=Flat(p.ApproachRoute[i]-p.ApproachRoute[i-1]).magnitude;
-     if(acc+seg>=DriveReach){float k=(DriveReach-acc)/Mathf.Max(seg,1e-4f);pts.Add(Vector3.Lerp(p.ApproachRoute[i-1],p.ApproachRoute[i],k));sv.Add(DriveReach);break;}
+     if(acc+seg>=reach){float k=(reach-acc)/Mathf.Max(seg,1e-4f);pts.Add(Vector3.Lerp(p.ApproachRoute[i-1],p.ApproachRoute[i],k));sv.Add(reach);break;}
      acc+=seg;pts.Add(p.ApproachRoute[i]);sv.Add(acc);}
     pieces.Add(Make(pts,2,p.Index,sv));}
   }
@@ -47,7 +50,7 @@ namespace ServiceGameV2 {
     if(e<best){best=e;var o=new Vector3(l.x<-11?-1:l.x>9?1:0,0,l.z<-12.5f?-1:l.z>9.5f?1:0);var w=scene.Depot.TransformDirection(o);dir=new Vector2(w.x,w.z);LastKind=3;LastProperty=-1;LastAtDriveEnd=false;}}
    foreach(var c in pieces){if(!Active(c))continue;
     for(int i=1;i<c.p.Length;i++){var a=c.p[i-1];var b=c.p[i];var ab=b-a;float len2=ab.sqrMagnitude;if(len2<1e-6f)continue;float t=Mathf.Clamp01(Vector2.Dot(q-a,ab)/len2);var cp=a+ab*t;var off=q-cp;float dist=off.magnitude;
-     float sAt=Mathf.Lerp(c.s[i-1],c.s[i],t);float e=dist-Allowed(c,sAt);if(e<best){best=e;dir=dist>1e-4f?off/dist:Vector2.zero;LastKind=c.kind;LastProperty=c.property;LastAtDriveEnd=c.kind==2&&sAt>=DriveReach-1f;}}}
+     float sAt=Mathf.Lerp(c.s[i-1],c.s[i],t);float e=dist-Allowed(c,sAt);if(e<best){best=e;dir=dist>1e-4f?off/dist:Vector2.zero;LastKind=c.kind;LastProperty=c.property;LastAtDriveEnd=c.kind==2&&sAt>=c.s[c.s.Length-1]-1f;}}}
    outward=new Vector3(dir.x,0,dir.y);if(outward.sqrMagnitude>1e-6f)outward.Normalize();
    return best;
   }

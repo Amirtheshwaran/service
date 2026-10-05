@@ -53,10 +53,13 @@ namespace ServiceGameV2
         readonly bool[] arrived = new bool[6], inside = new bool[6];
         bool dogLine, lightsLine, docketLine, barricadeLine, surveyLine; float depotIntroAt = -1;
         public int KnockCount {get;private set;}
+        public int WhosThereCalls {get;private set;}
+        public ServiceTorchExposure TorchExposure {get;private set;}
+        public ServiceBooks Books {get;private set;}
         public bool IsFriendly(int index)=>index==0||(index==4&&NightIndex==0);
         // V20 slow burn: night one has no monsters. Night two: Harrow's watcher, the Morrow chase, and Bell's door on the
         // walk back (armed when the papers are left in his back room). Night three: Vale.
-        public bool EncounterTonight(int index){switch(index){case 3:return NightIndex==1;case 5:return NightIndex==1;case 1:return NightIndex==2;case 4:return false;default:return Property(index).HasEncounter;}}
+        public bool EncounterTonight(int index){switch(index){case 3:return NightIndex==1;case 5:return NightIndex==1&&!FeetWiped;case 1:return NightIndex==2;case 4:return false;default:return Property(index).HasEncounter;}}
         public bool IsSmoke { get; private set; }
         public bool IsTour { get; private set; }
         public bool IsChaos { get; private set; }
@@ -68,7 +71,18 @@ namespace ServiceGameV2
         public string VisitNotes(int index)=>NoticeRead(index)?Property(index).Instructions:"Visit the address. Speak to the occupant or check for a posted notice.";
         readonly bool[] accessGranted = new bool[6];
         readonly bool[] shutByPlayer = new bool[6]; // V22: doors the player pulled shut (they may open them again)
+        // V23: Morrow's doormat ("Wipe your feet. I just did the floors.") - wipe them and nothing comes for you there on
+        // night two; walk in without and it does.
+        public bool FeetWiped {get;private set;}bool muddySaid;Transform doormat;
+        public Transform Doormat{get{if(!doormat){var p=Property(5);doormat=p?p.transform.Find("V23 doormat"):null;}return doormat;}}
+        public bool CanWipeFeet{get{if(Player.InCar||Busy||FeetWiped||NoteOpen>=0||!Doormat||ResultAt(5)!=ServiceResult.Pending)return false;
+            var w=Scene.Walker.transform.position;var f=w-Doormat.position;f.y=0;return f.magnitude<1.15f&&Mathf.Abs(w.y-Doormat.position.y)<.7f;}}
+        IEnumerator WipeFeet(){Busy=true;var at=Doormat.position;for(int i=0;i<3;i++){Audio.HorrorAt("wipe",at,.55f);yield return new WaitForSeconds(.34f);}
+            FeetWiped=true;Say(NightIndex==0?ServiceScript.WipedFeet:ServiceScript.WipedFeetAgain);yield return new WaitForSeconds(.3f);Busy=false;}
+        void MuddyCheck(){if(muddySaid||FeetWiped||NightIndex>1||!Doormat||Player.InCar)return;var p=Property(5);if(!ServiceLife.Indoors(p,Scene.Walker.transform.position))return;
+            var f=Scene.Walker.transform.position-p.OpeningCentre;f.y=0;if(f.magnitude<2.2f)return;muddySaid=true;Say(ServiceScript.MuddyFloor);}
         public bool ShutByPlayer(int i)=>i>=0&&i<6&&shutByPlayer[i];
+        public void DoorOpenedByItself(int i){if(i>=0&&i<6)shutByPlayer[i]=false;}
         public int DoorsShut {get;private set;}
         public bool AccessGranted(int index)=>index>=0&&index<accessGranted.Length&&accessGranted[index];
         readonly float[] linger = new float[6], unseen = new float[6]; bool stallArmed;
@@ -109,7 +123,7 @@ namespace ServiceGameV2
             ConfigureNight(0);
             Player.EnterCar();
             Storm=gameObject.AddComponent<ServiceStorm>();Storm.Initialize(this);
-            Presentation=gameObject.AddComponent<ServicePresentation>();Presentation.Initialize(this);Guide=gameObject.AddComponent<ServiceRouteGuide>();Guide.Initialize(this);Omens=gameObject.AddComponent<ServiceOmens>();Omens.Initialize(this);Dread=gameObject.AddComponent<ServiceDread>();Dread.Initialize(this);Timecard=gameObject.AddComponent<ServiceTimecard>();Timecard.Initialize(this);Foliage=gameObject.AddComponent<ServiceFoliage>();Foliage.Initialize(this);gameObject.AddComponent<ServiceWorldEdge>().Initialize(this);
+            Presentation=gameObject.AddComponent<ServicePresentation>();Presentation.Initialize(this);Guide=gameObject.AddComponent<ServiceRouteGuide>();Guide.Initialize(this);Omens=gameObject.AddComponent<ServiceOmens>();Omens.Initialize(this);TorchExposure=gameObject.AddComponent<ServiceTorchExposure>();TorchExposure.Initialize(this);Books=gameObject.AddComponent<ServiceBooks>();Books.Initialize(this);Dread=gameObject.AddComponent<ServiceDread>();Dread.Initialize(this);Timecard=gameObject.AddComponent<ServiceTimecard>();Timecard.Initialize(this);Foliage=gameObject.AddComponent<ServiceFoliage>();Foliage.Initialize(this);gameObject.AddComponent<ServiceWorldEdge>().Initialize(this);
             Vehicle=gameObject.AddComponent<ServiceVehiclePresentation>();Vehicle.Initialize(this);
             Life=gameObject.AddComponent<ServiceLife>();Life.Initialize(this);
             SetCursor();
@@ -154,6 +168,7 @@ namespace ServiceGameV2
             if (NoteOpen >= 0) { var np = Property(NoteOpen); if (Player.InCar || Horror.Active || Horror.Caught || np.NoticePoint == null || Vector3.Distance(Scene.View.transform.position, np.NoticePoint.position) > 3.2f) NoteOpen = -1; }
             if (!PaperOpen && !Horror.Active && !Horror.Caught) EvaluateCues(Time.deltaTime);
             if (InputBlocked || Busy) return;
+            MuddyCheck();
             if (Pressed(Key.F)) ToggleTorch();
             // E also looks over the right shoulder while sprinting, so reaching the car must not depend on releasing Shift first.
             bool nearCar = CanEnterCar;
@@ -164,7 +179,7 @@ namespace ServiceGameV2
                 else if (Player.InCar) Player.TryExitCar();
                 else if(NoteOpen>=0){NoteOpen=-1;Audio.Paper();}
                 else if(NearbyNotice()>=0)ReadNotice(NearbyNotice());
-                else { int front=NearbyKnockDoor();if(front>=0)Attempt(front,ServiceResult.Served);else {int i=NearbyDoor();if(i>=0)Attempt(i,ServiceResult.LeftAtDoor);else{int leaf=NearbyLeaf();if(leaf>=0)ToggleDoor(leaf);}} }
+                else { int front=NearbyKnockDoor();if(front>=0)Attempt(front,ServiceResult.Served);else {int i=NearbyDoor();if(i>=0)Attempt(i,ServiceResult.LeftAtDoor);else{int leaf=NearbyLeaf();if(leaf>=0)ToggleDoor(leaf);else if(CanPetDog)StartCoroutine(PetDog());else if(CanWipeFeet)StartCoroutine(WipeFeet());}} }
             }
             if (!Player.InCar)
             {
@@ -192,6 +207,13 @@ namespace ServiceGameV2
                 if(!ServiceInteraction.Reachable(Scene.View,aimAt,3.2f,p.DoorPanel))continue;
                 return i;}
             return -1;}
+        // V23: pet Rex when he is calm and you are right by him, looking at him
+        public bool CanPetDog=>Life&&!Player.InCar&&!Busy&&NoteOpen<0&&!(Dialogue&&Dialogue.Active)&&Life.DogPresent&&Life.CanPet(Scene.Walker.transform.position)&&ServiceInteraction.Reachable(Scene.View,Life.PetPoint,2.6f,Life.DogTransform);
+        public bool TryPetDog(){if(!CanPetDog)return false;StartCoroutine(PetDog());return true;}
+        public bool TryWipeFeet(){if(!CanWipeFeet)return false;StartCoroutine(WipeFeet());return true;}
+        IEnumerator PetDog(){Busy=true;var hands=Scene.View.GetComponentInChildren<ServiceHands>();StartCoroutine(Life.Pet());
+            yield return new WaitForSeconds(.45f);if(hands)hands.Play("Reach"); // an open hand down to him (Give holds the papers out)
+            yield return new WaitForSeconds(.3f);Say(Life.Pets>1?ServiceScript.PetRexAgain:ServiceScript.PetRex[Mathf.Clamp(NightIndex,0,ServiceScript.PetRex.Length-1)]);yield return new WaitForSeconds(1.6f);Busy=false;}
         public bool ToggleDoor(int i){if(NearbyLeaf()!=i)return false;StartCoroutine(SwingDoor(i));return true;}
         IEnumerator SwingDoor(int i){
             Busy=true;var p=Property(i);bool close=Life.DoorOpenDegrees(i)>25;
@@ -213,6 +235,7 @@ namespace ServiceGameV2
             Time.timeScale = 1;
             Phase = ServicePhase.Playing;
             NightIndex = Mathf.Clamp(index, 0, 2);
+            FeetWiped=false;muddySaid=false;
             Docket.Clear();
             int[] stops=NightIndex==0?new[]{0,3,1,4,5}:NightIndex==1?new[]{0,3,1,4,5}:new[]{1,2};
             foreach(int i in stops){var property=Property(i);Docket.Add(new DocketEntry(i,property.Address,NightIndex==0?property.Brief:Prior(i,property.Brief)));}
@@ -226,7 +249,7 @@ namespace ServiceGameV2
             if(Dialogue)Dialogue.Cancel();
             ResetResidents();
             ApplyScriptText(NightIndex);
-            ConfigureNight(NightIndex);if(Life)Life.ResetForShift();if(Guide)Guide.ResetForShift();if(Omens)Omens.ResetForShift();if(Dread)Dread.ResetForShift();
+            ConfigureNight(NightIndex);if(Life)Life.ResetForShift();if(Guide)Guide.ResetForShift();if(Omens)Omens.ResetForShift();if(Dread)Dread.ResetForShift();if(Books)Books.ResetForShift();
             Horror.ResetEncounter();
             Player.ResetForShift(depotStart, depotRotation);
             lastCarPosition = Scene.Car.position;
@@ -433,6 +456,10 @@ namespace ServiceGameV2
             if (IsFriendly(entry.Property))
             {
                 if(p.WindowLight)p.WindowLight.enabled=true;
+                // V23: somebody calls out from inside before the door opens ("Who's there?"), with a cough at the door
+                var call=ServiceScript.WhosThere(entry.Property,NightIndex);
+                if(!string.IsNullOrEmpty(call)&&Dialogue){Audio.HorrorAt("voiceinside",p.Door.position+Vector3.up*1.5f+p.Inward*2.5f,.55f);yield return new WaitForSeconds(.45f);
+                    yield return Dialogue.Run(ServiceScript.Resident(entry.Property),new[]{new ServiceDialogue.Step(call)});WhosThereCalls++;}
                 Audio.DoorAt(p.Door.position);
                 Say("A floorboard creaks beyond the door.");
                 if(!residents)residents=FindAnyObjectByType<ServiceResidents>();if(residents)residents.Answer(p,true);

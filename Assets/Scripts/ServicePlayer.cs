@@ -192,11 +192,11 @@ namespace ServiceGameV2
             else if(Crouched&&CanStand())Crouched=false;
             s.Walker.height=Crouched?1.12f:1.8f;s.Walker.center=new Vector3(0,s.Walker.height*.5f,0);
             OnStairs=ServiceStairZone.Contains(s.Walker.transform.position);
-            if(OnStairs)jumpUntil=groundedUntil=0;
+            // V23: jumping is allowed on and beside stairs (the old ban, plus the stair hulls, made an invisible wall)
             Vector3 move = (s.Walker.transform.right * input.x + s.Walker.transform.forward * input.y) * (Crouched?CrouchSpeed:Sprinting?SprintSpeed:Running?WindedSpeed:WalkSpeed);
             if(s.Walker.isGrounded){groundedUntil=Time.time+.1f;if(gravity<0){if(lastVertical< -4)landing=Mathf.Min(.1f,-lastVertical*.008f);gravity=-2;}}
-            if(free&&(d.IsSmoke?SmokeJump:Pressed(Key.Space))){if(!OnStairs&&Stamina>=.1f)jumpUntil=Time.time+.12f;SmokeJump=false;}
-            if(jumpUntil>Time.time&&groundedUntil>Time.time&&!Crouched&&!OnStairs){gravity=5.8f;jumpUntil=groundedUntil=0;if(!SmokeEndlessStamina)Stamina=Mathf.Max(0,Stamina-.08f);}
+            if(free&&(d.IsSmoke?SmokeJump:Pressed(Key.Space))){if(Stamina>=.1f)jumpUntil=Time.time+.12f;SmokeJump=false;}
+            if(jumpUntil>Time.time&&groundedUntil>Time.time&&!Crouched){gravity=5.8f;jumpUntil=groundedUntil=0;if(!SmokeEndlessStamina)Stamina=Mathf.Max(0,Stamina-.08f);}
             else gravity=Mathf.Max(-25,gravity-20*Time.deltaTime);
             Vector3 prior=s.Walker.transform.position;lastVertical=gravity;var flags=s.Walker.Move((move+Vector3.up*gravity)*Time.deltaTime);if((flags&CollisionFlags.Above)!=0&&gravity>0)gravity=0;
             var delta=s.Walker.transform.position-prior;delta.y=0;HorizontalSpeed=delta.magnitude/Mathf.Max(Time.deltaTime,.001f);

@@ -47,11 +47,24 @@ namespace ServiceGameV2 {
    if(moves[p.Index]!=null){StopCoroutine(moves[p.Index]);moves[p.Index]=null;}
    inDoorway[p.Index]=false;yield return Walk(r,r.transform.position,Floor(HallPoint(p),p),.8f,"WalkBack");
   }
+  // V23: feet that match the floor (Bell "walked weird"): the body moved up to twice as fast as the walk cycle's stride
+  // (an eased 0.8-0.95 s slide with the clip at 0.72 speed). Now the step takes as long as the stride needs, at an even
+  // pace with short ease-in/out, the cycle is played at the speed that matches it, and root motion is off.
+  public static float LastWalkPace,LastWalkPlayback;
   IEnumerator Walk(GameObject r,Vector3 from,Vector3 to,float seconds,string state){
-   Animate(r,state,.72f);float t=0;
-   while(t<seconds){t+=Time.deltaTime;float k=Mathf.SmoothStep(0,1,Mathf.Clamp01(t/seconds));r.transform.position=Vector3.Lerp(from,to,k);yield return null;}
+   float dist=Vector3.Distance(new Vector3(from.x,0,from.z),new Vector3(to.x,0,to.z));float natural=NaturalSpeed(r,state);
+   float duration=Mathf.Max(seconds,dist/Mathf.Max(.2f,natural*.95f));float pace=dist/Mathf.Max(.01f,duration);float playback=Mathf.Clamp(pace/Mathf.Max(.2f,natural),.55f,1.1f);
+   LastWalkPace=pace;LastWalkPlayback=playback;Animate(r,state,playback);float t=0;
+   while(t<duration){t+=Time.deltaTime;float u=Mathf.Clamp01(t/duration);float k=Ease(u);r.transform.position=Vector3.Lerp(from,to,k);yield return null;}
    r.transform.position=to;Animate(r,"Idle",1);
   }
+  // even pace with a short ease at each end (the first and last 15% of the step)
+  static float Ease(float u){const float e=.15f;float v=1f/(1f-e);if(u<e)return v*u*u/(2*e);if(u>1-e){float w=1-u;return 1-v*w*w/(2*e);}return v*(u-e*.5f);}
+  static float NaturalSpeed(GameObject r,string state){float best=0;
+   foreach(var a in r.GetComponentsInChildren<Animator>(true)){if(!a||!a.runtimeAnimatorController)continue;a.applyRootMotion=false;
+    foreach(var c in a.runtimeAnimatorController.animationClips){if(!c)continue;bool back=state.Contains("Back");bool isBack=c.name.ToLowerInvariant().Contains("back");if(back!=isBack||!c.name.ToLowerInvariant().Contains("walk"))continue;
+     float v=new Vector2(c.averageSpeed.x,c.averageSpeed.z).magnitude*Mathf.Max(.01f,a.transform.lossyScale.y);if(v>best)best=v;}}
+   return best>.2f&&best<3f?best:(state.Contains("Back")?.8f:1.2f);}
   static void Animate(GameObject r,string state,float speed){
    foreach(var a in r.GetComponentsInChildren<Animator>(true)){if(!a||!a.isActiveAndEnabled||!a.runtimeAnimatorController)continue;int h=Animator.StringToHash(state);if(!a.HasState(0,h))continue;a.speed=speed;a.CrossFadeInFixedTime(h,.25f,0);}
   }

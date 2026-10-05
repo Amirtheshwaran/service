@@ -20,6 +20,9 @@ namespace ServiceGameV2 {
   public int CreatureVariant;
   public Bounds InteriorBounds;
   public Vector3[] ApproachRoute;
+  // V23: how far along ApproachRoute (in the corridor's measure, which starts at 3 m) the car may go: the end of the
+  // parking pad by the house; the gravel footpath beyond it is for walking. 0 = not set (the old 9 m pull-off rule).
+  public float DriveLength;
   // V20 navigation: the numbered mailbox at the drive mouth, which side of the road it is on (+1 = right travelling north)
   // and its distance along the road from the depot (County Route 9 continues the count past the barricade).
   public Transform Mailbox;public int RoadSide;public float RoadDistance;
