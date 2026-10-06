@@ -208,7 +208,7 @@ namespace ServiceGameV2 {
    // ---- NIGHT TWO: the same five addresses, and they are wrong now.
    if(Want("06")){d.BeginShift(1);d.PaperOpen=false;d.Docket.Find(e=>e.Property==0).Result=ServiceResult.Served;Begin("06-night2-harrow-watcher");yield return CardDone();yield return ArriveAt(P(3),"Harrow drive");yield return ExitCar();var p=P(3);yield return ToDoor(p);yield return ReadNote(p);yield return Knock(p);
     yield return Deliver(p);yield return Wait(1.5f);
-    if(d.Horror.Active&&d.Horror.Agent){var e=d.Horror.Agent.transform.position;var awayP=d.Scene.View.transform.position*2-e;awayP.y=d.Scene.View.transform.position.y;yield return Look(awayP,.9f);float t=Time.time+16;while(d.Horror.Active&&!d.Horror.Caught&&Time.time<t)yield return null;Note($"watcher: caught={d.Horror.Caught} active={d.Horror.Active}");}
+    if(d.Horror.Active&&d.Horror.Agent){var e=d.Horror.Agent.transform.position;var awayP=d.Scene.View.transform.position*2-e;awayP.y=d.Scene.View.transform.position.y;yield return Look(awayP,.9f);float t=Time.time+16,nx=0;while(d.Horror.Active&&!d.Horror.Caught&&Time.time<t){if(d.Horror.NerveActive&&Time.time>nx){nx=Time.time+.3f;d.Horror.SteadyNerve();}yield return null;}Note($"watcher: caught={d.Horror.Caught} active={d.Horror.Active}, held your nerve with {d.Horror.NervePresses} presses");}
     yield return Wait(2f);if(!d.Horror.Caught){yield return Walk(p.Door.position+Outward(p)*1.8f,"out of Harrow");yield return Walk(d.Scene.Car.position-d.Scene.Car.right*2.2f,"Harrow car");}yield return Wait(1f);End();}
    if(Want("07")){d.BeginShift(1);d.PaperOpen=false;NoCard();foreach(var i in new[]{0,3,1})d.Docket.Find(e=>e.Property==i).Result=ServiceResult.Served;Begin("07-night2-bell-back-room-and-the-door");var p=P(4);yield return ArriveAt(p,"Bell drive");yield return ExitCar();yield return ToDoor(p);yield return ReadNote(p);yield return Knock(p);yield return Deliver(p);yield return Wait(1.5f);
     yield return Walk(p.Door.position+Outward(p)*1.8f,"out of the house");
@@ -231,7 +231,7 @@ namespace ServiceGameV2 {
     {var lr=d.Scene.LateRoute;string Pt(Vector3 v)=>$"({v.x:F1},{v.z:F1})";Note("r9 late route "+(lr==null?"none":string.Join(" ",lr.Where(t=>t).Select(t=>Pt(t.position)))));Note("r9 late mesh line ends "+(late.Count>0?Pt(late[0])+" .. "+Pt(late[late.Count-1]):"none")+", cut "+cut);
      Note("r9 approach "+string.Join(" ",p.ApproachRoute.Select(Pt))+" gate "+Pt(p.Gate.position)+" driveLength "+p.DriveLength.ToString("F1"));
      Note("r9 seg tail "+string.Join(" ",seg.Skip(Mathf.Max(0,seg.Count-8)).Select(v=>Pt(v)+" ex "+d.Player.Roads.Excess(v).ToString("F1"))));}
-    d.Player.TeleportCar(seg[0]+Vector3.up*.3f,Quaternion.LookRotation(Flat(seg[1]-seg[0])));yield return Wait(.5f);yield return Drive(seg,10,"Route 9 to the parcel",true,140);
+    d.Player.TeleportCar(seg[0]+Vector3.up*.3f,Quaternion.LookRotation(Flat(seg[1]-seg[0])));yield return Wait(.5f);yield return Drive(seg,10,"Route 9 to the parcel",true,140);Note($"roadside blink: shows {d.Blink.Shows}, last spot {d.Blink.LastSpot}; {d.Blink.RoadDebug}");
     yield return ExitCar();yield return ToDoor(p);yield return ReadNote(p);yield return Knock(p);yield return Deliver(p);yield return LookAtFire(p);yield return Wait(3f);yield return Look(p.Door.position+Vector3.up*1.4f,1.2f);yield return Wait(3f);
     foreach(var e in d.Docket)e.Result=ServiceResult.Served;d.Player.TeleportCar(new Vector3(-10,.3f,-1),Quaternion.Euler(0,0,0));d.Player.EnterCar();yield return Wait(.5f);d.Player.StopEngine();yield return Wait(.5f);if(d.CanFinish)d.TryFinishShift();yield return Wait(4f);d.NextShift();yield return Wait(14f);End();}
    // ---- V21: the county road end to end (verges, drive aprons, the closure) with the dice on the mirror; then grass and the torch.
@@ -261,6 +261,13 @@ namespace ServiceGameV2 {
     yield return Walk(dense,"into the verge grass");var along=Vector3.Cross(Vector3.up,side);yield return Walk(dense+along*6,"along the verge");
     d.ToggleTorch();yield return Wait(1.2f);d.ToggleTorch();yield return Wait(1f);Note("grass rustles "+(d.Foliage?d.Foliage.Rustles:-1));
     yield return Walk(car.position+side*2.2f,"back to the car",true);yield return Wait(1f);End();}
+   // ---- V25: the Correll branch (night one you told Walter somebody ought to do something about the dog)
+   if(Want("16")){d.BeginShift(1);d.PaperOpen=false;NoCard();d.CorrellBranch=true;Begin("16-night2-correll-branch");var p=P(0);
+    yield return ArriveAt(p,"Correll drive");yield return ExitCar();yield return ToDoor(p);yield return Knock(p);
+    {float t=Time.time+40;while(d.Busy&&Time.time<t)yield return null;}Note("walter chasing "+d.Walter.Chasing+", rex gone "+(d.Life.DogTransform&&!d.Life.DogTransform.gameObject.activeInHierarchy));
+    yield return Walk(d.Scene.Car.position-d.Scene.Car.right*2.2f,"run from Walter to the car",true,40,()=>d.Phase!=ServicePhase.Playing||d.CanEnterCar);
+    if(d.CanEnterCar){d.Player.EnterCar();yield return Wait(.4f);d.Player.StartEngine();yield return Wait(1.2f);float t=Time.time+6;while(Time.time<t&&d.Walter.Chasing){d.Player.SmokeThrottle=.8f;yield return null;}d.Player.SmokeThrottle=0;d.Player.SmokeBrake=true;yield return Wait(1f);d.Player.SmokeBrake=false;}
+    Note($"walter: escaped {d.Walter.Escaped}, caught {d.Walter.Catches}, closest {d.Walter.Closest:F1} m");yield return Wait(2.5f);d.CorrellBranch=false;End();}
    if(Want("12")){Begin("12-menus-title-options-pause");var menus=FindAnyObjectByType<ServiceMenus>();d.Title();Note("title, intro card");yield return Wait(7f);Note("menus "+(menus?menus.SmokeState:"missing"));
     if(menus){yield return Wait(3f);
      menus.SmokeSelect("NEW ROUTE");yield return Wait(.9f);menus.SmokeSelect("OPTIONS");yield return Wait(.9f);menus.SmokeSelect("QUIT");yield return Wait(.9f);menus.SmokeSelect("OPTIONS");yield return Wait(.7f);menus.SmokeSubmit();Note("options "+menus.SmokeState);yield return Wait(2f);

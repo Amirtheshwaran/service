@@ -114,6 +114,17 @@ namespace ServiceGameV2 {
    var back=s0.position-E;back.y=0;H=back.sqrMagnitude>.01f?s0.position+back.normalized*1.0f:s0.position;
    if(UnityEngine.AI.NavMesh.SamplePosition(H,out var hs,.6f,UnityEngine.AI.NavMesh.AllAreas)&&Mathf.Abs(hs.position.y-s0.position.y)<.3f)H=hs.position;else H=s0.position;
    return true;}
+  // V25: a spot in the doorway where its body is behind the frame and its near shoulder clears it, from this eye
+  public static bool PeekPoint(ServiceProperty p,Vector3 eye,Vector3 towardYou,out Vector3 hidden,out Vector3 peek,out Vector3 side,Transform observer=null){
+   hidden=peek=side=Vector3.zero;if(!p||!p.EntitySpawn)return false;var D=p.EntitySpawn.position;
+   if(UnityEngine.AI.NavMesh.SamplePosition(D,out var ds,1f,UnityEngine.AI.NavMesh.AllAreas))D=ds.position;
+   var f=towardYou;f.y=0;if(f.sqrMagnitude<.01f)return false;f.Normalize();var r=Vector3.Cross(Vector3.up,f);
+   float best=9;bool found=false;
+   foreach(float sgn in new[]{1f,-1f})for(float o=.2f;o<=1.1f;o+=.1f){var P=D-f*.25f+r*sgn*o;
+     bool bodyHidden=!ServiceInteraction.Clear(eye,P+Vector3.up*1.25f,null,observer);
+     var edge=P-r*sgn*.3f;bool edgeSeen=ServiceInteraction.Clear(eye,edge+Vector3.up*1.55f,null,observer);
+     if(bodyHidden&&edgeSeen&&o<best){best=o;found=true;side=r*sgn;hidden=P+r*sgn*.35f;peek=P-r*sgn*.12f;}}
+   return found;}
   static Vector3 Along(Vector3[] c,float need){var E=c[0];for(int i=1;i<c.Length;i++){var seg=c[i]-c[i-1];float len=seg.magnitude;if(len>=need)return c[i-1]+seg.normalized*need;need-=len;E=c[i];}return E;}
   void ValeHall(){
    var ent=d.Scene.Entity;var p=d.Property(1);if(!ent||!p)return;
@@ -134,21 +145,24 @@ namespace ServiceGameV2 {
    var agent=ent.GetComponent<UnityEngine.AI.NavMeshAgent>();if(agent)agent.enabled=false;
    int v=Mathf.Clamp(p.CreatureVariant,0,d.Scene.EntityVariants!=null?d.Scene.EntityVariants.Length-1:0);
    if(d.Scene.EntityVariants!=null)for(int i=0;i<d.Scene.EntityVariants.Length;i++)d.Scene.EntityVariants[i].SetActive(i==v);
-   valeE=E;valeH=H;valeWalk=Mathf.Clamp(Vector3.Distance(H,E)/1.4f,1.6f,3.4f);valeBase=view.transform.position;var face=valeBase-H;face.y=0;ent.transform.SetPositionAndRotation(H,Quaternion.LookRotation(face.sqrMagnitude>.01f?face:Vector3.forward));ent.SetActive(true);
-   valeBody=ent;ValeStage=1;valeT=Time.time;Play(ent,"Emerging",.2f);
+   valePeek=PeekPoint(p,view.transform.position,E-(p.EntitySpawn?p.EntitySpawn.position:E),out var hid,out var pk,out _,d.Scene.Walker.transform);
+   if(valePeek){valeH=hid;valeE=pk;valeWalk=1.3f;}else{valeE=E;valeH=H;valeWalk=Mathf.Clamp(Vector3.Distance(H,E)/1.4f,1.6f,3.4f);}
+   valeBase=view.transform.position;var face=valeBase-valeH;face.y=0;ent.transform.SetPositionAndRotation(valeH,Quaternion.LookRotation(face.sqrMagnitude>.01f?face:Vector3.forward));ent.SetActive(true);
+   valeBody=ent;ValeStage=1;valeT=Time.time;Play(ent,valePeek?"Watching":"Emerging",.2f);PeekHold=0;
   }
   float valeWalk=1.6f,valeUpFor,valeClearFor;bool valeCreaked;public bool ValeCreaked=>valeCreaked;
+  bool valePeek;public bool ValePeeked=>valePeek;public float PeekHold {get;private set;} // seconds it held, leaning out, last time
   void RunVale(GameObject ent,ServiceProperty p){
    var view=d.Scene.View.transform;var w=d.Scene.Walker.transform.position;
    // gone at once if something else needs it, or you leave
    if(!ent.activeSelf||d.Horror.Active||d.Horror.Caught||d.Player.InCar||!Inside(1)){EndVale(false);return;}
    float t=Time.time-valeT;var at=ent.transform.position;float near=Vector3.Distance(new Vector3(w.x,at.y,w.z),at);
-   bool rushed=near<4.5f||(d.Player.Running&&near<9f);
+   bool rushed=valePeek?near<3f:(near<4.5f||(d.Player.Running&&near<9f));
    if(rushed&&ValeStage<3){ValeStage=3;valeT=Time.time-.0001f;valeE=at;valeDur=.9f;Play(ent,"Retreating",.15f);t=0;}
    else if(rushed&&ValeStage==3&&valeDur>.9f){valeE=at;valeT=Time.time-.0001f;valeDur=.9f;t=0;}
    var look=view.position-at;look.y=0;if(look.sqrMagnitude>.01f)ent.transform.rotation=Quaternion.RotateTowards(ent.transform.rotation,Quaternion.LookRotation(look),90*Time.deltaTime);
    if(ValeStage==1){float k=Mathf.Clamp01(t/valeWalk);ent.transform.position=Vector3.Lerp(valeH,valeE,Mathf.SmoothStep(0,1,k));if(k>=1){ValeStage=2;valeT=Time.time;Play(ent,"Watching",.25f);d.Audio.HorrorAt("breath",valeE+Vector3.up*1.4f,.2f);if(d.Dread)d.Dread.Pulse(.35f);}}
-   else if(ValeStage==2){if(t>1.8f){ValeStage=3;valeT=Time.time;valeDur=Mathf.Max(2.2f,valeWalk*1.1f);Play(ent,"Retreating",.2f);}}
+   else if(ValeStage==2){PeekHold=t;if(t>(valePeek?3.5f:3f)){ValeStage=3;valeT=Time.time;valeDur=valePeek?1.1f:Mathf.Max(2.2f,valeWalk*1.1f);if(!valePeek)Play(ent,"Retreating",.2f);}}
    else{float k=Mathf.Clamp01(t/valeDur);ent.transform.position=Vector3.Lerp(valeE,valeH,Mathf.SmoothStep(0,1,k));if(k>=1)EndVale(true);}
   }
   void EndVale(bool seen){

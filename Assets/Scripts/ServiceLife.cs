@@ -53,9 +53,11 @@ namespace ServiceGameV2 {
   void State(string name){if(name==curState)return;if(dogAnim&&dogAnim.isActiveAndEnabled&&dogAnim.HasState(0,Animator.StringToHash(name))){curState=name;dogAnim.CrossFadeInFixedTime(name,name=="Run"?.15f:.35f);}}
   public void Bark(){if(!dog||DogBusy)return;d.Audio.DogAt(dog.position+Vector3.up*.4f,.32f);barkUntil=Time.time+2.2f;if(!playing){playing=true;State("Playing");}}
   void Update(){if(!d||d.Phase!=ServicePhase.Playing||d.PaperOpen)return;
-   bool rex=dog&&model&&(petting||Rex()); // V23: a pet owns him while it lasts
+   // V25 the Correll branch: from night two Rex is simply gone
+   bool gone=d.CorrellBranch&&d.NightIndex>=1;if(dog&&dog.gameObject.activeSelf==gone)dog.gameObject.SetActive(!gone);
+   bool rex=!gone&&dog&&model&&(petting||Rex()); // V23: a pet owns him while it lasts
    YieldBody();
-   if(dog&&model&&!rex){
+   if(dog&&model&&!rex&&!gone){
     // The dog watches whoever is walking up: it turns its body toward the player in short, unhurried turns and
     // shifts between its breathing and playful idles, rather than sitting in the path like a statue.
     var to=d.Scene.View.transform.position-dog.position;to.y=0;float distance=to.magnitude;
@@ -140,7 +142,7 @@ namespace ServiceGameV2 {
   void Go(DogMode m){if(Mode==m)return;Mode=m;modeSince=Time.time;nextPath=0;escortGoal=Vector3.zero;if(m!=DogMode.Porch)porchPicked=false;if(m==DogMode.Escort)weaveFlip=Time.time+Random.Range(1.2f,2.2f);if(m==DogMode.Home){if(dogAnim)dogAnim.speed=1;State("Breathing");nextIdle=Time.time+Random.Range(3f,6f);}}
   // V23: pet Rex - only when he is calm (at home, or hushed, or at the steps once Walter has him) and you are right by him
   bool petting;public bool Petting=>petting;public int Pets {get;private set;}
-  public bool CanPet(Vector3 w){if(!dog||!model||petting||d.Player.InCar||d.Busy||d.Horror.Active||d.Horror.Caught)return false;if(Time.time<barkUntil+.4f)return false;
+  public bool CanPet(Vector3 w){if(!dog||!model||!dog.gameObject.activeInHierarchy||petting||d.Player.InCar||d.Busy||d.Horror.Active||d.Horror.Caught)return false;if(Time.time<barkUntil+.4f)return false;
    bool calm=Mode==DogMode.Home||Mode==DogMode.Hushed||(Mode==DogMode.Porch&&Time.time-porchSince>30f);if(!calm)return false;
    // on his level: from the porch or the steps he cannot come up to your hand (he never climbs them), so step down to him
    var cc=d.Scene.Walker;if(cc&&Mathf.Abs(cc.bounds.min.y-dog.position.y)>.3f)return false;

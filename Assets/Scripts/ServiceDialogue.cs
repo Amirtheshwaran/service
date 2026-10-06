@@ -13,6 +13,7 @@ namespace ServiceGameV2 {
   // V21: keys pressed in the pause menu (or on the frame it closes) must not reach the conversation.
   bool Live=>d.Phase==ServicePhase.Playing&&Time.frameCount>d.ResumedFrame;
   public static bool TourPacing; // review tour: real reading pace even under -serviceSmoke
+  public static int ForcePick=-1; // V25 tests: answer with this choice where a step has it
   public bool Active {get;private set;}
   public string Speaker {get;private set;}="";
   public string Line {get;private set;}="";
@@ -27,7 +28,7 @@ namespace ServiceGameV2 {
     if(s.Choices.Length==0)continue;
     Choices=s.Choices;int pick=-1;float auto=Time.time+.4f;
     while(pick<0){
-     if(d.IsSmoke&&Time.time>auto+(TourPacing?1.6f:0))pick=TourPacing?Mathf.Min(s.Choices.Length-1,(int)(Time.time*7)%s.Choices.Length):0;
+     if(d.IsSmoke&&Time.time>auto+(TourPacing?1.6f:0))pick=ForcePick>=0&&ForcePick<s.Choices.Length?ForcePick:TourPacing?Mathf.Min(s.Choices.Length-1,(int)(Time.time*7)%s.Choices.Length):0;
      var k=Keyboard.current;
      if(k!=null&&Live){if(k.digit1Key.wasPressedThisFrame||k.numpad1Key.wasPressedThisFrame)pick=0;else if(s.Choices.Length>1&&(k.digit2Key.wasPressedThisFrame||k.numpad2Key.wasPressedThisFrame))pick=1;else if(s.Choices.Length>2&&(k.digit3Key.wasPressedThisFrame||k.numpad3Key.wasPressedThisFrame))pick=2;}
      yield return null;

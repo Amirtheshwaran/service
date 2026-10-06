@@ -46,7 +46,7 @@ namespace ServiceGameV2 {
    if(intro&&introShade){introShade.color=new Color(0,0,0,d.Presentation.IntroBackgroundAlpha);introWords.alpha=d.Presentation.IntroTextAlpha;}
    if(contactShade)contactShade.color=new Color(.65f,.62f,.56f,d.Storm.FlashesEnabled?d.Horror.ImpactAlpha:0);
    if(noteMark)PlaceNoteMark();
-   StaminaMeter();
+   StaminaMeter();NerveMeter();
    if(carPin){var pos=ServiceRouteMap.Project(d.Scene.Car.position,worldBounds,mapPanel);carPin.anchoredPosition=new Vector2(pos.x,-pos.y);carHeading.localRotation=Quaternion.Euler(0,0,-d.Scene.Car.eulerAngles.y);}
   }
   // V23: a breath meter, bottom right, on foot only - always there, dim while you are rested, bright while it drains,
@@ -66,6 +66,16 @@ namespace ServiceGameV2 {
    staminaFill.rectTransform.sizeDelta=new Vector2(188*st,4);
    bool winded=p&&p.Winded;staminaFill.color=winded?new Color(.86f,.24f,.2f,.75f+.25f*Mathf.Sin(Time.unscaledTime*9f)):st<.3f?new Color(.95f,.72f,.42f,.95f):new Color(1,1,1,.92f);
    staminaLabel.text=winded?"OUT OF BREATH":"STAMINA";}
+  // V25: the nerve meter while the watcher stands behind you - "E  HOLD YOUR NERVE", the bar is your fear
+  RectTransform nerveLayer;Image nerveFill;Text nerveLabel;CanvasGroup nerveGroup;public float NerveShown=>nerveGroup?nerveGroup.alpha:0;
+  void NerveMeter(){
+   if(!nerveLayer){nerveLayer=Area("Nerve layer",new Rect(0,0,1280,720),canvas.transform);nerveLayer.anchorMin=nerveLayer.anchorMax=nerveLayer.pivot=new Vector2(.5f,.5f);nerveLayer.anchoredPosition=Vector2.zero;
+    nerveGroup=nerveLayer.gameObject.AddComponent<CanvasGroup>();nerveGroup.blocksRaycasts=false;nerveGroup.interactable=false;nerveGroup.alpha=0;
+    nerveLabel=Label(new Rect(440,500,400,24),"E   HOLD YOUR NERVE",16,new Color(1,1,1,.9f),nerveLayer);nerveLabel.alignment=TextAnchor.LowerCenter;Shade(nerveLabel);
+    Block(new Rect(490,530,300,10),new Color(0,0,0,.65f),nerveLayer);nerveFill=Block(new Rect(492,532,296,6),Color.white,nerveLayer);}
+   nerveLayer.SetAsLastSibling();var h=d.Horror;bool show=d.Phase==ServicePhase.Playing&&h&&h.NerveActive;
+   nerveGroup.alpha=Mathf.MoveTowards(nerveGroup.alpha,show?1:0,Time.unscaledDeltaTime*4f);float f=h?Mathf.Clamp01(h.Fear):0;
+   nerveFill.rectTransform.sizeDelta=new Vector2(296*f,6);nerveFill.color=f>.75f?new Color(.9f,.2f,.18f,.8f+.2f*Mathf.Sin(Time.unscaledTime*12f)):new Color(1,.86f-f*.5f,.8f-f*.6f,.95f);}
   // V21: night cards are typed by ServiceTimecard.
   bool ShiftCard=>false;
   void Rebuild(bool intro,string context,bool card){if(root){root.gameObject.SetActive(false);Destroy(root.gameObject);}firstButton=null;carPin=carHeading=null;noteMark=null;promptPlate=null;promptLabel=null;NoteTranscript="";introShade=contactShade=cardShade=null;cardWords=null;MapPins=MapSegments=0;root=Area("Screen",new Rect(0,0,1280,720),canvas.transform);root.anchorMin=root.anchorMax=root.pivot=new Vector2(.5f,.5f);root.anchoredPosition=Vector2.zero;
@@ -83,7 +93,7 @@ namespace ServiceGameV2 {
    var stamp=Label(new Rect(800,606,420,40),stamps[Mathf.Clamp(d.NightIndex,0,2)],25,null,words);stamp.alignment=TextAnchor.MiddleRight;
    var clock=Label(new Rect(800,644,420,40),d.ShiftTime.ToUpperInvariant(),25,null,words);clock.alignment=TextAnchor.MiddleRight;}
   void Epilogue(){Shade(1);Label(new Rect(190,150,900,40),"Hollis County, 1998",18,muted);Rule(190,204,58,accent);
-   var text=Label(new Rect(190,232,900,300),ServiceScript.Epilogue,20);text.alignment=TextAnchor.UpperLeft;text.lineSpacing=1.15f;
+   var text=Label(new Rect(190,232,900,300),string.IsNullOrEmpty(d.EndingText)?ServiceScript.Epilogue:d.EndingText,20);text.alignment=TextAnchor.UpperLeft;text.lineSpacing=1.15f;
    Action(new Rect(190,600,320,40),"Return to title",()=>d.Title());}
   void Shade(float alpha=.86f){Block(new Rect(-1000,-1000,3280,2720),new Color(.015f,.021f,.026f,alpha));}
   void Title(){if(options){Settings();return;}Shade(.1f);Block(new Rect(0,0,490,720),new Color(.015f,.022f,.026f,.67f));

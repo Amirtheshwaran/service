@@ -60,12 +60,12 @@ namespace ServiceGameV2 {
   }
   // even pace with a short ease at each end (the first and last 15% of the step)
   static float Ease(float u){const float e=.15f;float v=1f/(1f-e);if(u<e)return v*u*u/(2*e);if(u>1-e){float w=1-u;return 1-v*w*w/(2*e);}return v*(u-e*.5f);}
-  static float NaturalSpeed(GameObject r,string state){float best=0;
+  public static float NaturalSpeed(GameObject r,string state){float best=0;
    foreach(var a in r.GetComponentsInChildren<Animator>(true)){if(!a||!a.runtimeAnimatorController)continue;a.applyRootMotion=false;
     foreach(var c in a.runtimeAnimatorController.animationClips){if(!c)continue;bool back=state.Contains("Back");bool isBack=c.name.ToLowerInvariant().Contains("back");if(back!=isBack||!c.name.ToLowerInvariant().Contains("walk"))continue;
      float v=new Vector2(c.averageSpeed.x,c.averageSpeed.z).magnitude*Mathf.Max(.01f,a.transform.lossyScale.y);if(v>best)best=v;}}
    return best>.2f&&best<3f?best:(state.Contains("Back")?.8f:1.2f);}
-  static void Animate(GameObject r,string state,float speed){
+  public static void Animate(GameObject r,string state,float speed){
    foreach(var a in r.GetComponentsInChildren<Animator>(true)){if(!a||!a.isActiveAndEnabled||!a.runtimeAnimatorController)continue;int h=Animator.StringToHash(state);if(!a.HasState(0,h))continue;a.speed=speed;a.CrossFadeInFixedTime(h,.25f,0);}
   }
   static Vector3 Floor(Vector3 at,ServiceProperty p){
@@ -87,6 +87,8 @@ namespace ServiceGameV2 {
    foreach(int i in new[]{0,4}){var r=For(i);if(r&&r.activeInHierarchy&&answering[i])LastClearance=Mathf.Min(LastClearance,LeafGap(d.Property(i),r.transform.position)-.26f);}
   }
   public void ResetClearance(){LastClearance=99;}
+  // V25: hand a resident over (Walter coming out after you): stop whatever step he was taking
+  public void Release(int index){if(index<0||index>5)return;if(moves[index]!=null){StopCoroutine(moves[index]);moves[index]=null;}inDoorway[index]=false;var r=For(index);if(r)foreach(var g in r.GetComponentsInChildren<ServiceGrounding>(true))g.Ignore=null;}
   public void ResetAll(){for(int i=0;i<6;i++){if(moves[i]!=null){StopCoroutine(moves[i]);moves[i]=null;}answering[i]=inDoorway[i]=false;}if(Correll)Correll.SetActive(false);if(Bell)Bell.SetActive(false);}
  }
 }

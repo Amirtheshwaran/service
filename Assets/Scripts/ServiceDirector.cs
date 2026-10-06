@@ -56,6 +56,10 @@ namespace ServiceGameV2
         public int WhosThereCalls {get;private set;}
         public ServiceTorchExposure TorchExposure {get;private set;}
         public ServiceBooks Books {get;private set;}
+        public ServiceBlink Blink {get;private set;} // V25: blink, and someone is standing there
+        // V25 the Correll branch: set by a night-one reply, saved with the route; ServiceWalter runs the night-two chase
+        public bool CorrellBranch {get;set;} public bool AllowBranchInTests; public int CorrellTurns {get;private set;}
+        public ServiceWalter Walter {get;private set;} public string EndingText {get;private set;}
         public bool IsFriendly(int index)=>index==0||(index==4&&NightIndex==0);
         // V20 slow burn: night one has no monsters. Night two: Harrow's watcher, the Morrow chase, and Bell's door on the
         // walk back (armed when the papers are left in his back room). Night three: Vale.
@@ -123,7 +127,7 @@ namespace ServiceGameV2
             ConfigureNight(0);
             Player.EnterCar();
             Storm=gameObject.AddComponent<ServiceStorm>();Storm.Initialize(this);
-            Presentation=gameObject.AddComponent<ServicePresentation>();Presentation.Initialize(this);Guide=gameObject.AddComponent<ServiceRouteGuide>();Guide.Initialize(this);Omens=gameObject.AddComponent<ServiceOmens>();Omens.Initialize(this);TorchExposure=gameObject.AddComponent<ServiceTorchExposure>();TorchExposure.Initialize(this);Books=gameObject.AddComponent<ServiceBooks>();Books.Initialize(this);Dread=gameObject.AddComponent<ServiceDread>();Dread.Initialize(this);Timecard=gameObject.AddComponent<ServiceTimecard>();Timecard.Initialize(this);Foliage=gameObject.AddComponent<ServiceFoliage>();Foliage.Initialize(this);gameObject.AddComponent<ServiceWorldEdge>().Initialize(this);
+            Presentation=gameObject.AddComponent<ServicePresentation>();Presentation.Initialize(this);Guide=gameObject.AddComponent<ServiceRouteGuide>();Guide.Initialize(this);Omens=gameObject.AddComponent<ServiceOmens>();Omens.Initialize(this);TorchExposure=gameObject.AddComponent<ServiceTorchExposure>();TorchExposure.Initialize(this);Books=gameObject.AddComponent<ServiceBooks>();Books.Initialize(this);Blink=gameObject.AddComponent<ServiceBlink>();Blink.Initialize(this);Walter=gameObject.AddComponent<ServiceWalter>();Walter.Initialize(this);Dread=gameObject.AddComponent<ServiceDread>();Dread.Initialize(this);Timecard=gameObject.AddComponent<ServiceTimecard>();Timecard.Initialize(this);Foliage=gameObject.AddComponent<ServiceFoliage>();Foliage.Initialize(this);gameObject.AddComponent<ServiceWorldEdge>().Initialize(this);
             Vehicle=gameObject.AddComponent<ServiceVehiclePresentation>();Vehicle.Initialize(this);
             Life=gameObject.AddComponent<ServiceLife>();Life.Initialize(this);
             SetCursor();
@@ -172,7 +176,8 @@ namespace ServiceGameV2
             if (Pressed(Key.F)) ToggleTorch();
             // E also looks over the right shoulder while sprinting, so reaching the car must not depend on releasing Shift first.
             bool nearCar = CanEnterCar;
-            if (Pressed(Key.E) && nearCar) Player.EnterCar();
+            if (Horror!=null&&Horror.NerveActive) { if (Pressed(Key.E)) Horror.SteadyNerve(); } // V25: E holds your nerve while it stands behind you
+            else if (Pressed(Key.E) && nearCar) Player.EnterCar();
             else if (Pressed(Key.E)&&!Player.InteractionSuppressed)
             {
                 if (CanFinish) TryFinishShift();
@@ -249,7 +254,7 @@ namespace ServiceGameV2
             if(Dialogue)Dialogue.Cancel();
             ResetResidents();
             ApplyScriptText(NightIndex);
-            ConfigureNight(NightIndex);if(Life)Life.ResetForShift();if(Guide)Guide.ResetForShift();if(Omens)Omens.ResetForShift();if(Dread)Dread.ResetForShift();if(Books)Books.ResetForShift();
+            ConfigureNight(NightIndex);if(Life)Life.ResetForShift();if(Guide)Guide.ResetForShift();if(Omens)Omens.ResetForShift();if(Dread)Dread.ResetForShift();if(Books)Books.ResetForShift();if(Blink)Blink.ResetForShift();if(Walter)Walter.ResetForShift();ShowCorrellBlood();
             Horror.ResetEncounter();
             Player.ResetForShift(depotStart, depotRotation);
             lastCarPosition = Scene.Car.position;
@@ -315,10 +320,10 @@ namespace ServiceGameV2
                 if (distance > 32) continue;
                 linger[i] += dt;
                 bool pending = Docket.Exists(e => e.Property == p.Index && e.Result == ServiceResult.Pending);
-                if (distance < 16 && !arrived[i] && pending) { arrived[i] = true; var line = ServiceScript.Arrival(p.Index, NightIndex); if (line != null && string.IsNullOrEmpty(Notice)) Say(line); }
+                if (distance < 16 && !arrived[i] && pending) { arrived[i] = true; var line = p.Index==0&&CorrellBranch&&NightIndex>=1?ServiceScript.WalterArrivalBranch:ServiceScript.Arrival(p.Index, NightIndex); if (line != null && string.IsNullOrEmpty(Notice)) Say(line); }
                 if (!inside[i] && pending && p.InteriorBounds.Contains(Scene.Walker.transform.position + Vector3.up * .3f) && Vector3.Dot(Scene.Walker.transform.position - p.Door.position, Outward(p)) < -0.8f) { inside[i] = true; var t = ServiceScript.For(p.Index); if (t != null && !string.IsNullOrEmpty(t.Inside)) Say(t.Inside); if (p.Index == 2) StartCoroutine(Later(7.5f, ServiceScript.ParcelInside)); }
                 if (NightIndex > 0 && !stallArmed && !IsFriendly(p.Index) && !(p.Index == 4 && NightIndex == 1) && linger[i] > 24) { stallArmed = true; Player.IgnitionDelayPending = true; }
-                if (i == 0 && distance > 11 && Time.time > nextDog && !(Life && Life.DogBusy))
+                if (i == 0 && distance > 11 && Time.time > nextDog && !(Life && Life.DogBusy) && !(CorrellBranch && NightIndex >= 1)) // V25: no dog on the branch nights
                 {
                     if(Life)Life.Bark();
                     SayDogLine();
@@ -457,7 +462,7 @@ namespace ServiceGameV2
             {
                 if(p.WindowLight)p.WindowLight.enabled=true;
                 // V23: somebody calls out from inside before the door opens ("Who's there?"), with a cough at the door
-                var call=ServiceScript.WhosThere(entry.Property,NightIndex);
+                var call=entry.Property==0&&CorrellBranch&&NightIndex>=1?ServiceScript.WalterCallBranch:ServiceScript.WhosThere(entry.Property,NightIndex);
                 if(!string.IsNullOrEmpty(call)&&Dialogue){Audio.HorrorAt("voiceinside",p.Door.position+Vector3.up*1.5f+p.Inward*2.5f,.55f);yield return new WaitForSeconds(.45f);
                     yield return Dialogue.Run(ServiceScript.Resident(entry.Property),new[]{new ServiceDialogue.Step(call)});WhosThereCalls++;}
                 Audio.DoorAt(p.Door.position);
@@ -467,9 +472,12 @@ namespace ServiceGameV2
                 // V21: the resident waits back in the hall until the leaf is open, then steps up into the doorway.
                 float answerWait=0;while(answerWait<2.6f&&residents&&!residents.InDoorway(p.Index)){answerWait+=Time.deltaTime;yield return null;}
                 yield return new WaitForSeconds(.25f);
+                if(entry.Property==0&&CorrellBranch&&NightIndex>=1){yield return CorrellTurn(entry,p);Busy=false;yield break;}
                 var talk=ServiceScript.Doorstep(entry.Property,NightIndex);
                 if(entry.Property==0&&Life)Life.Hush(); // V22: "Rex, hush."
-                if(talk.HasValue&&Dialogue)yield return Dialogue.Run(talk.Value.speaker,talk.Value.steps);
+                // V25: night one at Walter's, "Somebody ought to do something about that dog." starts the Correll branch
+                int stepNo=0;System.Action<int> picked=pick=>{if(entry.Property==0&&NightIndex==0&&stepNo==0&&pick==2&&(!IsSmoke||AllowBranchInTests))CorrellBranch=true;stepNo++;};
+                if(talk.HasValue&&Dialogue)yield return Dialogue.Run(talk.Value.speaker,talk.Value.steps,picked);
                 string after=talk.HasValue?talk.Value.after:"";
                 entry.Result = ServiceResult.Served;
                 if(hands)hands.Play("Give");
@@ -499,6 +507,17 @@ namespace ServiceGameV2
             Busy = false;
         }
 
+        // V25 night two at Walter's when you told him to do something about the dog
+        IEnumerator CorrellTurn(DocketEntry entry,ServiceProperty p){
+            if(Dialogue)yield return Dialogue.Run(ServiceScript.Resident(0),new[]{new ServiceDialogue.Step(ServiceScript.WalterTurnLine1,ServiceScript.WalterTurnChoices,ServiceScript.WalterTurnReplies),new ServiceDialogue.Step(ServiceScript.WalterTurnLine2),new ServiceDialogue.Step(ServiceScript.WalterTurnLine3)});
+            entry.Result=ServiceResult.Served;CorrellTurns++; // the papers never change hands, but this stop is over
+            if(Dread)Dread.Pulse(.7f);Say(ServiceScript.WalterRun);
+            if(!residents)residents=FindAnyObjectByType<ServiceResidents>();if(Walter)Walter.Begin(residents);}
+        void ShowCorrellBlood(){var p=Property(0);var blood=p?p.transform.Find("V25 blood"):null;if(blood)blood.gameObject.SetActive(CorrellBranch&&NightIndex>=1);}
+        // V25: a route that ends early, with its own epilogue (Walter reached you)
+        public void EndWith(string text,Vector3 lookAt){StartCoroutine(EndRoutine(text,lookAt));}
+        IEnumerator EndRoutine(string text,Vector3 lookAt){Busy=true;float t=0;while(t<1.6f){t+=Time.deltaTime;if(Player)Player.GlanceAt(lookAt,false);yield return null;}
+            EndingText=text;PlayerPrefs.DeleteKey(SavePrefix+"night");PlayerPrefs.Save();Busy=false;Phase=ServicePhase.Finished;SetCursor();}
         // V21: the copy appears on the table when the hand lets go of it, not while the hand is still carrying it in.
         void Gesture(string name){var hands=Scene.View.GetComponentInChildren<ServiceHands>();if(hands)hands.Play(name);}
         void ResetResidents(){if(!residents)residents=FindAnyObjectByType<ServiceResidents>();if(residents)residents.ResetAll();}
@@ -525,9 +544,9 @@ namespace ServiceGameV2
         public bool InsideVilla {get {if(Player==null||Player.InCar)return false;return Array.Exists(Scene.Properties,p=>p.InteriorBounds.Contains(Scene.Walker.transform.position+Vector3.up*.3f));}}
         string SavePrefix=>IsSmoke?"SERVICE.test.":IsChaos?"SERVICE.chaos.":"SERVICE.v5.";
         public bool HasSavedRoute=>PlayerPrefs.HasKey(SavePrefix+"night");
-        void SaveRoute(){if(NightIndex<2){PlayerPrefs.SetInt(SavePrefix+"night",NightIndex+1);for(int i=0;i<6;i++)PlayerPrefs.SetInt(SavePrefix+"result"+i,(int)lastResults[i]);}else PlayerPrefs.DeleteKey(SavePrefix+"night");PlayerPrefs.Save();}
-        public void ContinueRoute(){for(int i=0;i<6;i++)lastResults[i]=(ServiceResult)PlayerPrefs.GetInt(SavePrefix+"result"+i,0);BeginShift(Mathf.Clamp(PlayerPrefs.GetInt(SavePrefix+"night",0),0,2));}
-        public void NewRoute(){PlayerPrefs.DeleteKey(SavePrefix+"night");Array.Clear(lastResults,0,lastResults.Length);PlayerPrefs.Save();BeginShift(0);}
+        void SaveRoute(){if(NightIndex<2){PlayerPrefs.SetInt(SavePrefix+"night",NightIndex+1);PlayerPrefs.SetInt(SavePrefix+"correll",CorrellBranch?1:0);for(int i=0;i<6;i++)PlayerPrefs.SetInt(SavePrefix+"result"+i,(int)lastResults[i]);}else PlayerPrefs.DeleteKey(SavePrefix+"night");PlayerPrefs.Save();}
+        public void ContinueRoute(){EndingText=null;CorrellBranch=PlayerPrefs.GetInt(SavePrefix+"correll",0)==1;for(int i=0;i<6;i++)lastResults[i]=(ServiceResult)PlayerPrefs.GetInt(SavePrefix+"result"+i,0);BeginShift(Mathf.Clamp(PlayerPrefs.GetInt(SavePrefix+"night",0),0,2));}
+        public void NewRoute(){EndingText=null;CorrellBranch=false;PlayerPrefs.DeleteKey(SavePrefix+"correll");PlayerPrefs.DeleteKey(SavePrefix+"night");Array.Clear(lastResults,0,lastResults.Length);PlayerPrefs.Save();BeginShift(0);}
         public void SaveOptions(){if(IsSmoke||IsChaos)return;PlayerPrefs.SetFloat("SERVICE.volume",Audio.Volume);PlayerPrefs.SetFloat("SERVICE.music",Audio.MusicVolume);PlayerPrefs.SetFloat("SERVICE.sensitivity",Player.Sensitivity);PlayerPrefs.SetFloat("SERVICE.motion",Player.CameraMotion);PlayerPrefs.SetFloat("SERVICE.blur",Player.MotionBlurAmount);if(Storm)Storm.Save();PlayerPrefs.Save();}
         void OnApplicationFocus(bool focused){if(IsChaos)return;if(!focused&&!IsSmoke&&Phase==ServicePhase.Playing)Pause();}
         public void Pause() { if (Phase != ServicePhase.Playing) return; Phase = ServicePhase.Paused; Time.timeScale = 0; SetCursor(); }

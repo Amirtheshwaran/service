@@ -12,6 +12,8 @@ namespace ServiceGameV2 {
   public float ImpactAlpha=>Phase==PursuitPhase.Attack?Mathf.Max(0,1-Mathf.Abs(Elapsed-.52f)/.16f)*.23f:0;
   bool armedReturn,returnEncounter,impactPlayed,bellShut;float armedAt;
   public void ArmReturnAmbush(){armedReturn=true;armedAt=Time.time;bellShut=false;}
+  public string ReturnState{get{var bell=d.Property(4);var w=d.Scene.Walker.transform.position;DriveProgress(bell,w,out float pr,out float lat);
+   return $"armed {armedReturn} shut {bellShut} door {d.Life.DoorOpenDegrees(4):F0} deg moving {d.Life.DoorMoving(4)} dist {Vector3.Distance(w,bell.Door.position):F1} progress {pr:F1} lateral {lat:F1} inside {bell.InteriorBounds.Contains(w+Vector3.up*.3f)} busy {d.Busy} blocked {d.InputBlocked} active {Active} caught {Caught}";}}
   // V22: the player pulled a door shut (or opened it). A Bell door shut by hand counts as shut, so the bang still comes;
   // opening it again lets the house shut it in its own time.
   public void DoorChanged(int index,bool open){if(index==4&&armedReturn)bellShut=!open;}
@@ -21,6 +23,11 @@ namespace ServiceGameV2 {
   public NavMeshAgent Agent {get;private set;}
   public int PropertyIndex=>p?p.Index:-1;
   public float LookAwaySeconds {get;private set;}
+  // V25: your nerve while it stands behind you - fear climbs, every E press steadies you; full, you turn round
+  public const float FearStart=.25f,FearRate=.2f,FearPerPress=.085f;
+  public float Fear {get;private set;} public int NervePresses {get;private set;} public int NerveBreaks {get;private set;}
+  public bool NerveActive=>Active&&!Caught&&p&&p.Encounter==EncounterKind.LookAway&&Elapsed>=1.8f;
+  public void SteadyNerve(){if(!NerveActive)return;NervePresses++;Fear=Mathf.Max(0,Fear-FearPerPress);}
   // Objective (small, top-left) and inner-voice subtitle, in the manner of a found-footage walk-through rather than an arcade prompt.
   public string Headline=>p&&p.Encounter==EncounterKind.LookAway?ServiceScript.LookAwayHeadline:Phase==PursuitPhase.Chase?d.Player.InCar?(d.Player.EngineRunning?ServiceScript.ChaseDriveHeadline:ServiceScript.ChaseStartCarHeadline):ServiceScript.ChaseHeadlineOnFoot:"";
   public string Instruction=>p&&p.Encounter==EncounterKind.LookAway?(Elapsed<1.8f?p.RevealLine:ServiceScript.LookAwayLines[Mathf.Clamp((int)((Elapsed-1.8f)/3.2f),0,ServiceScript.LookAwayLines.Length-1)]):Phase==PursuitPhase.Chase?d.Player.InCar?(d.Player.EngineRunning?ServiceScript.ChaseDrive:ServiceScript.ChaseStartCar):ServiceScript.ChaseOnFoot:p?p.RevealLine:"";
@@ -56,7 +63,7 @@ namespace ServiceGameV2 {
    // V23: the watcher stood almost on top of you ("kinda too close"): it now stands 5-6.5 m off, on the same floor
    else if(p.Encounter==EncounterKind.LookAway&&!returning)spawn=FartherSpawn(spawn);
    if(!NavMesh.SamplePosition(spawn,out var hit,2,NavMesh.AllAreas))throw new System.InvalidOperationException("Presence outside navigation at "+index);
-   ignitionEscape=returning;carContact=gazeSeconds=0; if(returning)d.Player.IgnitionDelayPending=true;stillAnchored=false;movingFor=0;
+   ignitionEscape=returning;carContact=gazeSeconds=0;Fear=FearStart; if(returning)d.Player.IgnitionDelayPending=true;stillAnchored=false;movingFor=0;
    Agent.Warp(hit.position);SpawnPathDistance=PathLength(hit.position,d.Scene.Walker.transform.position);Agent.speed=5.25f;var facing=d.Scene.Walker.transform.position-hit.position;facing.y=0;if(facing.sqrMagnitude>.01f)Agent.transform.rotation=Quaternion.LookRotation(facing);Agent.isStopped=true;Phase=PursuitPhase.Reveal;Elapsed=repath=steps=LookAwaySeconds=0;growl=5;lastWalker=d.Scene.Walker.transform.position;
    if(p.WindowLight)p.WindowLight.enabled=false;if(p.EncounterLights!=null)foreach(var l in p.EncounterLights)if(l)l.enabled=l.transform.position.y<p.TableApproach.position.y-1;
    d.Scene.Flashlight.enabled=true;d.Audio.HorrorAt(p.Encounter==EncounterKind.LookAway?"breath":"reveal",hit.position,.52f);// V23: Bell's return ambush is a chase too (his house is a look-away house, so it ran in silence)
@@ -73,7 +80,8 @@ namespace ServiceGameV2 {
      var w=d.Scene.Walker.transform.position;var eye=d.Scene.View.transform;
      if(!bellShut&&d.Life.DoorOpenDegrees(4)<=5&&!d.Life.DoorMoving(4)&&!bell.InteriorBounds.Contains(w+Vector3.up*.3f)&&dist>4)bellShut=true; // already shut
      if(!bellShut&&d.Life.DoorOpenDegrees(4)>5&&!bell.InteriorBounds.Contains(w+Vector3.up*.3f)&&dist>4&&(Vector3.Dot(eye.forward,(bell.Door.position-eye.position).normalized)<.2f||dist>14)){bellShut=true;d.Life.OpenDoor(bell,false,false,1.6f);}
-     if(bellShut&&d.Life.DoorOpenDegrees(4)<3&&dist>9&&dist<30&&progress>8&&lateral<5){armedReturn=false;ReturnAmbushes++;d.BellGone=true;d.Say(ServiceScript.ReturnAmbush);d.Audio.HorrorAt("doorslam",bell.Door.position,.7f);d.Audio.HorrorAt("metalrattle",bell.SoundPoint.position,.32f);d.Life.OpenDoor(bell,true,true,.18f);BeginEncounter(4,true);return;}
+     // V25: however you leave - down the drive or straight across the lawn to the car (a playtester cut across and nothing came)
+     if(bellShut&&d.Life.DoorOpenDegrees(4)<3&&dist>9&&dist<34&&(progress>8||lateral>=5)&&!bell.InteriorBounds.Contains(w+Vector3.up*.3f)){armedReturn=false;ReturnAmbushes++;d.BellGone=true;d.Say(ServiceScript.ReturnAmbush);d.Audio.HorrorAt("doorslam",bell.Door.position,.7f);d.Audio.HorrorAt("metalrattle",bell.SoundPoint.position,.32f);d.Life.OpenDoor(bell,true,true,.18f);BeginEncounter(4,true);return;}
     }
     if(d.Player.InCar)return;foreach(var h in d.Scene.Properties)if(h.HasEncounter&&!d.IsFriendly(h.Index)&&d.ResultAt(h.Index)==ServiceResult.Pending&&Vector3.Distance(d.Scene.Walker.transform.position,h.Door.position)<18){approach[h.Index]+=Time.deltaTime;if(approach[h.Index]>3&&cue[h.Index]==0){cue[h.Index]++;d.Audio.HorrorAt(h.Index%2==0?"metalrattle":"woodstress",h.SoundPoint.position,.16f);}if(approach[h.Index]>11&&cue[h.Index]==1){cue[h.Index]++;d.Audio.HorrorAt("taps",h.SoundPoint.position,.19f);}}return;}
    Elapsed+=Time.deltaTime;
@@ -96,6 +104,7 @@ namespace ServiceGameV2 {
     bool watching=ServiceInteraction.Watching(d.Scene.View,Agent.transform.position+Vector3.up*1.15f,Agent.transform);
     gazeSeconds=watching?gazeSeconds+Time.deltaTime:Mathf.Max(0,gazeSeconds-Time.deltaTime*2);
     if(gazeSeconds>=1.1f){Catch();return;}
+    if(Elapsed>=1.8f){Fear=Mathf.Min(1,Fear+FearRate*Time.deltaTime);if(Fear>=1){NerveBreaks++;d.Say(ServiceScript.NerveBroke);Catch();return;}}
     if(facing<-.2f&&!moving){LookAwaySeconds+=Time.deltaTime;}else LookAwaySeconds=0;
     growl-=Time.deltaTime;if(growl<0){growl=4;d.Audio.HorrorAt("breath",Agent.transform.position,.3f);}
     if(LookAwaySeconds>=8){Complete();d.Say(ServiceScript.LookAwaySurvived);return;}if(Elapsed>28)Catch();return;
