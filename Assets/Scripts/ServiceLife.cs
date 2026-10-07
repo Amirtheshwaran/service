@@ -49,7 +49,7 @@ namespace ServiceGameV2 {
    return best;
   }
   void FaceWalk(bool snap){var p=d.Property(0);var target=p.ApproachRoute!=null&&p.ApproachRoute.Length>0?p.ApproachRoute[p.ApproachRoute.Length/2]:p.Door.position;var f=target-dog.position;f.y=0;if(f.sqrMagnitude>.01f&&snap)dog.rotation=Quaternion.LookRotation(f);}
-  public void ResetForShift(){StopAllCoroutines();Mode=DogMode.Home;charged=false;Barks=0;ClosestApproach=99;porchPicked=false;curState=null;if(dogAnim)dogAnim.speed=1;System.Array.Clear(settleAt,0,6);System.Array.Clear(seen,0,seen.Length);if(dog){dog.position=home;FaceWalk(true);}for(int i=0;i<6;i++){if(d.Property(i).DoorPanel)d.Property(i).DoorPanel.localRotation=rest[i];if(d.Property(i).PorchLight)d.Property(i).PorchLight.intensity=porch[i];}}
+  public void ResetForShift(){StopAllCoroutines();petting=false;petRest=0;Mode=DogMode.Home;charged=false;Barks=0;ClosestApproach=99;porchPicked=false;curState=null;if(dogAnim)dogAnim.speed=1;System.Array.Clear(settleAt,0,6);System.Array.Clear(seen,0,seen.Length);if(dog){dog.position=home;FaceWalk(true);}for(int i=0;i<6;i++){if(d.Property(i).DoorPanel)d.Property(i).DoorPanel.localRotation=rest[i];if(d.Property(i).PorchLight)d.Property(i).PorchLight.intensity=porch[i];}}
   void State(string name){if(name==curState)return;if(dogAnim&&dogAnim.isActiveAndEnabled&&dogAnim.HasState(0,Animator.StringToHash(name))){curState=name;dogAnim.CrossFadeInFixedTime(name,name=="Run"?.15f:.35f);}}
   public void Bark(){if(!dog||DogBusy)return;d.Audio.DogAt(dog.position+Vector3.up*.4f,.32f);barkUntil=Time.time+2.2f;if(!playing){playing=true;State("Playing");}}
   void Update(){if(!d||d.Phase!=ServicePhase.Playing||d.PaperOpen)return;
@@ -123,14 +123,19 @@ namespace ServiceGameV2 {
    // V23: no shove (walking into him used to slide him along): he steps aside on his own when you come close
    var away=Flat3(dog.position-w);
    // V25: 1.5 m from someone standing (petting reach is 1.75), more from someone running at him - a sprint closed faster than his step
-   float closing=away.sqrMagnitude>.01f?Mathf.Max(0,Vector3.Dot(Flat3(d.Scene.Walker.velocity),away.normalized)):0;float keep=1.5f+Mathf.Min(.35f,closing*.07f);
-   if(away.magnitude<keep&&!petting){var a=away.sqrMagnitude>.01f?away.normalized:-Flat3(d.Scene.Walker.transform.forward).normalized;
+   // V26 ("improve pet dog option, he's glitching"): calm, he let nobody nearer than 1.5 m, so he backed off from every hand
+   // held out to him and zipped away after every pet. Calm now, he lets you walk right up (a body's width off you); he only
+   // keeps his distance from someone running at him, and he stays where he is for a while after you have petted him.
+   bool calmNow=Calm;
+   float closing=away.sqrMagnitude>.01f?Mathf.Max(0,Vector3.Dot(Flat3(d.Scene.Walker.velocity),away.normalized)):0;
+   bool rushed=closing>ServicePlayer.WalkSpeed+.4f;float keep=calmNow?(rushed?1.5f:.8f):1.5f+Mathf.Min(.35f,closing*.07f);
+   if(away.magnitude<keep&&!petting&&!(calmNow&&!rushed&&Time.time<petRest)){var a=away.sqrMagnitude>.01f?away.normalized:-Flat3(d.Scene.Walker.transform.forward).normalized;
     // straight away first; where that is the steps or the porch (the foot of the steps), sideways off the line you walk, or back past you
     var head=Flat3(d.Scene.Walker.velocity);if(head.sqrMagnitude<.04f)head=Flat3(door-w);if(head.sqrMagnitude<.01f)head=a;head.Normalize();var perp=Vector3.Cross(Vector3.up,head);if(Vector3.Dot(perp,a)<0)perp=-perp;
-    float len=Mathf.Min(6f*Time.deltaTime,keep+.1f-away.magnitude);
+    float len=Mathf.Min((calmNow&&!rushed?2.6f:6f)*Time.deltaTime,keep+.1f-away.magnitude); /* calm, an unhurried step aside */
     foreach(var dir in new[]{a,perp,(perp-head*.6f).normalized,-perp,(-perp-head*.6f).normalized}){var to=dog.position+dir*len;
      if(Ground(ref to)&&!OnBuilt&&!Indoors(p,to)&&to.y<door.y-.4f&&Mathf.Abs(to.y-dog.position.y)<.35f){moved+=Flat(to-dog.position).magnitude;dog.position=to;break;}}}
-   ClosestApproach=Mathf.Min(ClosestApproach,Flat(dog.position-w).magnitude);
+   if(!calmNow)ClosestApproach=Mathf.Min(ClosestApproach,Flat(dog.position-w).magnitude); // the distance he keeps while he is worked up
    float v=moved/Mathf.Max(Time.deltaTime,1e-4f);DogTravel+=moved;
    // face where he runs, or you when he stands
    var faceDir=v>.4f&&moved>0?Flat3(goal-dog.position):Flat3(w-dog.position);if(faceDir.sqrMagnitude>.01f)dog.rotation=Quaternion.RotateTowards(dog.rotation,Quaternion.LookRotation(faceDir),(v>.4f?540:220)*Time.deltaTime);
@@ -144,27 +149,34 @@ namespace ServiceGameV2 {
   }
   void Go(DogMode m){if(Mode==m)return;Mode=m;modeSince=Time.time;nextPath=0;escortGoal=Vector3.zero;if(m!=DogMode.Porch)porchPicked=false;if(m==DogMode.Escort)weaveFlip=Time.time+Random.Range(1.2f,2.2f);if(m==DogMode.Home){if(dogAnim)dogAnim.speed=1;State("Breathing");nextIdle=Time.time+Random.Range(3f,6f);}}
   // V23: pet Rex - only when he is calm (at home, or hushed, or at the steps once Walter has him) and you are right by him
-  bool petting;public bool Petting=>petting;public int Pets {get;private set;}
+  bool petting;float petRest;public bool Petting=>petting;public int Pets {get;private set;}
+  // calm: at home, hushed, or at the steps once he has given up barking
+  public bool IsCalm=>Calm;
+  bool Calm=>Mode==DogMode.Home||Mode==DogMode.Hushed||(Mode==DogMode.Porch&&Time.time-porchSince>30f);
+  // where you look while you pet him: just past his shoulders, so he is low in the middle of the view, under your hand
+  public Vector3 PetLook{get{if(!dog)return Vector3.zero;var away=Flat3(dog.position-d.Scene.Walker.transform.position);return dog.position+(away.sqrMagnitude>.01f?away.normalized*.5f:Vector3.zero)+Vector3.up*.5f;}}
+  public float PetMoved {get;private set;}
   public bool CanPet(Vector3 w){if(!dog||!model||!dog.gameObject.activeInHierarchy||petting||d.Player.InCar||d.Busy||d.Horror.Active||d.Horror.Caught)return false;if(Time.time<barkUntil+.4f)return false;
-   bool calm=Mode==DogMode.Home||Mode==DogMode.Hushed||(Mode==DogMode.Porch&&Time.time-porchSince>30f);if(!calm)return false;
+   if(!Calm)return false;
    // on his level: from the porch or the steps he cannot come up to your hand (he never climbs them), so step down to him
    var cc=d.Scene.Walker;if(cc&&Mathf.Abs(cc.bounds.min.y-dog.position.y)>.3f)return false;
-   var to=Flat3(dog.position-w);return to.magnitude<1.75f&&to.magnitude>.4f;}
+   var to=Flat3(dog.position-w);return to.magnitude<2.1f&&to.magnitude>.35f;}
   public Transform DogTransform=>dog;
   public void SmokePlaceDog(Vector3 at){if(!dog)return;var q=at;if(Ground(ref q))dog.position=q;}
   public Vector3 PetPoint=>dog?dog.position+Vector3.up*.55f:Vector3.zero;
   public string PetStop="";string lastTop="";
-  public System.Collections.IEnumerator Pet(){PetStop="reached";petting=true;Pets++;if(dogAnim)dogAnim.speed=1;float t=0;
-   // he comes in under your hand first: up to your feet over open ground (he keeps a step off you otherwise)
+  public System.Collections.IEnumerator Pet(){PetStop="reached";petting=true;Pets++;if(dogAnim)dogAnim.speed=1;float t=0;PetMoved=0;
+   // he comes in under your hand first: up to your feet over open ground. V26: at a trot (his run, slowed to the pace -
+   // he used to slide in on his idle), turning to you as he comes
    var home=d.Property(0);float tc=0;
-   while(tc<1.4f){tc+=Time.deltaTime;var to=Flat3(d.Scene.Walker.transform.position-dog.position);if(to.magnitude<=.75f)break;
+   while(tc<1.6f){tc+=Time.deltaTime;var to=Flat3(d.Scene.Walker.transform.position-dog.position);if(to.magnitude<=.8f)break;
     if(to.sqrMagnitude>.01f)dog.rotation=Quaternion.RotateTowards(dog.rotation,Quaternion.LookRotation(to),420*Time.deltaTime);
-    var next=dog.position+to.normalized*Mathf.Min(1.5f*Time.deltaTime,to.magnitude-.75f);
+    var next=dog.position+to.normalized*Mathf.Min(1.7f*Time.deltaTime,to.magnitude-.8f);
     bool gok=Ground(ref next);if(!gok||OnBuilt||Indoors(home,next)||Mathf.Abs(next.y-dog.position.y)>=.35f){PetStop=!gok?"no ground":OnBuilt?"built "+lastTop:Indoors(home,next)?"indoors":$"height {next.y-dog.position.y:F2}";break;}
-    dog.position=next;State("Playing");yield return null;}
-   State("Breathing");
+    PetMoved+=Flat(next-dog.position).magnitude;dog.position=next;State("Run");if(dogAnim)dogAnim.speed=Mathf.Clamp(1.7f/RunRef,.42f,.6f);yield return null;}
+   if(dogAnim)dogAnim.speed=1;State("Breathing");
    while(t<2.2f){t+=Time.deltaTime;var to=Flat3(d.Scene.Walker.transform.position-dog.position);if(to.sqrMagnitude>.01f)dog.rotation=Quaternion.RotateTowards(dog.rotation,Quaternion.LookRotation(to),200*Time.deltaTime);yield return null;}
-   State("Playing");nextIdle=Time.time+3.2f;petting=false;}
+   State("Playing");nextIdle=Time.time+3.2f;petting=false;petRest=Time.time+3f;}
   public void Hush(){if(Mode==DogMode.Home||Mode==DogMode.Hushed)return;Go(DogMode.Hushed);d.Audio.StopDog();}
   public bool DogSeen=>AnyVisible();
   public string PathInfo=>$"path {path.status} {corners.Length} corners, at {corner}, end {(corners.Length>0?corners[corners.Length-1]:Vector3.zero)}, goal {goalCache}, refused {string.Join("/",BlockedBy)}";

@@ -74,7 +74,7 @@ namespace ServiceGameV2 {
     nerveLabel=Label(new Rect(440,500,400,24),"E   HOLD YOUR NERVE",16,new Color(1,1,1,.9f),nerveLayer);nerveLabel.alignment=TextAnchor.LowerCenter;Shade(nerveLabel);
     Block(new Rect(490,530,300,10),new Color(0,0,0,.65f),nerveLayer);nerveFill=Block(new Rect(492,532,296,6),Color.white,nerveLayer);}
    nerveLayer.SetAsLastSibling();var h=d.Horror;bool show=d.Phase==ServicePhase.Playing&&h&&h.NerveActive;
-   nerveGroup.alpha=Mathf.MoveTowards(nerveGroup.alpha,show?1:0,Time.unscaledDeltaTime*4f);float f=h?Mathf.Clamp01(h.Fear):0;
+   nerveGroup.alpha=h&&h.Caught?0:Mathf.MoveTowards(nerveGroup.alpha,show?1:0,Time.unscaledDeltaTime*4f); /* V26: gone the instant it comes at you */float f=h?Mathf.Clamp01(h.Fear):0;
    nerveFill.rectTransform.sizeDelta=new Vector2(296*f,6);nerveFill.color=f>.75f?new Color(.9f,.2f,.18f,.8f+.2f*Mathf.Sin(Time.unscaledTime*12f)):new Color(1,.86f-f*.5f,.8f-f*.6f,.95f);}
   // V21: night cards are typed by ServiceTimecard.
   bool ShiftCard=>false;

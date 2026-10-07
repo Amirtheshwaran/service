@@ -63,7 +63,7 @@ namespace ServiceGameV2
         public bool IsFriendly(int index)=>index==0||(index==4&&NightIndex==0);
         // V20 slow burn: night one has no monsters. Night two: Harrow's watcher, the Morrow chase, and Bell's door on the
         // walk back (armed when the papers are left in his back room). Night three: Vale.
-        public bool EncounterTonight(int index){switch(index){case 3:return NightIndex==1;case 5:return NightIndex==1&&!FeetWiped;case 1:return NightIndex==2;case 4:return false;default:return Property(index).HasEncounter;}}
+        public bool EncounterTonight(int index){switch(index){case 3:return NightIndex==1;case 5:return NightIndex==1; /* V26: wiped feet or not (a playtester wiped them and nothing came - "wiping the feet shouldn't help") */case 1:return NightIndex==2;case 4:return false;default:return Property(index).HasEncounter;}}
         public bool IsSmoke { get; private set; }
         public bool IsTour { get; private set; }
         public bool IsChaos { get; private set; }
@@ -75,14 +75,21 @@ namespace ServiceGameV2
         public string VisitNotes(int index)=>NoticeRead(index)?Property(index).Instructions:"Visit the address. Speak to the occupant or check for a posted notice.";
         readonly bool[] accessGranted = new bool[6];
         readonly bool[] shutByPlayer = new bool[6]; // V22: doors the player pulled shut (they may open them again)
-        // V23: Morrow's doormat ("Wipe your feet. I just did the floors.") - wipe them and nothing comes for you there on
-        // night two; walk in without and it does.
+        // V23: Morrow's doormat ("Wipe your feet. I just did the floors."). V26: on night two it makes no difference - once
+        // you are in, something else wipes its feet on her mat behind you, and what comes for you upstairs comes anyway.
         public bool FeetWiped {get;private set;}bool muddySaid;Transform doormat;
         public Transform Doormat{get{if(!doormat){var p=Property(5);doormat=p?p.transform.Find("V23 doormat"):null;}return doormat;}}
         public bool CanWipeFeet{get{if(Player.InCar||Busy||FeetWiped||NoteOpen>=0||!Doormat||ResultAt(5)!=ServiceResult.Pending)return false;
             var w=Scene.Walker.transform.position;var f=w-Doormat.position;f.y=0;return f.magnitude<1.15f&&Mathf.Abs(w.y-Doormat.position.y)<.7f;}}
         IEnumerator WipeFeet(){Busy=true;var at=Doormat.position;for(int i=0;i<3;i++){Audio.HorrorAt("wipe",at,.55f);yield return new WaitForSeconds(.34f);}
             FeetWiped=true;Say(NightIndex==0?ServiceScript.WipedFeet:ServiceScript.WipedFeetAgain);yield return new WaitForSeconds(.3f);Busy=false;}
+        public int SecondWipes {get;private set;}bool secondWiped;
+        void SecondWipe(){if(secondWiped||!FeetWiped||NightIndex!=1||!Doormat||Player.InCar||Horror.Active||Horror.Caught||ResultAt(5)!=ServiceResult.Pending)return;
+            var p=Property(5);var w=Scene.Walker.transform.position;if(!ServiceLife.Indoors(p,w))return;var f=w-Doormat.position;f.y=0;if(f.magnitude<4f)return;
+            secondWiped=true;StartCoroutine(SecondWipeRun());}
+        IEnumerator SecondWipeRun(){SecondWipes++;var at=Doormat.position;yield return new WaitForSeconds(.35f);
+            for(int i=0;i<3;i++){Audio.HorrorAt("wipe",at,.62f);yield return new WaitForSeconds(.55f);} // slower than yours, heavier
+            yield return new WaitForSeconds(.8f);if(!Horror.Active&&!Horror.Caught)Say(ServiceScript.SecondWipe);}
         void MuddyCheck(){if(muddySaid||FeetWiped||NightIndex>1||!Doormat||Player.InCar)return;var p=Property(5);if(!ServiceLife.Indoors(p,Scene.Walker.transform.position))return;
             var f=Scene.Walker.transform.position-p.OpeningCentre;f.y=0;if(f.magnitude<2.2f)return;muddySaid=true;Say(ServiceScript.MuddyFloor);}
         public bool ShutByPlayer(int i)=>i>=0&&i<6&&shutByPlayer[i];
@@ -172,7 +179,7 @@ namespace ServiceGameV2
             if (NoteOpen >= 0) { var np = Property(NoteOpen); if (Player.InCar || Horror.Active || Horror.Caught || np.NoticePoint == null || Vector3.Distance(Scene.View.transform.position, np.NoticePoint.position) > 3.2f) NoteOpen = -1; }
             if (!PaperOpen && !Horror.Active && !Horror.Caught) EvaluateCues(Time.deltaTime);
             if (InputBlocked || Busy) return;
-            MuddyCheck();
+            MuddyCheck();SecondWipe();
             if (Pressed(Key.F)) ToggleTorch();
             // E also looks over the right shoulder while sprinting, so reaching the car must not depend on releasing Shift first.
             bool nearCar = CanEnterCar;
@@ -217,8 +224,13 @@ namespace ServiceGameV2
         public bool TryPetDog(){if(!CanPetDog)return false;StartCoroutine(PetDog());return true;}
         public bool TryWipeFeet(){if(!CanWipeFeet)return false;StartCoroutine(WipeFeet());return true;}
         IEnumerator PetDog(){Busy=true;var hands=Scene.View.GetComponentInChildren<ServiceHands>();StartCoroutine(Life.Pet());
-            yield return new WaitForSeconds(.45f);if(hands)hands.Play("Reach"); // an open hand down to him (Give holds the papers out)
-            yield return new WaitForSeconds(.3f);Say(Life.Pets>1?ServiceScript.PetRexAgain:ServiceScript.PetRex[Mathf.Clamp(NightIndex,0,ServiceScript.PetRex.Length-1)]);yield return new WaitForSeconds(1.6f);Busy=false;}
+            // V26: you look down at him while your hand goes to him (it used to pet the air in front of you, at eye level)
+            float t=0;bool reached=false,said=false;
+            while(t<2.35f){t+=Time.deltaTime;Player.FocusOn(Life.PetLook,1-Mathf.Exp(-Time.deltaTime*6));
+                if(!reached&&t>=.3f){reached=true;if(hands){hands.Play("Place");hands.ReleasePaper();}} // V26: the empty left hand comes down onto him (Reach went out to the side, out of view)
+                if(!said&&t>=.75f){said=true;Say(Life.Pets>1?ServiceScript.PetRexAgain:ServiceScript.PetRex[Mathf.Clamp(NightIndex,0,ServiceScript.PetRex.Length-1)]);}
+                yield return null;}
+            Busy=false;}
         public bool ToggleDoor(int i){if(NearbyLeaf()!=i)return false;StartCoroutine(SwingDoor(i));return true;}
         IEnumerator SwingDoor(int i){
             Busy=true;var p=Property(i);bool close=Life.DoorOpenDegrees(i)>25;
@@ -240,7 +252,7 @@ namespace ServiceGameV2
             Time.timeScale = 1;
             Phase = ServicePhase.Playing;
             NightIndex = Mathf.Clamp(index, 0, 2);
-            FeetWiped=false;muddySaid=false;
+            FeetWiped=false;muddySaid=false;secondWiped=false;
             Docket.Clear();
             int[] stops=NightIndex==0?new[]{0,3,1,4,5}:NightIndex==1?new[]{0,3,1,4,5}:new[]{1,2};
             foreach(int i in stops){var property=Property(i);Docket.Add(new DocketEntry(i,property.Address,NightIndex==0?property.Brief:Prior(i,property.Brief)));}

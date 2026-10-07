@@ -82,6 +82,8 @@ namespace ServiceGameV2 {
   public const string WipedFeetAgain="Wiped them. Every step, like she asked.";
   public const string MuddyFloor="...Mud. All over her clean floor. She asked me to wipe my feet.";
   public const string BookFell="...Just a book. Just a book falling off a shelf.";
+  public const string StairBook="...A book. Off the landing and down every stair. ...Nobody's up there. Nobody's supposed to be.";
+  public const string SecondWipe="...That wasn't me. Somebody else just wiped their feet on her mat.";
   public static string WhosThere(int property,int night){switch(property*10+night){case 0: return "Who's out there? ...Rex! Quiet! ...Hold on, I'm coming.";case 1: return "Who is it? ...It's Sunday, for God's sake. Hold on.";case 40: return "Yeah? Who's there? ...Hang on. Hang on, I'm coming.";}return null;}
   public static string Resident(int property){switch(property){case 0: return "Walter Correll";case 4: return "Daniel Bell";}return "";}
  }

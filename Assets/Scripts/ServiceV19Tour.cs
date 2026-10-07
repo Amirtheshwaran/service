@@ -121,6 +121,13 @@ namespace ServiceGameV2 {
   // V24: a look at the fire in the hearth (Kenney flames in the firebox) when the house keeps one tonight
   IEnumerator LookAtFire(ServiceProperty p){var h=p.GetComponentInChildren<ServiceHearth>();if(!h||!h.FireBox||!h.FireBox.activeInHierarchy){Note("no fire in "+p.Index+" tonight");yield break;}
    yield return Look(h.FireBox.transform.position+Vector3.up*.05f,1.1f);yield return Wait(2.6f);Note($"fire at {p.Index}: lit {h.Lit}, {h.LiveFlames} flames");}
+  // V26: the foot of Bell's stairs on night two - a book comes down them at you; watch it all the way down
+  IEnumerator StairBookAt(ServiceProperty p){if(!d.Books.Flight(p)){Note("no stairs found at "+p.Index);yield break;}var top=d.Books.StairTop;var bot=d.Books.StairBottom;var down=Flat(bot-top).normalized;int falls=d.Books.StairFalls;
+   yield return Walk(bot+down*2.2f,"to the foot of Bell's stairs",false,15,()=>d.Books.StairFalls>falls);d.Player.SmokeWalk=Vector2.zero;
+   yield return Look(top+Vector3.up*.4f,.7f);float t=Time.time+4;while(Time.time<t&&d.Books.StairFalls==falls)yield return null;
+   if(d.Books.StairFalls==falls){Note("no stair book");yield break;}
+   t=Time.time+4.5f;while(Time.time<t){var b=d.Books.StairBook;if(b)yield return Look(b.position,.2f);else yield return null;}
+   Note($"stair book: {d.Books.StairThuds} thuds, rests {(d.Books.StairBook?(d.Books.StairBook.position.y-bot.y).ToString("F2"):"-")} m above the bottom stair");yield return Wait(1.5f);}
   IEnumerator PetRex(){if(!d.Life||!d.Life.DogPresent)yield break;float t=Time.time+8;while(d.Busy&&Time.time<t)yield return null;
    var dn=d.Life.DogPosition;var door=d.Property(0).Door.position;var at=dn+Flat(dn-door).normalized*1.4f; // the yard side of him, on his level
    yield return Walk(at,"to Rex",false,10);d.Player.SmokeWalk=Vector2.zero;yield return Look(d.Life.PetPoint,.8f);yield return Wait(.3f);
@@ -211,13 +218,15 @@ namespace ServiceGameV2 {
     if(d.Horror.Active&&d.Horror.Agent){var e=d.Horror.Agent.transform.position;var awayP=d.Scene.View.transform.position*2-e;awayP.y=d.Scene.View.transform.position.y;yield return Look(awayP,.9f);float t=Time.time+16,nx=0;while(d.Horror.Active&&!d.Horror.Caught&&Time.time<t){if(d.Horror.NerveActive&&Time.time>nx){nx=Time.time+.3f;d.Horror.SteadyNerve();}yield return null;}Note($"watcher: caught={d.Horror.Caught} active={d.Horror.Active}, held your nerve with {d.Horror.NervePresses} presses");}
     yield return Wait(2f);if(!d.Horror.Caught){yield return Walk(p.Door.position+Outward(p)*1.8f,"out of Harrow");yield return Walk(d.Scene.Car.position-d.Scene.Car.right*2.2f,"Harrow car");}yield return Wait(1f);End();}
    if(Want("07")){d.BeginShift(1);d.PaperOpen=false;NoCard();foreach(var i in new[]{0,3,1})d.Docket.Find(e=>e.Property==i).Result=ServiceResult.Served;Begin("07-night2-bell-back-room-and-the-door");var p=P(4);yield return ArriveAt(p,"Bell drive");yield return ExitCar();yield return ToDoor(p);yield return ReadNote(p);yield return Knock(p);yield return Deliver(p);yield return Wait(1.5f);
+    yield return StairBookAt(p);
     yield return Walk(p.Door.position+Outward(p)*1.8f,"out of the house");
     // V22: pull his door shut behind you - it still bangs open once you are down the drive
     {yield return Look(p.OpeningCentre+Vector3.up*1.5f,.8f);yield return Wait(.4f);int leaf=d.NearbyLeaf();if(leaf==4){d.ToggleDoor(4);yield return Wait(1.6f);Note("closed Bell's door: "+d.Life.DoorOpenDegrees(4).ToString("F0")+" deg");}else Note("no close-door at Bell (NearbyLeaf="+leaf+")");}
     yield return Walk(d.Scene.Car.position-d.Scene.Car.right*2.2f,"Bell drive back",false,45,()=>d.Horror.Active);
     if(d.Horror.Active){Note("Bell return ambush");yield return Wait(.3f);var a=d.Horror.Agent;yield return Look((a?a.transform.position:p.Door.position)+Vector3.up*1.5f,.5f);yield return Wait(.9f);yield return Walk(d.Scene.Car.position-d.Scene.Car.right*2.2f,"run to the car",true,25,()=>d.Horror.Caught);}
     d.Player.EnterCar();yield return Wait(.4f);float t=Time.time+5;while(Time.time<t&&!d.Horror.Caught){d.Player.SmokeThrottle=-1;d.Player.SmokeSteering=.3f;yield return null;}d.Player.SmokeThrottle=0;d.Player.SmokeSteering=0;Note($"Bell end: caught={d.Horror.Caught}");yield return Wait(1.5f);End();}
-   if(Want("08")){d.BeginShift(1);d.PaperOpen=false;NoCard();foreach(var i in new[]{0,3,1,4})d.Docket.Find(e=>e.Property==i).Result=ServiceResult.Served;Begin("08-night2-morrow-chase");var p=P(5);yield return ArriveAt(p,"Morrow drive");yield return ExitCar();yield return ToDoor(p);yield return ReadNote(p);yield return Knock(p);yield return Deliver(p);yield return Wait(.3f);
+   if(Want("08")){d.BeginShift(1);d.PaperOpen=false;NoCard();foreach(var i in new[]{0,3,1,4})d.Docket.Find(e=>e.Property==i).Result=ServiceResult.Served;Begin("08-night2-morrow-chase");var p=P(5);yield return ArriveAt(p,"Morrow drive");yield return ExitCar();yield return ToDoor(p);yield return ReadNote(p);yield return WipeAtMat(p);yield return Knock(p);
+    {int w0=d.SecondWipes;yield return Deliver(p);Note("second wipe behind you: "+(d.SecondWipes>w0));}yield return Wait(.3f);
     if(d.Horror.Agent&&d.Horror.Active)yield return Look(d.Horror.Agent.transform.position+Vector3.up*1.4f,.5f);yield return Flee(p);yield return Wait(2f);End();}
    if(Want("09")){d.BeginShift(0);d.PaperOpen=false;NoCard();foreach(var e in d.Docket)e.Result=ServiceResult.Served;Begin("09-depot-report");var line=RoadLine();int dep=Nearest(line,new Vector3(-8,0,-5));var lane=Lane(line,true);int s0=Mathf.Clamp(Nearest(lane,line[Mathf.Min(dep+8,line.Count-1)]),0,lane.Count-1);
     var seg=new List<Vector3>();for(int i=s0;i<lane.Count&&seg.Count<12;i++)seg.Add(lane[i]);seg.Add(new Vector3(-8,0,-1));d.Player.TeleportCar(seg[0]+Vector3.up*.3f,Quaternion.LookRotation(Flat(seg[1]-seg[0])));yield return Wait(.5f);yield return Drive(seg,9,"into the depot");yield return Wait(1f);
