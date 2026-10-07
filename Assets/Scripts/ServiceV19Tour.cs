@@ -265,6 +265,9 @@ namespace ServiceGameV2 {
    if(Want("16")){d.BeginShift(1);d.PaperOpen=false;NoCard();d.CorrellBranch=true;Begin("16-night2-correll-branch");var p=P(0);
     yield return ArriveAt(p,"Correll drive");yield return ExitCar();yield return ToDoor(p);yield return Knock(p);
     {float t=Time.time+40;while(d.Busy&&Time.time<t)yield return null;}Note("walter chasing "+d.Walter.Chasing+", rex gone "+(d.Life.DogTransform&&!d.Life.DogTransform.gameObject.activeInHierarchy));
+    yield return Walk(d.Scene.Car.position-d.Scene.Car.right*2.2f,"run from Walter",true,12,()=>d.Phase!=ServicePhase.Playing||d.CanEnterCar||(d.Walter.AnimState=="Run"&&Vector3.Distance(Flat(d.Walter.Position),Flat(d.Scene.Walker.transform.position))>8.5f));
+    // a look back: he is running after you
+    {float tl=Time.time+1.3f;while(Time.time<tl&&d.Walter.Chasing){var wp=d.Walter.Position+Vector3.up*1.1f;var dl=wp-d.Scene.View.transform.position;float k=1-Mathf.Exp(-Time.deltaTime*9);d.Player.SmokeLook(Mathf.LerpAngle(Yaw,Mathf.Atan2(dl.x,dl.z)*Mathf.Rad2Deg,k),Mathf.Lerp(Pitch,-Mathf.Atan2(dl.y,new Vector2(dl.x,dl.z).magnitude)*Mathf.Rad2Deg,k));yield return null;}Note("looked back: walter "+d.Walter.AnimState+" at "+d.Walter.Speed.ToString("F1")+" m/s");}
     yield return Walk(d.Scene.Car.position-d.Scene.Car.right*2.2f,"run from Walter to the car",true,40,()=>d.Phase!=ServicePhase.Playing||d.CanEnterCar);
     if(d.CanEnterCar){d.Player.EnterCar();yield return Wait(.4f);d.Player.StartEngine();yield return Wait(1.2f);float t=Time.time+6;while(Time.time<t&&d.Walter.Chasing){d.Player.SmokeThrottle=.8f;yield return null;}d.Player.SmokeThrottle=0;d.Player.SmokeBrake=true;yield return Wait(1f);d.Player.SmokeBrake=false;}
     Note($"walter: escaped {d.Walter.Escaped}, caught {d.Walter.Catches}, closest {d.Walter.Closest:F1} m");yield return Wait(2.5f);d.CorrellBranch=false;End();}

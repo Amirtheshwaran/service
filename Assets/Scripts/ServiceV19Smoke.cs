@@ -170,9 +170,22 @@ namespace ServiceGameV2 {
     d.Player.TeleportCar(p.Gate.position+Vector3.up*.3f,Quaternion.LookRotation(road));yield return new WaitForSeconds(.3f);
     d.Player.SmokePlaceWalker(p.Door.position+Outward(p)*1.6f);yield return new WaitForSeconds(.3f);yield return Face(p.KnockPoint.position);d.Attempt(0,ServiceResult.Served);
     t=Time.time+40;while(d.Busy&&Time.time<t)yield return null;Require(d.Walter.Chasing,"(Walter comes out again)");
-    var car=d.Scene.Car;yield return Sprint(car.position-car.right*2.2f,true,40,()=>d.CanEnterCar||d.Phase!=ServicePhase.Playing);
-    if(d.CanEnterCar){d.Player.EnterCar();yield return new WaitForSeconds(.4f);d.Player.StartEngine();yield return new WaitForSeconds(1.2f);t=Time.time+6;while(Time.time<t&&d.Walter.Chasing){d.Player.SmokeThrottle=1;yield return null;}d.Player.SmokeThrottle=0;}
+    var car=d.Scene.Car;
+    // get a start on him, then turn with the torch on him coming after you, running - then on to the car
+    yield return Sprint(car.position-car.right*2.2f,true,8,()=>d.CanEnterCar||d.Phase!=ServicePhase.Playing||(d.Walter.AnimState=="Run"&&FlatV(d.Walter.Position-d.Scene.Walker.transform.position).magnitude>8f));
+    {bool ran=d.Walter.AnimState=="Run";for(int k=0;k<2&&d.Walter.Chasing;k++){float tl=Time.time+.4f;while(Time.time<tl){var wp=d.Walter.Position+Vector3.up*1.1f;var dl=wp-d.Scene.View.transform.position;d.Player.SmokeLook(Mathf.Atan2(dl.x,dl.z)*Mathf.Rad2Deg,-Mathf.Atan2(dl.y,new Vector2(dl.x,dl.z).magnitude)*Mathf.Rad2Deg);yield return null;}yield return Shot("v25-walter-run-"+k);}
+     Require(ran,"Walter runs - his own running stride, not a sped-up walk ("+d.Walter.AnimState+" at "+d.Walter.Speed.ToString("F1")+" m/s)");}
+    yield return Sprint(car.position-car.right*2.2f,true,40,()=>d.CanEnterCar||d.Phase!=ServicePhase.Playing);
+    if(d.CanEnterCar){d.Player.EnterCar();yield return new WaitForSeconds(.4f);d.Player.StartEngine();yield return new WaitForSeconds(1.2f);
+     t=Time.time+6;while(Time.time<t&&d.Walter.Chasing){d.Player.SmokeThrottle=1;yield return null;}d.Player.SmokeThrottle=0;}
     Require(d.Phase==ServicePhase.Playing&&d.Walter.Escaped&&d.Walter.Catches==1,"...run for the car and drive: he stops in the road and you get away (closest "+d.Walter.Closest.ToString("F1")+" m)");
+    // a close look at his run (by the porch light, torch on him, from the side)
+    {var res=FindAnyObjectByType<ServiceResidents>();var w=res?res.Correll:null;
+     if(w){d.BeginShift(0);d.PaperOpen=false;yield return null;res.Hold(0,true);w.SetActive(true);var o=Outward(p);var side=Vector3.Cross(Vector3.up,o);var at=p.Door.position+o*4.2f+side*1.5f;
+      if(Physics.Raycast(at+Vector3.up*2f,Vector3.down,out var gh,5f,~((1<<8)|(1<<9)),QueryTriggerInteraction.Ignore))at=gh.point;
+      w.transform.SetPositionAndRotation(at,Quaternion.LookRotation(side));ServiceResidents.Animate(w,"Run",.72f);
+      d.Player.SmokePlaceWalker(at+o*3.2f);yield return new WaitForSeconds(.6f);yield return Face(at+Vector3.up*1.0f);if(d.Scene.Flashlight&&!d.Scene.Flashlight.enabled)d.ToggleTorch();
+      for(int k=0;k<4;k++){yield return new WaitForSeconds(.17f);yield return Shot("v25-walter-stride-"+k);}res.Hold(0,false);w.SetActive(false);}}
     d.CorrellBranch=false;d.AllowBranchInTests=false;d.BeginShift(0);d.PaperOpen=false;yield return null;}
   }
   static void DriveProgress25(ServiceProperty p,Vector3 at,out float lateral){lateral=float.MaxValue;var r=p.ApproachRoute;for(int i=1;i<r.Length;i++){var a=r[i-1];var b=r[i];a.y=b.y=at.y;var ab=b-a;float len=ab.magnitude;if(len<1e-4f)continue;float k=Mathf.Clamp01(Vector3.Dot(at-a,ab)/(len*len));lateral=Mathf.Min(lateral,Vector3.Distance(at,a+ab*k));}}

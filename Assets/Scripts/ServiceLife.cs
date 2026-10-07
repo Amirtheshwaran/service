@@ -121,10 +121,13 @@ namespace ServiceGameV2 {
     if(g&&!ins&&!hi&&!jump&&!edge&&!onYou){moved=step.magnitude;dog.position=next;}else BlockedBy[!g?0:ins?1:hi?2:jump?3:4]++;
    }
    // V23: no shove (walking into him used to slide him along): he steps aside on his own when you come close
-   var away=Flat3(dog.position-w);if(away.magnitude<1.5f&&!petting){var a=away.sqrMagnitude>.01f?away.normalized:-Flat3(d.Scene.Walker.transform.forward).normalized;
+   var away=Flat3(dog.position-w);
+   // V25: 1.5 m from someone standing (petting reach is 1.75), more from someone running at him - a sprint closed faster than his step
+   float closing=away.sqrMagnitude>.01f?Mathf.Max(0,Vector3.Dot(Flat3(d.Scene.Walker.velocity),away.normalized)):0;float keep=1.5f+Mathf.Min(.35f,closing*.07f);
+   if(away.magnitude<keep&&!petting){var a=away.sqrMagnitude>.01f?away.normalized:-Flat3(d.Scene.Walker.transform.forward).normalized;
     // straight away first; where that is the steps or the porch (the foot of the steps), sideways off the line you walk, or back past you
     var head=Flat3(d.Scene.Walker.velocity);if(head.sqrMagnitude<.04f)head=Flat3(door-w);if(head.sqrMagnitude<.01f)head=a;head.Normalize();var perp=Vector3.Cross(Vector3.up,head);if(Vector3.Dot(perp,a)<0)perp=-perp;
-    float len=Mathf.Min(4.5f*Time.deltaTime,1.6f-away.magnitude);
+    float len=Mathf.Min(6f*Time.deltaTime,keep+.1f-away.magnitude);
     foreach(var dir in new[]{a,perp,(perp-head*.6f).normalized,-perp,(-perp-head*.6f).normalized}){var to=dog.position+dir*len;
      if(Ground(ref to)&&!OnBuilt&&!Indoors(p,to)&&to.y<door.y-.4f&&Mathf.Abs(to.y-dog.position.y)<.35f){moved+=Flat(to-dog.position).magnitude;dog.position=to;break;}}}
    ClosestApproach=Mathf.Min(ClosestApproach,Flat(dog.position-w).magnitude);

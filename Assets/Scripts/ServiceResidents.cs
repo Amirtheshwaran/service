@@ -83,12 +83,14 @@ namespace ServiceGameV2 {
    return best;
   }
   void Update(){
-   if(!d)return;if(Correll)Correll.SetActive(d.IsFriendly(0)&&answering[0]);if(Bell)Bell.SetActive(d.IsFriendly(4)&&!d.BellGone&&answering[4]);
+   if(!d)return;if(Correll)Correll.SetActive(d.IsFriendly(0)&&(answering[0]||held[0]));if(Bell)Bell.SetActive(d.IsFriendly(4)&&!d.BellGone&&answering[4]);
    foreach(int i in new[]{0,4}){var r=For(i);if(r&&r.activeInHierarchy&&answering[i])LastClearance=Mathf.Min(LastClearance,LeafGap(d.Property(i),r.transform.position)-.26f);}
   }
   public void ResetClearance(){LastClearance=99;}
   // V25: hand a resident over (Walter coming out after you): stop whatever step he was taking
   public void Release(int index){if(index<0||index>5)return;if(moves[index]!=null){StopCoroutine(moves[index]);moves[index]=null;}inDoorway[index]=false;var r=For(index);if(r)foreach(var g in r.GetComponentsInChildren<ServiceGrounding>(true))g.Ignore=null;}
-  public void ResetAll(){for(int i=0;i<6;i++){if(moves[i]!=null){StopCoroutine(moves[i]);moves[i]=null;}answering[i]=inDoorway[i]=false;}if(Correll)Correll.SetActive(false);if(Bell)Bell.SetActive(false);}
+  // V25: keep a resident out of the house regardless of the door (Walter after you; a staged look in the tests)
+  readonly bool[] held=new bool[6];public void Hold(int index,bool on){if(index>=0&&index<6)held[index]=on;}
+  public void ResetAll(){System.Array.Clear(held,0,6);for(int i=0;i<6;i++){if(moves[i]!=null){StopCoroutine(moves[i]);moves[i]=null;}answering[i]=inDoorway[i]=false;}if(Correll)Correll.SetActive(false);if(Bell)Bell.SetActive(false);}
  }
 }

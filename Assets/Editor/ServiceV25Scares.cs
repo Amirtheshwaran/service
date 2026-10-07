@@ -71,6 +71,24 @@ namespace ServiceGameV2.Editor {
      sb.AppendLine($"{r.name} at {r.transform.position:F3} fwd {r.transform.forward:F2} scale {r.transform.lossyScale:F2} mat {r.sharedMaterial.name} tex {(tx?tx.name+" "+tx.format:"-")} alphaSrc {(ti?ti.alphaSource.ToString():"-")} hasAlpha {(ti?ti.DoesSourceTextureHaveAlpha().ToString():"-")} clip {r.sharedMaterial.GetFloat("_AlphaClip")} cutoff {r.sharedMaterial.GetFloat("_Cutoff")} kw {string.Join(",",r.sharedMaterial.shaderKeywords)}");}
     File.WriteAllText(Path.Combine(dir,"blood.txt"),sb.ToString()+"door "+p.Door.position+" inward "+p.Inward);
     Object.DestroyImmediate(cam.gameObject);b.gameObject.SetActive(false);if(res&&res.Correll)res.Correll.SetActive(walterWas);}}
+  // V25 "cook a running animation that looks fair": Walter ran after you on his walk cycle played 2.6x. The residents'
+  // controller gets a Run state on the Starter Assets Run_N (Unity, humanoid, already in the project with the walk), so
+  // Walter runs on his own rig; ServiceWalter blends walk -> run with his speed. RunLook25 renders the stride.
+  const string ResidentCtl="Assets/ServiceArt/V17/Prefabs/V17 Resident.controller";
+  static AnimationClip RunClip()=>AssetDatabase.LoadAllAssetsAtPath("Assets/ServiceArt/V17/Anim/Locomotion--Run_N.anim.fbx").OfType<AnimationClip>().FirstOrDefault(c=>!c.name.StartsWith("__preview"));
+  public static void RunAnim25(){Open();var ctl=AssetDatabase.LoadAssetAtPath<AnimatorController>(ResidentCtl);var run=RunClip();if(!ctl||!run){log.AppendLine("RUN25 controller or clip missing");Save("run25");return;}
+   var sm=ctl.layers[0].stateMachine;var st=sm.states.Select(x=>x.state).FirstOrDefault(x=>x.name=="Run");if(!st)st=sm.AddState("Run",new Vector3(300,260,0));st.motion=run;st.speed=1;st.writeDefaultValues=true;
+   EditorUtility.SetDirty(ctl);AssetDatabase.SaveAssets();
+   log.AppendLine($"RUN25 Run state on {ResidentCtl}: {run.name} {run.length:F2} s, human {run.isHumanMotion}, loop {run.isLooping}, average speed {run.averageSpeed.magnitude:F2} m/s (apparent {run.apparentSpeed:F2})");Save("run25");}
+  public static void RunLook25(){Open();var fbx=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/ServiceArt/V17/Characters/ElderlyMan/ElderlyMan.fbx");var ctl=AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(ResidentCtl);
+   var dir=Path.Combine(Work,"Audit","v25scares");Directory.CreateDirectory(dir);var go=(GameObject)PrefabUtility.InstantiatePrefab(fbx);go.transform.position=new Vector3(-40,0,60);
+   var res=Object.FindAnyObjectByType<ServiceResidents>(FindObjectsInactive.Include);if(res&&res.Correll){foreach(var r in go.GetComponentsInChildren<SkinnedMeshRenderer>(true)){var src=res.Correll.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x=>x.name==r.name);if(src)r.sharedMaterials=src.sharedMaterials;}}
+   var an=go.GetComponentInChildren<Animator>();an.runtimeAnimatorController=ctl;an.applyRootMotion=false;var t=county.GetComponentInChildren<Terrain>();var p0=go.transform.position;p0.y=t.SampleHeight(p0)+t.transform.position.y;go.transform.position=p0;
+   var n0=NeutralLight();var cam=AuditCam();cam.fieldOfView=40;cam.aspect=1f;
+   try{int k=0;foreach(var ph in new[]{0f,.17f,.33f,.5f,.67f,.83f}){an.Play("Run",0,ph);an.Update(0);an.Update(.001f);
+     cam.transform.position=p0+go.transform.right*3.2f+Vector3.up*1.1f;cam.transform.LookAt(p0+Vector3.up*.95f);Shoot(cam,Path.Combine(dir,$"run-side-{k}.jpg"),360,360);
+     cam.transform.position=p0+go.transform.forward*3.6f+Vector3.up*1.3f;cam.transform.LookAt(p0+Vector3.up*.95f);Shoot(cam,Path.Combine(dir,$"run-front-{k}.jpg"),360,360);k++;}}
+   finally{EndNeutral(n0);Object.DestroyImmediate(cam.gameObject);Object.DestroyImmediate(go);}}
   // a look at her where she stands at Morrow's landing (the desk end), lit and in the dark
   public static void ApparitionLook25(){Open();var go=county.transform.Find("V25 apparition");if(!go)return;var p=county.Properties.First(x=>x.Index==5);
    var dir=Path.Combine(Work,"Audit","v25scares");Directory.CreateDirectory(dir);go.gameObject.SetActive(true);
