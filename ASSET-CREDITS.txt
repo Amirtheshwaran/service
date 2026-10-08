@@ -284,3 +284,14 @@ V24
   Assets/ServiceArt/V24/Fire/Kenney/License.txt; archive in Sources/kenney_particle-pack.zip). Sprites used unchanged:
   flame_05 and flame_06 (flame tongues), flame_02 (the fire's body), fire_01 (the ember bed). They burn in a dark firebox
   quad laid over each fireplace's iron cover, drawn by a small additive shader (Service/FireAdditive).
+
+V25 (ground terrain painting, apparitions, blood, run locomotion)
+- Ground: Poly Haven "gravel_road" terrain layer (CC0), rasterised into terrain alphamap at 1024 resolution with mud margin and wheel ruts.
+- Apparition: Renderpeople "Sophia" casual woman 3D model (already licensed and credited in V16), placed as ambient apparition with dedicated idle controller.
+- Blood decals: Kenney "Smoke Particles" by Kenney Vleugels (www.kenney.nl), CC0 - cut-out sprites (smoke_03, smoke_04, smoke_06, smoke_07, smoke_08) placed as porch stains.
+- Locomotion: Unity Starter Assets "Run_N" humanoid animation clip (Unity Technologies, Unity Companion License) applied to Walter resident humanoid controller.
+
+V26 (stair tumble, audio reversals, watcher lunge)
+- Books: Poly Haven "book_encyclopedia_set_01" (CC0, already credited in V19), configured as falling stair volume with step impact audio.
+- Stair treads collider: baked mesh collider of drawn Flooded Grounds asset mesh.
+
