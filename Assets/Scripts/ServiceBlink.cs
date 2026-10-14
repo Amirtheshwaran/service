@@ -28,7 +28,17 @@ namespace ServiceGameV2 {
    var edge=new GameObject("edge",typeof(RectTransform)).GetComponent<RectTransform>();edge.SetParent(r,false);edge.anchorMin=new Vector2(0,upper?0:1);edge.anchorMax=new Vector2(1,upper?0:1);edge.pivot=new Vector2(.5f,upper?1:0);edge.sizeDelta=new Vector2(0,46);
    var ei=edge.gameObject.AddComponent<Image>();ei.color=new Color(0,0,0,.55f);ei.raycastTarget=false;return r;}
   void Apply(){float h=Mathf.SmoothStep(0,1,closed)*372f;if(top)top.sizeDelta=new Vector2(0,h);if(bottom)bottom.sizeDelta=new Vector2(0,h);if(canvas)canvas.enabled=closed>.001f&&d&&d.Phase==ServicePhase.Playing;}
-  void LateUpdate(){if(canvas&&d)canvas.enabled=closed>.001f&&d.Phase==ServicePhase.Playing;} // never over the pause menu or a card
+  void LateUpdate(){if(canvas&&d)canvas.enabled=closed>.001f&&d.Phase==ServicePhase.Playing; // never over the pause menu or a card
+   // V27: her head hangs to one side
+   if(figure&&figure.activeInHierarchy&&!(d.Scare&&d.Scare.Playing)){if(!tiltHead)tiltHead=ServiceJumpscare.HeadOf(figure.transform);if(tiltHead)tiltHead.rotation=Quaternion.AngleAxis(26f,figure.transform.forward)*tiltHead.rotation;}}
+  Transform tiltHead;
+  // V27: close the lids, put her somewhere (or nowhere), open them
+  public IEnumerator BlinkTo(Vector3 at,bool show,float closedFor=.1f){Blinks++;yield return Lids(1,.08f);
+   if(show){var face=d.Scene.View.transform.position-at;face.y=0;figure.transform.SetPositionAndRotation(at,Quaternion.LookRotation(face.sqrMagnitude>.01f?face.normalized:Vector3.forward));figure.SetActive(true);if(figureAnim){figureAnim.Play(0,0,Random.Range(.2f,.6f));figureAnim.Update(0);figureAnim.speed=.06f;}}
+   else figure.SetActive(false);
+   yield return new WaitForSeconds(closedFor);yield return Lids(0,.16f);if(show&&d.Dread)d.Dread.Pulse(.5f);}
+  public static bool QuietInTests; // the base regression walk to each table keeps her away; her own tests do not set it
+  public bool HasFigure=>figure;
   public void ResetForShift(){StopAllCoroutines();running=false;closed=0;Apply();System.Array.Clear(done,0,3);bellSpotSet=false;if(figure)figure.SetActive(false);}
   IEnumerator Lids(float to,float seconds){float from=closed;float t=0;while(t<seconds){t+=Time.deltaTime;closed=Mathf.Lerp(from,to,t/seconds);Apply();yield return null;}closed=to;Apply();}
   public IEnumerator Blink(float hold=.08f){Blinks++;yield return Lids(1,.09f);yield return new WaitForSeconds(hold);yield return Lids(0,.16f);}
@@ -37,7 +47,7 @@ namespace ServiceGameV2 {
    var vp=cam.WorldToViewportPoint(head);if(vp.z<=0||vp.x<.2f||vp.x>.8f||vp.y<.15f||vp.y>.95f)return false;
    return ServiceInteraction.Clear(cam.transform.position,head,null,d.Scene.Walker.transform)&&(!legs||ServiceInteraction.Clear(cam.transform.position,feet+Vector3.up*.6f,null,d.Scene.Walker.transform));}
   void Update(){
-   if(!d||!figure||running||Time.time<nextCheck||!Calm)return;nextCheck=Time.time+.1f;
+   if(!d||!figure||running||Time.time<nextCheck||!Calm||(d.IsSmoke&&QuietInTests))return;nextCheck=Time.time+.1f;
    var w=d.Scene.Walker.transform.position;
    // night one, Morrow's: at the desk as you come up to the landing (before the papers are down)
    if(!done[0]&&d.NightIndex==0&&d.ResultAt(5)==ServiceResult.Pending){var p=d.Property(5);if(p&&p.TableApproach&&ServiceLife.Indoors(p,w)&&w.y>p.TableApproach.position.y-.8f){var at=p.TableApproach.position;
@@ -71,7 +81,14 @@ namespace ServiceGameV2 {
    yield return new WaitForSeconds(.1f);yield return Lids(0,.18f);if(d.Dread)d.Dread.Pulse(.45f);
    float t=0;while(t<hold){t+=Time.deltaTime;var dd=d.Scene.View.transform.position-at;dd.y=0;if(dd.magnitude<2.6f)break;
     if(dd.sqrMagnitude>.01f)figure.transform.rotation=Quaternion.RotateTowards(figure.transform.rotation,Quaternion.LookRotation(dd.normalized),40*Time.deltaTime);yield return null;}
-   Blinks++;yield return Lids(1,.08f);figure.SetActive(false);yield return new WaitForSeconds(.12f);yield return Lids(0,.2f);
+   // V27 ("the girl that appears is more funny than scary"; "she suddenly comes"): on foot she is nearer at each blink,
+   // and then she is in your face - the jumpscare - and gone
+   if(which!=2&&d.Scare){var cam=d.Scene.View.transform;var feet=d.Scene.Walker.transform.position;var near=Vector3.Lerp(at,feet,.55f);
+    if(UnityEngine.AI.NavMesh.SamplePosition(near,out var nh,1.2f,UnityEngine.AI.NavMesh.AllAreas))near=nh.position;near.y=Mathf.Min(near.y,at.y+.5f);
+    yield return BlinkTo(near,true);float t2=0;while(t2<.85f){t2+=Time.deltaTime;yield return null;}
+    Blinks++;yield return Lids(1,.07f);d.Scare.Play(figure.transform,ServiceJumpscare.HeadOf(figure.transform),"scream",.97f,.5f,.14f,.42f);yield return Lids(0,.05f);
+    float t3=0;while(d.Scare.Playing&&t3<2f){t3+=Time.deltaTime;yield return null;}figure.SetActive(false);}
+   else{Blinks++;yield return Lids(1,.08f);figure.SetActive(false);yield return new WaitForSeconds(.12f);yield return Lids(0,.2f);}
    d.Audio.HorrorAt("woodstress",at+Vector3.up*.3f,.22f);
    yield return new WaitForSeconds(.9f);if(!string.IsNullOrEmpty(line)&&string.IsNullOrEmpty(d.Notice))d.Say(line);
    running=false;}

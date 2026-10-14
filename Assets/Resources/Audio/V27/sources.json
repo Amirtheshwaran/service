@@ -1,0 +1,284 @@
+[
+ {
+  "pool": "scream",
+  "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Female/Voice_Female_Attack/Voice_Female_V1_Attack_Mono_01.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "scream",
+  "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Female/Voice_Female_Attack/Voice_Female_V1_Attack_Mono_02.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "scream",
+  "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Female/Voice_Female_Attack/Voice_Female_V1_Attack_Mono_03.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "scream",
+  "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Female/Voice_Female_Attack/Voice_Female_V1_Attack_Mono_04.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "scream",
+  "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Female/Voice_Female_Attack/Voice_Female_V1_Attack_Mono_05.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "scream",
+  "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Female/Voice_Female_Attack/Voice_Female_V2_Attack_Mono_01.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "scream",
+  "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Female/Voice_Female_Attack/Voice_Female_V2_Attack_Mono_02.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "scream",
+  "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Female/Voice_Female_Attack/Voice_Female_V2_Attack_Mono_03.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "scream",
+  "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Female/Voice_Female_Attack/Voice_Female_V2_Attack_Mono_04.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "scream",
+  "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Female/Voice_Female_Attack/Voice_Female_V2_Attack_Mono_05.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "roar",
+  "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Male/Voice_Male_Attack/Voice_Male_V1_Attack_Mono_01.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "roar",
+  "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Male/Voice_Male_Attack/Voice_Male_V1_Attack_Mono_02.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "roar",
+  "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Male/Voice_Male_Attack/Voice_Male_V1_Attack_Mono_03.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "roar",
+  "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Male/Voice_Male_Attack/Voice_Male_V1_Attack_Mono_04.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "roar",
+  "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Male/Voice_Male_Attack/Voice_Male_V2_Attack_Mono_01.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "roar",
+  "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Male/Voice_Male_Attack/Voice_Male_V2_Attack_Mono_02.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "roar",
+  "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Male/Voice_Male_Attack/Voice_Male_V2_Attack_Mono_03.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "roar",
+  "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Male/Voice_Male_Attack/Voice_Male_V2_Attack_Mono_04.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "herbreath",
+  "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Female/Voice_Female_Breath/Voice_Female_V1_Breath_Frozen_Sequence_Mono_01.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "herbreath",
+  "source": "Essentials_Series_NOX_SOUND/Voices_Essentials_NOX_SOUND/Voice_Essential_Female/Voice_Female_Breath/Voice_Female_V1_Breath_Frozen_Sequence_Mono_02.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "floorstep",
+  "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Wood/Footsteps_Wood_Walk/Footsteps_Wood_Walk_01.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "floorstep",
+  "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Wood/Footsteps_Wood_Walk/Footsteps_Wood_Walk_02.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "floorstep",
+  "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Wood/Footsteps_Wood_Walk/Footsteps_Wood_Walk_03.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "floorstep",
+  "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Wood/Footsteps_Wood_Walk/Footsteps_Wood_Walk_04.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "floorstep",
+  "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Wood/Footsteps_Wood_Walk/Footsteps_Wood_Walk_05.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "floorstep",
+  "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Wood/Footsteps_Wood_Walk/Footsteps_Wood_Walk_06.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "floorstep",
+  "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Wood/Footsteps_Wood_Walk/Footsteps_Wood_Walk_07.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "floorstep",
+  "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Wood/Footsteps_Wood_Walk/Footsteps_Wood_Walk_08.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "floorstep",
+  "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Wood/Footsteps_Wood_Walk/Footsteps_Wood_Walk_09.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "floorstep",
+  "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Wood/Footsteps_Wood_Walk/Footsteps_Wood_Walk_10.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "leaves",
+  "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Leaves/Footsteps_Leaves_Walk/Footsteps_Leaves_Walk_01.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "leaves",
+  "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Leaves/Footsteps_Leaves_Walk/Footsteps_Leaves_Walk_02.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "leaves",
+  "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Leaves/Footsteps_Leaves_Walk/Footsteps_Leaves_Walk_03.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "leaves",
+  "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Leaves/Footsteps_Leaves_Walk/Footsteps_Leaves_Walk_04.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "leaves",
+  "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Leaves/Footsteps_Leaves_Walk/Footsteps_Leaves_Walk_05.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "leaves",
+  "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Leaves/Footsteps_Leaves_Walk/Footsteps_Leaves_Walk_06.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "leaves",
+  "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Leaves/Footsteps_Leaves_Run/Footsteps_Leaves_Run_01.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "leaves",
+  "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Leaves/Footsteps_Leaves_Run/Footsteps_Leaves_Run_02.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "leaves",
+  "source": "Essentials_Series_NOX_SOUND/Footsteps_Essentials_NOX_SOUND/Footsteps_Leaves/Footsteps_Leaves_Run/Footsteps_Leaves_Run_03.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "nightbed",
+  "source": "Essentials_Series_NOX_SOUND/Nature_Essentials_NOX_SOUND/Ambiance_Night_Loop_Stereo.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "pager",
+  "source": "Essentials_Series_NOX_SOUND/Electromagnetic_NOX_SOUND/Electromagnetic_Smartphone_Sequence_Mono_Elektrousi_01.wav",
+  "author": "Nox Sound",
+  "license": "CC0"
+ },
+ {
+  "pool": "horn",
+  "source": "Flooded Grounds 1.1/Content/Sounds/Horn.mp3",
+  "author": "Sandro T (Flooded Grounds)",
+  "license": "Unity Asset Store EULA"
+ },
+ {
+  "pool": "owl",
+  "source": "https://commons.wikimedia.org/wiki/File:Bubo_virginianus_-_Great_Horned_Owl_XC450919.mp3 (1.7-5.6 s, filtered, faded, normalised)",
+  "author": "Michael & Katie LaTour (xeno-canto XC450919), Hamilton County, Ohio",
+  "license": "CC BY-SA 4.0"
+ },
+ {
+  "pool": "owl",
+  "source": "https://commons.wikimedia.org/wiki/File:Bubo_virginianus_-_Great_Horned_Owl_XC450919.mp3 (9.8-13.6 s, filtered, faded, normalised)",
+  "author": "Michael & Katie LaTour (xeno-canto XC450919), Hamilton County, Ohio",
+  "license": "CC BY-SA 4.0"
+ },
+ {
+  "pool": "owl",
+  "source": "https://commons.wikimedia.org/wiki/File:Bubo_virginianus_-_Great_Horned_Owl_XC156403.mp3 (41.6-47.0 s, filtered, faded, normalised)",
+  "author": "Bushman (xeno-canto XC156403), Salem, Oregon",
+  "license": "CC BY-SA 3.0"
+ },
+ {
+  "pool": "owl",
+  "source": "https://commons.wikimedia.org/wiki/File:Bubo_virginianus_-_Great_Horned_Owl_XC156403.mp3 (50.6-54.2 s, filtered, faded, normalised)",
+  "author": "Bushman (xeno-canto XC156403), Salem, Oregon",
+  "license": "CC BY-SA 3.0"
+ },
+ {
+  "pool": "owl",
+  "source": "https://commons.wikimedia.org/wiki/File:Bubo_virginianus_-_Great_Horned_Owl_XC156403.mp3 (84.7-92.8 s, filtered, faded, normalised)",
+  "author": "Bushman (xeno-canto XC156403), Salem, Oregon",
+  "license": "CC BY-SA 3.0"
+ }
+]

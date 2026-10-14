@@ -50,7 +50,8 @@ namespace ServiceGameV2 {
    var down=StairBottom-StairTop;down.y=0;var foot=StairBottom+down.normalized*.5f;var off=w-foot;off.y=0;float feet=d.Scene.Walker.bounds.min.y;
    if(off.magnitude>StairNear||Mathf.Abs(feet-StairBottom.y)>1.2f){stairNearFor=0;return;}stairNearFor+=Time.deltaTime;
    var vp=d.Scene.View.WorldToViewportPoint(StairTop+Vector3.up*.3f);bool inView=vp.z>0&&vp.x>.08f&&vp.x<.92f&&vp.y>.05f&&vp.y<.97f;
-   if(inView||stairNearFor>1.5f){stairDone=true;StartCoroutine(StairFall(p));}}
+   if(inView||stairNearFor>1.5f){stairDone=true;if(d.Scenes)d.Scenes.BellFreeze(p);else StartCoroutine(StairFall(p));}} // V27: it stands on the landing first; the book after
+  public void BeginStairFall(ServiceProperty p){StartCoroutine(StairFall(p));}
   IEnumerator StairFall(ServiceProperty p){StairFalls++;
    d.Audio.HorrorAt("woodstress",StairTop+Vector3.up*.6f,.32f); // a board upstairs first
    yield return new WaitForSeconds(.55f);

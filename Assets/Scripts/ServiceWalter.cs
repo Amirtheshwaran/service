@@ -38,8 +38,9 @@ namespace ServiceGameV2 {
     if(speed>=RunFrom)Play("Run",Mathf.Clamp(speed/RunStride,.62f,1.05f));else Play("Walk",Mathf.Clamp(speed/Mathf.Max(.3f,ServiceResidents.NaturalSpeed(walter,"Walk")),.8f,1.5f));}
    else Play("Idle",1);
   }
-  void Caught(){Chasing=false;Catches++;d.Audio.Pursuit(false);d.Audio.HorrorAt("reveal",walter.transform.position+Vector3.up*1.5f,.6f);Play("Idle",1);
-   d.EndWith(ServiceScript.EndingWalter,walter.transform.position+Vector3.up*1.6f);}
+  // V27: he gets you - his face in yours (the jumpscare), then the epilogue
+  void Caught(){Chasing=false;Catches++;d.Audio.Pursuit(false);Play("Run",1.1f);
+   d.EndWithScare(ServiceScript.EndingWalter,walter.transform,"roar",.9f);}
   void End(bool escaped){Chasing=false;Escaped=escaped;d.Audio.Pursuit(false);if(walter)Play("Idle",1);if(escaped)d.Say(ServiceScript.WalterEscaped);}
  }
 }

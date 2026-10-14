@@ -27,6 +27,7 @@ namespace ServiceGameV2 {
    fill=new GameObject("Survey fill").AddComponent<Light>();fill.type=LightType.Directional;fill.intensity=.35f;fill.shadows=LightShadows.None;fill.transform.rotation=Quaternion.Euler(60,30,0);
    if(sets.Contains("catalog")){yield return Catalog();if(sets.Count==1)yield break;}
    if(sets.Contains("pov")){yield return Pov();if(sets.Count==1)yield break;}
+   if(sets.Contains("rooms27")){yield return Rooms27();if(sets.Count==1)yield break;}
    foreach(int night in new[]{0,1,2}){
     d.BeginShift(night);d.PaperOpen=false;yield return null;Brighten(true);
     if(sets.Contains("look")&&night==0)yield return TrueLook();
@@ -157,6 +158,26 @@ namespace ServiceGameV2 {
   }
   static string Clean(string s)=>new string(s.Where(char.IsLetterOrDigit).Take(24).ToArray());
   static Vector3 Flat(Vector3 v)=>new Vector3(v.x,0,v.z);
+  // V27 placement review: every room of every house from a grid of standing spots (one per 2.4 m cell per storey, from the
+  // navmesh under a roof), four directions each at eye height, then eight views round the outside of each house
+  static bool Roofed(Vector3 c)=>Physics.Raycast(c+Vector3.up*.5f,Vector3.up,out var h,5f,~((1<<8)|(1<<9)),QueryTriggerInteraction.Ignore)&&!(h.collider is TerrainCollider);
+  IEnumerator Rooms27(){
+   foreach(int night in new[]{0,2}){d.BeginShift(night);d.PaperOpen=false;yield return null;Brighten(true);if(night==2&&d.Scene.LateRoad)d.Scene.LateRoad.SetActive(true);yield return null;
+    var tris=NavMesh.CalculateTriangulation();
+    foreach(var p in d.Scene.Properties.Where(x=>x.gameObject.activeInHierarchy).OrderBy(x=>x.Index)){
+     if((night==2)!=(p.Index==2))continue;
+     if(d.Life)d.Life.OpenDoor(p,true);yield return new WaitForSeconds(.8f);
+     var cells=new Dictionary<Vector3Int,Vector3>();
+     for(int i=0;i+2<tris.indices.Length;i+=3){var v0=tris.vertices[tris.indices[i]];var v1=tris.vertices[tris.indices[i+1]];var v2=tris.vertices[tris.indices[i+2]];var c=(v0+v1+v2)/3f;
+      foreach(var q in new[]{c,Vector3.Lerp(v0,c,.35f),Vector3.Lerp(v1,c,.35f),Vector3.Lerp(v2,c,.35f)}){
+       if(!p.InteriorBounds.Contains(q+Vector3.up*.3f)||!Roofed(q))continue;var key=new Vector3Int(Mathf.FloorToInt(q.x/2.4f),Mathf.RoundToInt(q.y/1.6f),Mathf.FloorToInt(q.z/2.4f));if(!cells.ContainsKey(key))cells[key]=q;}}
+     int k=0;foreach(var c in cells.Values.OrderBy(v=>Mathf.Round(v.y)).ThenBy(v=>v.x).ThenBy(v=>v.z)){var eye=c+Vector3.up*1.62f;
+      for(int a=0;a<4;a++){var fwd=Quaternion.Euler(0,a*90,0)*Vector3.forward;yield return Shot($"r27-p{p.Index}-{k:00}-{a*90:000}",eye,eye+fwd*4-Vector3.up*.6f,"room27",night,p.Index,$"inside, spot {k} at {c.x:F1},{c.y:F1},{c.z:F1}, facing world yaw {a*90}");}k++;}
+     var b=p.InteriorBounds;float rad=Mathf.Max(b.extents.x,b.extents.z)+6f;
+     for(int a=0;a<8;a++){var dv=Quaternion.Euler(0,a*45,0)*Vector3.forward;var spot=Ground(b.center+dv*rad)+Vector3.up*1.6f;
+      yield return Shot($"r27-p{p.Index}-out{a}",spot,new Vector3(b.center.x,p.Door.position.y+1.2f,b.center.z),"room27",night,p.Index,$"outside the house, {rad:F0} m out at compass {a*45}");}
+     if(d.Life)d.Life.OpenDoor(p,false);}}
+  }
   Vector3 Ground(Vector3 p){if(Physics.Raycast(new Vector3(p.x,p.y+40,p.z),Vector3.down,out var h,80,~0,QueryTriggerInteraction.Ignore))return h.point;return p;}
   List<Vector3> NavPath(Vector3 a,Vector3 b){var list=new List<Vector3>();if(NavMesh.SamplePosition(a,out var ha,3,NavMesh.AllAreas)&&NavMesh.SamplePosition(b,out var hb,3,NavMesh.AllAreas)){var np=new NavMeshPath();if(NavMesh.CalculatePath(ha.position,hb.position,NavMesh.AllAreas,np)&&np.corners.Length>1)list.AddRange(np.corners);}if(list.Count<2){list.Clear();list.Add(a);list.Add(b);}return list;}
   static float Length(List<Vector3> pts){float l=0;for(int i=1;i<pts.Count;i++)l+=Vector3.Distance(pts[i-1],pts[i]);return l;}

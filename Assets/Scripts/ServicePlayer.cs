@@ -41,7 +41,7 @@ namespace ServiceGameV2
         float LookBackTarget=>ResolveLookBack(Running,InCar,d.InputBlocked,d.IsSmoke?SmokeLookBack<0:Keyboard.current!=null&&Keyboard.current[Key.Q].isPressed,d.IsSmoke?SmokeLookBack>0:Keyboard.current!=null&&Keyboard.current[Key.E].isPressed);
         public bool InteractionSuppressed=>LookBackTarget!=0||Mathf.Abs(lookBack)>1;
         // V22: stamina - see Sources/V22/patch_stamina.py. Running = Shift with forward input; Sprinting = running with breath.
-        public const float SprintSpeed=5.5f,WindedSpeed=4.6f,WalkSpeed=3.25f,CrouchSpeed=1.55f;
+        public const float SprintSpeed=5.5f,WindedSpeed=3.8f,WalkSpeed=3.25f,CrouchSpeed=1.55f; // V27: out of breath is a stagger, not a sprint ("when you run out of breath you can still sprint??")
         public float Stamina {get;private set;}=1;
         public bool Winded {get;private set;}
         public int WindedCount {get;private set;}
@@ -85,7 +85,7 @@ namespace ServiceGameV2
             if (s == null || d.Phase != ServicePhase.Playing) return;
             if (IsStarting && !d.PaperOpen && Time.time >= startAt) { IsStarting = false; EngineRunning = true; d.Audio.Engine(true); }
             TickStamina(Time.deltaTime);
-            if (d.InputBlocked) { HoldVehicle(); return; }
+            if (d.InputBlocked || d.Scare && d.Scare.Playing) { HoldVehicle(); return; } // V27: the jumpscare owns the view
             Vector2 look = Mouse.current == null || d.IsSmoke ? Vector2.zero : Mouse.current.delta.ReadValue();
             float backTarget=LookBackTarget;
             if(backTarget==0&&Mathf.Abs(lookBack)<5)yaw += look.x * Sensitivity;
@@ -159,6 +159,7 @@ namespace ServiceGameV2
             }
             bool estate=d.Scene.Properties.BlocksVehicle(before,before+travel,1.35f);
             bool solid=Physics.BoxCast(before+Vector3.up*.85f,new Vector3(.78f,.42f,1.85f),travel.sqrMagnitude>1e-10f?travel.normalized:(speed<0?-s.Car.forward:s.Car.forward),out var hit,s.Car.rotation,travel.magnitude+.06f,~((1<<8)|(1<<9)|(1<<10)),QueryTriggerInteraction.Ignore);
+            if(solid&&KnockDown(hit,travel))solid=false; // V27: a mailbox goes over instead of stopping the car dead
             var collision=s.CarBody.Move((estate||solid?Vector3.zero:travel)+Vector3.up*gravity*Time.deltaTime);
             bool side=(collision&CollisionFlags.Sides)!=0;
             if(side&&!estate&&!solid&&travel.sqrMagnitude>1e-6f){
@@ -196,7 +197,7 @@ namespace ServiceGameV2
             Vector3 move = (s.Walker.transform.right * input.x + s.Walker.transform.forward * input.y) * (Crouched?CrouchSpeed:Sprinting?SprintSpeed:Running?WindedSpeed:WalkSpeed);
             if(s.Walker.isGrounded){groundedUntil=Time.time+.1f;if(gravity<0){if(lastVertical< -4)landing=Mathf.Min(.1f,-lastVertical*.008f);gravity=-2;}}
             if(free&&(d.IsSmoke?SmokeJump:Pressed(Key.Space))){if(Stamina>=.1f)jumpUntil=Time.time+.12f;SmokeJump=false;}
-            if(jumpUntil>Time.time&&groundedUntil>Time.time&&!Crouched){gravity=5.8f;jumpUntil=groundedUntil=0;if(!SmokeEndlessStamina)Stamina=Mathf.Max(0,Stamina-.08f);}
+            if(jumpUntil>Time.time&&groundedUntil>Time.time&&!Crouched){gravity=3.3f; /* V27: about half a metre - it was 1.7 m, enough to vault a porch rail */jumpUntil=groundedUntil=0;if(!SmokeEndlessStamina)Stamina=Mathf.Max(0,Stamina-.08f);}
             else gravity=Mathf.Max(-25,gravity-20*Time.deltaTime);
             Vector3 prior=s.Walker.transform.position;lastVertical=gravity;var flags=s.Walker.Move((move+Vector3.up*gravity)*Time.deltaTime);if((flags&CollisionFlags.Above)!=0&&gravity>0)gravity=0;
             var delta=s.Walker.transform.position-prior;delta.y=0;HorizontalSpeed=delta.magnitude/Mathf.Max(Time.deltaTime,.001f);
@@ -209,8 +210,16 @@ namespace ServiceGameV2
             }
         }
         bool CanStand(){foreach(var hit in Physics.OverlapCapsule(s.Walker.transform.position+Vector3.up*.35f,s.Walker.transform.position+Vector3.up*1.52f,.27f,~((1<<8)|(1<<9)),QueryTriggerInteraction.Ignore))if(hit!=s.Walker&&!hit.transform.IsChildOf(s.Walker.transform))return false;return true;}
+        // V27 ("I rammed a mailbox and nothing happened"): hit one at speed and it goes over with a crunch - back up next night
+        readonly System.Collections.Generic.List<(Transform t,Quaternion r,Vector3 p)> knocked=new System.Collections.Generic.List<(Transform,Quaternion,Vector3)>();
+        public int Knocked=>knocked.Count;
+        bool KnockDown(RaycastHit hit,Vector3 travel){if(!hit.collider||Speed<2.2f)return false;var t=hit.collider.transform;while(t&&!t.name.StartsWith("V20 mailbox"))t=t.parent;if(!t)return false;
+            knocked.Add((t,t.rotation,t.position));var away=travel;away.y=0;if(away.sqrMagnitude<1e-6f)away=s.Car.forward;away.Normalize();
+            t.rotation=Quaternion.AngleAxis(74f,Vector3.Cross(Vector3.up,away))*t.rotation;t.position+=away*.25f;foreach(var c in t.GetComponentsInChildren<Collider>())c.enabled=false;
+            d.Audio.CollisionAt(hit.point,14f);d.Audio.HorrorAt("metalrattle",hit.point,.7f);d.Audio.HorrorAt("impact",hit.point,.55f);landing=.12f;speed*=.75f;return true;}
+        public void ResetKnocked(){foreach(var k in knocked)if(k.t){k.t.SetPositionAndRotation(k.p,k.r);foreach(var c in k.t.GetComponentsInChildren<Collider>())c.enabled=true;}knocked.Clear();}
         void LateUpdate(){
-            if(!s)return;bool active=d.Phase==ServicePhase.Playing&&!d.PaperOpen;
+            if(!s)return;if(d.Scare&&d.Scare.Playing)return;bool active=d.Phase==ServicePhase.Playing&&!d.PaperOpen;
             if(blur)blur.intensity.value=active?MotionBlurAmount:0;
             if(!active)return;
             s.View.fieldOfView=Mathf.Lerp(s.View.fieldOfView,!InCar&&Sprinting?74:!InCar&&Running?70:68,1-Mathf.Exp(-Time.deltaTime*6));

@@ -6,7 +6,7 @@ First-person horror game with free-roam driving/walking and no combat, built in 
 
 You play as a civil process server working night shifts in rural Hollis County. Your job is to drive out and deliver court documents to people who usually don't want to receive them. Every shift gives you a docket of addresses to locate and serve using your car, a flashlight, and your judgment. If a place feels wrong, you can't fight back; you just leave.
 
-The horror is focused on slow burn and atmosphere rather than cheap jump scares. In this build (v26), the story unfolds across three night shifts:
+The horror is focused on slow burn and atmosphere rather than cheap jump scares. In this build (v27), the story unfolds across three night shifts:
 - Night 1 (October 1st, 1998): Ordinary civil service work across five rural properties. Subtle atmospheric omens, doorstep resident calls, an unsettling figure along the tree line, and an upstairs corridor encounter at Vale House.
 - Night 2 (October 4th, 1998): Escalated tension and wrongness. Harrow Lodge watcher encounter (turn away and stand completely still), Bell residence note and pursuit escape back to the car, and Morrow House pursuit.
 - Night 3 (October 9th, 1998): Severe fog and unmapped route past the county road closure, leading to the unsurveyed final parcel.
@@ -27,7 +27,7 @@ Built with Unity 6 (6000.6.0f1) using URP.
 | --- | --- |
 | WASD | Walk / Drive (S reverses car) |
 | Mouse | Look around (including inside cockpit) |
-| E | Read notice / knock / enter or exit car, close door, pet Rex, wipe feet, hold nerve, interact, file report |
+| E / Space / Click | Advance dialogue line ("E NEXT" prompt) / knock / enter or exit car, close door, pet Rex, wipe feet, hold nerve, interact, file report |
 | R | Leave documents on the delivery table |
 | U | Mark address as unable to serve |
 | F | Flashlight (on foot) |
@@ -40,11 +40,19 @@ Built with Unity 6 (6000.6.0f1) using URP.
 
 ## Gameplay & Features
 
+- **Capture Jumpscares**: Every capture sequence features an intense in-your-face jumpscare with creature attack audio, screen flash, camera shake, and blackout transition.
+- **Story Lore & Hospital Pager**: Backstory reveals the player character's family history (parents died in the 1987 Route 9 fire, leaving only the player and Sofia) with incoming St. Brigid's Hospital pager alerts across shifts.
+- **Vale House Doorway Rule**: Leaving the front entrance open on night one triggers audio warnings; failing to pull the door shut allows an entity to enter and attack, while shutting it results in aggressive impacts from outside.
+- **Bell Residence Sequence & Reading**: Approaching the stairs at Bell's on night two triggers an entity on the landing and a player freeze effect, followed by a heavy encyclopedia tumbling down the steps and an interactive handwritten reading page.
+- **Route 9 Climax & Final Parcel**: The third night route concludes at the childhood house on Route 9 with hospital pager climax, lights-out sequence, entity presence, escalating apparitions, and a dedicated narrative epilogue.
+- **Enhanced Visuals & Dynamic Reflections**: Refined camcorder filter defaults (540-line Strong setting), balanced shadow casting (optimized shadow atlas), realistic nighttime reflection intensity (eliminating daytime reflection glow on mirrors/glass), and wide-cone torch auto-iris adjusting properly around characters without washouts.
+- **Driveway Lamps & Guide Markers**: Street lamps placed at driveway entrances and optional HUD guide markers for improved night-driving navigation.
+- **Woodland Ambience & Great Horned Owls**: Great horned owl field calls echoing through the forest canopy, dry leaves rustling off-road, carrying long-distance horns, and interior floorboard creaks.
+- **Chapters Menu & Display Modes**: Level selection allowing players to jump directly to any unlocked night shift from the main menu, plus borderless windowed mode support.
 - **Terrain-Painted Drives & Roadways**: Gravel driveways, footpaths, and road shoulders are rasterised and blended directly into the high-resolution terrain surface (with damp verges and faint wheel ruts), replacing flat surface ribbons. All woodland foliage and thicket brush are grounded directly to terrain elevation.
 - **Blink Apparitions**: Subtle atmospheric apparitions manifest during involuntary eyelid blinks (at Morrow's desk on night one, Bell's hallway on night two, and along the Route 9 shoulder on night three).
 - **Watcher Nerve Composure & Lunges**: Encountering the Harrow Lodge watcher requires holding your nerve by tapping `E` to steady rising panic while remaining still and facing away. If composure breaks or eye contact is made, the entity lunges across the room into close proximity before attacking.
 - **Correll Branch Storyline & Pursuit**: Specific dialogue choices on night one unlock an alternate night-two route at Correll's with blood omens, missing pets, an active pursuit featuring realistic humanoid running animations, and an exclusive route epilogue.
-- **Bell Residence Staircase Sequence**: Approaching the stairs at Bell's on night two triggers creaking floorboards and a heavy encyclopedia tumbling down the staircase treads.
 - **Morrow House Mat Reversals**: Wiping boots on the entrance mat prompts an eerie delayed second wiping audio sequence from directly behind once indoors.
 - **Rex Behaviors & Petting**: Rex approaches calmly on arrival, stepping aside for sprinting players, and can be petted up close with a dedicated downward hand gesture and canine trot animation.
 - **Visible Hearth Fires**: Cabin fireplaces at Correll's, Harrow Lodge, and Route 9 feature animated flame tongues, ember beds, and crackling audio. Hearth fires die down to faint embers during atmospheric scares.
@@ -79,6 +87,6 @@ Built with Unity 6 (6000.6.0f1) using URP.
 - Props: Blue rural mailbox by Rylae Shylna (CC BY 4.0), electrical powerline poles by tiedtke (CC BY 4.0), and fuzzy dice by jediscoob (CC BY 4.0).
 - Vehicle cabin: Ford Crown Victoria interior by Tyble (CC BY 3.0 fan art, noncommercial).
 - Music: "Anxiety", "Penumbra", "This House", "The Descent", "George Street Shuffle", "Local Forecast - Elevator", and "Jazz Brunch" by Kevin MacLeod (incompetech.com), licensed under CC BY 4.0.
-- Audio: Human field recordings and sound effects from Freesound, Nox Sound Essentials, and ViRiX Dreamcore (CC0 / CC BY 4.0 / CC BY 3.0).
+- Audio: Great Horned Owl calls from xeno-canto (CC BY-SA 3.0 / 4.0), human field recordings and sound effects from Freesound, Nox Sound Essentials, and ViRiX Dreamcore (CC0 / CC BY 4.0 / CC BY 3.0).
 - Fonts: Courier Prime, Barlow, VT323, and handwritten fonts (SIL Open Font License).
 - Full links and source details are in ASSET-CREDITS.txt.

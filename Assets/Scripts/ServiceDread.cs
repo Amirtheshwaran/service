@@ -39,7 +39,7 @@ namespace ServiceGameV2 {
    }
    threat=Mathf.MoveTowards(threat,want,Time.deltaTime*(want>threat?1.6f:.5f));spike=Mathf.Max(0,spike-Time.deltaTime*1.8f);
    // picture
-   float glitch=Mathf.Clamp01(threat*threat*.8f+spike*.6f);if(d.Storm&&!d.Storm.FlashesEnabled)glitch*=.5f;
+   float glitch=Mathf.Clamp01(threat*threat*.62f+spike*.55f);if(d.Storm&&!d.Storm.FlashesEnabled)glitch*=.5f;
    GlitchLevel=glitch;ServiceCamcorder.Glitch=glitch;
    // sound
    bool chase=h.Phase==PursuitPhase.Chase&&h.Agent&&d.Property(Mathf.Max(0,h.PropertyIndex)).Encounter==EncounterKind.Pursuit;

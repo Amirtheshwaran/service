@@ -10,13 +10,13 @@ namespace ServiceGameV2 {
  // Everything animates on unscaled time, so the pause menu stays alive while the world is frozen.
  // Keyboard (W/S or arrows, A/D or arrows, Enter/Space, Q/E for tabs, Esc) and mouse (hover, click) both drive it.
  public sealed class ServiceMenus:MonoBehaviour {
-  enum View{None,Title,Pause,Options,Confirm}
+  enum View{None,Title,Pause,Options,Confirm,Chapters}
   sealed class Item{
    public RectTransform Root;public Text Label,Caret,Value,Sub;public Action Submit;public Action<int> Shift;public Func<string> ValueText;public string Hint;public float Slide,Reveal;public bool Header;
   }
   sealed class Page{public RectTransform Root;public CanvasGroup Group;public readonly List<Item> Items=new List<Item>();public int Selected;public float Shown;}
   ServiceDirector d;Canvas canvas;Font osd;AudioSource ui;AudioClip tick,confirm,back,begin,staticHiss;
-  Page title,pause,options,confirmPage;readonly List<Page> tabs=new List<Page>();int tab;Text[] tabLabels;RectTransform tabBar;Text optionsHint;
+  Page title,pause,options,confirmPage,chapters;Text[] chapterNotes=new Text[3];string[] chapterDates;readonly List<Page> tabs=new List<Page>();int tab;Text[] tabLabels;RectTransform tabBar;Text optionsHint;
   Text titleMain,titleRed,titleCyan,counter,playOsd,dateOsd,timeOsd,pauseOsd,confirmText,pauseSub,continueSub;Image fade;
   View baseView=View.None,overlay=View.None,shown=View.None;View confirmReturn;Action confirmAction;float tapeStart,skip,fadeAlpha,fadeTarget,lastCut;bool busy;Vector2 lastMouse;
   public bool Open=>shown!=View.None;
@@ -33,13 +33,13 @@ namespace ServiceGameV2 {
    var scaler=o.GetComponent<CanvasScaler>();scaler.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;scaler.referenceResolution=new Vector2(1280,720);scaler.screenMatchMode=CanvasScaler.ScreenMatchMode.Expand;
    ui=gameObject.AddComponent<AudioSource>();ui.playOnAwake=false;ui.spatialBlend=0;ui.ignoreListenerPause=true;ui.volume=.55f;
    tick=Resources.Load<AudioClip>("Audio/V20/ui/tick");confirm=Resources.Load<AudioClip>("Audio/V20/ui/confirm");back=Resources.Load<AudioClip>("Audio/V20/ui/back");begin=Resources.Load<AudioClip>("Audio/V20/ui/begin");staticHiss=Resources.Load<AudioClip>("Audio/V5/static/static_1");
-   BuildTitle();BuildPause();BuildOptions();BuildConfirm();
+   BuildTitle();BuildPause();BuildOptions();BuildConfirm();BuildChapters();
    fade=Block(canvas.transform as RectTransform,new Rect(-400,-400,2080,1520),Color.black);fade.color=new Color(0,0,0,0);fade.raycastTarget=false;
    {var ft=fade.rectTransform;ft.anchorMin=Vector2.zero;ft.anchorMax=Vector2.one;ft.pivot=new Vector2(.5f,.5f);ft.offsetMin=new Vector2(-40,-40);ft.offsetMax=new Vector2(40,40);}
    tapeStart=0;
    foreach(var p in AllPages())Hide(p,true);
   }
-  IEnumerable<Page> AllPages(){yield return title;yield return pause;yield return options;yield return confirmPage;}
+  IEnumerable<Page> AllPages(){yield return title;yield return pause;yield return options;yield return confirmPage;yield return chapters;}
 
   // ---------- building blocks (1280x720 reference, origin top-left)
   RectTransform Area(Transform parent,string name,Rect r){var g=new GameObject(name,typeof(RectTransform));var t=g.GetComponent<RectTransform>();t.SetParent(parent,false);t.anchorMin=t.anchorMax=new Vector2(0,1);t.pivot=new Vector2(0,1);t.anchoredPosition=new Vector2(r.x,-r.y);t.sizeDelta=r.size;return t;}
@@ -73,8 +73,9 @@ namespace ServiceGameV2 {
    var cont=AddItem(title,98,350,"CONTINUE",42,()=>Begin(()=>d.ContinueRoute()),"Pick up the route at the night you last filed.");
    continueSub=Words(cont.Root,new Rect(300,0,420,52),"",26,faint);
    AddItem(title,98,406,"NEW ROUTE",42,()=>{if(d.HasSavedRoute)Ask("START A NEW ROUTE?\nYOUR SAVED NIGHT WILL BE REPLACED.",()=>Begin(()=>d.NewRoute()));else Begin(()=>d.NewRoute());},"Begin at the depot on the first night.");
-   AddItem(title,98,462,"OPTIONS",42,()=>OpenOptions(),"Picture, sound and controls.");
-   AddItem(title,98,518,"QUIT",42,()=>Ask("QUIT TO DESKTOP?",()=>{if(d.IsChaos){QuitRequests++;return;}Application.Quit();}),"");
+   AddItem(title,98,462,"CHAPTERS",42,()=>{Sound(confirm);overlay=View.Chapters;chapters.Selected=0;Skip();},"Play any night you have reached.");
+   AddItem(title,98,518,"OPTIONS",42,()=>OpenOptions(),"Picture, sound and controls.");
+   AddItem(title,98,574,"QUIT",42,()=>Ask("QUIT TO DESKTOP?",()=>{if(d.IsChaos){QuitRequests++;return;}Application.Quit();}),"");
    Words(title.Root,new Rect(100,652,700,30),"W S  SELECT      ENTER  CONFIRM",22,faint);
    dateOsd=Words(title.Root,new Rect(820,606,400,40),"",34,white,TextAnchor.MiddleRight);
    timeOsd=Words(title.Root,new Rect(820,644,400,40),"",34,white,TextAnchor.MiddleRight);
@@ -103,10 +104,12 @@ namespace ServiceGameV2 {
    AddValue(g,y,"LOOK SENSITIVITY",()=>Bar(Mathf.InverseLerp(.03f,.2f,d.Player.Sensitivity)),s=>d.Player.Sensitivity=Mathf.Clamp(d.Player.Sensitivity+s*.017f,.03f,.2f),"How far the view turns for each movement of the mouse.");y+=52;
    AddValue(g,y,"CAMERA MOVEMENT",()=>Bar(d.Player.CameraMotion),s=>d.Player.CameraMotion=Mathf.Clamp01(d.Player.CameraMotion+s*.1f),"Head bob and sway while walking and driving.");y+=52;
    AddValue(g,y,"MOTION BLUR",()=>Bar(d.Player.MotionBlurAmount/.35f),s=>d.Player.MotionBlurAmount=Mathf.Clamp(d.Player.MotionBlurAmount+s*.035f,0,.35f),"Smearing of the picture on fast turns.");y+=52;
-   AddValue(g,y,"FLASHES",()=>Pick(d.Storm&&d.Storm.FlashesEnabled?"On":"Off"),s=>{if(d.Storm)d.Storm.FlashesEnabled=!d.Storm.FlashesEnabled;},"Lightning and impact flashes. Turn off if flashing light troubles you.");
+   AddValue(g,y,"FLASHES",()=>Pick(d.Storm&&d.Storm.FlashesEnabled?"On":"Off"),s=>{if(d.Storm)d.Storm.FlashesEnabled=!d.Storm.FlashesEnabled;},"Lightning and impact flashes. Turn off if flashing light troubles you.");y+=52;
+   AddValue(g,y,"GUIDE MARKER",()=>Pick(ServiceGuideMarker27.On?"On":"Off"),s=>ServiceGuideMarker27.Set(!ServiceGuideMarker27.On),"A small mark over the next drive and door.");
    // VIDEO
    var v=tabs[1];y=236;
-   AddValue(v,y,"DISPLAY",()=>Pick(Screen.fullScreen?"Full screen":"Windowed"),s=>Screen.fullScreen=!Screen.fullScreen,"Full screen or a window.");y+=52;
+   // V27: "please give us borderless"
+   AddValue(v,y,"DISPLAY",()=>Pick(Screen.fullScreenMode==FullScreenMode.Windowed?"Windowed":Screen.fullScreenMode==FullScreenMode.ExclusiveFullScreen?"Exclusive":"Borderless"),s=>{var modes=new[]{FullScreenMode.FullScreenWindow,FullScreenMode.ExclusiveFullScreen,FullScreenMode.Windowed};int i=System.Array.IndexOf(modes,Screen.fullScreenMode==FullScreenMode.MaximizedWindow?FullScreenMode.FullScreenWindow:Screen.fullScreenMode);Screen.fullScreenMode=modes[((i<0?0:i)+s+3)%3];},"Borderless full screen, exclusive full screen, or a window.");y+=52;
    AddValue(v,y,"CAMERA FILTER",()=>Pick(d.Camcorder?ServiceCamcorder.Names[d.Camcorder.Level]:"Off"),s=>{if(d.Camcorder)d.Camcorder.Set((d.Camcorder.Level+s+4)%4);},"The camcorder look. STRONG is the intended picture; EXTREME is lower still.");y+=52;
    AddValue(v,y,"BRIGHTNESS",()=>Bar(Mathf.InverseLerp(.6f,1.6f,ServiceCamcorder.Brightness)),s=>{if(d.Camcorder)d.Camcorder.SetBrightness(ServiceCamcorder.Brightness+s*.1f);},"Raise it until the darkest corner of the road is just visible.");
    // AUDIO
@@ -120,6 +123,15 @@ namespace ServiceGameV2 {
    optionsHint=Words(options.Root,new Rect(100,604,1080,32),"",26,dim);
    Words(options.Root,new Rect(100,652,1100,30),"ESC  BACK      A D  CHANGE      W S  SELECT",22,faint);
    SetTab(0);
+  }
+  // V27 ("it deleted the save - add a save system so people can go to certain areas"): every night you have reached
+  void BuildChapters(){
+   chapters=NewPage("Menu - chapters");Block(chapters.Root,new Rect(-400,-400,2080,1520),new Color(0,0,0,.6f));LeftShade(chapters.Root,.85f);
+   Words(chapters.Root,new Rect(58,34,300,40),"■ CHAPTERS",34,white);Words(chapters.Root,new Rect(96,96,800,90),"CHAPTERS",80,white);
+   string[] names={"NIGHT ONE","NIGHT TWO","NIGHT THREE"},dates={"THURSDAY  ·  OCT. 01","SUNDAY  ·  OCT. 04","FRIDAY  ·  OCT. 09"};
+   for(int i=0;i<3;i++){int n=i;var it=AddItem(chapters,98,236+i*64,names[i],42,()=>{if(n<=d.ReachedNight)Begin(()=>d.StartChapter(n));else Sound(back,.6f);},"Start this night fresh. Your saved route is kept.");chapterNotes[i]=Words(it.Root,new Rect(380,0,420,52),dates[i],26,faint);}
+   AddItem(chapters,98,236+3*64,"BACK",42,()=>Close(View.Chapters));chapterDates=dates;
+   Words(chapters.Root,new Rect(100,652,900,30),"A NIGHT OPENS HERE ONCE YOU HAVE REACHED IT.",22,faint);
   }
   void BuildConfirm(){
    confirmPage=NewPage("Menu - confirm");Block(confirmPage.Root,new Rect(-400,-400,2080,1520),new Color(0,0,0,.35f));
@@ -136,6 +148,7 @@ namespace ServiceGameV2 {
   public bool Back(){
    if(busy)return true;
    if(overlay==View.Confirm){Close(View.Confirm);return true;}
+   if(overlay==View.Chapters){Close(View.Chapters);return true;}
    if(overlay==View.Options){Close(View.Options);d.SaveOptions();return true;}
    if(baseView==View.Pause){Sound(back);return false;} // let the director resume
    return baseView==View.Title;
@@ -150,13 +163,13 @@ namespace ServiceGameV2 {
   public void SmokeOptions(bool open){if(open)OpenOptions();else if(overlay==View.Options)Close(View.Options);}
   void OpenOptions(){Sound(confirm);overlay=View.Options;SetTab(tab);Skip();}
   void Ask(string question,Action yes){Sound(confirm);confirmReturn=overlay;confirmAction=yes;confirmText.text=question;overlay=View.Confirm;confirmPage.Selected=0;Skip();}
-  void Close(View v){Sound(back);if(v==View.Confirm){var u=confirmReturn==View.Options?(tabs.Count>tab?tabs[tab]:null):PageOf(baseView);if(u!=null)foreach(var it in u.Items)it.Reveal=0;}if(v==View.Confirm)overlay=confirmReturn==View.Options?View.Options:View.None;else if(v==View.Options)overlay=View.None;Skip();}
+  void Close(View v){Sound(back);if(v==View.Confirm){var u=confirmReturn==View.Options?(tabs.Count>tab?tabs[tab]:null):PageOf(baseView);if(u!=null)foreach(var it in u.Items)it.Reveal=0;}if(v==View.Confirm)overlay=confirmReturn==View.Options?View.Options:View.None;else if(v==View.Options||v==View.Chapters)overlay=View.None;Skip();}
   void Begin(Action act){if(busy)return;busy=true;Sound(begin);StartCoroutine(BeginRoutine(act));}
   System.Collections.IEnumerator BeginRoutine(Action act){playOsd.text="PLAY ▶";fadeTarget=1;float t=0;while(t<.75f){t+=Dt;yield return null;}overlay=View.None;act();yield return null;fadeTarget=0;busy=false;}
   void Skip(){skip=.16f;if(staticHiss&&shown!=View.None)ui.PlayOneShot(staticHiss,.08f);}
   void Sound(AudioClip c,float v=1){if(c)ui.PlayOneShot(c,v);}
 
-  Page PageOf(View v)=>v==View.Title?title:v==View.Pause?pause:v==View.Options?options:v==View.Confirm?confirmPage:null;
+  Page PageOf(View v)=>v==View.Title?title:v==View.Pause?pause:v==View.Options?options:v==View.Confirm?confirmPage:v==View.Chapters?chapters:null;
   Page Active(){var p=PageOf(shown);return p==options?tabs[tab]:p;}
   void Hide(Page p,bool instant){p.Group.alpha=0;p.Group.interactable=false;p.Group.blocksRaycasts=false;p.Root.gameObject.SetActive(false);}
   void Show(Page p){p.Root.gameObject.SetActive(true);p.Group.alpha=0;p.Shown=0;foreach(var it in p.Items){it.Reveal=0;it.Slide=0;}if(p==options)foreach(var t in tabs)foreach(var it in t.Items){it.Reveal=0;it.Slide=0;}}
@@ -196,6 +209,7 @@ namespace ServiceGameV2 {
    playOsd.color=new Color(1,1,1,(busy?(blink?1:.2f):1));
    pauseOsd.color=new Color(1,1,1,blink?1:.25f);
    if(pauseSub)pauseSub.text="NIGHT "+(d.NightIndex+1)+"  ·  "+d.Date.ToUpperInvariant();
+   for(int i=0;i<3;i++)if(chapterNotes[i]&&chapterDates!=null){bool open=i<=d.ReachedNight;chapterNotes[i].text=open?chapterDates[i]:"LOCKED";if(!open)chapters.Items[i].Label.color=faint;}
    // chroma fringing on the title, jittering now and then like a worn tape
    float jit=Mathf.PerlinNoise(now*2.3f,.3f)>.72f?UnityEngine.Random.Range(-2.5f,2.5f):0;
    titleRed.rectTransform.anchoredPosition=new Vector2(96-2.2f+jit,-128);titleCyan.rectTransform.anchoredPosition=new Vector2(96+2.2f-jit*.5f,-128);

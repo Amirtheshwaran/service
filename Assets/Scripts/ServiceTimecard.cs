@@ -41,7 +41,14 @@ namespace ServiceGameV2 {
   public static string Time12(System.DateTime t)=>t.ToString("h:mm tt",System.Globalization.CultureInfo.InvariantCulture);
   float Dt=>d&&d.Phase==ServicePhase.Paused?0:ServiceMenus.Dt;
   // ---- full-screen cards
-  public void NightStart(){for(int i=0;i<6;i++)stamped[i]=false;Card(d.LongDate,d.ShiftTime,1.5f,true,null);}
+  // V27 ("I'm lost in the story - thrown into the middle of something without any context"): before night one, who you
+  // are and why you are out here, typed on black (E or a click moves it on)
+  public void NightStart(){for(int i=0;i<6;i++)stamped[i]=false;if(d.NightIndex==0&&(!d.IsSmoke&&!d.IsChaos||d.IsTour)){if(card!=null)StopCoroutine(card);card=StartCoroutine(Intro());}else Card(d.LongDate,d.ShiftTime,1.5f,true,null);}
+  public int Intros {get;private set;}
+  IEnumerator Intro(){Intros++;Blocking=true;black.color=Color.black;cardWords.alpha=1;upper.text=lower.text="";yield return Wait(.6f);
+   foreach(var line in ServiceScript.IntroLines){upper.text="";yield return Type(upper,line,.032f);float t=0;while(t<Mathf.Clamp(line.Length*.045f,1.6f,3.6f)){t+=Dt;if(Skip())break;yield return null;}}
+   upper.text="";card=null;Card(d.LongDate,d.ShiftTime,1.5f,true,null);}
+  static bool Skip(){var k=UnityEngine.InputSystem.Keyboard.current;var m=UnityEngine.InputSystem.Mouse.current;return k!=null&&(k.eKey.wasPressedThisFrame||k.spaceKey.wasPressedThisFrame)||m!=null&&m.leftButton.wasPressedThisFrame;}
   public void NightEnd(){var t=Clock;var floor=StartOf(d.NightIndex).AddMinutes(new[]{124,131,96}[Mathf.Clamp(d.NightIndex,0,2)]);if(t<floor)t=floor;Card("Hollis County depot",Time12(t),1.3f,false,null);}
   public void Rewound(){Card("",Time12(Clock),.9f,true,null);}
   public void Card(string top,string time,float hold,bool fromBlack,System.Action atBlack){
@@ -61,7 +68,14 @@ namespace ServiceGameV2 {
    Blocking=false;upper.text=lower.text="";card=null;
   }
   IEnumerator Wait(float s){float t=0;while(t<s){t+=Dt;yield return null;}}
+  // V27 ("the '_' cutting in and out makes the whole text shift back and forth"): typed from a fixed left edge, set where
+  // the finished line will sit centred, so nothing moves as letters and the caret appear
+  void Pin(Text label,string text){if(label.alignment!=TextAnchor.MiddleCenter&&label.alignment!=TextAnchor.MiddleLeft)return;
+   var gen=label.GetGenerationSettings(new Vector2(4000,200));float w=label.cachedTextGeneratorForLayout.GetPreferredWidth(text,gen)/Mathf.Max(.01f,label.pixelsPerUnit);
+   var r=label.rectTransform;if(!pinBase.ContainsKey(label))pinBase[label]=r.sizeDelta;label.alignment=TextAnchor.MiddleLeft;r.sizeDelta=new Vector2(w+2f,pinBase[label].y);} // the box stays centred, as wide as the finished line
+  readonly System.Collections.Generic.Dictionary<Text,Vector2> pinBase=new System.Collections.Generic.Dictionary<Text,Vector2>();
   IEnumerator Type(Text label,string text,float per){
+   Pin(label,text);
    for(int i=1;i<=text.Length;i++){
     label.text=text.Substring(0,i)+(i<text.Length?"_":"");char c=text[i-1];
     if(c!=' '&&clicks.Length>0){keys.pitch=Random.Range(.92f,1.12f);keys.PlayOneShot(clicks[Random.Range(0,clicks.Length)],Random.Range(.32f,.45f));}

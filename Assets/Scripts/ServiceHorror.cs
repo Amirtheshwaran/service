@@ -42,7 +42,7 @@ namespace ServiceGameV2 {
   public float GazeSeconds=>gazeSeconds;
   void LateUpdate(){if(Agent&&animators!=null)foreach(var a in animators)if(a&&a.gameObject.activeInHierarchy){if(lunging){a.SetBool("Moving",true);a.speed=1.9f;continue;}a.SetBool("Moving",Phase==PursuitPhase.Chase&&p.Encounter==EncounterKind.Pursuit&&Agent.velocity.sqrMagnitude>.08f);a.speed=Phase==PursuitPhase.Chase?Mathf.Clamp(Agent.velocity.magnitude/(p.CreatureVariant==3?4.8f:2.2f),.8f,p.CreatureVariant==3?1.4f:2.1f):1;}}
   public void Initialize(ServiceDirector director){d=director;nav=NavMesh.AddNavMeshData(d.Scene.Navigation);Agent=d.Scene.Entity.GetComponent<NavMeshAgent>();animators=d.Scene.Entity.GetComponentsInChildren<Animator>(true);ResetEncounter();}
-  public void ResetEncounter(){bellShut=false;lunging=false;strikeAt=0;Phase=PursuitPhase.Dormant;Elapsed=LookAwaySeconds=movingFor=0;stillAnchored=false;ignitionEscape=false;armedReturn=returnEncounter=false;System.Array.Clear(approach,0,6);System.Array.Clear(cue,0,6);if(Agent&&Agent.isOnNavMesh)Agent.ResetPath();d.Scene.Entity.SetActive(false);d.Audio.Pursuit(false);foreach(var h in d.Scene.Properties){if(h.WindowLight)h.WindowLight.enabled=h.Index<2||d.NightIndex==0;if(h.EncounterLights!=null)foreach(var l in h.EncounterLights)if(l)l.enabled=true;}}
+  public void ResetEncounter(){bellShut=false;lunging=false;strikeAt=0;scared=false;if(d&&d.Scare)d.Scare.Finish(false);Phase=PursuitPhase.Dormant;Elapsed=LookAwaySeconds=movingFor=0;stillAnchored=false;ignitionEscape=false;armedReturn=returnEncounter=false;System.Array.Clear(approach,0,6);System.Array.Clear(cue,0,6);if(Agent&&Agent.isOnNavMesh)Agent.ResetPath();d.Scene.Entity.SetActive(false);d.Audio.Pursuit(false);foreach(var h in d.Scene.Properties){if(h.WindowLight)h.WindowLight.enabled=h.Index<2||d.NightIndex==0;if(h.EncounterLights!=null)foreach(var l in h.EncounterLights)if(l)l.enabled=true;}}
   static void DriveProgress(ServiceProperty p,Vector3 at,out float fromDoor,out float lateral){
    var r=p.ApproachRoute;fromDoor=0;lateral=float.MaxValue;if(r==null||r.Length<2){var o=at-p.Door.position;o.y=0;fromDoor=o.magnitude;lateral=0;return;}
    float total=0;for(int i=1;i<r.Length;i++)total+=Vector3.Distance(r[i-1],r[i]);
@@ -55,6 +55,9 @@ namespace ServiceGameV2 {
    WatcherDistance=Vector3.Distance(new Vector3(w.x,0,w.z),new Vector3(spawn.x,0,spawn.z));return spawn;}
   public void Begin(){Begin(1);}
   public void Begin(int index){BeginEncounter(index,false);}
+  // V27: an encounter from a given spot (Vale's open front door)
+  bool spawnSet;Vector3 spawnAt;
+  public void BeginAt(int index,Vector3 spawn){spawnSet=true;spawnAt=spawn;BeginEncounter(index,false);spawnSet=false;}
   void BeginEncounter(int index,bool returning){
    if(d.Player)d.Player.GiveAdrenaline(.7f); // V22: every pursuit starts with at least 7 s of sprint in you
    if(d.Omens)d.Omens.CancelGlimpses();if(Agent&&!Agent.enabled)Agent.enabled=true; // V22: never start while a glimpse holds the creature
@@ -62,8 +65,9 @@ namespace ServiceGameV2 {
    d.Scene.Entity.transform.SetPositionAndRotation(p.EntitySpawn.position,p.EntitySpawn.rotation);
    if(d.Scene.EntityVariants!=null)for(int i=0;i<d.Scene.EntityVariants.Length;i++)d.Scene.EntityVariants[i].SetActive(i==p.CreatureVariant);
    d.Scene.Entity.SetActive(true);
-   var spawn=returning?p.TableApproach.position:p.EntitySpawn.position;
-   if(p.Encounter==EncounterKind.Pursuit&&!returning)spawn=ExtendedSpawn(spawn);
+   var spawn=returning?p.OpeningCentre+p.Inward*1.1f:p.EntitySpawn.position; // V27: Bell's ambush comes out of his front door (from the back room nobody ever saw it - "monster not coming, maybe stuck")
+   if(spawnSet)spawn=spawnAt;
+   else if(p.Encounter==EncounterKind.Pursuit&&!returning)spawn=ExtendedSpawn(spawn);
    // V23: the watcher stood almost on top of you ("kinda too close"): it now stands 5-6.5 m off, on the same floor
    else if(p.Encounter==EncounterKind.LookAway&&!returning)spawn=FartherSpawn(spawn);
    if(!NavMesh.SamplePosition(spawn,out var hit,2,NavMesh.AllAreas))throw new System.InvalidOperationException("Presence outside navigation at "+index);
@@ -86,12 +90,13 @@ namespace ServiceGameV2 {
      if(!bellShut&&d.Life.DoorOpenDegrees(4)<=5&&!d.Life.DoorMoving(4)&&!bell.InteriorBounds.Contains(w+Vector3.up*.3f)&&dist>4)bellShut=true; // already shut
      if(!bellShut&&d.Life.DoorOpenDegrees(4)>5&&!bell.InteriorBounds.Contains(w+Vector3.up*.3f)&&dist>4&&(Vector3.Dot(eye.forward,(bell.Door.position-eye.position).normalized)<.2f||dist>14)){bellShut=true;d.Life.OpenDoor(bell,false,false,1.6f);}
      // V25: however you leave - down the drive or straight across the lawn to the car (a playtester cut across and nothing came)
-     if(bellShut&&d.Life.DoorOpenDegrees(4)<3&&dist>9&&(d.Player.InCar?lateral<8f&&d.Player.Speed<2f:dist<34&&(progress>8||lateral>=5))&&!bell.InteriorBounds.Contains(w+Vector3.up*.3f)){ /* in the car: anywhere on his drive (it is 65 m long), parked */armedReturn=false;ReturnAmbushes++;d.BellGone=true;d.Say(ServiceScript.ReturnAmbush);d.Audio.HorrorAt("doorslam",bell.Door.position,.7f);d.Audio.HorrorAt("metalrattle",bell.SoundPoint.position,.32f);d.Life.OpenDoor(bell,true,true,.18f);BeginEncounter(4,true);return;}
+     if(bellShut&&d.Life.DoorOpenDegrees(4)<3&&dist>7&&(d.Player.InCar?lateral<8f&&d.Player.Speed<2f:dist<34&&(progress>8||lateral>=5))&&!bell.InteriorBounds.Contains(w+Vector3.up*.3f)){ /* in the car: anywhere on his drive (it is 65 m long), parked */armedReturn=false;ReturnAmbushes++;d.BellGone=true;d.Say(ServiceScript.ReturnAmbush);d.Audio.HorrorAt("doorslam",bell.Door.position,.7f);d.Audio.HorrorAt("metalrattle",bell.SoundPoint.position,.32f);d.Life.OpenDoor(bell,true,true,.18f);BeginEncounter(4,true);return;}
     }
     if(d.Player.InCar)return;foreach(var h in d.Scene.Properties)if(h.HasEncounter&&!d.IsFriendly(h.Index)&&d.ResultAt(h.Index)==ServiceResult.Pending&&Vector3.Distance(d.Scene.Walker.transform.position,h.Door.position)<18){approach[h.Index]+=Time.deltaTime;if(approach[h.Index]>3&&cue[h.Index]==0){cue[h.Index]++;d.Audio.HorrorAt(h.Index%2==0?"metalrattle":"woodstress",h.SoundPoint.position,.16f);}if(approach[h.Index]>11&&cue[h.Index]==1){cue[h.Index]++;d.Audio.HorrorAt("taps",h.SoundPoint.position,.19f);}}return;}
    Elapsed+=Time.deltaTime;
    if(Phase==PursuitPhase.Attack){
     if(lunging)Lunge();
+    if(scared){if(Elapsed>.25f&&(!d.Scare.Playing||d.Scare.Black)){Phase=PursuitPhase.Caught;Elapsed=0;}return;}
     if(!impactPlayed&&Elapsed>=strikeAt+.48f){impactPlayed=true;d.Audio.HorrorAt("impact",d.Scene.View.transform.position,.55f);}
    d.Player.FocusOn(CaptureFocus(),1-Mathf.Exp(-Time.deltaTime*15));
     if(Elapsed>=strikeAt+1.25f){Phase=PursuitPhase.Caught;Elapsed=0;}return;
@@ -134,20 +139,24 @@ namespace ServiceGameV2 {
   }
   void Complete(){Phase=PursuitPhase.Escaped;Agent.isStopped=true;d.Audio.Pursuit(false);d.Audio.SilenceThreat();d.Scene.Entity.SetActive(false);}
   Vector3 CaptureFocus(){foreach(var animator in animators)if(animator&&animator.gameObject.activeInHierarchy)foreach(var bone in animator.GetComponentsInChildren<Transform>()){var name=bone.name.ToLowerInvariant();if(name=="head"||name.EndsWith(":head")||name.EndsWith("_head"))return bone.position;}return Agent.transform.position+Vector3.up*1.75f;}
-  public void Catch(){if(!Active)return;Phase=PursuitPhase.Attack;Elapsed=0;impactPlayed=false;Agent.isStopped=true;Agent.ResetPath();
+  public void Catch(){if(!Active)return;Phase=PursuitPhase.Attack;Elapsed=0;impactPlayed=false;scared=false;Agent.isStopped=true;Agent.ResetPath();
    var direction=d.Scene.Walker.transform.position-Agent.transform.position;direction.y=0;if(direction.sqrMagnitude>.01f)Agent.transform.rotation=Quaternion.LookRotation(direction);
    LungeGap=direction.magnitude;LungeClosest=LungeGap;lunging=!d.Player.InCar&&LungeGap>1.6f;strikeAt=lunging?99:0;
    if(lunging){Lunges++;lungeTime=Mathf.Clamp(LungeGap/15f,.25f,.45f);lungeSpeed=LungeGap/lungeTime;
     foreach(var a in animators)if(a&&a.gameObject.activeInHierarchy){a.SetBool("Moving",true);a.speed=1.9f;var run=a.HasState(0,Animator.StringToHash("Run"))?"Run":a.HasState(0,Animator.StringToHash("Pursuing"))?"Pursuing":null;if(run!=null)a.CrossFadeInFixedTime(run,.05f,0);}
     d.Audio.HorrorAt("reveal",Agent.transform.position+Vector3.up*1.2f,.62f);}
-   else foreach(var a in animators)if(a&&a.gameObject.activeInHierarchy){a.SetBool("Moving",false);a.speed=1;a.CrossFadeInFixedTime("Attack",.08f,0);}
+   else{foreach(var a in animators)if(a&&a.gameObject.activeInHierarchy){a.SetBool("Moving",false);a.speed=1;a.CrossFadeInFixedTime("Attack",.08f,0);}Scare();}
    d.Audio.Pursuit(false);d.Audio.HorrorAt("gasp",d.Scene.View.transform.position,.42f);}
+  // V27: the jumpscare - its head in your face, the scream, black (see ServiceJumpscare)
+  bool scared;public int Scares {get;private set;}
+  Transform ScareHead(){foreach(var animator in animators)if(animator&&animator.gameObject.activeInHierarchy){var h=ServiceJumpscare.HeadOf(animator.transform);if(h)return h;}return Agent.transform;}
+  void Scare(){if(!d.Scare||scared)return;scared=true;Scares++;strikeAt=99;d.Scare.Play(Agent.transform,ScareHead(),"roar",p&&p.CreatureVariant==3?.58f:.66f,1.05f,.55f,d.Player.InCar?.75f:.5f);}
   void Lunge(){var w=d.Scene.Walker.transform.position;var to=w-Agent.transform.position;to.y=0;float gap=to.magnitude;LungeClosest=Mathf.Min(LungeClosest,gap);
    if(gap>.95f&&Elapsed<lungeTime+.2f){Agent.Move(to/gap*Mathf.Min(gap-.9f,lungeSpeed*Time.deltaTime));Agent.transform.rotation=Quaternion.LookRotation(to/gap);return;}
    // held up on the way (a chair, the end of the floor): it is there anyway
    if(gap>1.5f&&NavMesh.SamplePosition(w-to/gap*.9f,out var h,.8f,NavMesh.AllAreas)){Agent.Warp(h.position);var g=w-h.position;g.y=0;LungeClosest=Mathf.Min(LungeClosest,g.magnitude);if(g.sqrMagnitude>.01f)Agent.transform.rotation=Quaternion.LookRotation(g);}
    lunging=false;strikeAt=Mathf.Max(0,Elapsed-.22f);
-   foreach(var a in animators)if(a&&a.gameObject.activeInHierarchy){a.SetBool("Moving",false);a.speed=1;a.CrossFadeInFixedTime("Attack",.05f,0);}}
+   foreach(var a in animators)if(a&&a.gameObject.activeInHierarchy){a.SetBool("Moving",false);a.speed=1;a.CrossFadeInFixedTime("Attack",.05f,0);}Scare();}
   float PathLength(Vector3 from,Vector3 to){var path=new NavMeshPath();if(!NavMesh.CalculatePath(from,to,NavMesh.AllAreas,path)||path.status!=NavMeshPathStatus.PathComplete)return -1;float length=0;for(int i=1;i<path.corners.Length;i++)length+=Vector3.Distance(path.corners[i-1],path.corners[i]);return length;}
   Vector3 ExtendedSpawn(Vector3 initial){
    var walker=d.Scene.Walker.transform.position;var away=initial-walker;away.y=0;away.Normalize();var best=initial;float longest=PathLength(initial,walker);

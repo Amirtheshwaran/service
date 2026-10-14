@@ -12,7 +12,10 @@ namespace ServiceGameV2 {
   public float RadioVolume=.65f; public RenderTexture MirrorTexture=>image;
   public string StationName=>stationNames[Station];
   readonly string[] stationNames={"88.5 · Night jazz","104.2 · Easy listening","91.7 · After hours"};
-  public void Initialize(ServiceDirector director){
+  // V27 ("hard to see when I'm coming up on a house... headlights would add a lot"): the low beams reach - they used to
+  // fade out about 20 m ahead in the fog
+  public static void BoostHeadlights(Transform car){if(!car)return;foreach(var l in car.GetComponentsInChildren<Light>(true))if(l.name=="Low beam"){l.intensity=85f;l.range=95f;l.spotAngle=64f;l.innerSpotAngle=30f;}}
+  public void Initialize(ServiceDirector director){BoostHeadlights(director.Scene.Car);
    d=director;var glass=d.Scene.Cockpit.transform.Find("Rearview glass");
    if(glass){image=new RenderTexture(768,192,16){name="Rearview reflection"};image.Create();var o=new GameObject("Rearview camera");mirror=o.AddComponent<Camera>();mirror.transform.SetParent(d.Scene.Car,false);mirror.transform.localPosition=new Vector3(0,1.35f,-1.14f);mirror.transform.localRotation=Quaternion.Euler(0,180,0);mirror.fieldOfView=28;mirror.nearClipPlane=.15f;mirror.farClipPlane=100;mirror.cullingMask=~((1<<8)|(1<<10));mirror.clearFlags=CameraClearFlags.SolidColor;mirror.targetTexture=image;mirror.depth=-10;mirror.GetUniversalAdditionalCameraData().renderShadows=false;
     // UV orientation belongs to the fitted glass, not to the camera feed.

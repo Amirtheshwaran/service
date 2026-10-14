@@ -78,7 +78,7 @@ namespace ServiceGameV2
             return clip;
         }
         AudioClip Pick(string name){
-            if(!pools.TryGetValue(name,out var pool)){pool=Resources.LoadAll<AudioClip>("Audio/V23/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V21/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V15/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V13/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V12/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V9/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V5/"+name);pools[name]=pool;}
+            if(!pools.TryGetValue(name,out var pool)){pool=Resources.LoadAll<AudioClip>("Audio/V27/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V23/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V21/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V15/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V13/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V12/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V9/"+name);if(pool.Length==0)pool=Resources.LoadAll<AudioClip>("Audio/V5/"+name);pools[name]=pool;}
             if(pool.Length==0)return Clip(name);
             int last=previous.TryGetValue(name,out var n)?n:-1;int index=Random.Range(0,pool.Length);if(pool.Length>1&&index==last)index=(index+1)%pool.Length;previous[name]=index;return pool[index];
         }
@@ -96,6 +96,7 @@ namespace ServiceGameV2
             if(wind != null) wind.volume = Mathf.MoveTowards(wind.volume, d.InsideVilla?.012f:inside ? .035f : .13f, Time.unscaledDeltaTime * .15f);
             if(ambience != null) ambience.volume = Mathf.MoveTowards(ambience.volume, d.InsideVilla?.018f:d.NightIndex == 2 ? .012f : inside ? .045f : .13f, Time.unscaledDeltaTime * .1f);
             if(room)room.volume=Mathf.MoveTowards(room.volume,d.InsideVilla?.065f:0,Time.unscaledDeltaTime*.06f);
+            if(Hush){foreach(var src in new[]{music,rain,wind,ambience,room})if(src)src.volume=0;foreach(var pocket in forestPockets)pocket.volume=0;return;} // V27: the last house goes silent
             foreach(var pocket in forestPockets)pocket.volume=Mathf.MoveTowards(pocket.volume,inside||d.InsideVilla||d.Horror.Active?0:.045f,Time.unscaledDeltaTime*.025f);
             if(d.Phase==ServicePhase.Playing&&!inside&&!d.Horror.Active&&!d.PaperOpen){nextAtmosphere-=Time.deltaTime;if(nextAtmosphere<0){
                 nextAtmosphere=Random.Range(9f,19f);var heading=Quaternion.Euler(0,Random.Range(70f,290f),0)*d.Scene.View.transform.forward;heading.y=0;
@@ -152,7 +153,7 @@ namespace ServiceGameV2
         public int CollisionsPlayed {get;private set;}
         public int CompletionCues {get;private set;}
         public void SyncVehicleAudio(){if(engine)engine.mute=d.Phase!=ServicePhase.Playing||d.PaperOpen;if(cabin)cabin.mute=d.PaperOpen;}
-        public void CollisionAt(Vector3 position,float speed){At("collision",position,Mathf.Lerp(.2f,.65f,Mathf.Clamp01(speed/14)));CollisionsPlayed++;}
+        public void CollisionAt(Vector3 position,float speed){At("collision",position,Mathf.Lerp(.38f,.95f,Mathf.Clamp01(speed/14)));CollisionsPlayed++;} // V27: a hit you hear
         public void DeliveryComplete(){var clip=Pick("complete");if(clip){cabin.PlayOneShot(clip,.28f);CompletionCues++;}}
         public void Engine(bool on) { if (on && engine.clip != null) engine.Play(); else engine.Stop(); }
         public void EngineSpeed(float speed) { engine.volume = Mathf.Lerp(.12f, .25f, speed / 14); engine.pitch=Mathf.Lerp(.85f,1.4f,Mathf.Clamp01(speed/14)); }
@@ -163,6 +164,14 @@ namespace ServiceGameV2
         }
         public void Paper() { AudioClip clip = Clip("paper"); if (clip != null) cabin.PlayOneShot(clip, .2f); }
         public void HorrorAt(string clip,Vector3 position,float volume){At(clip,position,volume);}
+        // V27: a clip from a pool, for sources that play it themselves (the jumpscare, the ambience)
+        public AudioClip Pool(string name)=>Pick(name);
+        public bool Hush;
+        public void HorrorAt(string clip,Vector3 position,float volume,float pitch){var c=Pick(clip);if(!c)return;var s=Source("Recorded "+clip,transform,1);s.transform.position=position;s.clip=c;s.volume=volume;s.pitch=pitch;s.Play();Destroy(s.gameObject,c.length/Mathf.Max(.1f,pitch)+.1f);}
+        // V27 redo: a sound far off in the dark (an owl up in the trees, the horn). The ordinary sources fall silent at 42 m,
+        // which left the 60 m horn unheard; these carry to 160 m and keep a little of themselves in both ears.
+        public int Fars {get;private set;} public AudioSource LastFar {get;private set;}
+        public void Far(string clip,Vector3 position,float volume,float pitch){var c=Pick(clip);if(!c)return;var s=Source("Recorded "+clip,transform,.8f);s.minDistance=12;s.maxDistance=160;s.transform.position=position;s.clip=c;s.volume=volume;s.pitch=pitch;s.Play();Destroy(s.gameObject,c.length/Mathf.Max(.1f,pitch)+.1f);Fars++;LastFar=s;}
         public void SilenceThreat(){foreach(var source in GetComponentsInChildren<AudioSource>())if(source.name=="Recorded breath"||source.name=="Recorded growl"||source.name=="Recorded reveal"||source.name=="Recorded monsterstep"){source.Stop();Destroy(source.gameObject);}}
         public void Pursuit(bool on){pursuing=on;if(on&&tension.clip!=null&&!tension.isPlaying){tension.time=tension.clip.name=="Anxiety"?Random.Range(0f,40f):Mathf.Min(12,tension.clip.length*.15f);tension.Play();}}
     }

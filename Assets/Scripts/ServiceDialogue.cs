@@ -34,16 +34,17 @@ namespace ServiceGameV2 {
      yield return null;
     }
     onChoice?.Invoke(pick);Choices=new string[0];
-    Speaker="You";Line=s.Choices[pick];yield return Hold(1.5f);Speaker=speaker;
+    Speaker="You";Line=s.Choices[pick];yield return Hold(1.9f);Speaker=speaker;
     if(s.Replies!=null&&pick<s.Replies.Length&&!string.IsNullOrEmpty(s.Replies[pick])){Line=s.Replies[pick];yield return Hold(Read(Line));}
    }
    Cancel();
   }
-  static float Read(string line)=>Mathf.Clamp(line.Length*.05f,1.8f,4.6f);
+  // V27 ("text is going too fast... make it so the player clicks through"): reading pace (about 13 characters a second), and E, Space or a click moves on
+  static float Read(string line)=>Mathf.Clamp(1.4f+line.Length*.072f,2.6f,9.5f);
   IEnumerator Hold(float seconds){
    if(d.IsSmoke&&!TourPacing)seconds=Mathf.Min(seconds,.35f);
    float start=Time.time;
-   while(Time.time-start<seconds){var k=Keyboard.current;if(k!=null&&Live&&Time.time-start>.4f&&(k.eKey.wasPressedThisFrame||k.spaceKey.wasPressedThisFrame))break;yield return null;}
+   while(Time.time-start<seconds){var k=Keyboard.current;if(Live&&Time.time-start>.4f&&(k!=null&&(k.eKey.wasPressedThisFrame||k.spaceKey.wasPressedThisFrame)||Mouse.current!=null&&Mouse.current.leftButton.wasPressedThisFrame))break;yield return null;}
   }
  }
 }

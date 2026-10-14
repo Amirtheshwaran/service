@@ -36,8 +36,8 @@ namespace ServiceGameV2 {
    var e=delta.eulerAngles;float yaw=Mathf.DeltaAngle(0,e.y),pitch=Mathf.DeltaAngle(0,e.x);
    float dt=Mathf.Max(Time.deltaTime,1e-4f);
    lag=Vector2.Lerp(lag,new Vector2(Mathf.Clamp(yaw,-6,6),Mathf.Clamp(pitch,-6,6))*.9f,1-Mathf.Exp(-dt*9));
-   float speed=d.Player.InCar?0:d.Player.HorizontalSpeed;bobWeight=Mathf.MoveTowards(bobWeight,Mathf.Clamp01(speed/3.2f),dt*3);bob+=dt*Mathf.Lerp(1.2f,2.1f,Mathf.Clamp01(speed/5f))*Mathf.PI*2*.5f;
-   var bobOffset=new Vector3(Mathf.Sin(bob)*.0035f,-Mathf.Abs(Mathf.Cos(bob))*.0045f,0)*bobWeight;
+   float speed=d.Player.InCar?0:d.Player.HorizontalSpeed;bobWeight=Mathf.MoveTowards(bobWeight,Mathf.Clamp01(speed/3.2f),dt*3);bob+=dt*Mathf.Lerp(1.2f,3.1f,Mathf.Clamp01(speed/5.5f))*Mathf.PI*2*.5f; // V27: the bob keeps your pace (it was the same walking and sprinting)
+   float swing=1+Mathf.Clamp01((speed-3.4f)/2f)*.9f;var bobOffset=new Vector3(Mathf.Sin(bob)*.0035f*swing,-Mathf.Abs(Mathf.Cos(bob))*.0045f*swing,0)*bobWeight;
    var breathe=new Vector3(0,Mathf.Sin(Time.time*1.3f)*.0008f,0);
    Sway.localPosition=restPos+bobOffset+breathe;
    Sway.localRotation=restRot*Quaternion.Euler(lag.y*.6f,lag.x*.6f,-lag.x*.35f);

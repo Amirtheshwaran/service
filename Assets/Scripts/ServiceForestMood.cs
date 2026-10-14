@@ -10,6 +10,9 @@ namespace ServiceGameV2 {
    RenderSettings.fogDensity=night==0?.028f:night==1?.031f:.035f;RenderSettings.fogColor=mist;
    RenderSettings.ambientMode=AmbientMode.Custom;
    var probe=new SphericalHarmonicsL2();probe.AddAmbientLight(new Color(.125f,.13f,.15f));RenderSettings.ambientProbe=probe;
+   // V27 redo: what glossy things reflect. The environment reflection is the (daylit, tinted) sky cubemap; with the sky
+   // itself cleared to the night mist, a mirror in a dark hall showed a bright blue day sky. Down to the night's level.
+   RenderSettings.reflectionIntensity=.2f;
    if(scene.Moon){scene.Moon.color=new Color(.64f,.69f,.86f);scene.Moon.intensity=night==0?.42f:.34f;scene.Moon.transform.rotation=Quaternion.Euler(18-night*3,-28,0);}
    if(scene.View){scene.View.clearFlags=CameraClearFlags.SolidColor;scene.View.backgroundColor=mist;scene.View.farClipPlane=175;}
   }

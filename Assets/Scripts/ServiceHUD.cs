@@ -7,7 +7,7 @@ using UnityEngine.InputSystem.UI;
 namespace ServiceGameV2 {
  public sealed class ServiceHUD:MonoBehaviour {
   ServiceDirector d;Canvas canvas;RectTransform root,carPin,carHeading;Image introShade,contactShade,cardShade;CanvasGroup introWords,cardWords;Font sans,document;bool options,confirmNew;string last="";int selected=-1;Rect worldBounds,mapPanel;Button firstButton;
-  readonly Color white=new Color(.88f,.89f,.86f),muted=new Color(.53f,.58f,.57f),accent=new Color(.72f,.57f,.36f),panel=new Color(.035f,.045f,.048f,.97f),ink=new Color(.16f,.20f,.19f),mapPaper=new Color(.63f,.65f,.59f);
+  readonly Color white=new Color(.88f,.89f,.86f),muted=new Color(.53f,.58f,.57f),accent=new Color(.72f,.57f,.36f),youName=new Color(.56f,.70f,.76f),youLine=new Color(.80f,.87f,.90f),panel=new Color(.035f,.045f,.048f,.97f),ink=new Color(.16f,.20f,.19f),mapPaper=new Color(.63f,.65f,.59f);
   public int MapPins {get;private set;} public int MapSegments {get;private set;}
   ServiceMenus menus;bool vt;
   // V22: the note under the crosshair (from Context, once per frame) and the corner marks drawn round it on screen
@@ -38,6 +38,7 @@ namespace ServiceGameV2 {
    int leaf=d.NearbyLeaf();if(leaf>=0)return d.Life.DoorOpenDegrees(leaf)>25?"E   Close the door":"E   Open the door";
    if(d.CanPetDog)return "E   Pet Rex";
    if(d.CanWipeFeet)return "E   Wipe your feet";
+   if(d.Scenes&&d.Scenes.CanReadPage)return "E   Read the book";
    return "";
   }
   void LateUpdate(){if(!d||!canvas)return;bool intro=d.Phase==ServicePhase.Title&&d.Presentation&&d.Presentation.IntroVisible;string context=Context();bool card=ShiftCard;string state=card+"|"+(d.Horror.Active?d.Horror.Instruction+d.Horror.Headline:"")+"|"+d.Phase+"|"+d.PaperOpen+"|"+d.MapOpen+"|"+options+"|"+confirmNew+"|"+intro+"|"+d.Notice+"|"+d.Horror.Phase+"|"+context+"|"+d.NightIndex+"|"+(d.Vehicle?d.Vehicle.RadioOn+"/"+d.Vehicle.Station:"")+"|"+string.Join(",",d.Docket.Select(e=>(int)e.Result))+"|"+(d.Dialogue?d.Dialogue.StateKey:"")+"|"+d.NoteOpen+"|"+(d.Guide?d.Guide.Objective+d.Guide.Direction:"")+"|"+(d.Player.InCar&&d.NightIndex==0&&d.ShiftCardTime<28);
@@ -152,7 +153,10 @@ namespace ServiceGameV2 {
    if(noteTarget>=0&&d.NoteOpen<0&&!d.Player.InCar&&!talking)NoteMark();
    if(d.NoteOpen>=0&&!d.Player.InCar){HeldNote(d.NoteOpen);return;}
    if(context.Length>0&&!talking&&(d.Player.InCar||!d.Notice.Contains('\n'))){if(d.Player.InCar)Label(new Rect(160,658,960,35),context,19).alignment=TextAnchor.MiddleCenter;else Prompt(context);}
-   if(talking){var dl=d.Dialogue;Label(new Rect(205,552,870,26),dl.Speaker.ToUpperInvariant(),15,accent).alignment=TextAnchor.MiddleCenter;Shade(Label(new Rect(185,578,910,64),dl.Line,21)).alignment=TextAnchor.MiddleCenter;
+   // V27 redo ("add color to differentiate... the name of who's talking"): residents' names amber, your own replies a cool
+   // grey-blue (name and line), and a small "E  NEXT" while a line waits for you, visual-novel style
+   if(talking){var dl=d.Dialogue;bool you=dl.Speaker=="You";Label(new Rect(205,552,870,26),dl.Speaker.ToUpperInvariant(),15,you?youName:accent).alignment=TextAnchor.MiddleCenter;var said=Shade(Label(new Rect(185,578,910,64),dl.Line,21));said.alignment=TextAnchor.MiddleCenter;if(you)said.color=youLine;
+    if(dl.Choices.Length==0&&dl.Line.Length>0)Label(new Rect(930,640,160,20),"E   NEXT",11,new Color(muted.r,muted.g,muted.b,.55f+.25f*Mathf.PingPong(Time.unscaledTime*.8f,1f))).alignment=TextAnchor.MiddleRight;
     if(dl.Choices.Length>0){Block(new Rect(360,412,560,dl.Choices.Length*38+22),new Color(0,0,0,.62f));for(int i=0;i<dl.Choices.Length;i++)Label(new Rect(384,423+i*38,520,34),(i+1)+"    "+dl.Choices[i],18);}
     return;}if(d.Player.InCar){bool hints=d.NightIndex==0&&d.ShiftCardTime<28;if(hints)Label(new Rect(724,25,512,28),"TAB  CLIPBOARD      V  RADIO      B  TUNE",13,muted).alignment=TextAnchor.MiddleRight;if(d.Vehicle&&d.Vehicle.RadioOn)Label(new Rect(724,hints?55:25,512,27),d.Vehicle.StationName,15,accent).alignment=TextAnchor.MiddleRight;}
    // V20 objective (top left, Fears to Fathom style): the next address and where it lies from here.
@@ -164,7 +168,7 @@ namespace ServiceGameV2 {
    else if(!string.IsNullOrEmpty(d.Notice)&&!d.Horror.Caught){
     bool posted=d.Notice.Contains("\n");
     if(posted){Block(new Rect(298,399,684,230),panel);Rule(322,419,636,accent);Label(new Rect(328,433,624,178),d.Notice,22).alignment=TextAnchor.MiddleLeft;}
-    else Shade(Label(new Rect(205,568,870,78),d.Notice,20)).alignment=TextAnchor.MiddleCenter;
+    else{var said=Shade(Label(new Rect(205,568,870,78),d.Notice,20,d.NoticeIsAction?new Color(.66f,.73f,.82f,.95f):(Color?)null));said.alignment=TextAnchor.MiddleCenter;if(d.NoticeIsAction)said.fontStyle=FontStyle.Italic;}
    }
    if(d.Horror.Phase==PursuitPhase.Attack){contactShade=Block(new Rect(-1000,-1000,3280,2720),Color.clear);}
    if(d.Horror.Phase==PursuitPhase.Caught){Shade(1);Label(new Rect(58,34,400,40),"◀◀ REWIND",25);Label(new Rect(190,290,900,90),d.Horror.DeathLine,26).alignment=TextAnchor.MiddleCenter;Label(new Rect(190,392,900,30),"RETRYING FROM THE PROPERTY GATE",15,muted).alignment=TextAnchor.MiddleCenter;}

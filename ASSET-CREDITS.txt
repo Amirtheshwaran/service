@@ -295,3 +295,19 @@ V26 (stair tumble, audio reversals, watcher lunge)
 - Books: Poly Haven "book_encyclopedia_set_01" (CC0, already credited in V19), configured as falling stair volume with step impact audio.
 - Stair treads collider: baked mesh collider of drawn Flooded Grounds asset mesh.
 
+V27 (audio expansion, owls, streetlamps)
+- Owls: Great Horned Owl field recordings from xeno-canto:
+  - XC156403 by Bushman, Salem, Oregon, CC BY-SA 3.0 (https://xeno-canto.org/156403)
+  - XC450919 by Michael & Katie LaTour, Hamilton County, Ohio, CC BY-SA 4.0 (https://xeno-canto.org/450919)
+- Sound, NOX Sound "Essentials Series", CC0 (cut and trimmed, Sources/V27/audio_prep.py; per-file list in Assets/Resources/Audio/V27/sources.json):
+  - Female attack screams (Voice_Female_V1/V2_Attack_Mono_01-05)
+  - Male attack roars (Voice_Male_V1/V2_Attack_Mono_01-04)
+  - Female breathing sequences (Voice_Female_V1_Breath_Frozen_Sequence_Mono_01-02)
+  - Wood floor steps (Footsteps_Wood_Walk_01-10)
+  - Dry leaves footsteps (Footsteps_Leaves_Walk_01-06, Footsteps_Leaves_Run_01-03)
+  - Night ambiance loop (Ambiance_Night_Loop_Stereo)
+  - Pager chime sequence (Smartphone_Sequence_Mono)
+- Car horn: Flooded Grounds by Sandro T (Unity Asset Store EULA), routed through far audio.
+- Drive lamps: Kenney "City Kit Roads" street_lamp_01 (CC0, already imported in V19).
+
+

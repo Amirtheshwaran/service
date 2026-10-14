@@ -29,6 +29,8 @@ namespace ServiceGameV2 {
     // The old static seated model (V16) duplicated the animated V17 shepherd on the same spot: retire it.
     foreach(Transform c in dog)if(c.name.Contains("seated"))c.gameObject.SetActive(false);
     dogAnim=dog.GetComponentsInChildren<Animator>(true).FirstOrDefault(a=>a.runtimeAnimatorController);model=dogAnim?dogAnim.transform:(dog.childCount>0?dog.GetChild(0):null);
+    // V27 ("either I am a giant or that dog is way too small"): he is a big shepherd - 0.69 m at the shoulder (0.60 before)
+    if(model&&model.parent)dog.localScale=Vector3.one*1.15f;
     home=YardSpot(d.Property(0));dog.position=home;FaceWalk(true);
     // V23: a body you cannot walk through (you used to shove him along by walking into him)
     var body=new GameObject("V23 dog body");body.transform.SetParent(dog,false);body.transform.localPosition=new Vector3(0,.42f,0);
@@ -134,9 +136,12 @@ namespace ServiceGameV2 {
     var head=Flat3(d.Scene.Walker.velocity);if(head.sqrMagnitude<.04f)head=Flat3(door-w);if(head.sqrMagnitude<.01f)head=a;head.Normalize();var perp=Vector3.Cross(Vector3.up,head);if(Vector3.Dot(perp,a)<0)perp=-perp;
     float len=Mathf.Min((calmNow&&!rushed?2.6f:6f)*Time.deltaTime,keep+.1f-away.magnitude); /* calm, an unhurried step aside */
     foreach(var dir in new[]{a,perp,(perp-head*.6f).normalized,-perp,(-perp-head*.6f).normalized}){var to=dog.position+dir*len;
-     if(Ground(ref to)&&!OnBuilt&&!Indoors(p,to)&&to.y<door.y-.4f&&Mathf.Abs(to.y-dog.position.y)<.35f){moved+=Flat(to-dog.position).magnitude;dog.position=to;break;}}}
+     if(Ground(ref to)&&!OnBuilt&&!Indoors(p,to)&&to.y<door.y-.4f&&Mathf.Abs(to.y-dog.position.y)<.35f){backed=Flat(to-dog.position).magnitude;moved+=backed;dog.position=to;break;}}}
    if(!calmNow)ClosestApproach=Mathf.Min(ClosestApproach,Flat(dog.position-w).magnitude); // the distance he keeps while he is worked up
    float v=moved/Mathf.Max(Time.deltaTime,1e-4f);DogTravel+=moved;
+   // V27 ("he turns away when you move towards him, then has to turn round - keep facing you while backing up"): a calm
+   // step back keeps his face to you, on his feet, not a sprint the other way
+   if(calmNow&&backed>0&&moved-backed<1e-4f){var fy=Flat3(w-dog.position);if(fy.sqrMagnitude>.01f)dog.rotation=Quaternion.RotateTowards(dog.rotation,Quaternion.LookRotation(fy),300*Time.deltaTime);if(dogAnim)dogAnim.speed=1;State("Breathing");backed=0;d.Audio.DogFollow(dog.position+Vector3.up*.45f);return true;}
    // face where he runs, or you when he stands
    var faceDir=v>.4f&&moved>0?Flat3(goal-dog.position):Flat3(w-dog.position);if(faceDir.sqrMagnitude>.01f)dog.rotation=Quaternion.RotateTowards(dog.rotation,Quaternion.LookRotation(faceDir),(v>.4f?540:220)*Time.deltaTime);
    if(v>.6f){State("Run");if(dogAnim)dogAnim.speed=Mathf.Clamp(v/RunRef,.6f,1.5f);}
@@ -149,7 +154,7 @@ namespace ServiceGameV2 {
   }
   void Go(DogMode m){if(Mode==m)return;Mode=m;modeSince=Time.time;nextPath=0;escortGoal=Vector3.zero;if(m!=DogMode.Porch)porchPicked=false;if(m==DogMode.Escort)weaveFlip=Time.time+Random.Range(1.2f,2.2f);if(m==DogMode.Home){if(dogAnim)dogAnim.speed=1;State("Breathing");nextIdle=Time.time+Random.Range(3f,6f);}}
   // V23: pet Rex - only when he is calm (at home, or hushed, or at the steps once Walter has him) and you are right by him
-  bool petting;float petRest;public bool Petting=>petting;public int Pets {get;private set;}
+  bool petting;float petRest,backed;public bool Petting=>petting;public int Pets {get;private set;}
   // calm: at home, hushed, or at the steps once he has given up barking
   public bool IsCalm=>Calm;
   bool Calm=>Mode==DogMode.Home||Mode==DogMode.Hushed||(Mode==DogMode.Porch&&Time.time-porchSince>30f);
@@ -195,6 +200,9 @@ namespace ServiceGameV2 {
    at.y=best;return true;}
   bool OnBuilt;
   // inside the house = within its bounds and not out in front of the door's wall (the bounds take in the porch and yard)
+  // V27: under a roof and not on the open ground (a side window is inside the house's bounds and behind its door)
+  public static bool UnderRoof(Vector3 at){if(!Physics.Raycast(at+Vector3.up*.6f,Vector3.up,out var up,6f,~((1<<8)|(1<<9)|(1<<10)),QueryTriggerInteraction.Ignore)||up.collider is TerrainCollider)return false;
+   return !(Physics.Raycast(at+Vector3.up*.4f,Vector3.down,out var dn,2.5f,~((1<<8)|(1<<9)|(1<<10)),QueryTriggerInteraction.Ignore)&&dn.collider is TerrainCollider);}
   public static bool Indoors(ServiceProperty p,Vector3 at)=>p.InteriorBounds.Contains(at+Vector3.up*.3f)&&Vector3.Dot(at-p.OpeningCentre,-p.Inward)<.8f;
   static Vector2 Flat(Vector3 v)=>new Vector2(v.x,v.z);
   static Vector3 Flat3(Vector3 v)=>new Vector3(v.x,0,v.z);
