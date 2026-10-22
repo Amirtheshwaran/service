@@ -15,7 +15,10 @@ namespace ServiceGameV2 {
   // Written directions, as the dispatcher wrote them on the docket (night three's last stop is in someone else's hand).
   public static readonly string[] Directions={"North on Millbrook. First drive on the LEFT. Dog in the yard.","Past the LATIGO TRAIL sign. Next drive on the RIGHT.","Past the end of the road. You know the way.","Keep north. First drive on the RIGHT.","Long drive on the LEFT after Vale.","Last drive on the RIGHT before the barricade."};
   public void Initialize(ServiceDirector director){d=director;}
-  public void ResetForShift(){saidApproach=saidMissed=-1;lastTarget=-2;Objective=Direction="";}
+  public void ResetForShift(){saidApproach=saidMissed=wasNear=-1;lastTarget=-2;Objective=Direction="";lastBearing="AHEAD";lastWay=0;ToCar=false;}
+  // V28: the way back on foot is the car (the marker points at it then)
+  public bool ToCar {get;private set;}
+  int wasNear=-1;string lastBearing="AHEAD";int lastWay;
   // The next stop in docket order that is still pending (the docket is written in road order from the depot).
   int NextStop(){if(d.EndedEarly)return -1;foreach(var e in d.Docket)if(e.Result==ServiceResult.Pending)return e.Property;return -1;}
   // Position along the road: main road from the depot, then County Route 9 past the barricade.
@@ -27,39 +30,51 @@ namespace ServiceGameV2 {
   void Update(){
    if(!d||d.Phase!=ServicePhase.Playing||Time.time<nextCheck)return;nextCheck=Time.time+.25f;
    var car=d.Scene.Car;bool inCar=d.Player.InCar;var me=inCar?car.position:d.Scene.Walker.transform.position;
-   Target=NextStop();
+   Target=NextStop();ToCar=false;
    // V21: at the door of (or inside) a house still on the docket, visited out of order, that house is the one being
    // guided; anywhere else the docket order stands (so walking past a drive does not flip the line back and forth)
    if(!inCar&&Target>=0){float best=float.MaxValue;foreach(var e in d.Docket){if(e.Result!=ServiceResult.Pending)continue;var h=d.Property(e.Property);if(!h||!h.Door)continue;
      float dist=Vector3.Distance(me,h.Door.position);if((h.InteriorBounds.Contains(me+Vector3.up*.3f)||dist<6)&&dist<best){best=dist;Target=e.Property;}}}
    if(Target!=lastTarget){lastTarget=Target;saidApproach=saidMissed=-1;}
-   if(Target<0){Objective="RETURN TO THE DEPOT";Direction=d.CanFinish?"":!inCar?"BACK TO THE CAR":Heading(me,car.forward,0,0,false);return;}
+   var look=d.Scene.View.transform.forward;
+   if(Target<0){Objective="RETURN TO THE DEPOT";if(d.CanFinish)Direction="";else if(!inCar){ToCar=true;Direction="BACK TO THE CAR"+Tail(Bearing(me,look,car.position));}else Direction=Heading(me,car.forward,0,0,false,d.Scene.Depot?d.Scene.Depot.position:me);return;}
    var p=d.Property(Target);Objective="NEXT  "+Address[Target]+(Who[Target].Length>0?"  ·  "+Who[Target]:"");
    if(!p.Mailbox){Direction="";return;}
    // On foot at the property, the drive and the porch light do the work.
    if(!inCar&&Vector3.Distance(me,p.Door.position)<p.ApproachRouteLength()+12){
     // V21: indoors and on the step the line says what is left to do there
     // inside means past the door line too (the interior bounds take in the porch)
-    var outward=p.Door.position-p.InteriorBounds.center;outward.y=0;outward=outward.sqrMagnitude<.01f?p.Door.forward:outward.normalized;
+    // V28: in from the door along the doorway's own inward (the house's middle is not straight in from every door - at
+    // Vale's her upstairs bedroom, along the same wall as the door, counted as outside: "UP THE DRIVE TO THE HOUSE")
+    var outward=-p.Inward;outward.y=0;outward=outward.sqrMagnitude<.01f?p.Door.forward:outward.normalized;
     bool inside=p.InteriorBounds.Contains(me+Vector3.up*.3f)&&Vector3.Dot(me-p.Door.position,outward)< -.3f,open=d.AccessGranted(Target)&&!d.IsFriendly(Target);
-    Direction=inside?(open?"LEAVE THE PAPERS ON THE TABLE":""):Vector3.Distance(me,p.Door.position)<3.2f?(open?(d.ShutByPlayer(Target)?"OPEN THE DOOR":"LEAVE THE PAPERS INSIDE"):d.AccessGranted(Target)?"":"KNOCK AT THE DOOR"):"UP THE DRIVE TO THE HOUSE";return;}
+    Direction=inside?(open?"LEAVE THE PAPERS ON THE TABLE":""):Vector3.Distance(me,p.Door.position)<3.2f?(open?(d.ShutByPlayer(Target)?"OPEN THE DOOR":"LEAVE THE PAPERS INSIDE"):d.AccessGranted(Target)?"":"KNOCK AT THE DOOR"):"UP THE DRIVE TO THE HOUSE"+Tail(Bearing(me,look,p.Door.position));return;}
    // on foot anywhere else, the way on is the car
-   if(!inCar){Direction="BACK TO THE CAR";return;}
-   Direction=Heading(me,inCar?car.forward:d.Scene.View.transform.forward,p.RoadDistance,p.RoadSide,true);
-   if(!inCar||d.Busy||d.Horror.Active||(d.Dialogue&&d.Dialogue.Active)||!string.IsNullOrEmpty(d.Notice))return;
-   float sCar=Along(me,out var tan);float ahead=(p.RoadDistance-sCar)*Mathf.Sign(Vector3.Dot(car.forward,tan));
+   if(!inCar){ToCar=true;Direction="BACK TO THE CAR"+Tail(Bearing(me,look,car.position));return;}
+   var spot=p.ApproachRoute!=null&&p.ApproachRoute.Length>0?p.ApproachRoute[0]:p.Door.position;
+   Direction=Heading(me,car.forward,p.RoadDistance,p.RoadSide,true,spot);
+   float sCar=Along(me,out var tan);float cAlong=Vector3.Dot(car.forward,tan);float ahead=(p.RoadDistance-sCar)*Mathf.Sign(cAlong);
+   if(Mathf.Abs(p.RoadDistance-sCar)<38)wasNear=Target; // V28: "went past it" even when another line was on screen as it went by
+   if(d.Busy||d.Horror.Active||(d.Dialogue&&d.Dialogue.Active)||!string.IsNullOrEmpty(d.Notice)||Mathf.Abs(cAlong)<.45f)return;
    if(saidApproach!=Target&&ahead>4&&ahead<38){saidApproach=Target;d.Say(Approach(Target));}
-   else if(saidMissed!=Target&&saidApproach==Target&&ahead<-22&&d.Player.Speed>2){saidMissed=Target;d.Say("Went past it. "+Address[Target].Split(' ')[0]+" was back there.");}
+   else if(saidMissed!=Target&&wasNear==Target&&ahead<-22&&d.Player.Speed>2){saidMissed=Target;d.Say("Went past it. "+Address[Target].Split(' ')[0]+" was back there.");}
   }
-  string Heading(Vector3 me,Vector3 forward,float targetS,int side,bool house){
-   float sMe=Along(me,out var tan);float dir=Mathf.Sign(Vector3.Dot(forward,tan));if(Mathf.Abs(Vector3.Dot(forward,tan))<.3f)dir=1;
-   float ahead=(targetS-sMe)*dir;
-   if(!house)return ahead>=0?"AHEAD":"BEHIND YOU · TURN AROUND";
-   string lr=side*dir>0?"RIGHT":"LEFT";
-   if(Mathf.Abs(ahead)<12)return "THIS DRIVE · ON YOUR "+lr;
-   if(ahead>0)return ahead<60?"COMING UP ON THE "+lr:"FURTHER ALONG · ON THE "+lr;
-   return "BEHIND YOU · TURN AROUND";
-  }
+  // V28 ("direction don't indicate when you face opposite way"): which way to go is read from where the car's nose (or
+  // your face, on foot) actually points - along the road toward the stop, across it (which way to pull out), or away.
+  // A little stickiness so the line does not flicker on a slow three-point turn or a glance round.
+  string Heading(Vector3 me,Vector3 forward,float targetS,int side,bool house,Vector3 spot){
+   float sMe=Along(me,out var tan);forward.y=0;forward=forward.sqrMagnitude<1e-4f?tan:forward.normalized;float gap=targetS-sMe;
+   if(Mathf.Abs(gap)<12)return (house?"THIS DRIVE  ·  ":"THE DEPOT  ·  ")+Bearing(me,forward,spot);
+   var way=tan*Mathf.Sign(gap);float c=Vector3.Dot(forward,way);
+   int w=c<(lastWay==-1?-.3f:-.5f)?-1:c<(lastWay==0?.55f:.4f)?0:1;lastWay=w;
+   if(w<0)return "BEHIND YOU  ·  TURN AROUND";
+   if(w==0)return Vector3.SignedAngle(forward,way,Vector3.up)>0?"TURN RIGHT ONTO THE ROAD":"TURN LEFT ONTO THE ROAD";
+   if(!house)return "AHEAD";
+   string lr=side*Vector3.Dot(forward,tan)>0?"RIGHT":"LEFT";
+   return Mathf.Abs(gap)<60?"COMING UP ON THE "+lr:"FURTHER ALONG  ·  ON THE "+lr;}
+  string Bearing(Vector3 me,Vector3 forward,Vector3 at){var to=at-me;to.y=0;forward.y=0;if(to.sqrMagnitude<.25f)return "HERE";float a=Vector3.SignedAngle(forward,to,Vector3.up),abs=Mathf.Abs(a);
+   string b=abs>(lastBearing=="BEHIND YOU"?120f:140f)?"BEHIND YOU":abs<(lastBearing=="AHEAD"?50f:35f)?"AHEAD":a>0?"ON YOUR RIGHT":"ON YOUR LEFT";lastBearing=b;return b;}
+  static string Tail(string b)=>b=="AHEAD"||b=="HERE"?"":"  ·  "+b;
   static string Approach(int i){switch(i){case 0:return "That's 214. Correll's. Dog's going to start.";case 3:return "236. That's Harrow Lodge.";case 1:return "77 on the box. Vale House.";case 4:return "91. Bell's drive, the long one.";case 5:return "108. Morrow's. Last one before the barricade.";default:return "There's a box. 1. Same as Correll's.";}}
  }
  public static class ServicePropertyGuideExtensions {

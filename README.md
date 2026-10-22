@@ -6,7 +6,7 @@ First-person horror game with free-roam driving/walking and no combat, built in 
 
 You play as a civil process server working night shifts in rural Hollis County. Your job is to drive out and deliver court documents to people who usually don't want to receive them. Every shift gives you a docket of addresses to locate and serve using your car, a flashlight, and your judgment. If a place feels wrong, you can't fight back; you just leave.
 
-The horror is focused on slow burn and atmosphere rather than cheap jump scares. In this build (v27), the story unfolds across three night shifts:
+The horror is focused on slow burn and atmosphere rather than cheap jump scares. In this build (v28), the story unfolds across three night shifts:
 - Night 1 (October 1st, 1998): Ordinary civil service work across five rural properties. Subtle atmospheric omens, doorstep resident calls, an unsettling figure along the tree line, and an upstairs corridor encounter at Vale House.
 - Night 2 (October 4th, 1998): Escalated tension and wrongness. Harrow Lodge watcher encounter (turn away and stand completely still), Bell residence note and pursuit escape back to the car, and Morrow House pursuit.
 - Night 3 (October 9th, 1998): Severe fog and unmapped route past the county road closure, leading to the unsurveyed final parcel.
@@ -39,6 +39,13 @@ Built with Unity 6 (6000.6.0f1) using URP.
 | Esc | Pause menu / close papers or held note |
 
 ## Gameplay & Features
+
+- **Architectural Room Furnishing**: Every residence has been individually furnished according to architectural room plans, placing 89 pieces across Morrow's sparse parlor, sewing corner, gallery, and bedrooms, 44 pieces at Vale's morning room, corridor, and shut room, and reconfigured layouts at Route 9, Correll's, Harrow's, and Bell's. All furniture pieces are seated flush against drawn walls and resting on drawn floorboards.
+- **June Lowell Lore & Readables**: Richer narrative documentation concerning the events of 1958, including June Lowell's backstory, the historical actions of each household, hidden family photographs, readable summons notices, and unique shift doorstep notes.
+- **1440p Native Display & Subtler Tape Degradation**: Full support for native 1440p and widescreen displays with borderless windowed mode. The camera filter removes the artificial 'Off' setting in favor of subtle, authentic tape-wear glitching and analog distortion.
+- **Compass Headings & Direction Hints**: On-screen bearing indicators ("BEHIND YOU", "TURN AROUND") and perimeter screen edge arrows to help orient the player toward objectives and delivery points.
+- **Fair Chase & Door Dynamics**: Front doors forcefully bang open if an encounter begins while shut; outdoor pursuer movement speeds are capped to allow survival through consistent sprinting; Bell came-back pursuit sequence is cleanly paced.
+- **Canine Escort Behavior**: Rex guides the player naturally along driveways between the entrance and porch steps, remaining in view even around sharp curves.
 
 - **Capture Jumpscares**: Every capture sequence features an intense in-your-face jumpscare with creature attack audio, screen flash, camera shake, and blackout transition.
 - **Story Lore & Hospital Pager**: Backstory reveals the player character's family history (parents died in the 1987 Route 9 fire, leaving only the player and Sofia) with incoming St. Brigid's Hospital pager alerts across shifts.

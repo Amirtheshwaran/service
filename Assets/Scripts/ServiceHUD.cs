@@ -34,14 +34,14 @@ namespace ServiceGameV2 {
    if(d.NoteOpen>=0)return "E   Stop reading";
    noteTarget=d.NearbyNotice();if(noteTarget>=0)return "E   Read the note";
    int front=d.NearbyKnockDoor();if(front>=0)return "E   Knock     /     U   No service";
-   if(d.NearbyDoor()>=0)return "E / R   Leave the notice";
+   {int desk=d.NearbyDoor();bool page=d.PaperBeatsDesk(desk);if(desk>=0&&!page)return "E / R   Leave the notice";if(page)return d.Scenes.ReadPrompt;} // V28b: the paper you are aiming at beats the desk and the door beside it
    int leaf=d.NearbyLeaf();if(leaf>=0)return d.Life.DoorOpenDegrees(leaf)>25?"E   Close the door":"E   Open the door";
    if(d.CanPetDog)return "E   Pet Rex";
    if(d.CanWipeFeet)return "E   Wipe your feet";
-   if(d.Scenes&&d.Scenes.CanReadPage)return "E   Read the book";
+   if(d.Scenes&&d.Scenes.CanReadPage)return d.Scenes.ReadPrompt;
    return "";
   }
-  void LateUpdate(){if(!d||!canvas)return;bool intro=d.Phase==ServicePhase.Title&&d.Presentation&&d.Presentation.IntroVisible;string context=Context();bool card=ShiftCard;string state=card+"|"+(d.Horror.Active?d.Horror.Instruction+d.Horror.Headline:"")+"|"+d.Phase+"|"+d.PaperOpen+"|"+d.MapOpen+"|"+options+"|"+confirmNew+"|"+intro+"|"+d.Notice+"|"+d.Horror.Phase+"|"+context+"|"+d.NightIndex+"|"+(d.Vehicle?d.Vehicle.RadioOn+"/"+d.Vehicle.Station:"")+"|"+string.Join(",",d.Docket.Select(e=>(int)e.Result))+"|"+(d.Dialogue?d.Dialogue.StateKey:"")+"|"+d.NoteOpen+"|"+(d.Guide?d.Guide.Objective+d.Guide.Direction:"")+"|"+(d.Player.InCar&&d.NightIndex==0&&d.ShiftCardTime<28);
+  void LateUpdate(){if(!d||!canvas)return;bool intro=d.Phase==ServicePhase.Title&&d.Presentation&&d.Presentation.IntroVisible;string context=Context();bool card=ShiftCard;string state=card+"|"+(d.Horror.Active?d.Horror.Instruction+d.Horror.Headline:"")+"|"+d.Phase+"|"+d.PaperOpen+"|"+d.MapOpen+"|"+options+"|"+confirmNew+"|"+intro+"|"+d.Notice+"|"+d.Horror.Phase+"|"+context+"|"+d.NightIndex+"|"+(d.Vehicle?d.Vehicle.RadioOn+"/"+d.Vehicle.Station:"")+"|"+string.Join(",",d.Docket.Select(e=>(int)e.Result))+"|"+(d.Dialogue?d.Dialogue.StateKey:"")+"|"+d.NoteOpen+"|"+(d.Guide?d.Guide.Objective+d.Guide.Direction:"")+"|"+(d.Player.InCar&&d.NightIndex==0&&d.ShiftCardTime<28)+"|"+(d.Scenes&&d.Scenes.PageOpen);
    if(last!=state){last=state;Rebuild(intro,context,card);}
    if(card&&cardShade){float t=d.ShiftCardTime;cardShade.color=new Color(0,0,0,1-Mathf.SmoothStep(0,1,(t-3.1f)/1.5f));cardWords.alpha=Mathf.SmoothStep(0,1,t/.9f)*(1-Mathf.SmoothStep(0,1,(t-2.5f)/.9f));}
    if(intro&&introShade){introShade.color=new Color(0,0,0,d.Presentation.IntroBackgroundAlpha);introWords.alpha=d.Presentation.IntroTextAlpha;}
@@ -72,7 +72,7 @@ namespace ServiceGameV2 {
   void NerveMeter(){
    if(!nerveLayer){nerveLayer=Area("Nerve layer",new Rect(0,0,1280,720),canvas.transform);nerveLayer.anchorMin=nerveLayer.anchorMax=nerveLayer.pivot=new Vector2(.5f,.5f);nerveLayer.anchoredPosition=Vector2.zero;
     nerveGroup=nerveLayer.gameObject.AddComponent<CanvasGroup>();nerveGroup.blocksRaycasts=false;nerveGroup.interactable=false;nerveGroup.alpha=0;
-    nerveLabel=Label(new Rect(440,500,400,24),"E   HOLD YOUR NERVE",16,new Color(1,1,1,.9f),nerveLayer);nerveLabel.alignment=TextAnchor.LowerCenter;Shade(nerveLabel);
+    nerveLabel=Label(new Rect(440,500,400,24),"TAP  E   HOLD YOUR NERVE",16,new Color(1,1,1,.9f),nerveLayer);nerveLabel.alignment=TextAnchor.LowerCenter;Shade(nerveLabel);
     Block(new Rect(490,530,300,10),new Color(0,0,0,.65f),nerveLayer);nerveFill=Block(new Rect(492,532,296,6),Color.white,nerveLayer);}
    nerveLayer.SetAsLastSibling();var h=d.Horror;bool show=d.Phase==ServicePhase.Playing&&h&&h.NerveActive;
    nerveGroup.alpha=h&&h.Caught?0:Mathf.MoveTowards(nerveGroup.alpha,show?1:0,Time.unscaledDeltaTime*4f); /* V26: gone the instant it comes at you */float f=h?Mathf.Clamp01(h.Fear):0;
@@ -94,8 +94,9 @@ namespace ServiceGameV2 {
    var stamp=Label(new Rect(800,606,420,40),stamps[Mathf.Clamp(d.NightIndex,0,2)],25,null,words);stamp.alignment=TextAnchor.MiddleRight;
    var clock=Label(new Rect(800,644,420,40),d.ShiftTime.ToUpperInvariant(),25,null,words);clock.alignment=TextAnchor.MiddleRight;}
   void Epilogue(){Shade(1);Label(new Rect(190,150,900,40),"Hollis County, 1998",18,muted);Rule(190,204,58,accent);
-   var text=Label(new Rect(190,232,900,300),string.IsNullOrEmpty(d.EndingText)?ServiceScript.Epilogue:d.EndingText,20);text.alignment=TextAnchor.UpperLeft;text.lineSpacing=1.15f;
-   Action(new Rect(190,600,320,40),"Return to title",()=>d.Title());}
+   // V28b: the ending grew (June's brother, Bell); it fits its box at any size and the button sits below it, not over it
+   var text=Label(new Rect(190,222,900,420),string.IsNullOrEmpty(d.EndingText)?ServiceScript.Epilogue:d.EndingText,19);text.alignment=TextAnchor.UpperLeft;text.lineSpacing=1.12f;text.resizeTextForBestFit=true;/* V28b (review): best fit in the label's own (VT323-scaled) sizes - it was capped below the size the label asks for */text.resizeTextMaxSize=text.fontSize;text.resizeTextMinSize=Mathf.RoundToInt(12*(text.fontSize/19f));text.verticalOverflow=VerticalWrapMode.Truncate;
+   Action(new Rect(190,656,320,40),"Return to title",()=>d.Title());}
   void Shade(float alpha=.86f){Block(new Rect(-1000,-1000,3280,2720),new Color(.015f,.021f,.026f,alpha));}
   void Title(){if(options){Settings();return;}Shade(.1f);Block(new Rect(0,0,490,720),new Color(.015f,.022f,.026f,.67f));
    Label(new Rect(78,160,450,85),"S E R V I C E",56);Label(new Rect(82,244,320,30),"Hollis County, October 1998",18,muted);Rule(82,306,58,accent);
@@ -160,12 +161,12 @@ namespace ServiceGameV2 {
     if(dl.Choices.Length>0){Block(new Rect(360,412,560,dl.Choices.Length*38+22),new Color(0,0,0,.62f));for(int i=0;i<dl.Choices.Length;i++)Label(new Rect(384,423+i*38,520,34),(i+1)+"    "+dl.Choices[i],18);}
     return;}if(d.Player.InCar){bool hints=d.NightIndex==0&&d.ShiftCardTime<28;if(hints)Label(new Rect(724,25,512,28),"TAB  CLIPBOARD      V  RADIO      B  TUNE",13,muted).alignment=TextAnchor.MiddleRight;if(d.Vehicle&&d.Vehicle.RadioOn)Label(new Rect(724,hints?55:25,512,27),d.Vehicle.StationName,15,accent).alignment=TextAnchor.MiddleRight;}
    // V20 objective (top left, Fears to Fathom style): the next address and where it lies from here.
-   if(!d.Horror.Active&&d.Guide&&d.Guide.Objective.Length>0&&d.NoteOpen<0&&!d.Horror.Caught){Label(new Rect(44,28,760,26),d.Guide.Objective,15,new Color(.93f,.93f,.89f,.86f));if(d.Guide.Direction.Length>0)Label(new Rect(44,55,760,24),d.Guide.Direction,13,accent);}
+   if(!d.Horror.Active&&d.Guide&&d.Guide.Objective.Length>0&&d.NoteOpen<0&&!d.Horror.Caught){Label(new Rect(44,28,760,26),d.Guide.Objective,15,new Color(.93f,.93f,.89f,.86f));if(d.Guide.Direction.Length>0){bool turn=d.Guide.Direction.Contains("BEHIND")||d.Guide.Direction.StartsWith("TURN");Label(new Rect(44,55,760,26),d.Guide.Direction,turn?16:13,turn?new Color(.93f,.80f,.55f,.96f):accent);}}
    if(d.Horror.Active){
     if(!string.IsNullOrEmpty(d.Horror.Headline)){Label(new Rect(44,34,500,26),d.Horror.Headline.ToUpperInvariant(),15,accent);Rule(44,62,40,accent);}
     var line=Shade(Label(new Rect(205,568,870,78),string.IsNullOrEmpty(d.Notice)?d.Horror.Instruction:d.Notice,21));line.alignment=TextAnchor.MiddleCenter;line.fontStyle=FontStyle.Italic;
    }
-   else if(!string.IsNullOrEmpty(d.Notice)&&!d.Horror.Caught){
+   else if(!string.IsNullOrEmpty(d.Notice)&&!d.Horror.Caught&&!(d.Scenes&&d.Scenes.PageOpen)){
     bool posted=d.Notice.Contains("\n");
     if(posted){Block(new Rect(298,399,684,230),panel);Rule(322,419,636,accent);Label(new Rect(328,433,624,178),d.Notice,22).alignment=TextAnchor.MiddleLeft;}
     else{var said=Shade(Label(new Rect(205,568,870,78),d.Notice,20,d.NoticeIsAction?new Color(.66f,.73f,.82f,.95f):(Color?)null));said.alignment=TextAnchor.MiddleCenter;if(d.NoticeIsAction)said.fontStyle=FontStyle.Italic;}
@@ -223,7 +224,7 @@ namespace ServiceGameV2 {
    if(i==4){for(int y=62;y<470;y+=34)Block(new Rect(0,y,360,1.5f),new Color(.59f,.7f,.83f),paper.transform);Block(new Rect(40,0,1.5f,476),new Color(.81f,.47f,.47f),paper.transform);}
    if(i==5){Block(new Rect(0,40,360,2),new Color(.82f,.43f,.43f),paper.transform);for(int y=74;y<470;y+=34)Block(new Rect(0,y,360,1.5f),new Color(.63f,.75f,.87f),paper.transform);}
    var label=Label(new Rect(i==4?52:26,i==5||i==4?44:30,i==4?290:310,410),Flow(text),30,noteInk[i],paper.transform);
-   var hand=Resources.Load<Font>(noteFont[i]);if(hand)label.font=hand;label.alignment=TextAnchor.UpperLeft;label.resizeTextForBestFit=true;label.resizeTextMinSize=16;label.resizeTextMaxSize=i==3?30:34;label.lineSpacing=i==4||i==5?1.12f:1.02f;
+   var hand=Resources.Load<Font>(noteFont[i]);if(hand)label.font=hand;label.alignment=TextAnchor.UpperLeft;label.verticalOverflow=VerticalWrapMode.Truncate;/* V28b: best fit only shrinks a truncating label - Vale's longer note ran off the paper */label.resizeTextForBestFit=true;label.resizeTextMinSize=16;label.resizeTextMaxSize=i==3?30:34;label.lineSpacing=i==4||i==5?1.12f:1.02f;
    // V22: the same note typed out underneath, so a scrawled hand is never the only way to read it
    var lines=text.Split('\n');string signer=null;var body=new System.Text.StringBuilder();
    foreach(var raw in lines){var l=raw.Trim();if(l.StartsWith("- ")){signer=l.Substring(2).Trim();continue;}if(l.Length==0)continue;if(body.Length>0)body.Append(' ');body.Append(l);}

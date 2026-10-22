@@ -17,7 +17,7 @@ namespace ServiceGameV2.Editor {
   static readonly string[] CeilWords={"chandelier","ceiling","pendant","hanging_light","caged_hanging","pull_chain","lantern_chandelier","cord"};
   static readonly string[] FlatWords={"rug","mat","runner","doormat","blood"};
   static string KindOf(string id,string name,Dictionary<string,LayoutItem> lay){
-   var n=(id+" "+name).ToLowerInvariant();if(lay.TryGetValue(id,out var li)){if(li.ceiling)return "ceiling";if(li.wall)return "wall";if(!string.IsNullOrEmpty(li.on))return "top";}
+   var n=(id+" "+name).ToLowerInvariant();if(lay.TryGetValue(id,out var li)){if(li.ceiling)return "ceiling";if(li.wall)return "wall";if(!string.IsNullOrEmpty(li.on))return "top";if(FlatWords.Any(n.Contains))return "flat";return "floor";} /* V28b: a layout item that is not hung is not a wall piece ("old_bed_frame" is not a picture frame) */
    if(CeilWords.Any(n.Contains))return "ceiling";if(WallWords.Any(n.Contains))return "wall";if(FlatWords.Any(n.Contains))return "flat";if(n.Contains("shelf books")||n.Contains("v23 shelf"))return "top";return "floor";}
   // the prop's box: the union of its renderers' world bounds, turned into the root's yaw (exact for the quarter-turn
   // layouts; the local-bounds route over-measured scaled imports by up to 1.6x and made false "into wall" findings)
@@ -27,7 +27,8 @@ namespace ServiceGameV2.Editor {
    var bb=rs[0].bounds;foreach(var x in rs)bb.Encapsulate(x.bounds);c=bb.center;var ext=bb.extents;
    bool quarter=Mathf.Abs(Mathf.DeltaAngle(yaw,0))>45&&Mathf.Abs(Mathf.DeltaAngle(yaw,180))>45;e=quarter?new Vector3(ext.z,ext.y,ext.x):ext;
    return e.x>.005f||e.y>.005f||e.z>.005f;}
-  static Dictionary<string,LayoutItem> LayoutIds(int house){var f=Path.Combine(Work,"Audit","layouts",$"p{house}.json");var d=new Dictionary<string,LayoutItem>();if(!File.Exists(f))return d;foreach(var i in JsonUtility.FromJson<Layout>(File.ReadAllText(f)).items)d[i.id]=i;return d;}
+  static Dictionary<string,LayoutItem> LayoutIds(int house){var f=Path.Combine(Work,"Audit","layouts",$"p{house}.json");var d=new Dictionary<string,LayoutItem>();if(!File.Exists(f))return d;foreach(var i in JsonUtility.FromJson<Layout>(File.ReadAllText(f)).items)d[i.id]=i;
+   /* V28b: the rooms furnished later (Furnish28) */var g=Path.Combine(Work,"Audit","layouts",$"p{house}-v28b.json");if(File.Exists(g)){var fu=JsonUtility.FromJson<Furnish28Plan>(File.ReadAllText(g));if(fu.items!=null)foreach(var i in fu.items)d[i.id]=i;if(fu.moves!=null)foreach(var m in fu.moves)if(d.TryGetValue(m.id,out var li)){li.yaw=m.yaw;if(m.againstWall)li.againstWall=true;}}return d;}
   static string IdOf(Transform t){var n=t.name;int k=n.IndexOf(" — ");return k>0?n.Substring(0,k):n;}
   static IEnumerable<Transform> PropRoots(ServiceProperty p){
    var interior=p.transform.Find("V19 interior");if(interior)foreach(Transform t in interior)yield return t;

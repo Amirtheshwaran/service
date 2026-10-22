@@ -1,0 +1,1178 @@
+SERVICE — Hollis County/Delivery property 0/V19 interior/hearth-rug — Prop_Rug_B	-68.8000	1.1602	88.2800	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/hearth-rug — Prop_Rug_B/Prop_Rug_B	-67.8111	1.1472	89.2790	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/hearth-walter-chair — modern_arm_chair_01	-68.5000	1.1532	88.3600	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/hearth-walter-chair — modern_arm_chair_01/Model	-68.5822	1.1528	88.3634	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/hearth-ruth-rocker — Rockingchair_01	-69.0500	1.1532	87.2000	0.00	315.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/hearth-ruth-rocker — Rockingchair_01/Model	-69.0060	1.0516	87.1560	270.02	315.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/hearth-ruth-sewing-basket — wicker_basket_02	-68.0500	1.1532	86.8200	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/hearth-ruth-sewing-basket — wicker_basket_02/Model/wicker_basket_02_base	-67.9703	1.1545	86.8462	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/hearth-ruth-sewing-basket — wicker_basket_02/Model/wicker_basket_02_lid	-68.1193	1.2540	86.8110	332.41	256.74	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/hearth-picture — fancy_picture_frame_01	-69.2000	2.5179	86.6885	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/hearth-picture — fancy_picture_frame_01/Model/fancy_picture_frame_01	-69.2000	2.7500	86.6766	270.02	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/hearth-picture — fancy_picture_frame_01/Model/fancy_picture_frame_01_canvas	-69.2000	2.7500	86.6766	270.02	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/hearth-firewood — wicker_basket_01	-70.6000	1.1532	86.8600	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/hearth-firewood — wicker_basket_01/Model	-70.6003	1.1541	86.8604	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/hearth-hatchet — hatchet	-70.1550	1.1532	86.7550	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/hearth-hatchet — hatchet/Model	-70.1552	1.2150	86.7300	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/hearth-rex-basket — wicker_basket_01	-70.6121	1.1532	90.0036	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/hearth-rex-basket — wicker_basket_01/Model	-70.6111	1.1552	90.0042	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/hearth-lamp-stand — side_table_tall_01	-70.7221	1.1532	90.7600	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/hearth-lamp-stand — side_table_tall_01/Model	-70.7221	1.1532	90.7600	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/hearth-lamp — Prop_Lamp_A	-70.7021	1.9144	90.7600	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/hearth-lamp — Prop_Lamp_A/Prop_Lamp_A/lo_Prop_Lamp_A_LOD0	-70.7030	1.9127	90.7598	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/hearth-lamp — Prop_Lamp_A/Prop_Lamp_A/lo_Prop_Lamp_A_LOD1	-70.7030	1.9127	90.7598	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-hutch — painted_wooden_cabinet_02	-66.1485	1.1627	87.1166	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-hutch — painted_wooden_cabinet_02/Model/painted_wooden_cabinet_02	-66.1145	1.1635	87.1166	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-hutch — painted_wooden_cabinet_02/Model/painted_wooden_cabinet_02_door	-66.3759	1.5405	86.8888	270.00	265.40	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-hutch — painted_wooden_cabinet_02/Model/painted_wooden_cabinet_02_drawer	-66.2108	1.9777	87.1168	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-stove — electric_stove	-66.1995	1.1547	87.7600	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-stove — electric_stove/Model/dial_1	-66.4781	1.9432	87.8665	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-stove — electric_stove/Model/dial_2	-66.4834	1.9431	87.8082	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-stove — electric_stove/Model/dial_3	-66.4834	1.9431	87.7498	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-stove — electric_stove/Model/dial_4	-66.4834	1.9431	87.6914	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-stove — electric_stove/Model/dial_5	-66.4834	1.9431	87.6331	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-stove — electric_stove/Model/dial_6	-66.4834	1.9431	87.5747	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-stove — electric_stove/Model/door_top	-66.4648	1.5114	87.7600	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-stove — electric_stove/Model/grid	-66.2432	1.6816	87.7600	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-stove — electric_stove/Model/handle_bottom_attachment	-66.4637	1.2544	87.7600	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-stove — electric_stove/Model/hinge_bottom_attachment_left	-66.4676	1.2547	87.9960	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-stove — electric_stove/Model/hinge_bottom_attachment_right	-66.4676	1.2547	87.9960	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-stove — electric_stove/Model/hinge_bottom_rotator_left	-66.4657	1.2914	87.9960	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-stove — electric_stove/Model/hinge_bottom_rotator_right	-66.4657	1.2914	87.9960	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-stove — electric_stove/Model/hinge_top_attachment_left	-66.4676	1.5115	87.9960	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-stove — electric_stove/Model/hinge_top_attachment_right	-66.4676	1.5115	87.9960	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-stove — electric_stove/Model/hinge_top_rotator_left	-66.4657	1.5482	87.9960	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-stove — electric_stove/Model/hinge_top_rotator_right	-66.4657	1.5482	87.9960	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-stove — electric_stove/Model/sheet	-66.2352	1.3737	87.7600	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-stove — electric_stove/Model/stovetop	-66.1757	1.1547	87.7600	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-counter — WoodenTable_03	-66.1685	1.1532	88.7250	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-counter — WoodenTable_03/Model/WoodenTable_03_body	-66.1685	1.1532	88.7297	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-counter — WoodenTable_03/Model/WoodenTable_03_door	-66.4232	1.6017	89.3206	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-counter — WoodenTable_03/Model/WoodenTable_03_drawer01	-66.4493	1.8319	88.7209	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-counter — WoodenTable_03/Model/WoodenTable_03_drawer02	-66.4493	1.8319	88.3178	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-counter — WoodenTable_03/Model/WoodenTable_03_drawer03	-66.4493	1.5906	88.5195	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-counter — WoodenTable_03/Model/WoodenTable_03_drawer04	-66.4493	1.3509	88.5195	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-pot — pot_enamel_01	-66.3850	2.0134	87.7600	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-pot — pot_enamel_01/Model/pot_enamel_01_base	-66.3850	2.0133	87.7600	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-pot — pot_enamel_01/Model/pot_enamel_01_lid	-66.3850	2.0133	87.7600	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-kettle — vintage_electric_kettle	-66.2900	1.9848	88.4000	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-kettle — vintage_electric_kettle/Model	-66.2855	1.9848	88.4000	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-jug — jug_01	-66.3400	1.9833	89.0500	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-jug — jug_01/Model	-66.3547	1.9830	89.0500	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-rex-water — wooden_bucket_01	-66.2900	1.1532	89.6400	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-rex-water — wooden_bucket_01/Model/wooden_bucket_01	-66.2910	1.1531	89.6389	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-rex-water — wooden_bucket_01/Model/wooden_bucket_01_handle	-66.2910	1.4742	89.6390	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-clock — wall_clock	-65.8780	2.8898	88.7000	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-clock — wall_clock/Model/wall_clock	-65.8544	3.0500	88.7000	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-clock — wall_clock/Model/wall_clock_hours_hand	-65.8544	3.0500	88.7000	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-clock — wall_clock/Model/wall_clock_minute_hand	-65.8544	3.0500	88.7000	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-clock — wall_clock/Model/wall_clock_second_hand	-65.8544	3.0500	88.7000	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-bulb — pull_chain_light_socket	-67.0000	6.8670	88.3000	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-bulb — pull_chain_light_socket/Model/pull_chain_light_socket	-67.0000	7.0324	88.3000	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/kitchen-bulb — pull_chain_light_socket/Model/pull_chain_light_socket_chain	-67.0000	7.0324	88.3000	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/table — wooden_table_02	-70.5824	1.1532	92.7550	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/table — wooden_table_02/Model	-70.5824	1.1533	92.7550	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/table-walter-chair — painted_wooden_chair_01	-70.4150	1.1532	91.8900	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/table-walter-chair — painted_wooden_chair_01/Model	-70.4165	1.1539	91.9207	270.02	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/table-ruth-chair — painted_wooden_chair_01	-70.4150	1.1532	93.6200	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/table-ruth-chair — painted_wooden_chair_01/Model	-70.4135	1.1539	93.5893	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/table-lamp — Prop_Lamp_A	-70.5107	1.9527	92.9500	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/table-lamp — Prop_Lamp_A/Prop_Lamp_A/lo_Prop_Lamp_A_LOD0	-70.5116	1.9511	92.9498	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/table-lamp — Prop_Lamp_A/Prop_Lamp_A/lo_Prop_Lamp_A_LOD1	-70.5116	1.9511	92.9498	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/table-bowl — wooden_bowl_01	-70.4159	1.9527	92.4200	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/table-bowl — wooden_bowl_01/Model	-70.4162	1.9522	92.4193	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/table-glasses — round_spectacles	-70.3339	1.9527	92.9500	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/table-glasses — round_spectacles/Model	-70.2602	1.9759	92.9500	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/table-wedding-photo — hanging_picture_frame_03	-71.0493	2.7988	92.8550	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/table-wedding-photo — hanging_picture_frame_03/Model/hanging_picture_frame_03	-71.0656	3.0537	92.8549	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/table-wedding-photo — hanging_picture_frame_03/Model/hanging_picture_frame_03_glass	-71.0656	3.0537	92.8549	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/door-telephone — vintage_telephone_wall_clock	-65.9858	2.3994	93.3000	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/door-telephone — vintage_telephone_wall_clock/Model	-65.8895	2.4730	93.2954	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed — Prop_Bed_A	-70.2608	1.1617	96.1815	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed — Prop_Bed_A/Prop_Bed_A/lo_Prop_Bed_A_LOD0	-70.2735	1.1679	97.2121	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed — Prop_Bed_A/Prop_Bed_A/lo_Prop_Bed_A_LOD1	-70.2735	1.1679	97.2121	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-painting — Prop_Painting_A	-70.3650	2.5383	97.2304	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-painting — Prop_Painting_A/Prop_Painting_A	-70.7990	2.5900	97.2291	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-nightstand — painted_wooden_nightstand	-69.3700	1.1532	96.9616	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-nightstand — painted_wooden_nightstand/Model/painted_wooden_nightstand	-69.3689	1.1532	96.9667	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-nightstand — painted_wooden_nightstand/Model/painted_wooden_nightstand_drawer	-69.3695	1.6653	96.7559	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-oil-lamp — vintage_oil_lamp	-69.4700	1.7687	96.8473	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-oil-lamp — vintage_oil_lamp/Model/vintage_oil_lamp	-69.4700	1.7687	96.8473	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-oil-lamp — vintage_oil_lamp/Model/vintage_oil_lamp_flame	-69.4700	1.7687	96.8473	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-oil-lamp — vintage_oil_lamp/Model/vintage_oil_lamp_glass	-69.4700	1.7687	96.8473	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-alarm-clock — alarm_clock_01	-69.2400	1.7687	96.7706	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-alarm-clock — alarm_clock_01/Model/alarm_clock_01	-69.2400	1.7697	96.7798	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-alarm-clock — alarm_clock_01/Model/alarm_clock_01_glass	-69.2400	1.7697	96.7798	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-alarm-clock — alarm_clock_01/Model/alarm_clock_01_hour_hand	-69.2400	1.8345	96.7798	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-alarm-clock — alarm_clock_01/Model/alarm_clock_01_minute_hand	-69.2400	1.8345	96.7798	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-alarm-clock — alarm_clock_01/Model/alarm_clock_01_second_hand	-69.2400	1.8345	96.7798	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-ruth-dresser — vintage_wooden_drawer_01	-67.9000	1.1532	96.9825	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-ruth-dresser — vintage_wooden_drawer_01/Model/vintage_wooden_drawer_01_body	-67.9000	1.1535	96.9911	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-ruth-dresser — vintage_wooden_drawer_01/Model/vintage_wooden_drawer_01_drawer01	-68.1765	1.5413	96.9771	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-ruth-dresser — vintage_wooden_drawer_01/Model/vintage_wooden_drawer_01_drawer02	-67.9000	1.5410	96.9754	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-ruth-dresser — vintage_wooden_drawer_01/Model/vintage_wooden_drawer_01_drawer03	-67.6238	1.5409	96.9771	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-ruth-dresser — vintage_wooden_drawer_01/Model/vintage_wooden_drawer_01_drawer04	-68.1766	1.3263	96.9761	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-ruth-dresser — vintage_wooden_drawer_01/Model/vintage_wooden_drawer_01_drawer05	-67.9000	1.3263	96.9783	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-ruth-dresser — vintage_wooden_drawer_01/Model/vintage_wooden_drawer_01_drawer06	-67.6241	1.3263	96.9755	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-ruth-photo — standing_picture_frame_02	-68.1000	1.6986	96.8350	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-ruth-photo — standing_picture_frame_02/Model	-68.0997	1.6986	96.8270	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-ruth-vase — Prop_Vase_A	-67.7000	1.6986	96.8614	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-ruth-vase — Prop_Vase_A/Prop_Vase_A/lo_Prop_Vase_A_LOD0	-67.6999	1.7024	96.8614	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-ruth-vase — Prop_Vase_A/Prop_Vase_A/lo_Prop_Vase_A_LOD1	-67.6999	1.7024	96.8614	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-wardrobe — Prop_Cabinet_B	-66.1844	1.1532	96.2250	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-wardrobe — Prop_Cabinet_B/Prop_Cabinet_B/lo_Prop_Cabinet_B_LOD0	-65.9153	1.1523	96.2246	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-wardrobe — Prop_Cabinet_B/Prop_Cabinet_B/lo_Prop_Cabinet_B_LOD1	-65.9153	1.1523	96.2246	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-ruth-suitcases — vintage_suitcase	-66.1800	1.1532	94.7750	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-ruth-suitcases — vintage_suitcase/Model/vintage_suitcase_01_bottom	-66.1952	1.1677	94.3172	90.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-ruth-suitcases — vintage_suitcase/Model/vintage_suitcase_01_clasp	-66.1590	1.6959	94.3185	90.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-ruth-suitcases — vintage_suitcase/Model/vintage_suitcase_01_handle	-66.1748	1.7012	94.3168	90.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-ruth-suitcases — vintage_suitcase/Model/vintage_suitcase_01_top	-66.1952	1.1677	94.3172	90.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-ruth-suitcases — vintage_suitcase/Model/vintage_suitcase_02_bottom	-66.1952	1.1677	95.2316	90.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-ruth-suitcases — vintage_suitcase/Model/vintage_suitcase_02_clasp	-66.1590	1.6959	95.2329	90.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-ruth-suitcases — vintage_suitcase/Model/vintage_suitcase_02_handle	-66.1748	1.7012	95.2312	90.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-ruth-suitcases — vintage_suitcase/Model/vintage_suitcase_02_top	-66.1952	1.1677	95.2316	90.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-rug — Prop_Rug_A	-68.2000	1.1602	95.2000	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/bed-rug — Prop_Rug_A/Prop_Rug_A	-66.7277	1.1472	95.9945	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/porch-boots — rubber_boots	-65.6011	1.1335	90.2000	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/porch-boots — rubber_boots/Model/rubber_boots_dirt_r_LOD0	-65.6003	1.1335	90.4000	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/porch-boots — rubber_boots/Model/rubber_boots_dirty_l_LOD0	-65.6003	1.1335	90.6000	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/porch-boots — rubber_boots/Model/rubber_boots_l_LOD0	-65.6003	1.1335	90.0000	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/porch-boots — rubber_boots/Model/rubber_boots_r_LOD0	-65.6003	1.1335	89.8000	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/porch-bench — painted_wooden_bench	-65.4859	1.1532	93.3500	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/porch-bench — painted_wooden_bench/Model	-65.4805	1.1537	93.3436	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/porch-trash-cans — metal_trash_can	-65.4561	1.1548	87.7500	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/porch-trash-cans — metal_trash_can/Model/metal_trash_can	-65.4561	1.1547	88.3464	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/porch-trash-cans — metal_trash_can/Model/metal_trash_can_handle_left	-65.4563	1.8044	88.0734	15.00	0.00	90.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/porch-trash-cans — metal_trash_can/Model/metal_trash_can_handle_right	-65.4563	1.8044	88.6409	15.00	0.00	90.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/porch-trash-cans — metal_trash_can/Model/metal_trash_can_lid	-65.4561	1.4406	87.9721	345.44	180.00	270.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/porch-trash-cans — metal_trash_can/Model/metal_trash_can_rust	-65.4561	1.1547	87.3464	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/porch-trash-cans — metal_trash_can/Model/metal_trash_can_rust_handle_left	-65.4563	1.8044	87.0734	15.00	0.00	90.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/porch-trash-cans — metal_trash_can/Model/metal_trash_can_rust_handle_right	-65.4563	1.8044	87.6194	307.74	0.00	90.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/porch-trash-cans — metal_trash_can/Model/metal_trash_can_rust_lid	-65.4561	1.4406	86.9721	345.44	180.00	270.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/porch-lamp — industrial_wall_lamp	-65.6496	2.8850	92.5000	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V19 interior/porch-lamp — industrial_wall_lamp/Model	-65.7198	3.1000	92.5000	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V20 mailbox — 214 (Rylae Shylna, CC-BY)	-3.2086	-0.0437	92.0458	0.00	97.41	0.00	1
+SERVICE — Hollis County/Delivery property 0/V20 mailbox — 214 (Rylae Shylna, CC-BY)/Mailbox model/Body_J	-3.3738	1.0054	92.0781	270.00	277.41	0.00	1
+SERVICE — Hollis County/Delivery property 0/V20 mailbox — 214 (Rylae Shylna, CC-BY)/Mailbox model/LegFloor_J	-3.1256	-0.0288	92.0458	270.00	277.41	0.00	1
+SERVICE — Hollis County/Delivery property 0/V20 mailbox — 214 (Rylae Shylna, CC-BY)/Mailbox model/LegMain_J	-3.2582	0.7038	92.0636	270.00	277.41	0.00	1
+SERVICE — Hollis County/Delivery property 0/V20 mailbox — 214 (Rylae Shylna, CC-BY)/Address plate 214/Plate front	-3.2071	0.6963	92.0577	0.00	7.41	0.00	1
+SERVICE — Hollis County/Delivery property 0/V20 mailbox — 214 (Rylae Shylna, CC-BY)/Address plate 214/Plate back	-3.2102	0.6963	92.0339	0.00	187.41	0.00	1
+SERVICE — Hollis County/Delivery property 0/V20 mailbox — 214 (Rylae Shylna, CC-BY)/Name strip	-2.7894	0.9963	91.9913	0.00	277.41	0.00	1
+SERVICE — Hollis County/Delivery property 0/V23 hearth	-69.6301	1.1532	89.2253	0.00	74.96	0.00	1
+SERVICE — Hollis County/Delivery property 0/V23 hearth/V24 fire/Firebox (soot)	-69.9902	1.9455	88.4540	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V23 hearth/V24 fire/Embers	-69.9822	1.7370	88.4540	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V23 hearth/V24 fire/Flames	-69.9652	1.6380	88.4540	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V23 hearth/V24 fire/Flames 2	-69.9652	1.6380	88.4540	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V23 hearth/V24 fire/Fire body	-69.9712	1.6380	88.4540	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 0/V25 blood	-67.0000	0.0000	92.0000	0.00	0.00	0.00	0
+SERVICE — Hollis County/Delivery property 0/V25 blood/Blood 1	-64.9271	1.1692	92.3226	90.00	271.42	0.00	0
+SERVICE — Hollis County/Delivery property 0/V25 blood/Blood 2	-64.3086	1.1692	91.9519	90.00	268.11	0.00	0
+SERVICE — Hollis County/Delivery property 0/V25 blood/Blood 3	-65.7238	1.1692	92.2342	90.00	276.30	0.00	0
+SERVICE — Hollis County/Delivery property 0/V25 blood/Blood 4	-66.5286	1.1692	92.3156	90.00	267.97	0.00	0
+SERVICE — Hollis County/Delivery property 0/V25 blood/Blood 5	-67.2816	1.1692	92.3595	90.00	254.19	0.00	0
+SERVICE — Hollis County/Delivery property 0/V27 drive lamp	-5.8032	-0.0912	85.0253	0.00	359.20	0.00	1
+SERVICE — Hollis County/Delivery property 0/V27 drive lamp/Model	-5.8032	-0.0912	85.0253	270.00	359.20	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/vest-runner — Prop_Rug_C	96.5000	0.5691	230.6500	0.00	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/vest-runner — Prop_Rug_C/Prop_Rug_C	97.9842	0.5561	231.5207	0.00	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/vest-console — ClassicConsole_01	98.2853	0.5621	232.8500	0.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/vest-console — ClassicConsole_01/Model	98.2416	0.5621	232.8507	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/vest-lamp — Prop_Lamp_A	98.1992	1.5127	233.2900	0.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/vest-lamp — Prop_Lamp_A/Prop_Lamp_A/lo_Prop_Lamp_A_LOD0	98.1990	1.5111	233.2908	0.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/vest-lamp — Prop_Lamp_A/Prop_Lamp_A/lo_Prop_Lamp_A_LOD1	98.1990	1.5111	233.2908	0.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/vest-vase — antique_ceramic_vase_01	98.2182	1.5127	232.4000	0.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/vest-vase — antique_ceramic_vase_01/Model	98.2182	1.5128	232.4000	270.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/vest-mirror — ornate_mirror_01	98.5695	1.9779	232.8500	0.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/vest-mirror — ornate_mirror_01/Model	98.5802	2.3116	232.8500	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/vest-bench — painted_wooden_bench	94.7233	0.5566	228.6000	0.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/vest-bench — painted_wooden_bench/Model	94.7288	0.5571	228.5936	270.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/vest-clock — vintage_grandfather_clock_01	98.3667	0.5621	229.0000	0.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/vest-clock — vintage_grandfather_clock_01/Model/vintage_grandfather_clock_01_Body	98.3918	0.5622	229.0000	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/vest-clock — vintage_grandfather_clock_01/Model/vintage_grandfather_clock_01_HourHand	98.2662	2.2941	229.0000	43.21	179.64	89.10	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/vest-clock — vintage_grandfather_clock_01/Model/vintage_grandfather_clock_01_MinuteHand	98.2662	2.2941	229.0000	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/vest-portrait — Prop_Painting_C	96.6000	1.7980	227.4777	0.00	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/vest-portrait — Prop_Painting_C/Prop_Painting_C	96.8161	1.8497	227.4789	0.00	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/parlour-rug — Prop_Rug_D	103.1500	0.5691	234.6000	0.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/parlour-rug — Prop_Rug_D/Prop_Rug_D	104.1241	0.5561	233.1158	0.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/parlour-sofa — sofa_03	104.6730	0.5621	234.6000	0.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/parlour-sofa — sofa_03/Model	104.6717	0.5615	234.6000	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/parlour-chair-n — GreenChair_01	102.3500	0.5621	235.6000	0.00	100.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/parlour-chair-n — GreenChair_01/Model	102.3952	0.5627	235.5926	270.00	100.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/parlour-chair-s — GreenChair_01	102.3500	0.5621	233.6000	0.00	80.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/parlour-chair-s — GreenChair_01/Model	102.3951	0.5627	233.6085	270.00	80.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/parlour-table — small_wooden_table_01	103.5000	0.5621	234.6000	0.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/parlour-table — small_wooden_table_01/Model	103.5001	0.5621	234.6000	270.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/parlour-vase — Prop_Vase_B	103.5000	1.0952	234.8500	0.00	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/parlour-vase — Prop_Vase_B/Prop_Vase_B/lo_Prop_Vase_B_LOD0	103.4961	1.0936	234.8504	0.00	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/parlour-vase — Prop_Vase_B/Prop_Vase_B/lo_Prop_Vase_B_LOD1	103.4961	1.0936	234.8504	0.00	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/parlour-lamp-stand — side_table_tall_01	104.7500	0.5621	236.5500	0.00	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/parlour-lamp-stand — side_table_tall_01/Model	104.7500	0.5622	236.5500	270.02	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/parlour-lamp — Prop_Lamp_A	104.7500	1.3233	236.5500	0.00	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/parlour-lamp — Prop_Lamp_A/Prop_Lamp_A/lo_Prop_Lamp_A_LOD0	104.7491	1.3217	236.5498	0.00	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/parlour-lamp — Prop_Lamp_A/Prop_Lamp_A/lo_Prop_Lamp_A_LOD1	104.7491	1.3217	236.5498	0.00	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/parlour-cabinet — Prop_Cabinet_A	99.0830	0.5621	236.4000	0.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/parlour-cabinet — Prop_Cabinet_A/Prop_Cabinet_A/lo_Prop_Cabinet_A_LOD0	98.8510	0.5613	236.4003	0.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/parlour-cabinet — Prop_Cabinet_A/Prop_Cabinet_A/lo_Prop_Cabinet_A_LOD1	98.8510	0.5613	236.4003	0.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/parlour-painting — Prop_Painting_B	100.0000	1.9171	238.2258	0.00	180.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/parlour-painting — Prop_Painting_B/Prop_Painting_B	99.5660	1.9688	238.2245	0.00	180.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/hall-chandelier — Chandelier_02	102.2000	3.4419	232.0000	0.00	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/hall-chandelier — Chandelier_02/Model	102.1991	3.3822	231.9962	270.02	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/hall-spinning-wheel — spinning_wheel_01	104.9153	0.5636	228.4000	0.00	180.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/hall-spinning-wheel — spinning_wheel_01/Model	104.8907	0.5635	228.4378	270.02	180.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/dining-cabinet — vintage_cabinet_01	94.8469	0.5566	224.9000	0.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/dining-cabinet — vintage_cabinet_01/Model/vintage_cabinet_01_body	94.7898	0.5572	224.9000	270.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/dining-cabinet — vintage_cabinet_01/Model/vintage_cabinet_01_door_01	94.9006	2.1770	224.0016	270.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/dining-cabinet — vintage_cabinet_01/Model/vintage_cabinet_01_door_02	95.1334	1.0414	225.7851	270.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/dining-cabinet — vintage_cabinet_01/Model/vintage_cabinet_01_door_03	94.9006	2.2180	225.1930	270.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/dining-cabinet — vintage_cabinet_01/Model/vintage_cabinet_01_door_04	94.9006	2.0736	225.7984	270.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/dining-cabinet — vintage_cabinet_01/Model/vintage_cabinet_01_door_05	95.1334	1.0414	224.0149	270.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/dining-cabinet — vintage_cabinet_01/Model/vintage_cabinet_01_door_06	95.1334	1.0414	224.4501	270.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/dining-cabinet — vintage_cabinet_01/Model/vintage_cabinet_01_door_07	95.1334	1.0414	225.3498	270.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/dining-table — painted_wooden_table	97.0500	0.5621	224.9000	0.00	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/dining-table — painted_wooden_table/Model	97.0496	0.5625	224.9021	270.00	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/dining-chair-n1 — dining_chair_02	96.6000	0.5621	225.7000	0.00	180.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/dining-chair-n1 — dining_chair_02/Model	96.6000	0.5608	225.6572	270.02	180.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/dining-chair-n2 — dining_chair_02	97.5000	0.5621	225.7000	0.00	180.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/dining-chair-n2 — dining_chair_02/Model	97.5000	0.5608	225.6572	270.02	180.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/dining-chair-s1 — dining_chair_02	96.6000	0.5621	224.1000	0.00	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/dining-chair-s1 — dining_chair_02/Model	96.6000	0.5608	224.1428	270.02	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/dining-chair-s2 — dining_chair_02	97.5000	0.5621	224.1000	0.00	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/dining-chair-s2 — dining_chair_02/Model	97.5000	0.5608	224.1428	270.02	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/dining-jug — jug_01	97.0500	1.3290	224.9000	0.00	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/dining-jug — jug_01/Model	97.0353	1.3288	224.9000	270.00	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/dining-light — Chandelier_02	97.0500	3.4419	224.9000	0.00	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/dining-light — Chandelier_02/Model	97.0491	3.3822	224.8962	270.02	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-desk — wooden_table_02	94.7931	4.4121	233.9000	0.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-desk — wooden_table_02/Model	94.7931	4.4123	233.9000	270.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-lamp — Prop_Lamp_A	94.9800	5.2117	234.1800	0.00	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-lamp — Prop_Lamp_A/Prop_Lamp_A/lo_Prop_Lamp_A_LOD0	94.9792	5.2101	234.1798	0.00	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-lamp — Prop_Lamp_A/Prop_Lamp_A/lo_Prop_Lamp_A_LOD1	94.9792	5.2101	234.1798	0.00	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-books — book_encyclopedia_set_01	94.5566	5.2117	233.6800	0.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book01	94.6381	5.2117	233.4237	270.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book02	94.6381	5.2117	233.4583	270.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book03	94.6381	5.2117	233.4852	270.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book04	94.6381	5.2117	233.5114	270.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book05	94.6381	5.2117	233.5339	270.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book06	94.6381	5.2117	233.5548	270.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book07	94.6381	5.2117	233.5779	270.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book08	94.6381	5.2117	233.6016	270.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book09	94.6381	5.2117	233.6244	270.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book10	94.6381	5.2117	233.6472	270.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book11	94.6381	5.2117	233.6684	270.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book12	94.6381	5.2117	233.6914	270.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book13	94.6381	5.2117	233.7238	270.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book14	94.6381	5.2117	233.7624	270.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book15	94.6381	5.2117	233.7996	270.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book16	94.6381	5.2117	233.8318	270.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book17	94.6381	5.2117	233.8649	270.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book18	94.6381	5.2117	233.8979	270.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book19	94.6381	5.2117	233.9200	270.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book20	94.6381	5.2117	233.9437	270.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-spectacles — round_spectacles	95.0216	5.2132	233.9600	0.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-spectacles — round_spectacles/Model	95.0952	5.2363	233.9600	270.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-chair — GreenChair_01	95.6500	4.4121	232.8500	0.00	300.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-chair — GreenChair_01/Model	95.6100	4.4127	232.8725	270.00	300.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-bookcase — wooden_bookshelf_worn	98.2893	4.4121	232.4000	0.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-bookcase — wooden_bookshelf_worn/Model	98.2893	4.4121	232.4000	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-rug — Prop_Rug_C	96.4500	4.4191	230.9000	0.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-rug — Prop_Rug_C/Prop_Rug_C	97.3207	4.4061	229.4158	0.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-reading-chair — ArmChair_01	97.2500	4.4121	228.4500	0.00	330.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-reading-chair — ArmChair_01/Model	97.2328	4.4126	228.4798	270.02	330.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-reading-table — side_table_tall_01	97.9500	4.4121	227.8200	0.00	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-reading-table — side_table_tall_01/Model	97.9500	4.4122	227.8200	270.02	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-reading-lamp — Prop_Lamp_A	97.9500	5.1733	227.8200	0.00	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-reading-lamp — Prop_Lamp_A/Prop_Lamp_A/lo_Prop_Lamp_A_LOD0	97.9491	5.1717	227.8198	0.00	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-reading-lamp — Prop_Lamp_A/Prop_Lamp_A/lo_Prop_Lamp_A_LOD1	97.9491	5.1717	227.8198	0.00	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-portrait — Prop_Painting_D	98.5698	5.6365	229.0000	0.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-portrait — Prop_Painting_D/Prop_Painting_D	98.5682	5.7037	229.2036	0.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-clock — mantel_clock_01	98.2893	6.4756	232.4000	0.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-clock — mantel_clock_01/Model/mantel_clock_01	98.2893	6.4751	232.4000	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/study-clock — mantel_clock_01/Model/mantel_clock_01_glass	98.2328	6.5666	232.4000	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/landing-runner — Prop_Rug_C	101.5000	4.4191	233.6000	0.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/landing-runner — Prop_Rug_C/Prop_Rug_C	102.3707	4.4061	232.1158	0.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/landing-clock — vintage_grandfather_clock_01	99.0333	4.4121	233.0000	0.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/landing-clock — vintage_grandfather_clock_01/Model/vintage_grandfather_clock_01_Body	99.0082	4.4122	233.0000	270.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/landing-clock — vintage_grandfather_clock_01/Model/vintage_grandfather_clock_01_HourHand	99.1337	6.1441	233.0000	43.21	359.64	89.10	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/landing-clock — vintage_grandfather_clock_01/Model/vintage_grandfather_clock_01_MinuteHand	99.1337	6.1441	233.0000	270.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/landing-commode — GothicCommode_01	104.8346	4.4136	235.1300	0.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/landing-commode — GothicCommode_01/Model/GothicCommode_01	104.8359	4.4136	235.1289	0.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/landing-commode — GothicCommode_01/Model/GothicCommode_01_door01	104.5647	5.4005	235.1298	0.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/landing-commode — GothicCommode_01/Model/GothicCommode_01_door02	104.5746	5.0807	235.1304	0.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/landing-commode — GothicCommode_01/Model/GothicCommode_01_door03	104.5551	4.7701	235.1303	0.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/landing-commode-photo — standing_picture_frame_01	104.7850	5.6257	234.7800	0.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/landing-commode-photo — standing_picture_frame_01/Model	104.7735	5.6262	234.7800	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/landing-painting — Prop_Painting_A	105.1660	5.9983	235.6000	0.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/landing-painting — Prop_Painting_A/Prop_Painting_A	105.1647	6.0500	236.0340	0.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/landing-chair — painted_wooden_chair_01	104.8000	4.4121	234.1000	0.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/landing-chair — painted_wooden_chair_01/Model	104.7693	4.4129	234.0985	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/landing-crutches — vintage_crutches_01	98.9267	4.4121	238.6000	0.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/landing-crutches — vintage_crutches_01/Model/vintage_crutches_01_crutch01	98.9794	4.4236	238.6418	274.24	186.56	180.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/landing-crutches — vintage_crutches_01/Model/vintage_crutches_01_crutch02	98.8995	4.4236	238.5375	275.00	351.24	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/landing-light — lantern_chandelier_01	101.5500	7.2749	231.3000	0.00	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/landing-light — lantern_chandelier_01/Model	101.5542	8.1402	231.3000	270.02	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/landing-nook-table — round_wooden_table_02	104.5000	4.4121	231.5500	0.00	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/landing-nook-table — round_wooden_table_02/Model	104.5000	4.4121	231.5500	270.00	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/landing-nook-chair-n — GreenChair_01	104.2500	4.4121	232.6500	0.00	200.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/landing-nook-chair-n — GreenChair_01/Model	104.2348	4.4126	232.6067	270.00	200.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/landing-nook-chair-s — GreenChair_01	104.2500	4.4121	230.4500	0.00	340.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/landing-nook-chair-s — GreenChair_01/Model	104.2338	4.4127	230.4929	270.00	340.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/landing-nook-vase — ceramic_vase_01	104.5000	5.1582	231.5500	0.00	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/landing-nook-vase — ceramic_vase_01/Model	104.5000	5.1570	231.5500	270.02	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/bed — Prop_Bed_B	95.5417	4.4121	225.0000	0.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/bed — Prop_Bed_B/Prop_Bed_B/lo_Prop_Bed_B_LOD0	94.4777	4.4186	224.9568	0.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/bed — Prop_Bed_B/Prop_Bed_B/lo_Prop_Bed_B_LOD1	94.4777	4.4186	224.9568	0.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/bed-nightstand — painted_wooden_nightstand	94.6944	4.4121	226.2000	0.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/bed-nightstand — painted_wooden_nightstand/Model/painted_wooden_nightstand	94.6893	4.4121	226.2011	270.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/bed-nightstand — painted_wooden_nightstand/Model/painted_wooden_nightstand_drawer	94.9002	4.9242	226.2005	270.00	90.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/bed-oil-lamp — vintage_oil_lamp	94.8200	5.0292	226.2000	0.00	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/bed-oil-lamp — vintage_oil_lamp/Model/vintage_oil_lamp	94.8200	5.0292	226.2000	270.00	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/bed-oil-lamp — vintage_oil_lamp/Model/vintage_oil_lamp_flame	94.8200	5.0292	226.2000	270.00	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/bed-oil-lamp — vintage_oil_lamp/Model/vintage_oil_lamp_glass	94.8200	5.0292	226.2000	270.00	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/bed-wardrobe — Prop_Cabinet_B	98.2748	4.4121	224.5000	0.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/bed-wardrobe — Prop_Cabinet_B/Prop_Cabinet_B/lo_Prop_Cabinet_B_LOD0	98.5439	4.4112	224.4996	0.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/bed-wardrobe — Prop_Cabinet_B/Prop_Cabinet_B/lo_Prop_Cabinet_B_LOD1	98.5439	4.4112	224.4996	0.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/bed-chair — painted_wooden_chair_02	98.3151	4.4121	225.6200	0.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/bed-chair — painted_wooden_chair_02/Model	98.2893	4.4121	225.6079	270.00	0.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn	98.4384	5.6927	232.5200	0.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book01	98.3569	5.6927	232.7763	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book02	98.3569	5.6927	232.7417	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book03	98.3569	5.6927	232.7148	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book04	98.3569	5.6927	232.6886	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book05	98.3569	5.6927	232.6660	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book06	98.3569	5.6927	232.6452	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book07	98.3569	5.6927	232.6221	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book08	98.3569	5.6927	232.5984	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book09	98.3569	5.6927	232.5756	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book10	98.3569	5.6927	232.5528	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book11	98.3569	5.6927	232.5316	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book12	98.3569	5.6927	232.5086	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book13	98.3569	5.6927	232.4761	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book14	98.3569	5.6927	232.4376	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book15	98.3569	5.6927	232.4004	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book16	98.3569	5.6927	232.3682	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book17	98.3569	5.6927	232.3351	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book18	98.3569	5.6927	232.3021	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book19	98.3569	5.6927	232.2800	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book20	98.3569	5.6927	232.2562	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn	98.4384	5.3766	232.5200	0.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book01	98.3569	5.3766	232.7763	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book02	98.3569	5.3766	232.7417	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book03	98.3569	5.3766	232.7148	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book04	98.3569	5.3766	232.6886	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book05	98.3569	5.3766	232.6660	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book06	98.3569	5.3766	232.6452	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book07	98.3569	5.3766	232.6221	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book08	98.3569	5.3766	232.5984	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book09	98.3569	5.3766	232.5756	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book10	98.3569	5.3766	232.5528	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book11	98.3569	5.3766	232.5316	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book12	98.3569	5.3766	232.5086	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book13	98.3569	5.3766	232.4761	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book14	98.3569	5.3766	232.4376	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book15	98.3569	5.3766	232.4004	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book16	98.3569	5.3766	232.3682	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book17	98.3569	5.3766	232.3351	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book18	98.3569	5.3766	232.3021	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book19	98.3569	5.3766	232.2800	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book20	98.3569	5.3766	232.2562	270.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/Villa entrance — open passage	94.1625	0.5731	230.6517	0.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/Prop_Lamp_E	94.1319	3.2794	230.6455	0.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/Prop_Lamp_E/lo_Prop_Lamp_E_LOD0	94.1319	3.2794	230.6455	0.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/Prop_Lamp_E/lo_Prop_Lamp_E_LOD1	94.1319	3.2794	230.6455	0.00	270.00	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V20 mailbox — 77 (Rylae Shylna, CC-BY)	41.6975	-0.0436	232.6632	0.00	265.72	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V20 mailbox — 77 (Rylae Shylna, CC-BY)/Mailbox model/Body_J	41.8609	1.0055	232.6819	270.00	85.72	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V20 mailbox — 77 (Rylae Shylna, CC-BY)/Mailbox model/LegFloor_J	41.6113	-0.0287	232.6632	270.00	85.72	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V20 mailbox — 77 (Rylae Shylna, CC-BY)/Mailbox model/LegMain_J	41.7447	0.7039	232.6727	270.00	85.72	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V20 mailbox — 77 (Rylae Shylna, CC-BY)/Address plate 77/Plate front	41.6966	0.6964	232.6752	0.00	355.72	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V20 mailbox — 77 (Rylae Shylna, CC-BY)/Address plate 77/Plate back	41.6984	0.6964	232.6513	0.00	175.72	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V20 mailbox — 77 (Rylae Shylna, CC-BY)/Name strip	41.2970	0.9964	232.6332	0.00	85.72	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V27 drive lamp	43.9368	-0.0913	225.5120	0.00	3.30	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V27 drive lamp/Model	43.9368	-0.0913	225.5120	270.00	3.30	0.00	1
+SERVICE — Hollis County/77 Latigo — Vale/V28 readable — vale-letter	98.2417	1.5127	232.8502	90.00	78.00	0.00	0
+SERVICE — Hollis County/77 Latigo — Vale/V28 readable — vale-clipping	94.9731	5.2132	233.5600	90.00	20.00	0.00	0
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/sit-rug — Prop_Rug_B	-29.2500	1.0196	466.1500	0.00	0.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/sit-rug — Prop_Rug_B/Prop_Rug_B	-28.2611	1.0066	467.1490	0.00	0.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/sit-armchair — modern_arm_chair_01	-29.1500	1.0126	465.2000	0.00	295.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/sit-armchair — modern_arm_chair_01/Model	-29.2231	1.0122	465.2378	270.00	295.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/sit-rocker — Rockingchair_01	-29.2000	1.0126	467.0500	0.00	245.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/sit-rocker — Rockingchair_01/Model	-29.1436	0.9109	467.0763	270.00	245.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/sit-lamp-table — side_table_01	-28.5500	1.0126	466.1500	0.00	0.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/sit-lamp-table — side_table_01/Model	-28.5500	1.0149	466.1500	270.02	0.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/sit-lamp — Prop_Lamp_A	-28.6300	1.5632	466.2000	0.00	0.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/sit-lamp — Prop_Lamp_A/Prop_Lamp_A/lo_Prop_Lamp_A_LOD0	-28.6309	1.5616	466.1998	0.00	0.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/sit-lamp — Prop_Lamp_A/Prop_Lamp_A/lo_Prop_Lamp_A_LOD1	-28.6309	1.5616	466.1998	0.00	0.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/sit-spectacles — round_spectacles	-28.4000	1.5632	466.0800	0.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/sit-spectacles — round_spectacles/Model	-28.3264	1.5864	466.0800	270.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/sit-firewood — wicker_basket_01	-30.9500	1.0126	464.5500	0.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/sit-firewood — wicker_basket_01/Model	-30.9496	1.0135	464.5503	270.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/sit-painting — fancy_picture_frame_01	-30.5588	2.3279	466.1500	0.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/sit-painting — fancy_picture_frame_01/Model/fancy_picture_frame_01	-30.5707	2.5600	466.1500	270.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/sit-painting — fancy_picture_frame_01/Model/fancy_picture_frame_01_canvas	-30.5707	2.5600	466.1500	270.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-hutch — painted_wooden_cabinet_02	-27.3243	1.0126	464.7052	0.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-hutch — painted_wooden_cabinet_02/Model/painted_wooden_cabinet_02	-27.2903	1.0134	464.7052	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-hutch — painted_wooden_cabinet_02/Model/painted_wooden_cabinet_02_door	-27.5516	1.3904	464.4774	270.00	265.40	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-hutch — painted_wooden_cabinet_02/Model/painted_wooden_cabinet_02_drawer	-27.3865	1.8276	464.7054	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-stove — electric_stove	-27.3400	1.0141	465.3600	0.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-stove — electric_stove/Model/dial_1	-27.6185	1.8025	465.4665	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-stove — electric_stove/Model/dial_2	-27.6239	1.8025	465.4081	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-stove — electric_stove/Model/dial_3	-27.6239	1.8025	465.3498	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-stove — electric_stove/Model/dial_4	-27.6239	1.8025	465.2914	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-stove — electric_stove/Model/dial_5	-27.6239	1.8025	465.2330	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-stove — electric_stove/Model/dial_6	-27.6239	1.8025	465.1747	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-stove — electric_stove/Model/door_top	-27.6052	1.3708	465.3600	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-stove — electric_stove/Model/grid	-27.3836	1.5410	465.3600	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-stove — electric_stove/Model/handle_bottom_attachment	-27.6042	1.1138	465.3600	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-stove — electric_stove/Model/hinge_bottom_attachment_left	-27.6081	1.1141	465.5959	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-stove — electric_stove/Model/hinge_bottom_attachment_right	-27.6081	1.1141	465.5959	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-stove — electric_stove/Model/hinge_bottom_rotator_left	-27.6061	1.1507	465.5959	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-stove — electric_stove/Model/hinge_bottom_rotator_right	-27.6061	1.1507	465.5959	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-stove — electric_stove/Model/hinge_top_attachment_left	-27.6081	1.3709	465.5959	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-stove — electric_stove/Model/hinge_top_attachment_right	-27.6081	1.3709	465.5959	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-stove — electric_stove/Model/hinge_top_rotator_left	-27.6061	1.4075	465.5959	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-stove — electric_stove/Model/hinge_top_rotator_right	-27.6061	1.4075	465.5959	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-stove — electric_stove/Model/sheet	-27.3756	1.2331	465.3600	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-stove — electric_stove/Model/stovetop	-27.3162	1.0141	465.3600	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-pot — pot_enamel_01	-27.5500	1.8728	465.3600	0.00	0.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-pot — pot_enamel_01/Model/pot_enamel_01_base	-27.5500	1.8726	465.3600	270.00	0.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-pot — pot_enamel_01/Model/pot_enamel_01_lid	-27.5500	1.8726	465.3600	270.00	0.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-counter — WoodenTable_03	-27.3072	1.0126	466.3800	0.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-counter — WoodenTable_03/Model/WoodenTable_03_body	-27.3072	1.0126	466.3847	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-counter — WoodenTable_03/Model/WoodenTable_03_door	-27.5619	1.4611	466.9756	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-counter — WoodenTable_03/Model/WoodenTable_03_drawer01	-27.5880	1.6913	466.3759	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-counter — WoodenTable_03/Model/WoodenTable_03_drawer02	-27.5880	1.6913	465.9728	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-counter — WoodenTable_03/Model/WoodenTable_03_drawer03	-27.5880	1.4499	466.1745	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-counter — WoodenTable_03/Model/WoodenTable_03_drawer04	-27.5880	1.2103	466.1745	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-kettle — vintage_electric_kettle	-27.4273	1.8441	466.0500	0.00	180.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-kettle — vintage_electric_kettle/Model	-27.4228	1.8441	466.0500	270.00	180.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-jug — jug_01	-27.4773	1.8441	466.7000	0.00	0.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-jug — jug_01/Model	-27.4919	1.8439	466.7000	270.00	0.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-clock — wall_clock	-27.0199	2.7498	466.3800	0.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-clock — wall_clock/Model/wall_clock	-26.9963	2.9100	466.3800	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-clock — wall_clock/Model/wall_clock_hours_hand	-26.9963	2.9100	466.3800	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-clock — wall_clock/Model/wall_clock_minute_hand	-26.9963	2.9100	466.3800	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/kitchen-clock — wall_clock/Model/wall_clock_second_hand	-26.9963	2.9100	466.3800	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/hall-table — round_wooden_table_02	-31.0000	1.0126	468.6000	0.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/hall-table — round_wooden_table_02/Model	-31.0000	1.0126	468.6000	270.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/hall-lamp — Prop_Lamp_A	-31.1200	1.7586	468.7800	0.00	0.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/hall-lamp — Prop_Lamp_A/Prop_Lamp_A/lo_Prop_Lamp_A_LOD0	-31.1209	1.7570	468.7798	0.00	0.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/hall-lamp — Prop_Lamp_A/Prop_Lamp_A/lo_Prop_Lamp_A_LOD1	-31.1209	1.7570	468.7798	0.00	0.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/hall-photo — standing_picture_frame_02	-31.1200	1.7586	468.3500	0.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/hall-photo — standing_picture_frame_02/Model	-31.1120	1.7586	468.3503	270.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/hall-bulb — pull_chain_light_socket	-29.3000	5.7263	468.9000	0.00	0.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/hall-bulb — pull_chain_light_socket/Model/pull_chain_light_socket	-29.3000	5.8918	468.9000	270.00	0.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/hall-bulb — pull_chain_light_socket/Model/pull_chain_light_socket_chain	-29.3000	5.8918	468.9000	270.00	0.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/door-telephone — vintage_telephone_wall_clock	-27.1223	2.2594	470.0000	0.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/door-telephone — vintage_telephone_wall_clock/Model	-27.0260	2.3330	469.9954	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/dining-table — painted_wooden_table	-30.9991	1.0126	470.4200	0.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/dining-table — painted_wooden_table/Model	-30.9970	1.0130	470.4204	270.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/dining-tea — tea_set_01	-30.8756	1.7795	470.4200	0.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/dining-tea — tea_set_01/Model/tea_set_01_cup_small_01	-30.7726	1.7803	470.5548	270.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/dining-tea — tea_set_01/Model/tea_set_01_cup_small_02	-30.7726	1.7803	470.8048	270.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/dining-tea — tea_set_01/Model/tea_set_01_plate_large_circular_03	-31.0226	1.7803	470.3048	270.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/dining-tea — tea_set_01/Model/tea_set_01_plate_large_square_01	-31.0226	1.7803	470.0548	270.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/dining-tea — tea_set_01/Model/tea_set_01_saucer_circular_03	-31.0226	1.7803	470.8048	270.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/dining-tea — tea_set_01/Model/tea_set_01_saucer_circular_04	-31.0226	1.7803	470.5548	270.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/dining-tea — tea_set_01/Model/tea_set_01_sugar_cup_01	-30.7726	1.7803	470.3048	270.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/dining-tea — tea_set_01/Model/tea_set_01_sugar_cup_01_lid	-30.7726	1.7806	470.3048	270.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/dining-tea — tea_set_01/Model/tea_set_01_teapot_01	-30.7726	1.7803	470.0548	270.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/dining-tea — tea_set_01/Model/tea_set_01_teapot_01_lid	-30.7726	1.7818	470.0548	270.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/dining-chair-tucked — painted_wooden_chair_01	-30.2000	1.0126	469.9500	0.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/dining-chair-tucked — painted_wooden_chair_01/Model	-30.2307	1.0133	469.9485	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/dining-chair-pulled — painted_wooden_chair_01	-29.8200	1.0126	471.0000	0.00	245.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/dining-chair-pulled — painted_wooden_chair_01/Model	-29.8472	1.0133	470.9857	270.00	245.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/dining-picture — fancy_picture_frame_02	-31.4803	2.2745	470.4200	0.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/dining-picture — fancy_picture_frame_02/Model/fancy_picture_frame_02	-31.5262	2.6655	470.4220	270.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/dining-picture — fancy_picture_frame_02/Model/fancy_picture_frame_02_canvas	-31.5262	2.6655	470.4220	270.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/bed — Prop_Bed_A	-29.3000	1.0126	472.5308	0.00	180.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/bed — Prop_Bed_A/Prop_Bed_A/lo_Prop_Bed_A_LOD0	-29.3127	1.0187	473.5615	0.00	180.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/bed — Prop_Bed_A/Prop_Bed_A/lo_Prop_Bed_A_LOD1	-29.3127	1.0187	473.5615	0.00	180.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/bed-nightstand — painted_wooden_nightstand	-28.3000	1.0126	473.3438	0.00	180.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/bed-nightstand — painted_wooden_nightstand/Model/painted_wooden_nightstand	-28.2989	1.0126	473.3489	270.00	180.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/bed-nightstand — painted_wooden_nightstand/Model/painted_wooden_nightstand_drawer	-28.2995	1.5246	473.1380	270.00	180.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/bed-oil-lamp — vintage_oil_lamp	-28.3800	1.6296	473.2146	0.00	0.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/bed-oil-lamp — vintage_oil_lamp/Model/vintage_oil_lamp	-28.3800	1.6296	473.2146	270.00	0.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/bed-oil-lamp — vintage_oil_lamp/Model/vintage_oil_lamp_flame	-28.3800	1.6296	473.2146	270.00	0.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/bed-oil-lamp — vintage_oil_lamp/Model/vintage_oil_lamp_glass	-28.3800	1.6296	473.2146	270.00	0.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/bed-alarm-clock — alarm_clock_01	-28.1800	1.6281	473.1528	0.00	180.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/bed-alarm-clock — alarm_clock_01/Model/alarm_clock_01	-28.1800	1.6290	473.1619	270.00	180.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/bed-alarm-clock — alarm_clock_01/Model/alarm_clock_01_glass	-28.1800	1.6290	473.1619	270.00	180.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/bed-alarm-clock — alarm_clock_01/Model/alarm_clock_01_hour_hand	-28.1800	1.6939	473.1619	270.00	180.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/bed-alarm-clock — alarm_clock_01/Model/alarm_clock_01_minute_hand	-28.1800	1.6939	473.1619	270.00	180.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/bed-alarm-clock — alarm_clock_01/Model/alarm_clock_01_second_hand	-28.1800	1.6939	473.1619	270.00	180.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/bed-dresser — vintage_wooden_drawer_01	-27.2642	1.0126	472.8500	0.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/bed-dresser — vintage_wooden_drawer_01/Model/vintage_wooden_drawer_01_body	-27.2556	1.0129	472.8500	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/bed-dresser — vintage_wooden_drawer_01/Model/vintage_wooden_drawer_01_drawer01	-27.2696	1.4007	473.1265	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/bed-dresser — vintage_wooden_drawer_01/Model/vintage_wooden_drawer_01_drawer02	-27.2713	1.4004	472.8500	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/bed-dresser — vintage_wooden_drawer_01/Model/vintage_wooden_drawer_01_drawer03	-27.2696	1.4003	472.5738	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/bed-dresser — vintage_wooden_drawer_01/Model/vintage_wooden_drawer_01_drawer04	-27.2705	1.1857	473.1266	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/bed-dresser — vintage_wooden_drawer_01/Model/vintage_wooden_drawer_01_drawer05	-27.2683	1.1857	472.8500	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/bed-dresser — vintage_wooden_drawer_01/Model/vintage_wooden_drawer_01_drawer06	-27.2712	1.1857	472.5741	270.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/bed-photo — hanging_picture_frame_03	-26.9991	2.2588	472.8500	0.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/bed-photo — hanging_picture_frame_03/Model/hanging_picture_frame_03	-26.9828	2.5137	472.8502	270.03	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/bed-photo — hanging_picture_frame_03/Model/hanging_picture_frame_03_glass	-26.9828	2.5137	472.8502	270.03	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/bed-vase — Prop_Vase_A	-27.4007	1.5555	473.0500	0.00	0.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/bed-vase — Prop_Vase_A/Prop_Vase_A/lo_Prop_Vase_A_LOD0	-27.4007	1.5593	473.0500	0.00	0.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/bed-vase — Prop_Vase_A/Prop_Vase_A/lo_Prop_Vase_A_LOD1	-27.4007	1.5593	473.0500	0.00	0.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/bed-wardrobe — Prop_Cabinet_B	-31.1549	1.0126	472.6200	0.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/bed-wardrobe — Prop_Cabinet_B/Prop_Cabinet_B/lo_Prop_Cabinet_B_LOD0	-31.4240	1.0116	472.6204	0.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/bed-wardrobe — Prop_Cabinet_B/Prop_Cabinet_B/lo_Prop_Cabinet_B_LOD1	-31.4240	1.0116	472.6204	0.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/porch-boots — rubber_boots	-26.4400	1.0129	467.2000	0.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/porch-boots — rubber_boots/Model/rubber_boots_dirt_r_LOD0	-26.4392	1.0129	467.4000	270.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/porch-boots — rubber_boots/Model/rubber_boots_dirty_l_LOD0	-26.4392	1.0129	467.6000	270.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/porch-boots — rubber_boots/Model/rubber_boots_l_LOD0	-26.4392	1.0129	467.0000	270.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/porch-boots — rubber_boots/Model/rubber_boots_r_LOD0	-26.4392	1.0129	466.8000	270.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/porch-bench — painted_wooden_bench	-26.6390	0.9858	472.6000	0.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V19 interior/porch-bench — painted_wooden_bench/Model	-26.6336	0.9863	472.5936	270.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/Prop_Car_A	-15.5011	-0.0081	473.1262	0.00	357.78	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/Prop_Car_A/lo_Prop_Car_A_LOD0	-15.5011	-0.0081	473.1262	0.00	357.78	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/Prop_Car_A/lo_Prop_Car_A_LOD1	-15.5011	-0.0081	473.1262	0.00	357.78	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/Prop_Car_A/lo_Prop_Car_A_LOD2	-15.5011	-0.0081	473.1262	0.00	357.78	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V23 hearth	-30.9640	1.0126	467.2341	0.00	9.10	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V23 hearth/V24 fire/Firebox (soot)	-30.6249	1.7073	465.8872	0.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V23 hearth/V24 fire/Embers	-30.6169	1.5228	465.8872	0.00	270.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V23 hearth/V24 fire/Flames	-30.5999	1.4398	465.8872	0.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V23 hearth/V24 fire/Flames 2	-30.5999	1.4398	465.8872	0.00	90.00	0.00	1
+SERVICE — Hollis County/Beyond the survey — October 09/Delivery property 2/V23 hearth/V24 fire/Fire body	-30.6059	1.4398	465.8872	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/entry-boots — rubber_boots	79.5147	0.7481	148.5500	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/entry-boots — rubber_boots/Model/rubber_boots_dirt_r_LOD0	79.5155	0.7481	148.7500	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/entry-boots — rubber_boots/Model/rubber_boots_dirty_l_LOD0	79.5155	0.7481	148.9500	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/entry-boots — rubber_boots/Model/rubber_boots_l_LOD0	79.5155	0.7481	148.3500	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/entry-boots — rubber_boots/Model/rubber_boots_r_LOD0	79.5155	0.7481	148.1500	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/entry-bench — painted_wooden_bench	79.5674	0.7481	152.6500	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/entry-bench — painted_wooden_bench/Model	79.5728	0.7486	152.6436	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/entry-phone — vintage_telephone_wall_clock	79.3954	1.9994	152.2500	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/entry-phone — vintage_telephone_wall_clock/Model	79.2991	2.0730	152.2546	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/sw-bookshelf — wooden_bookshelf_worn	79.6748	0.7481	146.6000	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/sw-bookshelf — wooden_bookshelf_worn/Model	79.6748	0.7481	146.6000	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/sw-radio-table — wooden_table_02	81.5500	0.7481	145.9098	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/sw-radio-table — wooden_table_02/Model	81.5500	0.7482	145.9098	270.02	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/sw-radio — vintage_radio_transceiver	81.4000	1.5477	145.9700	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/sw-radio — vintage_radio_transceiver/Model/vintage_radio_transceiver	81.3431	1.6176	145.9106	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/sw-radio — vintage_radio_transceiver/Model/vintage_radio_transceiver_antenna	81.5866	1.6505	145.9021	270.02	18.31	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/sw-radio — vintage_radio_transceiver/Model/vintage_radio_transceiver_antenna_plug_a	81.4618	1.6231	146.0212	90.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/sw-radio — vintage_radio_transceiver/Model/vintage_radio_transceiver_antenna_plug_b	81.4484	1.6612	146.0200	90.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/sw-radio — vintage_radio_transceiver/Model/vintage_radio_transceiver_cable	81.3519	1.5492	145.8993	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/sw-radio — vintage_radio_transceiver/Model/vintage_radio_transceiver_cable_curve	81.3519	1.5492	145.8993	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/sw-radio — vintage_radio_transceiver/Model/vintage_radio_transceiver_cables	81.4103	1.5513	146.0577	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/sw-radio — vintage_radio_transceiver/Model/vintage_radio_transceiver_dial	81.3877	1.5986	146.0028	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/sw-radio — vintage_radio_transceiver/Model/vintage_radio_transceiver_microphone	81.1590	1.6598	146.0767	270.00	29.88	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/sw-radio — vintage_radio_transceiver/Model/vintage_radio_transceiver_microphone_plug	81.2315	1.6228	146.0110	90.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/sw-radio — vintage_radio_transceiver/Model/vintage_radio_transceiver_morse_key_arm	81.2781	1.5680	146.1135	270.00	47.85	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/sw-radio — vintage_radio_transceiver/Model/vintage_radio_transceiver_morse_key_base	81.2686	1.5591	146.1158	270.00	47.85	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/sw-radio — vintage_radio_transceiver/Model/vintage_radio_transceiver_morse_key_plug	81.2315	1.6006	146.0088	90.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/sw-radio — vintage_radio_transceiver/Model/vintage_radio_transceiver_speaker	81.3956	1.7148	145.9698	270.00	349.54	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/sw-radio — vintage_radio_transceiver/Model/vintage_radio_transceiver_speaker_plug	81.2315	1.6500	146.0112	90.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/sw-binoculars — binoculars	81.9300	1.5477	145.9800	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/sw-binoculars — binoculars/Model/binoculars_column	81.9373	1.6060	146.0649	274.80	180.00	180.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/sw-binoculars — binoculars/Model/binoculars_left	81.9373	1.6060	146.0649	274.80	180.00	180.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/sw-binoculars — binoculars/Model/binoculars_right	81.9373	1.6060	146.0649	274.80	180.00	180.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/sw-binoculars — binoculars/Model/binoculars_strap	81.9373	1.6060	146.0649	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/sw-radio-chair — painted_wooden_chair_02	81.4500	0.7481	146.6150	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/sw-radio-chair — painted_wooden_chair_02/Model	81.4621	0.7481	146.5892	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-rug — Prop_Rug_A	85.1650	0.7551	146.6000	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-rug — Prop_Rug_A/Prop_Rug_A	86.5637	0.7428	147.3548	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-painting — Prop_Painting_A	85.1650	2.4000	145.7867	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-painting — Prop_Painting_A/Prop_Painting_A	85.5990	2.4517	145.7879	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-sofa — sofa_02	83.3300	0.7481	146.9500	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-sofa — sofa_02/Model/sofa_02_Base	83.4301	0.7481	146.9500	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-sofa — sofa_02/Model/sofa_02_Seat	83.4301	0.7481	146.9500	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-endtable — side_table_01	83.3300	0.7481	148.1100	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-endtable — side_table_01/Model	83.3300	0.7505	148.1100	270.02	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-lamp — Prop_Lamp_A	83.2400	1.2988	148.1100	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-lamp — Prop_Lamp_A/Prop_Lamp_A/lo_Prop_Lamp_A_LOD0	83.2391	1.2972	148.1098	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-lamp — Prop_Lamp_A/Prop_Lamp_A/lo_Prop_Lamp_A_LOD1	83.2391	1.2972	148.1098	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-spectacles — round_spectacles	83.4900	1.2988	148.0500	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-spectacles — round_spectacles/Model	83.5636	1.3219	148.0500	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-rocker — Rockingchair_01	87.4000	0.7481	146.9500	0.00	240.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-rocker — Rockingchair_01/Model	87.4539	0.6465	146.9811	270.03	240.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-woodbasket — wicker_basket_01	87.0300	0.7481	145.7043	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-woodbasket — wicker_basket_01/Model	87.0297	0.7490	145.7047	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-hatchet — hatchet	87.4150	0.7481	145.9450	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-hatchet — hatchet/Model	87.3900	0.8099	145.9452	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/bed-bed — Prop_Bed_A	90.3050	0.7481	146.5646	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/bed-bed — Prop_Bed_A/Prop_Bed_A/lo_Prop_Bed_A_LOD0	90.3177	0.7543	145.5340	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/bed-bed — Prop_Bed_A/Prop_Bed_A/lo_Prop_Bed_A_LOD1	90.3177	0.7543	145.5340	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/bed-nightstand — painted_wooden_nightstand	89.3600	0.7481	145.7911	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/bed-nightstand — painted_wooden_nightstand/Model/painted_wooden_nightstand	89.3589	0.7481	145.7860	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/bed-nightstand — painted_wooden_nightstand/Model/painted_wooden_nightstand_drawer	89.3595	1.2602	145.9969	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/bed-oil-lamp — vintage_oil_lamp	89.4600	1.3636	145.8500	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/bed-oil-lamp — vintage_oil_lamp/Model/vintage_oil_lamp	89.4600	1.3636	145.8500	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/bed-oil-lamp — vintage_oil_lamp/Model/vintage_oil_lamp_flame	89.4600	1.3636	145.8500	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/bed-oil-lamp — vintage_oil_lamp/Model/vintage_oil_lamp_glass	89.4600	1.3636	145.8500	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/bed-alarm-clock — alarm_clock_01	89.2300	1.3636	145.7800	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/bed-alarm-clock — alarm_clock_01/Model/alarm_clock_01	89.2300	1.3646	145.7709	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/bed-alarm-clock — alarm_clock_01/Model/alarm_clock_01_glass	89.2300	1.3646	145.7709	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/bed-alarm-clock — alarm_clock_01/Model/alarm_clock_01_hour_hand	89.2300	1.4295	145.7709	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/bed-alarm-clock — alarm_clock_01/Model/alarm_clock_01_minute_hand	89.2300	1.4295	145.7709	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/bed-alarm-clock — alarm_clock_01/Model/alarm_clock_01_second_hand	89.2300	1.4295	145.7709	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/bed-picture — fancy_picture_frame_01	90.3050	2.1179	145.5468	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/bed-picture — fancy_picture_frame_01/Model/fancy_picture_frame_01	90.3050	2.3500	145.5349	270.02	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/bed-picture — fancy_picture_frame_01/Model/fancy_picture_frame_01_canvas	90.3050	2.3500	145.5349	270.02	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/bed-wardrobe — Prop_Cabinet_B	90.6740	0.7481	148.4500	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/bed-wardrobe — Prop_Cabinet_B/Prop_Cabinet_B/lo_Prop_Cabinet_B_LOD0	90.9431	0.7472	148.4496	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/bed-wardrobe — Prop_Cabinet_B/Prop_Cabinet_B/lo_Prop_Cabinet_B_LOD1	90.9431	0.7472	148.4496	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/east-shelf — Shelf_01	90.8907	0.7481	151.2500	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/east-shelf — Shelf_01/Model	91.0191	0.7481	151.2500	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/east-sideboard — WoodenTable_03	90.6983	0.7481	152.8000	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/east-sideboard — WoodenTable_03/Model/WoodenTable_03_body	90.6983	0.7481	152.8047	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/east-sideboard — WoodenTable_03/Model/WoodenTable_03_door	90.4436	1.1966	153.3956	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/east-sideboard — WoodenTable_03/Model/WoodenTable_03_drawer01	90.4175	1.4269	152.7959	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/east-sideboard — WoodenTable_03/Model/WoodenTable_03_drawer02	90.4175	1.4269	152.3928	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/east-sideboard — WoodenTable_03/Model/WoodenTable_03_drawer03	90.4175	1.1855	152.5945	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/east-sideboard — WoodenTable_03/Model/WoodenTable_03_drawer04	90.4175	0.9458	152.5945	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/east-bottles — wine_bottles_01	90.7800	1.5782	152.5500	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/east-bottles — wine_bottles_01/Model/wine_bottles_01_alsace	90.7800	1.5782	152.2479	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/east-bottles — wine_bottles_01/Model/wine_bottles_01_bordeaux	90.7800	1.5782	152.4579	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/east-bottles — wine_bottles_01/Model/wine_bottles_01_burgundy	90.7800	1.5782	152.6579	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/east-bottles — wine_bottles_01/Model/wine_bottles_01_champagne	90.7800	1.5782	152.8479	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/east-bowl — wooden_bowl_01	90.6400	1.5782	153.1500	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/east-bowl — wooden_bowl_01/Model	90.6397	1.5777	153.1493	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/east-painting — fancy_picture_frame_02	91.0146	1.9845	152.8000	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/east-painting — fancy_picture_frame_02/Model/fancy_picture_frame_02	91.0605	2.3755	152.7981	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/east-painting — fancy_picture_frame_02/Model/fancy_picture_frame_02_canvas	91.0605	2.3755	152.7981	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/north-hutch — vintage_cabinet_01	90.6398	0.7481	157.5750	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/north-hutch — vintage_cabinet_01/Model/vintage_cabinet_01_body	90.6969	0.7487	157.5750	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/north-hutch — vintage_cabinet_01/Model/vintage_cabinet_01_door_01	90.5860	2.3685	158.4734	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/north-hutch — vintage_cabinet_01/Model/vintage_cabinet_01_door_02	90.3532	1.2328	156.6899	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/north-hutch — vintage_cabinet_01/Model/vintage_cabinet_01_door_03	90.5860	2.4095	157.2820	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/north-hutch — vintage_cabinet_01/Model/vintage_cabinet_01_door_04	90.5860	2.2650	156.6766	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/north-hutch — vintage_cabinet_01/Model/vintage_cabinet_01_door_05	90.3532	1.2328	158.4601	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/north-hutch — vintage_cabinet_01/Model/vintage_cabinet_01_door_06	90.3532	1.2328	158.0248	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/north-hutch — vintage_cabinet_01/Model/vintage_cabinet_01_door_07	90.3532	1.2328	157.1252	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/dining-table — Prop_LargeTable_A	88.4900	0.7481	156.2000	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/dining-table — Prop_LargeTable_A/Prop_LargeTable_A/lo_Prop_LargeTable_A_LOD0	88.4900	0.7412	156.2000	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/dining-table — Prop_LargeTable_A/Prop_LargeTable_A/lo_Prop_LargeTable_A_LOD1	88.4900	0.7412	156.2000	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/dining-tea-set — tea_set_01	88.4900	1.4854	155.2500	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/dining-tea-set — tea_set_01/Model/tea_set_01_cup_small_01	88.5930	1.4863	155.3848	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/dining-tea-set — tea_set_01/Model/tea_set_01_cup_small_02	88.5930	1.4863	155.6348	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/dining-tea-set — tea_set_01/Model/tea_set_01_plate_large_circular_03	88.3430	1.4863	155.1348	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/dining-tea-set — tea_set_01/Model/tea_set_01_plate_large_square_01	88.3430	1.4863	154.8848	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/dining-tea-set — tea_set_01/Model/tea_set_01_saucer_circular_03	88.3430	1.4863	155.6348	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/dining-tea-set — tea_set_01/Model/tea_set_01_saucer_circular_04	88.3430	1.4863	155.3848	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/dining-tea-set — tea_set_01/Model/tea_set_01_sugar_cup_01	88.5930	1.4863	155.1348	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/dining-tea-set — tea_set_01/Model/tea_set_01_sugar_cup_01_lid	88.5930	1.4866	155.1348	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/dining-tea-set — tea_set_01/Model/tea_set_01_teapot_01	88.5930	1.4863	154.8848	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/dining-tea-set — tea_set_01/Model/tea_set_01_teapot_01_lid	88.5930	1.4878	154.8848	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/dining-lamp-stand — side_table_tall_01	87.8200	0.7481	158.3835	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/dining-lamp-stand — side_table_tall_01/Model	87.8200	0.7481	158.3835	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/dining-lamp — Prop_Lamp_A	87.8200	1.5093	158.3635	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/dining-lamp — Prop_Lamp_A/Prop_Lamp_A/lo_Prop_Lamp_A_LOD0	87.8192	1.5077	158.3633	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/dining-lamp — Prop_Lamp_A/Prop_Lamp_A/lo_Prop_Lamp_A_LOD1	87.8192	1.5077	158.3633	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/dining-portrait — Prop_Painting_C	87.8200	2.0480	158.6069	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/dining-portrait — Prop_Painting_C/Prop_Painting_C	87.6039	2.0997	158.6056	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/dining-lantern — lantern_chandelier_01	88.1900	4.7816	156.3500	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/dining-lantern — lantern_chandelier_01/Model	88.1942	5.6469	156.3500	270.02	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/dining-chair-e1 — painted_wooden_chair_02	89.4050	0.7481	155.2000	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/dining-chair-e1 — painted_wooden_chair_02/Model	89.3792	0.7481	155.1879	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/dining-chair-e2 — painted_wooden_chair_02	89.4050	0.7481	156.2000	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/dining-chair-e2 — painted_wooden_chair_02/Model	89.3792	0.7481	156.1879	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/dining-chair-e3 — painted_wooden_chair_02	89.4050	0.7481	157.2000	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/dining-chair-e3 — painted_wooden_chair_02/Model	89.3792	0.7481	157.1879	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/dining-chair-w1 — painted_wooden_chair_02	87.5750	0.7481	155.0500	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/dining-chair-w1 — painted_wooden_chair_02/Model	87.6008	0.7481	155.0621	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/dining-chair-w2 — painted_wooden_chair_02	87.5750	0.7481	157.3500	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/dining-chair-w2 — painted_wooden_chair_02/Model	87.6008	0.7481	157.3621	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/dining-chair-head — GreenChair_01	88.4900	0.7481	154.2900	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/dining-chair-head — GreenChair_01/Model	88.4895	0.7486	154.3358	270.02	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/ne-clock — vintage_grandfather_clock_01	85.8000	0.7481	158.3413	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/ne-clock — vintage_grandfather_clock_01/Model/vintage_grandfather_clock_01_Body	85.8000	0.7482	158.3664	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/ne-clock — vintage_grandfather_clock_01/Model/vintage_grandfather_clock_01_HourHand	85.8000	2.4801	158.2409	43.21	89.64	89.10	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/ne-clock — vintage_grandfather_clock_01/Model/vintage_grandfather_clock_01_MinuteHand	85.8000	2.4801	158.2409	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/ne-photo — hanging_picture_frame_02	91.0426	2.1000	155.7000	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/ne-photo — hanging_picture_frame_02/Model	91.0612	2.3786	155.7003	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/nw-gun-cabinet — Prop_Cabinet_A	79.6576	0.7481	157.0500	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/nw-gun-cabinet — Prop_Cabinet_A/Prop_Cabinet_A/lo_Prop_Cabinet_A_LOD0	79.4256	0.7473	157.0504	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/nw-gun-cabinet — Prop_Cabinet_A/Prop_Cabinet_A/lo_Prop_Cabinet_A_LOD1	79.4256	0.7473	157.0504	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/nw-tackle-chest — wooden_crate_01	79.5822	0.7481	155.5500	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/nw-tackle-chest — wooden_crate_01/Model/wooden_crate_01	79.5738	0.7561	155.5500	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/nw-tackle-chest — wooden_crate_01/Model/wooden_crate_01_latch	79.5738	0.7561	155.5500	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/nw-tackle-chest — wooden_crate_01/Model/wooden_crate_01_lid	79.5738	0.7561	155.5500	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/nw-hat — fishermans_hat	79.5921	1.0866	155.5500	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/nw-hat — fishermans_hat/Model	79.5917	1.1210	155.5473	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/nw-dartboard — dartboard	82.5300	2.2547	158.6009	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/nw-dartboard — dartboard/Model	82.5300	2.4800	158.6208	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table — WoodenTable_01	85.4500	0.7481	147.0500	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table — WoodenTable_01/Model	85.4500	0.7481	147.0500	270.02	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table-tray — wooden_bowl_01	85.9500	1.2970	147.0500	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table-tray — wooden_bowl_01/Model	85.9497	1.2964	147.0493	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table-cards — chess_set	85.0500	1.2970	147.0500	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table-cards — chess_set/Model/board	85.0500	1.2969	147.0500	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table-cards — chess_set/Model/piece_bishop_black_01	85.1368	1.3143	147.2519	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table-cards — chess_set/Model/piece_bishop_black_02	84.9632	1.3143	147.2519	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table-cards — chess_set/Model/piece_bishop_white_01	84.9632	1.3143	146.8474	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table-cards — chess_set/Model/piece_bishop_white_02	85.1368	1.3143	146.8474	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table-cards — chess_set/Model/piece_king_black	85.0211	1.3143	147.2526	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table-cards — chess_set/Model/piece_king_white	85.0211	1.3143	146.8474	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table-cards — chess_set/Model/piece_knight_black_01	85.1947	1.3143	147.2519	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table-cards — chess_set/Model/piece_knight_black_02	84.9053	1.3143	147.2519	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table-cards — chess_set/Model/piece_knight_white_01	84.9053	1.3143	146.8474	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table-cards — chess_set/Model/piece_knight_white_02	85.1947	1.3143	146.8474	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table-cards — chess_set/Model/piece_pawn_black_01	85.2526	1.3143	147.1940	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table-cards — chess_set/Model/piece_pawn_black_02	85.1947	1.3143	147.1940	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table-cards — chess_set/Model/piece_pawn_black_03	85.1368	1.3143	147.1940	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table-cards — chess_set/Model/piece_pawn_black_04	85.0790	1.3143	147.1940	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table-cards — chess_set/Model/piece_pawn_black_05	85.0211	1.3143	147.1940	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table-cards — chess_set/Model/piece_pawn_black_06	84.9632	1.3143	147.1940	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table-cards — chess_set/Model/piece_pawn_black_07	84.9053	1.3143	147.1940	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table-cards — chess_set/Model/piece_pawn_black_08	84.8474	1.3143	147.1940	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table-cards — chess_set/Model/piece_pawn_white_01	84.8474	1.3143	146.9053	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table-cards — chess_set/Model/piece_pawn_white_02	84.9053	1.3143	146.9053	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table-cards — chess_set/Model/piece_pawn_white_03	84.9632	1.3143	146.9053	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table-cards — chess_set/Model/piece_pawn_white_04	85.0211	1.3143	146.9053	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table-cards — chess_set/Model/piece_pawn_white_05	85.0790	1.3143	146.9053	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table-cards — chess_set/Model/piece_pawn_white_06	85.1368	1.3143	146.9053	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table-cards — chess_set/Model/piece_pawn_white_07	85.1947	1.3143	146.9053	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table-cards — chess_set/Model/piece_pawn_white_08	85.2526	1.3143	146.9053	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table-cards — chess_set/Model/piece_queen_black	85.0790	1.3143	147.2519	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table-cards — chess_set/Model/piece_queen_white	85.0790	1.3143	146.8474	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table-cards — chess_set/Model/piece_rook_black_01	85.2526	1.3143	147.2519	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table-cards — chess_set/Model/piece_rook_black_02	84.8474	1.3143	147.2519	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table-cards — chess_set/Model/piece_rook_white_01	84.8474	1.3143	146.8474	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/fire-low-table-cards — chess_set/Model/piece_rook_white_02	85.2526	1.3143	146.8474	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/card-rug — Prop_Rug_B	81.7000	0.7551	156.4000	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/card-rug — Prop_Rug_B/Prop_Rug_B	82.6889	0.7421	157.3990	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/card-table — round_wooden_table_02	81.7000	0.7481	156.4000	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/card-table — round_wooden_table_02/Model	81.7000	0.7481	156.4000	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/card-chair-w — painted_wooden_chair_02	80.8500	0.7481	156.4500	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/card-chair-w — painted_wooden_chair_02/Model	80.8758	0.7481	156.4621	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/card-chair-s — painted_wooden_chair_02	81.7500	0.7481	155.5500	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/card-chair-s — painted_wooden_chair_02/Model	81.7379	0.7481	155.5758	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/card-ashtray — wooden_bowl_01	81.5500	1.4941	156.5500	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/card-ashtray — wooden_bowl_01/Model	81.5497	1.4936	156.5493	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/card-cigarettes — cigarette_pack	81.9000	1.4941	156.2500	0.00	20.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/card-cigarettes — cigarette_pack/Model/cigarette_pack_main	81.9029	1.4945	156.2581	270.00	20.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/card-cigarettes — cigarette_pack/Model/rig_cigarette_pack/CTR|Root/cigarette_pack_cigarettes	81.9232	1.5723	156.2462	270.00	20.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/card-cigarettes — cigarette_pack/Model/rig_cigarette_pack/CTR|Root/CTR|cigarette/cigarette_pack_cigarette	81.9186	1.5723	156.2336	270.00	20.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/card-cigarettes — cigarette_pack/Model/rig_cigarette_pack/CTR|Root/DEF|Pack_Body/cigarette_pack_foil	81.9029	1.4945	156.2581	270.00	20.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/card-bulb — pull_chain_light_socket	81.7000	5.2014	156.4000	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/card-bulb — pull_chain_light_socket/Model/pull_chain_light_socket	81.7000	5.3668	156.4000	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/card-bulb — pull_chain_light_socket/Model/pull_chain_light_socket_chain	81.7000	5.3668	156.4000	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/hall-bulb — pull_chain_light_socket	85.2000	8.9009	151.0000	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/hall-bulb — pull_chain_light_socket/Model/pull_chain_light_socket	85.2000	9.0663	151.0000	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/hall-bulb — pull_chain_light_socket/Model/pull_chain_light_socket_chain	85.2000	9.0663	151.0000	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn	79.4807	2.0286	146.4800	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book01	79.5622	2.0286	146.2237	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book02	79.5622	2.0286	146.2583	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book03	79.5622	2.0286	146.2852	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book04	79.5622	2.0286	146.3114	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book05	79.5622	2.0286	146.3340	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book06	79.5622	2.0286	146.3549	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book07	79.5622	2.0286	146.3779	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book08	79.5622	2.0286	146.4016	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book09	79.5622	2.0286	146.4244	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book10	79.5622	2.0286	146.4472	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book11	79.5622	2.0286	146.4684	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book12	79.5622	2.0286	146.4914	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book13	79.5622	2.0286	146.5239	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book14	79.5622	2.0286	146.5624	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book15	79.5622	2.0286	146.5997	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book16	79.5622	2.0286	146.6318	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book17	79.5622	2.0286	146.6649	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book18	79.5622	2.0286	146.6979	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book19	79.5622	2.0286	146.7200	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book20	79.5622	2.0286	146.7438	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn	79.4807	1.7126	146.4800	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book01	79.5622	1.7126	146.2237	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book02	79.5622	1.7126	146.2583	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book03	79.5622	1.7126	146.2852	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book04	79.5622	1.7126	146.3114	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book05	79.5622	1.7126	146.3340	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book06	79.5622	1.7126	146.3549	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book07	79.5622	1.7126	146.3779	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book08	79.5622	1.7126	146.4016	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book09	79.5622	1.7126	146.4244	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book10	79.5622	1.7126	146.4472	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book11	79.5622	1.7126	146.4684	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book12	79.5622	1.7126	146.4914	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book13	79.5622	1.7126	146.5239	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book14	79.5622	1.7126	146.5624	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book15	79.5622	1.7126	146.5997	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book16	79.5622	1.7126	146.6318	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book17	79.5622	1.7126	146.6649	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book18	79.5622	1.7126	146.6979	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book19	79.5622	1.7126	146.7200	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V19 interior/V23 shelf books — sw-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book20	79.5622	1.7126	146.7438	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V20 mailbox — 236 (Rylae Shylna, CC-BY)	36.8321	-0.0438	172.0464	0.00	288.62	0.00	1
+SERVICE — Hollis County/Delivery property 3/V20 mailbox — 236 (Rylae Shylna, CC-BY)/Mailbox model/Body_J	37.0005	1.0053	171.9665	270.00	108.62	0.00	1
+SERVICE — Hollis County/Delivery property 3/V20 mailbox — 236 (Rylae Shylna, CC-BY)/Mailbox model/LegFloor_J	36.7632	-0.0289	172.0464	270.00	108.62	0.00	1
+SERVICE — Hollis County/Delivery property 3/V20 mailbox — 236 (Rylae Shylna, CC-BY)/Mailbox model/LegMain_J	36.8899	0.7037	172.0032	270.00	108.62	0.00	1
+SERVICE — Hollis County/Delivery property 3/V20 mailbox — 236 (Rylae Shylna, CC-BY)/Address plate 236/Plate front	36.8360	0.6962	172.0578	0.00	18.62	0.00	1
+SERVICE — Hollis County/Delivery property 3/V20 mailbox — 236 (Rylae Shylna, CC-BY)/Address plate 236/Plate back	36.8283	0.6962	172.0351	0.00	198.62	0.00	1
+SERVICE — Hollis County/Delivery property 3/V20 mailbox — 236 (Rylae Shylna, CC-BY)/Name strip	36.3709	0.9962	172.2018	0.00	108.62	0.00	1
+SERVICE — Hollis County/Delivery property 3/V23 hearth	85.2189	0.7481	146.0844	0.00	0.89	0.00	1
+SERVICE — Hollis County/Delivery property 3/V23 hearth/V24 fire/Firebox (soot)	85.1950	1.6175	145.6107	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V23 hearth/V24 fire/Embers	85.1950	1.4000	145.6187	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V23 hearth/V24 fire/Flames	85.1950	1.2950	145.6357	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V23 hearth/V24 fire/Flames 2	85.1950	1.2950	145.6357	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V23 hearth/V24 fire/Fire body	85.1950	1.2950	145.6297	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 3/V27 drive lamp	35.8739	-0.0894	164.6116	0.00	30.98	0.00	1
+SERVICE — Hollis County/Delivery property 3/V27 drive lamp/Model	35.8739	-0.0894	164.6116	270.00	30.98	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-tv-table — small_wooden_table_01	-74.3000	0.7165	290.0295	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-tv-table — small_wooden_table_01/Model	-74.3000	0.7165	290.0296	270.02	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-tv — television_02	-74.3000	1.2510	290.0700	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-tv — television_02/Model	-74.3018	1.2510	290.1232	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-rug — Prop_Rug_B	-74.3000	0.7235	291.3000	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-rug — Prop_Rug_B/Prop_Rug_B	-73.3111	0.7105	292.2990	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-armchair — modern_arm_chair_01	-74.3000	0.7165	292.6000	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-armchair — modern_arm_chair_01/Model	-74.3034	0.7161	292.5178	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-side-table — side_table_01	-73.5200	0.7165	292.5500	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-side-table — side_table_01/Model	-73.5200	0.7189	292.5500	270.02	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-lamp — Prop_Lamp_A	-73.4700	1.2672	292.5800	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-lamp — Prop_Lamp_A/Prop_Lamp_A/lo_Prop_Lamp_A_LOD0	-73.4709	1.2656	292.5798	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-lamp — Prop_Lamp_A/Prop_Lamp_A/lo_Prop_Lamp_A_LOD1	-73.4709	1.2656	292.5798	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-cigarettes — cigarette_pack	-73.7000	1.2672	292.4200	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-cigarettes — cigarette_pack/Model/cigarette_pack_main	-73.7000	1.2675	292.4114	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-cigarettes — cigarette_pack/Model/rig_cigarette_pack/CTR|Root/cigarette_pack_cigarettes	-73.7231	1.3453	292.4156	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-cigarettes — cigarette_pack/Model/rig_cigarette_pack/CTR|Root/CTR|cigarette/cigarette_pack_cigarette	-73.7231	1.3453	292.4290	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-cigarettes — cigarette_pack/Model/rig_cigarette_pack/CTR|Root/DEF|Pack_Body/cigarette_pack_foil	-73.7000	1.2675	292.4114	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-lighter — vintage_lighter	-73.7000	1.2672	292.5200	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-lighter — vintage_lighter/Model/vintage_lighter_body	-73.6786	1.2957	292.5200	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-lighter — vintage_lighter/Model/vintage_lighter_flintstone	-73.6672	1.3123	292.5200	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-lighter — vintage_lighter/Model/vintage_lighter_hammer	-73.6927	1.3077	292.5200	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-lighter — vintage_lighter/Model/vintage_lighter_hinge	-73.6984	1.3021	292.5200	40.00	270.00	270.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-newspaper-basket — wicker_basket_01	-74.9500	0.7165	292.7000	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-newspaper-basket — wicker_basket_01/Model	-74.9496	0.7174	292.7003	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-painting — Prop_Painting_A	-72.1029	1.9583	292.6200	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-painting — Prop_Painting_A/Prop_Painting_A	-72.1041	2.0100	293.0540	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-cabinet — painted_wooden_cabinet	-79.6749	0.7165	291.7000	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-cabinet — painted_wooden_cabinet/Model/painted_wooden_cabinet	-79.7009	0.7169	291.6974	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-cabinet — painted_wooden_cabinet/Model/painted_wooden_cabinet_door_01	-79.4894	1.2493	291.1292	270.00	92.16	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-cabinet — painted_wooden_cabinet/Model/painted_wooden_cabinet_door_02	-79.4894	1.2503	292.2652	270.00	83.31	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-cabinet — painted_wooden_cabinet/Model/painted_wooden_cabinet_drawer_01	-79.4093	1.7634	291.4171	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-cabinet — painted_wooden_cabinet/Model/painted_wooden_cabinet_drawer_02	-79.4657	1.7634	291.9720	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-photo — standing_picture_frame_01	-79.6100	1.8984	291.2800	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-photo — standing_picture_frame_01/Model	-79.5985	1.8989	291.2800	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-mantel-clock — mantel_clock_01	-79.6100	1.8984	292.0700	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-mantel-clock — mantel_clock_01/Model/mantel_clock_01	-79.6100	1.8979	292.0700	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-mantel-clock — mantel_clock_01/Model/mantel_clock_01_glass	-79.5535	1.9894	292.0700	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-oval-photo — hanging_picture_frame_03	-79.9674	2.1188	291.7000	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-oval-photo — hanging_picture_frame_03/Model/hanging_picture_frame_03	-79.9837	2.3737	291.6999	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-oval-photo — hanging_picture_frame_03/Model/hanging_picture_frame_03_glass	-79.9837	2.3737	291.6999	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-bookshelf — wooden_bookshelf_worn	-79.1500	0.7165	295.1307	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-bookshelf — wooden_bookshelf_worn/Model	-79.1500	0.7165	295.1307	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-portrait — Prop_Painting_D	-77.6000	1.8965	295.4468	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-portrait — Prop_Painting_D/Prop_Painting_D	-77.8036	1.9637	295.4451	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-ceiling-fan — ceiling_fan	-76.0500	3.6633	292.9000	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-ceiling-fan — ceiling_fan/Model/ceiling_fan	-76.0509	4.1796	292.8992	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-ceiling-fan — ceiling_fan/Model/ceiling_fan_blades	-76.0509	4.1796	292.8992	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-box-1 — cardboard_box_01	-74.9500	0.7165	298.0076	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-box-1 — cardboard_box_01/Model	-74.9510	0.8999	298.0405	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-box-2 — cardboard_box_01	-74.4500	0.7165	297.9396	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-box-2 — cardboard_box_01/Model	-74.4510	0.8999	297.9725	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-box-3 — cardboard_box_01	-74.9500	1.0583	297.9676	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/living-box-3 — cardboard_box_01/Model	-74.9509	1.2142	297.9955	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-table — wooden_table_02	-72.6143	0.7165	288.2400	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-table — wooden_table_02/Model	-72.6143	0.7166	288.2400	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-lamp — Prop_Lamp_A	-72.6571	1.5161	288.5500	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-lamp — Prop_Lamp_A/Prop_Lamp_A/lo_Prop_Lamp_A_LOD0	-72.6579	1.5145	288.5498	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-lamp — Prop_Lamp_A/Prop_Lamp_A/lo_Prop_Lamp_A_LOD1	-72.6579	1.5145	288.5498	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-cigarettes — cigarette_pack	-72.6371	1.5161	287.9200	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-cigarettes — cigarette_pack/Model/cigarette_pack_main	-72.6457	1.5164	287.9200	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-cigarettes — cigarette_pack/Model/rig_cigarette_pack/CTR|Root/cigarette_pack_cigarettes	-72.6414	1.5942	287.9431	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-cigarettes — cigarette_pack/Model/rig_cigarette_pack/CTR|Root/CTR|cigarette/cigarette_pack_cigarette	-72.6280	1.5942	287.9431	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-cigarettes — cigarette_pack/Model/rig_cigarette_pack/CTR|Root/DEF|Pack_Body/cigarette_pack_foil	-72.6457	1.5164	287.9200	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-chair-pushed-in — painted_wooden_chair_01	-72.5550	0.7165	289.0850	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-chair-pushed-in — painted_wooden_chair_01/Model	-72.5535	0.7173	289.0543	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-chair-used — painted_wooden_chair_01	-72.7000	0.7165	287.1500	0.00	340.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-chair-used — painted_wooden_chair_01/Model	-72.7119	0.7173	287.1783	270.00	340.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-stove — electric_stove	-79.6200	0.7165	285.5773	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-stove — electric_stove/Model/dial_1	-79.5135	1.5050	285.8558	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-stove — electric_stove/Model/dial_2	-79.5719	1.5049	285.8612	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-stove — electric_stove/Model/dial_3	-79.6302	1.5049	285.8612	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-stove — electric_stove/Model/dial_4	-79.6886	1.5049	285.8612	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-stove — electric_stove/Model/dial_5	-79.7470	1.5049	285.8612	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-stove — electric_stove/Model/dial_6	-79.8053	1.5049	285.8612	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-stove — electric_stove/Model/door_top	-79.6200	1.0733	285.8425	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-stove — electric_stove/Model/grid	-79.6200	1.2434	285.6209	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-stove — electric_stove/Model/handle_bottom_attachment	-79.6200	0.8162	285.8415	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-stove — electric_stove/Model/hinge_bottom_attachment_left	-79.3840	0.8165	285.8454	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-stove — electric_stove/Model/hinge_bottom_attachment_right	-79.3840	0.8165	285.8454	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-stove — electric_stove/Model/hinge_bottom_rotator_left	-79.3840	0.8532	285.8434	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-stove — electric_stove/Model/hinge_bottom_rotator_right	-79.3840	0.8532	285.8434	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-stove — electric_stove/Model/hinge_top_attachment_left	-79.3840	1.0733	285.8454	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-stove — electric_stove/Model/hinge_top_attachment_right	-79.3840	1.0733	285.8454	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-stove — electric_stove/Model/hinge_top_rotator_left	-79.3840	1.1100	285.8434	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-stove — electric_stove/Model/hinge_top_rotator_right	-79.3840	1.1100	285.8434	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-stove — electric_stove/Model/sheet	-79.6200	0.9355	285.6129	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-stove — electric_stove/Model/stovetop	-79.6200	0.7165	285.5535	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-pot — pot_enamel_01	-79.6200	1.5758	285.7800	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-pot — pot_enamel_01/Model/pot_enamel_01_base	-79.6200	1.5756	285.7800	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-pot — pot_enamel_01/Model/pot_enamel_01_lid	-79.6200	1.5756	285.7800	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-counter — WoodenTable_03	-78.6600	0.7165	285.6045	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-counter — WoodenTable_03/Model/WoodenTable_03_body	-78.6553	0.7165	285.6045	270.02	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-counter — WoodenTable_03/Model/WoodenTable_03_door	-78.0644	1.1650	285.8592	270.02	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-counter — WoodenTable_03/Model/WoodenTable_03_drawer01	-78.6641	1.3953	285.8854	270.02	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-counter — WoodenTable_03/Model/WoodenTable_03_drawer02	-79.0672	1.3953	285.8854	270.02	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-counter — WoodenTable_03/Model/WoodenTable_03_drawer03	-78.8655	1.1539	285.8854	270.02	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-counter — WoodenTable_03/Model/WoodenTable_03_drawer04	-78.8655	0.9142	285.8854	270.02	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-kettle — vintage_electric_kettle	-78.9500	1.5466	285.7302	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-kettle — vintage_electric_kettle/Model	-78.9500	1.5466	285.7256	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-jug — jug_01	-78.3500	1.5466	285.7502	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-jug — jug_01/Model	-78.3647	1.5464	285.7502	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-pantry-shelf — painted_wooden_shelves	-73.4000	0.7165	285.4370	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-pantry-shelf — painted_wooden_shelves/Model	-73.4001	0.7175	285.2535	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-torch — small_plastic_torch	-73.3988	1.4562	285.4013	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-torch — small_plastic_torch/Model	-73.4002	1.4837	285.3789	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-hutch — painted_wooden_cabinet_02	-72.6200	0.7165	285.5453	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-hutch — painted_wooden_cabinet_02/Model/painted_wooden_cabinet_02	-72.6200	0.7173	285.5112	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-hutch — painted_wooden_cabinet_02/Model/painted_wooden_cabinet_02_door	-72.8478	1.0944	285.7726	270.00	355.40	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-hutch — painted_wooden_cabinet_02/Model/painted_wooden_cabinet_02_drawer	-72.6198	1.5315	285.6075	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-boots — rubber_boots	-79.4600	0.7165	289.4924	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-boots — rubber_boots/Model/rubber_boots_dirt_r_LOD0	-79.2600	0.7165	289.4916	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-boots — rubber_boots/Model/rubber_boots_dirty_l_LOD0	-79.0600	0.7165	289.4916	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-boots — rubber_boots/Model/rubber_boots_l_LOD0	-79.6600	0.7165	289.4916	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-boots — rubber_boots/Model/rubber_boots_r_LOD0	-79.8600	0.7165	289.4916	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-bench — painted_wooden_bench	-78.4400	0.7180	289.3773	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-bench — painted_wooden_bench/Model	-78.4464	0.7185	289.3719	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-broom — plastic_broom	-79.7020	0.7165	287.1000	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-broom — plastic_broom/Model	-79.4574	0.7167	287.1000	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-clock — wall_clock	-73.8000	2.4598	289.6019	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-clock — wall_clock/Model/wall_clock	-73.8000	2.6200	289.6255	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-clock — wall_clock/Model/wall_clock_hours_hand	-73.8000	2.6200	289.6255	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-clock — wall_clock/Model/wall_clock_minute_hand	-73.8000	2.6200	289.6255	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-clock — wall_clock/Model/wall_clock_second_hand	-73.8000	2.6200	289.6255	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-bulb — pull_chain_light_socket	-76.0500	4.0142	287.5000	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-bulb — pull_chain_light_socket/Model/pull_chain_light_socket	-76.0500	4.1796	287.5000	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/kitchen-bulb — pull_chain_light_socket/Model/pull_chain_light_socket_chain	-76.0500	4.1796	287.5000	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-bed — Prop_Bed_A	-78.7000	0.7165	301.7737	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-bed — Prop_Bed_A/Prop_Bed_A/lo_Prop_Bed_A_LOD0	-78.7127	0.7227	302.8044	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-bed — Prop_Bed_A/Prop_Bed_A/lo_Prop_Bed_A_LOD1	-78.7127	0.7227	302.8044	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-nightstand — painted_wooden_nightstand	-79.6200	0.7165	302.5472	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-nightstand — painted_wooden_nightstand/Model/painted_wooden_nightstand	-79.6189	0.7165	302.5523	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-nightstand — painted_wooden_nightstand/Model/painted_wooden_nightstand_drawer	-79.6195	1.2286	302.3415	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-lamp — Prop_Lamp_A	-79.6600	1.3320	302.4200	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-lamp — Prop_Lamp_A/Prop_Lamp_A/lo_Prop_Lamp_A_LOD0	-79.6609	1.3304	302.4198	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-lamp — Prop_Lamp_A/Prop_Lamp_A/lo_Prop_Lamp_A_LOD1	-79.6609	1.3304	302.4198	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-alarm-clock — alarm_clock_01	-79.4700	1.3320	302.3563	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-alarm-clock — alarm_clock_01/Model/alarm_clock_01	-79.4700	1.3330	302.3654	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-alarm-clock — alarm_clock_01/Model/alarm_clock_01_glass	-79.4700	1.3330	302.3654	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-alarm-clock — alarm_clock_01/Model/alarm_clock_01_hour_hand	-79.4700	1.3979	302.3654	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-alarm-clock — alarm_clock_01/Model/alarm_clock_01_minute_hand	-79.4700	1.3979	302.3654	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-alarm-clock — alarm_clock_01/Model/alarm_clock_01_second_hand	-79.4700	1.3979	302.3654	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-painting — fancy_picture_frame_01	-78.7000	2.1379	302.7916	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-painting — fancy_picture_frame_01/Model/fancy_picture_frame_01	-78.7000	2.3700	302.8035	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-painting — fancy_picture_frame_01/Model/fancy_picture_frame_01_canvas	-78.7000	2.3700	302.8035	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-rug — Prop_Rug_C	-78.3000	0.7235	299.9000	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-rug — Prop_Rug_C/Prop_Rug_C	-76.8158	0.7105	300.7707	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-commode — GothicCommode_01	-78.6000	0.7165	298.6886	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-commode — GothicCommode_01/Model/GothicCommode_01	-78.6011	0.7165	298.6873	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-commode — GothicCommode_01/Model/GothicCommode_01_door01	-78.6002	1.7034	298.9585	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-commode — GothicCommode_01/Model/GothicCommode_01_door02	-78.5996	1.3836	298.9486	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-commode — GothicCommode_01/Model/GothicCommode_01_door03	-78.5997	1.0730	298.9681	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-photo — standing_picture_frame_02	-78.9000	1.9286	298.7110	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-photo — standing_picture_frame_02/Model	-78.9003	1.9286	298.7190	270.02	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-bowl — wooden_bowl_01	-78.3000	1.9286	298.7110	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-bowl — wooden_bowl_01/Model	-78.3003	1.9280	298.7104	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-wardrobe — Prop_Cabinet_B	-72.4384	0.7165	301.3000	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-wardrobe — Prop_Cabinet_B/Prop_Cabinet_B/lo_Prop_Cabinet_B_LOD0	-72.1692	0.7156	301.2996	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-wardrobe — Prop_Cabinet_B/Prop_Cabinet_B/lo_Prop_Cabinet_B_LOD1	-72.1692	0.7156	301.2996	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-chest-carol — vintage_wooden_drawer_01	-73.9500	0.7165	302.5027	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-chest-carol — vintage_wooden_drawer_01/Model/vintage_wooden_drawer_01_body	-73.9500	0.7168	302.5113	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-chest-carol — vintage_wooden_drawer_01/Model/vintage_wooden_drawer_01_drawer01	-74.2265	1.1047	302.4973	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-chest-carol — vintage_wooden_drawer_01/Model/vintage_wooden_drawer_01_drawer02	-73.9500	1.1044	302.4956	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-chest-carol — vintage_wooden_drawer_01/Model/vintage_wooden_drawer_01_drawer03	-73.6738	1.1042	302.4973	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-chest-carol — vintage_wooden_drawer_01/Model/vintage_wooden_drawer_01_drawer04	-74.2266	0.8896	302.4963	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-chest-carol — vintage_wooden_drawer_01/Model/vintage_wooden_drawer_01_drawer05	-73.9500	0.8896	302.4986	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-chest-carol — vintage_wooden_drawer_01/Model/vintage_wooden_drawer_01_drawer06	-73.6741	0.8896	302.4957	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-bulb — pull_chain_light_socket	-76.0500	4.0142	300.6000	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-bulb — pull_chain_light_socket/Model/pull_chain_light_socket	-76.0500	4.1796	300.6000	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/bedroom-bulb — pull_chain_light_socket/Model/pull_chain_light_socket_chain	-76.0500	4.1796	300.6000	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn	-79.0300	1.9970	295.2798	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book01	-79.2863	1.9970	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book02	-79.2517	1.9970	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book03	-79.2248	1.9970	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book04	-79.1986	1.9970	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book05	-79.1761	1.9970	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book06	-79.1552	1.9970	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book07	-79.1321	1.9970	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book08	-79.1084	1.9970	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book09	-79.0856	1.9970	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book10	-79.0628	1.9970	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book11	-79.0416	1.9970	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book12	-79.0186	1.9970	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book13	-78.9862	1.9970	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book14	-78.9476	1.9970	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book15	-78.9104	1.9970	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book16	-78.8782	1.9970	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book17	-78.8451	1.9970	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book18	-78.8121	1.9970	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book19	-78.7900	1.9970	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book20	-78.7663	1.9970	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn	-79.0300	1.6810	295.2798	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book01	-79.2863	1.6810	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book02	-79.2517	1.6810	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book03	-79.2248	1.6810	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book04	-79.1986	1.6810	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book05	-79.1761	1.6810	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book06	-79.1552	1.6810	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book07	-79.1321	1.6810	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book08	-79.1084	1.6810	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book09	-79.0856	1.6810	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book10	-79.0628	1.6810	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book11	-79.0416	1.6810	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book12	-79.0186	1.6810	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book13	-78.9862	1.6810	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book14	-78.9476	1.6810	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book15	-78.9104	1.6810	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book16	-78.8782	1.6810	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book17	-78.8451	1.6810	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book18	-78.8121	1.6810	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book19	-78.7900	1.6810	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V19 interior/V23 shelf books — living-bookshelf — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book20	-78.7663	1.6810	295.1982	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 4/V20 mailbox — 91 (Rylae Shylna, CC-BY)	-5.4374	-0.0452	323.6884	0.00	72.97	0.00	1
+SERVICE — Hollis County/Delivery property 4/V20 mailbox — 91 (Rylae Shylna, CC-BY)/Mailbox model/Body_J	-5.6063	1.0039	323.6151	270.00	252.97	0.00	1
+SERVICE — Hollis County/Delivery property 4/V20 mailbox — 91 (Rylae Shylna, CC-BY)/Mailbox model/LegFloor_J	-5.3670	-0.0302	323.6884	270.00	252.97	0.00	1
+SERVICE — Hollis County/Delivery property 4/V20 mailbox — 91 (Rylae Shylna, CC-BY)/Mailbox model/LegMain_J	-5.4951	0.7023	323.6498	270.00	252.97	0.00	1
+SERVICE — Hollis County/Delivery property 4/V20 mailbox — 91 (Rylae Shylna, CC-BY)/Address plate 91/Plate front	-5.4409	0.6948	323.6999	0.00	342.97	0.00	1
+SERVICE — Hollis County/Delivery property 4/V20 mailbox — 91 (Rylae Shylna, CC-BY)/Address plate 91/Plate back	-5.4339	0.6948	323.6770	0.00	162.97	0.00	1
+SERVICE — Hollis County/Delivery property 4/V20 mailbox — 91 (Rylae Shylna, CC-BY)/Name strip	-4.9801	0.9948	323.8285	0.00	252.97	0.00	1
+SERVICE — Hollis County/Delivery property 4/V27 drive lamp	-4.8552	-0.0915	316.2142	0.00	333.97	0.00	1
+SERVICE — Hollis County/Delivery property 4/V27 drive lamp/Model	-4.8552	-0.0915	316.2142	270.00	333.97	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/hall-console — ClassicConsole_01	83.5008	2.4877	356.6000	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/hall-console — ClassicConsole_01/Model	83.5445	2.4878	356.5993	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/hall-console-vase — ceramic_vase_01	83.5881	3.4383	356.2300	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/hall-console-vase — ceramic_vase_01/Model	83.5881	3.4371	356.2300	270.02	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/hall-mirror — ornate_mirror_01	83.1551	3.7679	356.7932	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/hall-mirror — ornate_mirror_01/Model	83.1418	4.1789	356.7932	270.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/hall-chair-w — GreenChair_01	87.8000	2.4877	354.5553	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/hall-chair-w — GreenChair_01/Model	87.7995	2.4883	354.6012	270.02	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/hall-side-table — round_wooden_table_02	88.7000	2.4877	354.6541	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/hall-side-table — round_wooden_table_02/Model	88.7000	2.4877	354.6541	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/hall-side-vase — Prop_Vase_A	88.7000	3.2338	354.7300	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/hall-side-vase — Prop_Vase_A/Prop_Vase_A/lo_Prop_Vase_A_LOD0	88.7001	3.2376	354.7300	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/hall-side-vase — Prop_Vase_A/Prop_Vase_A/lo_Prop_Vase_A_LOD1	88.7001	3.2376	354.7300	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/hall-chair-e — GreenChair_01	89.6000	2.4877	354.5882	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/hall-chair-e — GreenChair_01/Model	89.5995	2.4883	354.6341	270.02	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/hall-painting-s — Prop_Painting_B	88.7000	3.9471	354.1799	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/hall-painting-s — Prop_Painting_B/Prop_Painting_B	89.1340	3.9988	354.1812	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/hall-bucket — wooden_bucket_01	89.0000	2.4877	358.4200	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/hall-bucket — wooden_bucket_01/Model/wooden_bucket_01	88.9990	2.4876	358.4189	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/hall-bucket — wooden_bucket_01/Model/wooden_bucket_01_handle	88.9990	2.8088	358.4190	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/hall-broom — plastic_broom	89.9749	2.4877	357.7500	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/hall-broom — plastic_broom/Model	89.7302	2.4879	357.7500	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/hall-clock — vintage_grandfather_clock_01	86.6000	2.4877	368.5727	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/hall-clock — vintage_grandfather_clock_01/Model/vintage_grandfather_clock_01_Body	86.6000	2.4878	368.5978	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/hall-clock — vintage_grandfather_clock_01/Model/vintage_grandfather_clock_01_HourHand	86.6000	4.2197	368.4723	43.21	89.64	89.10	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/hall-clock — vintage_grandfather_clock_01/Model/vintage_grandfather_clock_01_MinuteHand	86.6000	4.2197	368.4723	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/hall-cabinet — Prop_Cabinet_A	87.5769	2.4877	366.0000	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/hall-cabinet — Prop_Cabinet_A/Prop_Cabinet_A/lo_Prop_Cabinet_A_LOD0	87.8089	2.4869	365.9996	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/hall-cabinet — Prop_Cabinet_A/Prop_Cabinet_A/lo_Prop_Cabinet_A_LOD1	87.8089	2.4869	365.9996	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/hall-painting-w — Prop_Painting_A	83.1620	3.8783	361.4500	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/hall-painting-w — Prop_Painting_A/Prop_Painting_A	83.1632	3.9300	361.0160	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/hall-chandelier — lantern_chandelier_01	86.5000	5.1330	359.6000	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/hall-chandelier — lantern_chandelier_01/Model	86.5042	5.9982	359.6000	270.02	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/landing-runner — Prop_Rug_C	88.6000	6.2147	359.3000	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/landing-runner — Prop_Rug_C/Prop_Rug_C	89.4707	6.2017	357.8158	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/landing-commode — GothicCommode_01	85.9806	6.2077	358.2000	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/landing-commode — GothicCommode_01/Model/GothicCommode_01	85.9793	6.2077	358.2011	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/landing-commode — GothicCommode_01/Model/GothicCommode_01_door01	86.2504	7.1947	358.2002	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/landing-commode — GothicCommode_01/Model/GothicCommode_01_door02	86.2406	6.8748	358.1996	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/landing-commode — GothicCommode_01/Model/GothicCommode_01_door03	86.2601	6.5642	358.1997	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/landing-portrait — Prop_Painting_D	85.6384	7.7365	358.2000	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/landing-portrait — Prop_Painting_D/Prop_Painting_D	85.6400	7.8037	357.9964	0.00	90.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/landing-chair — painted_wooden_chair_01	91.0000	6.2077	357.0059	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/landing-chair — painted_wooden_chair_01/Model	90.9985	6.2085	357.0366	270.02	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/landing-picture — fancy_picture_frame_01	92.3000	7.5779	356.6600	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/landing-picture — fancy_picture_frame_01/Model/fancy_picture_frame_01	92.3000	7.8100	356.6481	270.02	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/landing-picture — fancy_picture_frame_01/Model/fancy_picture_frame_01_canvas	92.3000	7.8100	356.6481	270.02	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/landing-light — lantern_chandelier_01	88.3000	8.8530	359.2000	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/landing-light — lantern_chandelier_01/Model	88.3042	9.7182	359.2000	270.02	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-rug — Prop_Rug_D	91.6000	6.2147	353.9500	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-rug — Prop_Rug_D/Prop_Rug_D	93.0842	6.2018	354.9241	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-desk — wooden_table_02	94.8691	6.2077	353.9400	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-desk — wooden_table_02/Model	94.8691	6.2079	353.9400	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-lamp — Prop_Lamp_A	94.7820	7.0073	354.3000	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-lamp — Prop_Lamp_A/Prop_Lamp_A/lo_Prop_Lamp_A_LOD0	94.7811	7.0057	354.2998	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-lamp — Prop_Lamp_A/Prop_Lamp_A/lo_Prop_Lamp_A_LOD1	94.7811	7.0057	354.2998	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-blotter-books — book_encyclopedia_set_01	95.1056	7.0073	353.7200	0.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-blotter-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book01	95.0241	7.0073	353.9763	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-blotter-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book02	95.0241	7.0073	353.9417	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-blotter-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book03	95.0241	7.0073	353.9148	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-blotter-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book04	95.0241	7.0073	353.8886	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-blotter-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book05	95.0241	7.0073	353.8661	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-blotter-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book06	95.0241	7.0073	353.8452	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-blotter-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book07	95.0241	7.0073	353.8221	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-blotter-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book08	95.0241	7.0073	353.7984	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-blotter-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book09	95.0241	7.0073	353.7756	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-blotter-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book10	95.0241	7.0073	353.7528	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-blotter-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book11	95.0241	7.0073	353.7316	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-blotter-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book12	95.0241	7.0073	353.7086	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-blotter-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book13	95.0241	7.0073	353.6761	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-blotter-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book14	95.0241	7.0073	353.6376	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-blotter-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book15	95.0241	7.0073	353.6004	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-blotter-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book16	95.0241	7.0073	353.5682	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-blotter-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book17	95.0241	7.0073	353.5351	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-blotter-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book18	95.0241	7.0073	353.5021	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-blotter-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book19	95.0241	7.0073	353.4800	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-blotter-books — book_encyclopedia_set_01/Model/book_encyclopedia_set_01_book20	95.0241	7.0073	353.4562	270.00	270.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-chair — painted_wooden_chair_01	94.3500	6.2077	355.3000	0.00	235.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-chair — painted_wooden_chair_01/Model	94.3257	6.2085	355.2811	270.00	235.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-daybed — vintage_day_bed	90.3600	6.2092	352.1834	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-daybed — vintage_day_bed/Model	90.3600	6.2093	352.2254	270.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-painting-s — fancy_picture_frame_02	90.6000	7.5745	351.7305	0.00	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-painting-s — fancy_picture_frame_02/Model/fancy_picture_frame_02	90.5981	7.9655	351.6847	270.02	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-painting-s — fancy_picture_frame_02/Model/fancy_picture_frame_02_canvas	90.5981	7.9655	351.6847	270.02	0.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-bookcase — wooden_bookshelf_worn	92.4000	6.2077	356.0553	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-bookcase — wooden_bookshelf_worn/Model	92.4000	6.2077	356.0553	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-cabinet — painted_wooden_cabinet	87.3000	6.2077	356.0157	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-cabinet — painted_wooden_cabinet/Model/painted_wooden_cabinet	87.2974	6.2081	356.0416	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-cabinet — painted_wooden_cabinet/Model/painted_wooden_cabinet_door_01	86.7291	6.7406	355.8301	270.00	182.16	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-cabinet — painted_wooden_cabinet/Model/painted_wooden_cabinet_door_02	87.8652	6.7415	355.8301	270.00	173.31	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-cabinet — painted_wooden_cabinet/Model/painted_wooden_cabinet_drawer_01	87.0171	7.2546	355.7500	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-cabinet — painted_wooden_cabinet/Model/painted_wooden_cabinet_drawer_02	87.5719	7.2546	355.8065	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-cabinet-clock — mantel_clock_01	87.3000	7.3911	355.8600	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-cabinet-clock — mantel_clock_01/Model/mantel_clock_01	87.3000	7.3906	355.8600	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/study-cabinet-clock — mantel_clock_01/Model/mantel_clock_01_glass	87.3000	7.4821	355.8035	270.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn	92.2800	7.4883	356.2044	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book01	92.0237	7.4883	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book02	92.0583	7.4883	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book03	92.0852	7.4883	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book04	92.1114	7.4883	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book05	92.1340	7.4883	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book06	92.1548	7.4883	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book07	92.1779	7.4883	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book08	92.2016	7.4883	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book09	92.2244	7.4883	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book10	92.2472	7.4883	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book11	92.2684	7.4883	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book12	92.2914	7.4883	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book13	92.3239	7.4883	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book14	92.3624	7.4883	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book15	92.3996	7.4883	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book16	92.4318	7.4883	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book17	92.4649	7.4883	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book18	92.4979	7.4883	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book19	92.5200	7.4883	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book20	92.5438	7.4883	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn	92.2800	7.1722	356.2044	0.00	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book01	92.0237	7.1722	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book02	92.0583	7.1722	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book03	92.0852	7.1722	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book04	92.1114	7.1722	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book05	92.1340	7.1722	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book06	92.1548	7.1722	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book07	92.1779	7.1722	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book08	92.2016	7.1722	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book09	92.2244	7.1722	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book10	92.2472	7.1722	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book11	92.2684	7.1722	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book12	92.2914	7.1722	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book13	92.3239	7.1722	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book14	92.3624	7.1722	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book15	92.3996	7.1722	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book16	92.4318	7.1722	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book17	92.4649	7.1722	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book18	92.4979	7.1722	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book19	92.5200	7.1722	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V19 interior/V23 shelf books — study-bookcase — wooden_bookshelf_worn/Volumes/Model/book_encyclopedia_set_01_book20	92.5438	7.1722	356.1229	270.02	180.00	0.00	1
+SERVICE — Hollis County/Delivery property 5/V20 mailbox — 108 (Rylae Shylna, CC-BY)	0.2796	-0.0437	375.1394	0.00	270.40	0.00	1
+SERVICE — Hollis County/Delivery property 5/V20 mailbox — 108 (Rylae Shylna, CC-BY)/Mailbox model/Body_J	0.4396	1.0055	375.1377	270.00	90.40	0.00	1
+SERVICE — Hollis County/Delivery property 5/V20 mailbox — 108 (Rylae Shylna, CC-BY)/Mailbox model/LegFloor_J	0.1893	-0.0287	375.1395	270.00	90.40	0.00	1
+SERVICE — Hollis County/Delivery property 5/V20 mailbox — 108 (Rylae Shylna, CC-BY)/Mailbox model/LegMain_J	0.3231	0.7038	375.1379	270.00	90.40	0.00	1
+SERVICE — Hollis County/Delivery property 5/V20 mailbox — 108 (Rylae Shylna, CC-BY)/Address plate 108/Plate front	0.2797	0.6963	375.1514	0.00	0.40	0.00	1
+SERVICE — Hollis County/Delivery property 5/V20 mailbox — 108 (Rylae Shylna, CC-BY)/Address plate 108/Plate back	0.2795	0.6963	375.1274	0.00	180.40	0.00	1
+SERVICE — Hollis County/Delivery property 5/V20 mailbox — 108 (Rylae Shylna, CC-BY)/Name strip	-0.0951	0.9963	375.1421	0.00	90.40	0.00	1
+SERVICE — Hollis County/Delivery property 5/V23 doormat	82.3876	2.4947	359.6458	0.00	270.26	0.00	1
+SERVICE — Hollis County/Delivery property 5/V23 doormat/Prop_Rug_D	82.1035	2.4817	360.1078	0.00	270.26	0.00	1
+SERVICE — Hollis County/Delivery property 5/V27 drive lamp	1.9511	-0.0916	367.8277	0.00	7.40	0.00	1
+SERVICE — Hollis County/Delivery property 5/V27 drive lamp/Model	1.9511	-0.0916	367.8277	270.00	7.40	0.00	1
+SERVICE — Hollis County/Delivery property 5/V28 readable — morrow-bulletin	83.5444	3.4383	356.5998	90.00	8.00	0.00	0

@@ -18,7 +18,7 @@ namespace ServiceGameV2 {
   readonly Dictionary<string,string> firstSeen=new Dictionary<string,string>();
   readonly HashSet<Key> held=new HashSet<Key>();Vector2 mouseDelta;bool mouseDown;string scenario="start";
   float busySince=-1,blockedSince=-1,insideSince=-1,lastFrame;Vector3 lastWalker;int frames;
-  static readonly string[] PrefKeys={"SERVICE.camcorder","SERVICE.brightness","SERVICE.volume","SERVICE.music","SERVICE.sensitivity","SERVICE.motion","SERVICE.blur","SERVICE.lightning"};
+  static readonly string[] PrefKeys={ServiceCamcorder.Pref,ServiceGuideMarker27.Pref,"SERVICE.brightness","SERVICE.volume","SERVICE.music","SERVICE.sensitivity","SERVICE.motion","SERVICE.blur","SERVICE.lightning"};
   readonly Dictionary<string,(bool has,float f,int i)> prefs=new Dictionary<string,(bool,float,int)>();
   public void Run(ServiceDirector director){
    d=director;dir=Environment.GetEnvironmentVariable("SERVICE_CAPTURE_DIR");if(string.IsNullOrEmpty(dir))dir=Path.Combine(Application.persistentDataPath,"chaos");Directory.CreateDirectory(dir);
@@ -168,7 +168,7 @@ namespace ServiceGameV2 {
    var menus=FindAnyObjectByType<ServiceMenus>();if(menus)lines.Add($"  quit chosen from the menu {menus.QuitRequests} times (counted, not obeyed)");
    lines.Add("");lines.Add("Log:");lines.AddRange(log);try{File.WriteAllLines(Path.Combine(dir,"chaos-report.txt"),lines);}catch{}}
   void Finish(){
-   foreach(var k in PrefKeys){var v=prefs[k];if(!v.has)PlayerPrefs.DeleteKey(k);else if(k=="SERVICE.camcorder"||k=="SERVICE.lightning")PlayerPrefs.SetInt(k,v.i);else PlayerPrefs.SetFloat(k,v.f);}PlayerPrefs.Save();
+   foreach(var k in PrefKeys){var v=prefs[k];if(!v.has)PlayerPrefs.DeleteKey(k);else if(k==ServiceCamcorder.Pref||k==ServiceGuideMarker27.Pref||k=="SERVICE.lightning")PlayerPrefs.SetInt(k,v.i);else PlayerPrefs.SetFloat(k,v.f);}PlayerPrefs.Save();
    WriteReport(true);Application.logMessageReceived-=OnLog;Application.Quit();
   }
  }

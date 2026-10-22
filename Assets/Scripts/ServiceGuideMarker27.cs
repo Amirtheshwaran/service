@@ -17,17 +17,26 @@ namespace ServiceGameV2 {
    mark=Word(o.transform,"◇",30,font);label=Word(o.transform,"",16,font);}
   Text Word(Transform parent,string s,int size,Font f){var t=new GameObject("Mark",typeof(RectTransform),typeof(Text)).GetComponent<Text>();t.transform.SetParent(parent,false);var r=t.rectTransform;r.anchorMin=r.anchorMax=Vector2.zero;r.sizeDelta=new Vector2(200,40);t.font=f;t.fontSize=size;t.alignment=TextAnchor.MiddleCenter;t.color=new Color(.95f,.92f,.82f,1);t.raycastTarget=false;var sh=t.gameObject.AddComponent<Outline>();sh.effectColor=new Color(0,0,0,.8f);return t;}
   public static void Set(bool on){On=on;PlayerPrefs.SetInt(Pref,on?1:0);}
+  // V28 ("direction don't indicate when you face opposite way"): when the place is off the screen - to the side or behind
+  // you - an arrow at the edge of the frame says which way to turn; on foot with nothing left to do here, it is the car.
+  int side=1;public bool Edge {get;private set;}
   void LateUpdate(){
-   if(!d||!canvas)return;float want=0;
-   if(On&&d.Phase==ServicePhase.Playing&&!d.PaperOpen&&d.NoteOpen<0&&!d.Horror.Active&&!d.Horror.Caught&&!(d.Scenes&&(d.Scenes.Frozen||d.Scenes.FinaleRunning||d.Scenes.PageOpen))&&d.Guide&&d.Guide.Target>=0&&!d.InsideVilla&&!(d.Timecard&&d.Timecard.Blocking)){
-    var p=d.Property(d.Guide.Target);var cam=d.Scene.View;var eye=cam.transform.position;
-    var mouth=p.ApproachRoute!=null&&p.ApproachRoute.Length>0?p.ApproachRoute[0]:p.Gate.position;
-    bool onDrive=!d.Player.InCar&&p.ApproachRoute!=null&&Vector3.Distance(eye,p.Door.position)<Vector3.Distance(mouth,p.Door.position)+4f;
-    Point=onDrive?p.Door.position+Vector3.up*2.3f:mouth+Vector3.up*2.2f;float dist=Vector3.Distance(eye,Point);
-    var vp=cam.WorldToViewportPoint(Point);
-    if(vp.z>0&&dist>(onDrive?5f:14f)&&dist<220f){var r=(RectTransform)canvas.transform;var size=r.sizeDelta;var pos=new Vector2(Mathf.Clamp01(vp.x)*size.x,Mathf.Clamp01(vp.y)*size.y);
-     mark.rectTransform.anchoredPosition=pos;label.rectTransform.anchoredPosition=pos+new Vector2(0,-22);label.text=(p.Address.Split(' ')[0])+"   "+Mathf.RoundToInt(dist)+" M";
-     want=Mathf.Clamp01(Mathf.InverseLerp(220f,120f,dist))*.85f;if(vp.x<0||vp.x>1||vp.y<0||vp.y>1)want*=.5f;}}
+   if(!d||!canvas)return;float want=0;Edge=false;bool toCar=d.Guide&&d.Guide.ToCar&&!d.Player.InCar;
+   if(On&&d.Phase==ServicePhase.Playing&&!d.PaperOpen&&d.NoteOpen<0&&!d.Horror.Active&&!d.Horror.Caught&&!(d.Walter&&d.Walter.Chasing)&&!(d.Scenes&&(d.Scenes.Frozen||d.Scenes.FinaleRunning||d.Scenes.PageOpen))&&d.Guide&&(d.Guide.Target>=0||toCar)&&!d.InsideVilla&&!(d.Timecard&&d.Timecard.Blocking)){
+    var cam=d.Scene.View;var eye=cam.transform.position;string name;bool onDrive=false;
+    if(toCar){Point=d.Scene.Car.position+Vector3.up*1.9f;name="CAR";}
+    else{var p=d.Property(d.Guide.Target);var mouth=p.ApproachRoute!=null&&p.ApproachRoute.Length>0?p.ApproachRoute[0]:p.Gate.position;
+     onDrive=!d.Player.InCar&&p.ApproachRoute!=null&&Vector3.Distance(eye,p.Door.position)<Vector3.Distance(mouth,p.Door.position)+4f;
+     Point=onDrive?p.Door.position+Vector3.up*2.3f:mouth+Vector3.up*2.2f;name=p.Address.Split(' ')[0];}
+    float dist=Vector3.Distance(eye,Point);var vp=cam.WorldToViewportPoint(Point);
+    bool inView=vp.z>0&&vp.x>.03f&&vp.x<.97f&&vp.y>.03f&&vp.y<.97f;
+    var to=Point-eye;to.y=0;var fw=cam.transform.forward;fw.y=0;float a=Vector3.SignedAngle(fw,to,Vector3.up);if(Mathf.Abs(a)<165f)side=a>=0?1:-1; // dead behind: keep the last side
+    if(dist>(toCar?6f:onDrive?5f:14f)&&dist<(inView?220f:400f)){var size=((RectTransform)canvas.transform).sizeDelta;
+     var pos=inView?new Vector2(vp.x*size.x,vp.y*size.y):new Vector2(side>0?size.x-40f:40f,size.y*.55f);
+     mark.text=inView?"◇":side>0?">":"<";mark.rectTransform.anchoredPosition=pos;Edge=!inView;
+     label.alignment=inView?TextAnchor.MiddleCenter:side>0?TextAnchor.MiddleRight:TextAnchor.MiddleLeft;
+     label.rectTransform.anchoredPosition=pos+(inView?new Vector2(0,-22):new Vector2(side>0?-118f:118f,0));label.text=name+"   "+Mathf.RoundToInt(dist)+" M";
+     want=inView?Mathf.Clamp01(Mathf.InverseLerp(220f,120f,dist))*.85f:.62f;}}
    group.alpha=Mathf.MoveTowards(group.alpha,want,Time.unscaledDeltaTime*2.5f);}
  }
 }

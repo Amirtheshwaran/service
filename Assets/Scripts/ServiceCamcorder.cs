@@ -10,6 +10,11 @@ namespace ServiceGameV2 {
   // V27 (playtest: "the background texture makes it hard to see, it looks kinda pixelated"): Strong is the default
   // again and is now a ~540-line picture with light dither; Subtle is native resolution; Extreme is still offered.
   // A fresh key so everybody who had the old Extreme default gets the new one.
+  // V28 (playtest: "stop letting the camera filter be turned off" / "keep the subtle camera effects as part of the horror"):
+  // there is no Off for the player any more - the lightest is SUBTLE. A saved Off becomes Subtle. (Off removed the whole
+  // night grade, not just the tape look: the shadows lifted and Brightness stopped doing anything.) Preview(0) stays for
+  // the survey and tour's raw reference shots and is never saved.
+  public const int Lowest=1;
   public const string Pref="SERVICE.camcorder27";
   public static readonly string[] Names={"Off","Subtle","Strong","Extreme"};
   static readonly float[] Heights={0,0,540,300};
@@ -17,13 +22,14 @@ namespace ServiceGameV2 {
   // V20: picture brightness (Options > Video), multiplies the camcorder exposure. Saved as SERVICE.brightness.
   public static float Brightness {get;private set;}=1;
   public void SetBrightness(float value){Brightness=Mathf.Clamp(value,.6f,1.6f);PlayerPrefs.SetFloat("SERVICE.brightness",Brightness);Apply();}
-  Material mat;int lastHeight=-1,lastLevel=-1;
-  void Start(){Level=Mathf.Clamp(PlayerPrefs.GetInt(Pref,2),0,3);Brightness=Mathf.Clamp(PlayerPrefs.GetFloat("SERVICE.brightness",1),.6f,1.6f);foreach(var r in Resources.FindObjectsOfTypeAll<Material>())if(r.shader&&r.shader.name=="Service/Camcorder"){mat=r;break;}Apply();}
+  Material mat;int lastHeight=-1,lastLevel=-1,lastFactor=-1;
+  public static int LoadLevel(){int saved=PlayerPrefs.GetInt(Pref,2);int level=Mathf.Clamp(saved,Lowest,3);if(saved!=level)PlayerPrefs.SetInt(Pref,level);return level;}
+  void Start(){Level=LoadLevel();Brightness=Mathf.Clamp(PlayerPrefs.GetFloat("SERVICE.brightness",1),.6f,1.6f);foreach(var r in Resources.FindObjectsOfTypeAll<Material>())if(r.shader&&r.shader.name=="Service/Camcorder"){mat=r;break;}Apply();}
   // Survey and tests preview a level without touching the player's saved choice.
   public void Preview(int level){Level=Mathf.Clamp(level,0,3);Apply();}
-  public void Cycle(){Level=(Level+1)%Names.Length;PlayerPrefs.SetInt(Pref,Level);Apply();}
-  public void Set(int level){Level=Mathf.Clamp(level,0,3);PlayerPrefs.SetInt(Pref,Level);Apply();}
-  // V21: tape damage while a threat is close (set by ServiceDread each frame, 0..1). It shows even with the filter off.
+  public void Cycle(){Set(Level>=3?Lowest:Level+1);}
+  public void Set(int level){Level=Mathf.Clamp(level,Lowest,3);PlayerPrefs.SetInt(Pref,Level);Apply();}
+  // V21: tape damage while a threat is close (set by ServiceDread each frame, 0..1).
   public static float Glitch;
   void Update(){if(Screen.height!=lastHeight||Level!=lastLevel)Apply();if(mat){mat.SetFloat("_Glitch",Mathf.Clamp01(Mathf.Max(Glitch,ServiceJumpscare.Glitch)));mat.SetFloat("_GlitchTime",Time.unscaledTime);}}
   void OnDestroy(){Glitch=0;if(mat)mat.SetFloat("_Glitch",0);}
@@ -31,11 +37,13 @@ namespace ServiceGameV2 {
    lastHeight=Screen.height;lastLevel=Level;
    var asset=GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
    // Whole-number upscale factors keep every low-res pixel the same size on screen.
-   if(asset){int factor=Level<=1?1:Mathf.Max(1,Mathf.RoundToInt(Screen.height/Heights[Level]));asset.renderScale=1f/factor;asset.upscalingFilter=Level==0||factor==1?UpscalingFilterSelection.Auto:UpscalingFilterSelection.Point;}
-   if(mat){mat.SetFloat("_Strength",Level==0?0:1);mat.SetFloat("_Grain",Level==1?.022f:Level==2?.04f:.06f);mat.SetFloat("_Levels",Level==1?160:Level==2?72:44);mat.SetFloat("_Dither",Level==3?.7f:Level==2?.32f:.2f);mat.SetFloat("_Fringe",Level==1?.6f:Level==2?1.1f:1.5f);mat.SetFloat("_Vignette",Level==1?.8f:Level==2?1.05f:1.12f);
+   // V28: Strong never drops under 540 lines (at 1440p it was 480 - rounded down to a coarser picture than the one signed off)
+   if(asset){int factor=Level<=1?1:Mathf.Max(1,Level==2?Mathf.FloorToInt(Screen.height/Heights[2]):Mathf.RoundToInt(Screen.height/Heights[Level]));if(factor!=lastFactor){lastFactor=factor;Debug.Log($"SERVICE camcorder {Screen.width}x{Screen.height} level {Names[Level]} factor {factor}");}asset.renderScale=1f/factor;asset.upscalingFilter=Level==0||factor==1?UpscalingFilterSelection.Auto:UpscalingFilterSelection.Point;}
+   // V28: subtle and natural - no visible banding in the sky or the headlight fall-off, fringe only toward the edges
+   if(mat){mat.SetFloat("_Strength",Level==0?0:1);mat.SetFloat("_Dither",Level==3?.7f:Level==2?.25f:.15f);mat.SetFloat("_Fringe",Level==1?.45f:Level==2?.9f:1.5f);mat.SetFloat("_Vignette",Level==1?.75f:Level==2?1.0f:1.12f);
     // V23: Extreme keeps Strong's shadow curve - its own steeper toe, 36 levels and heavier vignette rounded a night road
     // and the whole car interior to black (tour 14); the downgrade is the 270-line picture, grain, fringe and banding
-    mat.SetFloat("_Toe",Level==1?.25f:.35f);mat.SetFloat("_ToePower",Level==1?1.4f:1.9f);mat.SetFloat("_Contrast",1.04f);mat.SetFloat("_Exposure",1.18f*Brightness);mat.SetColor("_Lift",new Color(.010f,.013f,.020f,1));mat.SetFloat("_Grain",Level==1?.018f:Level==2?.032f:.065f);mat.SetFloat("_Levels",Level==1?192:Level==2?112:48);}
+    mat.SetFloat("_Toe",Level==1?.25f:.35f);mat.SetFloat("_ToePower",Level==1?1.4f:1.9f);mat.SetFloat("_Contrast",1.04f);mat.SetFloat("_Exposure",1.18f*Brightness);mat.SetColor("_Lift",new Color(.010f,.013f,.020f,1));mat.SetFloat("_Grain",Level==1?.016f:Level==2?.03f:.065f);mat.SetFloat("_Levels",Level==1?192:Level==2?128:48);}
   }
  }
 }

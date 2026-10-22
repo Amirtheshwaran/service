@@ -24,14 +24,14 @@ namespace ServiceGameV2 {
    upper=Line(words.transform,new Vector2(0,34),27,TextAnchor.MiddleCenter,new Color(.8f,.8f,.78f));lower=Line(words.transform,new Vector2(0,-30),58,TextAnchor.MiddleCenter,new Color(.93f,.93f,.9f));
    var corner=new GameObject("Corner stamp",typeof(RectTransform),typeof(CanvasGroup));corner.transform.SetParent(o.transform,false);{var ct=(RectTransform)corner.transform;ct.anchorMin=Vector2.zero;ct.anchorMax=Vector2.one;ct.offsetMin=ct.offsetMax=Vector2.zero;}/* exactly the screen: the stamp is placed from its top-left corner */cornerWords=corner.GetComponent<CanvasGroup>();cornerWords.alpha=0;
    cornerA=Line(corner.transform,new Vector2(0,0),22,TextAnchor.LowerLeft,new Color(.9f,.9f,.86f));cornerB=Line(corner.transform,new Vector2(0,0),20,TextAnchor.LowerLeft,new Color(.78f,.78f,.74f));
-   Place(cornerA.rectTransform,new Vector2(58,-618));Place(cornerB.rectTransform,new Vector2(58,-650));
+   /* V28b: from the screen's bottom-left corner, under the subtitle band (from the top it rode up into long subtitles, more so on 16:10) */PlaceLow(cornerA.rectTransform,new Vector2(58,42));PlaceLow(cornerB.rectTransform,new Vector2(58,12));
    keys=gameObject.AddComponent<AudioSource>();keys.playOnAwake=false;keys.spatialBlend=0;keys.ignoreListenerPause=false;
   }
   static void Stretch(RectTransform t){t.anchorMin=Vector2.zero;t.anchorMax=Vector2.one;t.offsetMin=new Vector2(-400,-400);t.offsetMax=new Vector2(400,400);}
   Text Line(Transform parent,Vector2 offset,int size,TextAnchor anchor,Color color){
    var t=new GameObject("Line",typeof(RectTransform),typeof(Text)).GetComponent<Text>();t.transform.SetParent(parent,false);var r=t.rectTransform;r.anchorMin=r.anchorMax=new Vector2(.5f,.5f);r.pivot=new Vector2(.5f,.5f);r.sizeDelta=new Vector2(1100,60);r.anchoredPosition=offset;
    t.font=font;t.fontSize=size;t.alignment=anchor;t.color=color;t.horizontalOverflow=HorizontalWrapMode.Overflow;t.verticalOverflow=VerticalWrapMode.Overflow;t.raycastTarget=false;t.text="";return t;}
-  static void Place(RectTransform r,Vector2 topLeft){r.anchorMin=r.anchorMax=new Vector2(0,1);r.pivot=new Vector2(0,1);r.sizeDelta=new Vector2(900,30);r.anchoredPosition=topLeft;}
+  static void PlaceLow(RectTransform r,Vector2 bottomLeft){r.anchorMin=r.anchorMax=Vector2.zero;r.pivot=Vector2.zero;r.sizeDelta=new Vector2(900,30);r.anchoredPosition=bottomLeft;}
   // ---- clock
   // counts only time spent playing (not paused, not on the title), from the moment the night began
   float played;
@@ -74,10 +74,15 @@ namespace ServiceGameV2 {
    var gen=label.GetGenerationSettings(new Vector2(4000,200));float w=label.cachedTextGeneratorForLayout.GetPreferredWidth(text,gen)/Mathf.Max(.01f,label.pixelsPerUnit);
    var r=label.rectTransform;if(!pinBase.ContainsKey(label))pinBase[label]=r.sizeDelta;label.alignment=TextAnchor.MiddleLeft;r.sizeDelta=new Vector2(w+2f,pinBase[label].y);} // the box stays centred, as wide as the finished line
   readonly System.Collections.Generic.Dictionary<Text,Vector2> pinBase=new System.Collections.Generic.Dictionary<Text,Vector2>();
+  // V28b (review): a line longer than the screen is broken at the spaces into a block at most 1000 wide (the intro lines
+  // of 88-126 letters ran off both edges: it never wrapped)
+  string Wrapped(Text label,string text,float maxW){if(text.IndexOf('\n')>=0)return text;var gen=label.GetGenerationSettings(new Vector2(4000,200));float W(string t)=>label.cachedTextGeneratorForLayout.GetPreferredWidth(t,gen)/Mathf.Max(.01f,label.pixelsPerUnit);
+   if(W(text)<=maxW)return text;var sb=new System.Text.StringBuilder();string line="";foreach(var word in text.Split(' ')){var tryLine=line.Length==0?word:line+" "+word;if(line.Length>0&&W(tryLine)>maxW){sb.Append(line).Append('\n');line=word;}else line=tryLine;}sb.Append(line);return sb.ToString();}
   IEnumerator Type(Text label,string text,float per){
+   if(label.alignment==TextAnchor.MiddleCenter||label.alignment==TextAnchor.MiddleLeft)text=Wrapped(label,text,1000f);
    Pin(label,text);
    for(int i=1;i<=text.Length;i++){
-    label.text=text.Substring(0,i)+(i<text.Length?"_":"");char c=text[i-1];
+    {int rest=0;for(int q=i;q<text.Length;q++)if(text[q]=='\n')rest++;label.text=text.Substring(0,i)+(i<text.Length?"_":"")+(rest>0?new string('\n',rest):"");}char c=text[i-1];
     if(c!=' '&&clicks.Length>0){keys.pitch=Random.Range(.92f,1.12f);keys.PlayOneShot(clicks[Random.Range(0,clicks.Length)],Random.Range(.32f,.45f));}
     yield return Wait(c==' '?per*.6f:per*Random.Range(.7f,1.35f));}
    label.text=text;
@@ -89,10 +94,10 @@ namespace ServiceGameV2 {
   IEnumerator RunStamp(string top,string time){
    cornerA.text=cornerB.text="";cornerWords.alpha=1;yield return Type(cornerA,top,.05f);yield return Type(cornerB,time,.07f);yield return Wait(3.2f);
    float w=1;while(w>0){w=Mathf.MoveTowards(w,0,Dt/.8f);cornerWords.alpha=w;yield return null;}cornerA.text=cornerB.text="";stamp=null;}
-  void Update(){
+  void Update(){if(canvas)canvas.enabled=!d||d.Phase!=ServicePhase.Paused; /* V28b (review): not over the pause menu (frozen while paused anyway) */
    if(d&&d.Phase==ServicePhase.Playing)played+=Time.unscaledDeltaTime;
    // the corner stamp never sits over an encounter, a capture, a card or a menu
-   if(stamp!=null&&d&&(d.Horror.Active||d.Horror.Caught||Blocking||d.NoteOpen>=0||d.Phase!=ServicePhase.Playing&&d.Phase!=ServicePhase.Paused)){StopCoroutine(stamp);stamp=null;cornerWords.alpha=0;cornerA.text=cornerB.text="";}
+   if(stamp!=null&&d&&(d.Horror.Active||d.Horror.Caught||Blocking||d.NoteOpen>=0||(d.Phase!=ServicePhase.Playing&&d.Phase!=ServicePhase.Paused||d.PaperOpen))){StopCoroutine(stamp);stamp=null;cornerWords.alpha=0;cornerA.text=cornerB.text="";}
    if(!d||d.Phase!=ServicePhase.Playing||d.Player.InCar||Blocking||d.Horror.Active||d.Horror.Caught)return;
    var at=d.Scene.Walker.transform.position;
    foreach(var e in d.Docket){var p=d.Property(e.Property);if(stamped[p.Index]||!p.Door)continue;var dd=p.Door.position-at;dd.y=0;if(dd.magnitude>24)continue;stamped[p.Index]=true;Stamp(e.Address.ToUpperInvariant(),Time12(Clock));break;}

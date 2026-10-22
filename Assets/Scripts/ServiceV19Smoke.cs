@@ -33,6 +33,8 @@ namespace ServiceGameV2 {
    if(Environment.GetCommandLineArgs().Contains("-smokeV25Only")){yield return V25();yield break;}
    if(Environment.GetCommandLineArgs().Contains("-smokeV26Only")){yield return V26();yield break;}
    if(Environment.GetCommandLineArgs().Contains("-smokeV27Only")){yield return V27();yield break;}
+   if(Environment.GetCommandLineArgs().Contains("-smokeV28Only")){yield return V28();yield break;}
+   if(Environment.GetCommandLineArgs().Contains("-propDiff")){yield return PropDiff28();yield break;}
    // Story and cast: monsters only.
    Require(d.Scene.GetComponentsInChildren<Transform>(true).All(t=>!t.name.Contains("stalker")&&!t.name.Contains("Depot worker")),"No human stalker or depot worker in the county");
    Require(ServiceScript.For(1)!=null&&ServiceScript.Note(3,0).Contains("lamp"),"Script text loaded (notes)");
@@ -97,8 +99,13 @@ namespace ServiceGameV2 {
    yield return V25();
    yield return V26();
    yield return V27();
+   yield return V28();
   }
   // ---- V22: the playtest round.
+  // V28b: down the drive the way a person runs it (its own points back to the gate), then to the car
+  IEnumerator RunDrive(ServiceProperty p,Func<bool> stop){var A=p.ApproachRoute;if(A!=null&&A.Length>3){int k=0;float bd=9e9f;for(int i=0;i<A.Length;i++){float dd=FlatV(A[i]-d.Scene.Walker.transform.position).magnitude;if(dd<bd){bd=dd;k=i;}}
+    for(int i=k-2;i>=0&&!stop();i-=3)yield return Sprint(A[i],true,10,stop);}
+   if(!stop()){var car=d.Scene.Car;yield return Sprint(car.position-car.right*2.2f,true,20,stop);}}
   IEnumerator Sprint(Vector3 target,bool sprint,float giveUp,Func<bool> stop){
    bool sa=NavMesh.SamplePosition(d.Scene.Walker.transform.position,out var a,2.5f,NavMesh.AllAreas),sb=NavMesh.SamplePosition(target,out var b,2.5f,NavMesh.AllAreas);Require(sa&&sb,"Navmesh under the flight to "+target);
    var path=new NavMeshPath();Require(NavMesh.CalculatePath(a.position,b.position,NavMesh.AllAreas,path)&&path.status==NavMeshPathStatus.PathComplete,"Connected flight to "+target);float end=Time.time+giveUp;
@@ -165,16 +172,21 @@ namespace ServiceGameV2 {
     d.BeginShift(1);d.PaperOpen=false;yield return null;yield return null;
     Require(d.Life.DogTransform&&!d.Life.DogTransform.gameObject.activeInHierarchy,"Night two: Rex is gone");
     var blood=p.transform.Find("V25 blood");Require(blood&&blood.gameObject.activeInHierarchy,"...and there is blood on the porch and in the hall");
-    d.Player.SmokePlaceWalker(p.Door.position+Outward(p)*1.6f);yield return new WaitForSeconds(.3f);yield return Face(p.KnockPoint.position);d.Attempt(0,ServiceResult.Served);
-    t=Time.time+40;while(d.Busy&&Time.time<t)yield return null;yield return Shot("v25-walter-door");
-    Require(d.Walter.Chasing&&d.CorrellTurns>=1,"...Walter tells you it's your turn and comes out after you");
+    // V28: "both options will definitely kill you" - hand him the papers and go, and he lets you
+    {int spared=d.CorrellSpared,catches=d.Walter.Catches;ServiceDialogue.ForcePick=0;d.Player.SmokePlaceWalker(p.Door.position+Outward(p)*1.6f);yield return new WaitForSeconds(.3f);yield return Face(p.KnockPoint.position);d.Attempt(0,ServiceResult.Served);
+     t=Time.time+40;while(d.Busy&&Time.time<t)yield return null;ServiceDialogue.ForcePick=-1;yield return new WaitForSeconds(4f);yield return Shot("v28-walter-spared");
+     Require(!d.Walter.Chasing&&d.Phase==ServicePhase.Playing&&d.ResultAt(0)==ServiceResult.Served&&d.CorrellSpared==spared+1&&d.Walter.Catches==catches,"Night two: hand Walter the papers and go - he lets you (the door shuts; he stays behind it)");
+     d.BeginShift(1);d.PaperOpen=false;yield return null;yield return null;}
+    ServiceDialogue.ForcePick=1;d.Player.SmokePlaceWalker(p.Door.position+Outward(p)*1.6f);yield return new WaitForSeconds(.3f);yield return Face(p.KnockPoint.position);d.Attempt(0,ServiceResult.Served);
+    t=Time.time+40;while(d.Busy&&Time.time<t)yield return null;ServiceDialogue.ForcePick=-1;yield return Shot("v25-walter-door");
+    Require(d.Walter.Chasing&&d.CorrellTurns>=1,"...ask him what he did to Rex: he tells you it's your turn and comes out after you");
     t=Time.time+14;while(Time.time<t&&d.Phase==ServicePhase.Playing)yield return null;
     Require(d.Phase==ServicePhase.Finished&&d.EndingText==ServiceScript.EndingWalter&&d.Walter.Catches>=1,"...stand there and he reaches you: the route ends with the Walter epilogue");yield return Shot("v25-walter-ending");
     // again - this time run for the car and drive
     d.BeginShift(1);d.PaperOpen=false;yield return null;yield return null;var road=FlatV(p.ApproachRoute[0]-p.ApproachRoute[p.ApproachRoute.Length-1]).normalized;
     d.Player.TeleportCar(p.Gate.position+Vector3.up*.3f,Quaternion.LookRotation(road));yield return new WaitForSeconds(.3f);
-    d.Player.SmokePlaceWalker(p.Door.position+Outward(p)*1.6f);yield return new WaitForSeconds(.3f);yield return Face(p.KnockPoint.position);d.Attempt(0,ServiceResult.Served);
-    t=Time.time+40;while(d.Busy&&Time.time<t)yield return null;Require(d.Walter.Chasing,"(Walter comes out again)");
+    ServiceDialogue.ForcePick=1;d.Player.SmokePlaceWalker(p.Door.position+Outward(p)*1.6f);yield return new WaitForSeconds(.3f);yield return Face(p.KnockPoint.position);d.Attempt(0,ServiceResult.Served);
+    t=Time.time+40;while(d.Busy&&Time.time<t)yield return null;ServiceDialogue.ForcePick=-1;Require(d.Walter.Chasing,"(Walter comes out again)");
     var car=d.Scene.Car;
     // get a start on him, then turn with the torch on him coming after you, running - then on to the car
     yield return Sprint(car.position-car.right*2.2f,true,8,()=>d.CanEnterCar||d.Phase!=ServicePhase.Playing||(d.Walter.AnimState=="Run"&&FlatV(d.Walter.Position-d.Scene.Walker.transform.position).magnitude>8f));
@@ -201,10 +213,10 @@ namespace ServiceGameV2 {
    {d.BeginShift(1);d.PaperOpen=false;yield return null;var p=d.Property(4);int falls=d.Books.StairFalls,thuds=d.Books.StairThuds;
     Require(d.Books.Flight(p),"Bell's stairs: the flight found (top "+d.Books.StairTop.ToString("F2")+", bottom "+d.Books.StairBottom.ToString("F2")+"; "+d.Books.FlightInfo+")");
     var down=FlatV(d.Books.StairBottom-d.Books.StairTop).normalized;var top=d.Books.StairTop+Vector3.up*.3f;
-    d.Player.SmokePlaceWalker(d.Books.StairBottom+down*4.2f);yield return new WaitForSeconds(.4f);yield return Face(top);yield return new WaitForSeconds(.6f);
-    Require(d.Books.StairFalls==falls,"...nothing yet, across the hall from them");
+    int fr26=d.Scenes.Freezes;d.Player.SmokePlaceWalker(d.Books.StairBottom+down*4.2f);yield return new WaitForSeconds(.4f);yield return Face(top);yield return new WaitForSeconds(.6f);
+    Require(d.Books.StairFalls==falls&&d.Scenes.Freezes==fr26+1,"...his landing in sight from across the room (within 5 m): the stairs freeze you - and nothing has fallen yet (freezes "+(d.Scenes.Freezes-fr26)+")");
     float t=Time.time+8;while(Time.time<t&&d.Books.StairFalls==falls){d.Player.SmokeFace(top);d.Player.SmokeWalk=FlatV(d.Scene.Walker.transform.position-d.Books.StairBottom).magnitude>1.4f?Vector2.up*.5f:Vector2.zero;yield return null;}d.Player.SmokeWalk=Vector2.zero;
-    Require(d.Books.StairFalls==falls+1,"Night two at Bell's: come to the foot of his stairs and a book comes off the landing ("+FlatV(d.Scene.Walker.transform.position-d.Books.StairBottom).magnitude.ToString("F1")+" m from the bottom stair)");
+    Require(d.Books.StairFalls==falls+1,"Night two at Bell's: held there, a book comes off the landing at you ("+FlatV(d.Scene.Walker.transform.position-d.Books.StairBottom).magnitude.ToString("F1")+" m from the bottom stair)");
     yield return new WaitForSeconds(.95f);yield return Shot("v26-stair-book-falling");
     t=Time.time+8;while(Time.time<t&&d.Notice!=ServiceScript.StairBook)yield return null;var bk=d.Books.StairBook;
     Require(bk&&bk.position.y<d.Books.StairTop.y-1f&&d.Books.StairThuds>=thuds+2,"...and it tumbles down the flight, a thud on the stairs ("+(d.Books.StairThuds-thuds)+" thuds, comes to rest "+(bk?(bk.position.y-d.Books.StairBottom.y).ToString("F2"):"-")+" m above the bottom stair, "+(bk?FlatV(bk.position-d.Books.StairBottom).magnitude.ToString("F1"):"-")+" m along)");
@@ -323,7 +335,7 @@ namespace ServiceGameV2 {
    {d.BeginShift(2);d.PaperOpen=false;yield return null;var p=d.Property(2);int fin=d.Scenes.Finales,plays=d.Scare.Plays;
     yield return Knock26(p);if(d.Life)d.Life.OpenDoor(p,true);yield return Leave26(p);
     yield return WaitFor(()=>d.Scare.Plays>plays,45f);yield return new WaitForSeconds(.2f);yield return Shot("v27-finale-jumpscare");
-    Require(d.Scenes.Finales==fin+1&&d.Scare.Plays==plays+1&&d.Scenes.LastPager.Contains("passed away"),"1 County Route 9: the last page, the dark, and the jumpscare");
+    Require(d.Scenes.Finales==fin+1&&d.Scare.Plays==plays+1&&d.Scenes.LastPager.Contains("passed away")&&d.Scenes.Summons>=1,"1 County Route 9: the summons, the last page, the dark, and the jumpscare");
     yield return WaitFor(()=>d.Phase==ServicePhase.Finished,12f);yield return new WaitForSeconds(1f);yield return Shot("v27-ending");
     Require(d.Phase==ServicePhase.Finished&&d.EndingText!=null&&d.EndingText.Contains("Sofia Lowell"),"...and the ending");}
    // -- chapters: the nights reached stay open after an ending
@@ -377,6 +389,187 @@ namespace ServiceGameV2 {
    Require(d.Life.DogTransform&&d.Life.DogTransform.localScale.y>1.1f,"Rex is a full-size shepherd (x"+(d.Life.DogTransform?d.Life.DogTransform.localScale.y:0).ToString("F2")+")");
   }
   bool shotScare;
+  // ---------------------------------------------------------------- V28 (a friend's playtest and story notes)
+  IEnumerator FaceAt(Vector3 at,float secs=.6f){float t=Time.time+secs;while(Time.time<t){d.Player.SmokeFace(at);yield return null;}}
+  IEnumerator V28(){
+   // -- the camera filter can't be turned off (a saved Off comes back as Subtle)
+   {int keep=d.Camcorder.Level;d.Camcorder.Set(0);bool floor=d.Camcorder.Level==1;bool neverOff=true;for(int k=0;k<6;k++){d.Camcorder.Cycle();if(d.Camcorder.Level<1)neverOff=false;}
+    PlayerPrefs.SetInt(ServiceCamcorder.Pref,0);int loaded=ServiceCamcorder.LoadLevel();bool migrated=loaded==1&&PlayerPrefs.GetInt(ServiceCamcorder.Pref,-1)==1;d.Camcorder.Set(keep);
+    Require(floor&&neverOff&&migrated,"The camera filter can't be switched off: Subtle is the lightest, and a saved Off comes back as Subtle");}
+   // -- which way: the car pointing away from the next stop says turn around; side-on says which way to pull out; the
+   //    mark at the screen edge points the way when the drive is behind you; on foot, the car
+   {d.BeginShift(0);d.PaperOpen=false;yield return null;var R=d.Scene.Route;var p=d.Property(0);int i=0;float run=0;for(int k=1;k<R.Length;k++){run+=FlatV(R[k].position-R[k-1].position).magnitude;if(run>p.RoadDistance+90f){i=k;break;}}
+    var at=R[i].position;var fw=FlatV(R[Mathf.Min(i+1,R.Length-1)].position-at).normalized;
+    d.Player.TeleportCar(at+Vector3.up*.3f,Quaternion.LookRotation(fw));yield return new WaitForSeconds(1.4f);string away=d.Guide.Direction;bool edge=d.Marker.Showing&&d.Marker.Edge;yield return Shot("v28-car-facing-away");
+    d.Player.TeleportCar(at+Vector3.up*.3f,Quaternion.LookRotation(-fw));yield return new WaitForSeconds(1.4f);string toward=d.Guide.Direction;
+    d.Player.TeleportCar(at+Vector3.up*.3f,Quaternion.LookRotation(Vector3.Cross(Vector3.up,fw)));yield return new WaitForSeconds(1.4f);string across=d.Guide.Direction;
+    Require(away.Contains("BEHIND YOU")&&edge,"Car pointing away from the next stop: 'behind you, turn around' and an arrow at the edge ('"+away+"', edge "+edge+")");
+    Require((toward.StartsWith("FURTHER")||toward.StartsWith("COMING UP"))&&across.StartsWith("TURN "),"...pointing at it: '"+toward+"'; side-on across the road: '"+across+"'");
+    var back=at-fw*24f;if(UnityEngine.AI.NavMesh.SamplePosition(back,out var nh,4f,UnityEngine.AI.NavMesh.AllAreas))back=nh.position;d.Player.SmokePlaceWalker(back);yield return new WaitForSeconds(.3f);
+    yield return FaceAt(back-(d.Scene.Car.position-back).normalized*5f+Vector3.up*1.5f,1.4f);yield return new WaitForSeconds(.4f);string foot=d.Guide.Direction;bool carEdge=d.Marker.Showing&&d.Marker.Edge&&d.Guide.ToCar;yield return Shot("v28-foot-facing-away");
+    Require(foot.StartsWith("BACK TO THE CAR")&&foot.Contains("BEHIND YOU")&&carEdge,"On foot facing away from the car: '"+foot+"', and the arrow points to the car ("+carEdge+")");}
+   // -- Vale's, night one: the door shuts from her hall - and then nothing comes
+   {ServiceScenes27.RulesInTests=true;d.BeginShift(0);d.PaperOpen=false;yield return null;var p=d.Property(1);int deaths=d.Scenes.DoorDeaths;
+    yield return Knock26(p);d.Player.SmokePlaceWalker(p.OpeningCentre+p.Inward*(p.DoorWidth+.8f));yield return new WaitForSeconds(.4f);yield return FaceAt(p.OpeningCentre+Vector3.up*1.2f,.8f);
+    int leaf=d.NearbyLeaf();bool shut=leaf==1&&d.ToggleDoor(1);yield return new WaitForSeconds(1.6f);float deg=d.Life.DoorOpenDegrees(1);yield return Shot("v28-vale-shut-from-hall");
+    d.Player.SmokePlaceWalker(p.OpeningCentre+p.Inward*3f);yield return new WaitForSeconds(24f);
+    Require(shut&&deg<6f&&!d.Horror.Active&&d.Scenes.DoorDeaths==deaths,"Vale's: 'E Shut the door' from inside her hall - shut, nothing comes in (leaf "+leaf+", "+deg.ToString("F0")+" deg open)");d.Horror.ResetEncounter();}
+   // -- Vale's, night two: the rule holds, quicker
+   {d.BeginShift(1);d.PaperOpen=false;yield return null;var p=d.Property(1);if(d.Life)d.Life.OpenDoor(p,true);yield return new WaitForSeconds(.8f);d.Player.SmokePlaceWalker(p.OpeningCentre+p.Inward*3f);int deaths=d.Scenes.DoorDeaths;float t0=Time.time;
+    yield return WaitFor(()=>d.Horror.Active,22f);float took=Time.time-t0;Require(d.Horror.Active&&d.Horror.PropertyIndex==1&&d.Scenes.DoorDeaths==deaths+1&&took<17f,"Vale's, night two: the door left open - it comes in quicker ("+took.ToString("F1")+" s)");
+    yield return WaitFor(()=>d.Horror.Caught,12f);yield return WaitFor(()=>!d.Horror.Caught,8f);d.Horror.ResetEncounter();}
+   // -- Vale's, night two, door shut and the papers down: three knocks on the outside of her door; open it and it is on her walk
+   {d.BeginShift(1);d.PaperOpen=false;yield return null;var p=d.Property(1);int outs=d.Scenes.ValeOutsides;
+    yield return Knock26(p);d.Player.SmokePlaceWalker(p.OpeningCentre+p.Inward*(p.DoorWidth+.8f));yield return new WaitForSeconds(.4f);yield return FaceAt(p.OpeningCentre+Vector3.up*1.2f,.8f);d.ToggleDoor(1);yield return new WaitForSeconds(1.2f);
+    yield return Leave26(p);d.Player.SmokePlaceWalker(p.OpeningCentre+p.Inward*(p.DoorWidth+.8f));yield return new WaitForSeconds(.4f);
+    yield return WaitFor(()=>d.Scenes.ValeOutsides>outs,6f);yield return WaitFor(()=>d.Notice==ServiceScript.ValeKnocksOutside,8f);bool knocks=d.Scenes.ValeOutsides==outs+1;
+    yield return FaceAt(p.OpeningCentre+Vector3.up*1.2f,.6f);d.ToggleDoor(1);bool seen=false;float t=Time.time+6f;while(Time.time<t){d.Player.SmokeFace(p.OpeningCentre-p.Inward*5.5f+Vector3.up*1.4f);if(d.Scenes.OutsideShowing&&!seen){seen=true;yield return Shot("v28-vale-on-her-walk");}yield return null;}
+    Require(knocks&&seen&&!d.Scenes.OutsideShowing&&!d.Horror.Active,"Vale's, night two: shut in, papers down - knocks on the outside of her door; open it and it is standing on her walk, then gone (knocks "+knocks+", seen "+seen+")");ServiceScenes27.RulesInTests=false;}
+   // -- Morrow's, night two: the mat for everybody; and the reveal where you can see it
+   {d.BeginShift(1);d.PaperOpen=false;yield return null;var p=d.Property(5);int wipes=d.SecondWipes;var mat=d.Doormat;
+    if(mat){var inward=p.Inward;inward.y=0;inward.Normalize();var spot=mat.position+inward*5.5f;if(UnityEngine.AI.NavMesh.SamplePosition(spot,out var sh,3f,UnityEngine.AI.NavMesh.AllAreas))spot=sh.position;d.Player.SmokePlaceWalker(spot);}
+    yield return WaitFor(()=>d.SecondWipes>wipes,10f);Require(d.SecondWipes==wipes+1&&!d.FeetWiped,"Morrow's, night two: something steps onto her mat behind you - wiped or not");
+    yield return Knock26(p);yield return Leave26(p);yield return WaitFor(()=>d.Horror.Active,6f);bool seenRev=d.Horror.SeenReveal,look=d.Horror.ForcedLook;
+    float vis=0;bool revShot=false;float t=Time.time+5f;while(Time.time<t&&d.Horror.Active&&d.Horror.Phase==PursuitPhase.Reveal){var a=d.Horror.Agent.transform.position+Vector3.up*1.4f;var vp=d.Scene.View.WorldToViewportPoint(a);if(vp.z>0&&vp.x>.1f&&vp.x<.9f&&vp.y>.1f&&vp.y<.95f&&ServiceInteraction.Clear(d.Scene.View.transform.position,a,null,d.Scene.Walker.transform)){vis+=Time.deltaTime;if(vis>.45f&&!revShot){revShot=true;yield return Shot("v28-morrow-reveal");}}yield return null;}
+    yield return Shot("v28-morrow-after");Require(d.Horror.PropertyIndex==5&&seenRev&&look&&vis>.6f,"Morrow's, night two: papers down - it is on the gallery where you can see it, and you turn to it (in view "+vis.ToString("F1")+" s; result "+d.ResultAt(5)+", phase "+d.Horror.Phase+", index "+d.Horror.PropertyIndex+", seen "+seenRev+", look "+look+", "+d.Horror.SeenInfo+")");d.Horror.ResetEncounter();}
+   // -- Bell's, night two: his page says don't come back; come back in and it comes for you
+   {ServiceScenes27.RulesInTests=true;d.BeginShift(1);d.PaperOpen=false;yield return null;var p=d.Property(4);int fr=d.Scenes.Freezes,ret=d.Scenes.BellReturns,amb=d.Horror.ReturnAmbushes;
+    yield return Knock26(p);yield return Leave26(p);Require(d.Books.Flight(p),"(Bell's stairs)");var down=FlatV(d.Books.StairBottom-d.Books.StairTop).normalized;var top=d.Books.StairTop+Vector3.up*.3f;
+    d.Player.SmokePlaceWalker(d.Books.StairBottom+down*4f);yield return new WaitForSeconds(.4f);yield return Face(top);
+    float t=Time.time+8;while(Time.time<t&&d.Scenes.Freezes==fr){d.Player.SmokeFace(top);d.Player.SmokeWalk=FlatV(d.Scene.Walker.transform.position-d.Books.StairBottom).magnitude>1.6f?Vector2.up*.5f:Vector2.zero;yield return null;}d.Player.SmokeWalk=Vector2.zero;
+    yield return WaitFor(()=>d.Books.StairFalls>0&&!d.Busy&&!d.Scenes.Frozen,14f);var bk=d.Books.StairBook;
+    if(bk){var from=FlatV(d.Scene.Walker.transform.position-bk.position).normalized;d.Player.SmokePlaceWalker(bk.position+from*1.1f);yield return new WaitForSeconds(.3f);for(int k=0;k<4&&!d.Scenes.CanReadPage;k++){yield return Face(bk.position);yield return null;}d.Scenes.ReadPage();yield return new WaitForSeconds(.4f);d.Scenes.SmokeClosePage();}
+    // out and down his walk, looking away (his door shuts quietly behind you), then back up to it: open it, go in
+    var o=Outward(p);d.Player.SmokePlaceWalker(p.Door.position+o*6.5f);yield return new WaitForSeconds(.3f);yield return FaceAt(p.Door.position+o*20f+Vector3.up*1.5f,.4f);
+    yield return WaitFor(()=>d.Life.DoorOpenDegrees(4)<3f&&!d.Life.DoorMoving(4),6f);bool shutBehind=d.Life.DoorOpenDegrees(4)<3f;
+    d.Player.SmokePlaceWalker(p.OpeningCentre-p.Inward*.8f);yield return new WaitForSeconds(.3f);yield return FaceAt(p.OpeningCentre+Vector3.up*1.2f,.5f);int leaf=d.NearbyLeaf();if(leaf==4&&d.Life.DoorOpenDegrees(4)<25f)d.ToggleDoor(4);yield return new WaitForSeconds(1.4f);bool reopened=d.Life.DoorOpenDegrees(4)>25f;
+    d.Player.SmokePlaceWalker(p.OpeningCentre+p.Inward*3f);yield return WaitFor(()=>d.Horror.Active,6f);yield return new WaitForSeconds(.6f);yield return Shot("v28-bell-came-back");
+    Require(shutBehind&&reopened&&d.Scenes.BellReturns==ret+1&&d.Horror.Active&&d.Horror.PropertyIndex==4&&d.Horror.ReturnAmbushes==amb,"Bell's, night two: read his page, leave (his door shuts behind you), open it again, go back in - it is on the stairs and it comes for you (shut "+shutBehind+", leaf "+leaf+", reopened "+reopened+")");
+    yield return WaitFor(()=>d.Horror.Caught,14f);yield return WaitFor(()=>!d.Horror.Caught,8f);d.Horror.ResetEncounter();ServiceScenes27.RulesInTests=false;}
+   // -- inside a house, anywhere in it, the line does not send you up the drive (Vale's upstairs bedroom is along the
+   //    same wall as her front door - it used to count as outside)
+   {d.BeginShift(0);d.PaperOpen=false;yield return null;foreach(var i in new[]{0,3})d.Docket.Find(e=>e.Property==i).Result=ServiceResult.Served;
+    var spot=new Vector3(95.8f,4.41f,226.6f);if(UnityEngine.AI.NavMesh.SamplePosition(spot,out var sh,1.5f,UnityEngine.AI.NavMesh.AllAreas))spot=sh.position;d.Player.SmokePlaceWalker(spot);yield return new WaitForSeconds(1.2f);
+    string g=d.Guide.Direction;Require(!g.StartsWith("UP THE DRIVE")&&!g.StartsWith("BACK TO THE CAR"),"Upstairs in Vale's bedroom the line does not send you up the drive ('"+g+"')");}
+   // -- V28b: Vale's front door from right inside it (0.4 m): the prompt is there (not the note on its outside), E opens it,
+   //    and you are eased back out of its swing
+   {d.BeginShift(0);d.PaperOpen=false;yield return null;var p=d.Property(1);yield return Knock26(p);
+    d.Player.SmokePlaceWalker(p.OpeningCentre+p.Inward*(p.DoorWidth+.8f));yield return new WaitForSeconds(.4f);yield return FaceAt(p.OpeningCentre+Vector3.up*1.2f,.6f);
+    if(d.Life.DoorOpenDegrees(1)>25f&&d.NearbyLeaf()==1){d.ToggleDoor(1);yield return new WaitForSeconds(1.6f);}bool wasShut=d.Life.DoorOpenDegrees(1)<6f;
+    d.Player.SmokePlaceWalker(p.OpeningCentre+p.Inward*.4f);yield return new WaitForSeconds(.4f);yield return FaceAt(p.OpeningCentre+Vector3.up*1.2f,.5f);
+    int leaf=d.NearbyLeaf();bool notNote=d.NearbyNotice()<0;bool opened=leaf==1&&d.ToggleDoor(1);yield return new WaitForSeconds(1.8f);
+    float deg=d.Life.DoorOpenDegrees(1);float inBy=Vector3.Dot(d.Scene.Walker.transform.position-p.OpeningCentre,p.Inward);
+    Require(wasShut&&leaf==1&&notNote&&opened&&deg>25f&&inBy>=p.DoorWidth+.1f,"Vale's front door from right inside it (0.4 m): 'E Open the door' (not the note), it opens, and you step back out of its swing (shut first "+wasShut+", leaf "+leaf+", note "+!notNote+", "+deg.ToString("F0")+" deg, now "+inBy.ToString("F2")+" m in)");d.Horror.ResetEncounter();}
+   // -- V28b: Bell's ambush when you leave on foot - run straight down the drive for the car and you get away
+   {d.BeginShift(1);d.PaperOpen=false;yield return null;var p=d.Property(4);int am=d.Horror.ReturnAmbushes,caught=d.Horror.Captures;
+    d.Player.TeleportCar(p.Gate.position+Vector3.up*.3f,Quaternion.LookRotation(FlatV(p.Gate.forward)));yield return new WaitForSeconds(.3f);
+    yield return Knock26(p);yield return Leave26(p);d.Horror.ResetEncounter();d.Horror.ArmReturnAmbush();
+    var o=Outward(p);var R=p.ApproachRoute;d.Player.SmokePlaceWalker(p.Door.position+o*2.6f);yield return new WaitForSeconds(2.2f);
+    float t=Time.time+16;while(Time.time<t&&d.Horror.ReturnAmbushes==am){var dn=FlatV(R[0]-d.Scene.Walker.transform.position);d.Player.SmokeFace(d.Scene.Walker.transform.position+dn+Vector3.up*1.5f);d.Player.SmokeWalk=Vector2.up;yield return null;}d.Player.SmokeWalk=Vector2.zero;
+    bool fired=d.Horror.ReturnAmbushes==am+1;float t0=Time.time;
+    yield return RunDrive(p,()=>d.Horror.Caught||d.CanEnterCar);float gap=d.Horror.Agent?FlatV(d.Horror.Agent.transform.position-d.Scene.Walker.transform.position).magnitude:-1;bool atCar=d.CanEnterCar&&!d.Horror.Caught;
+    bool doorEscape=false,clean=false;if(atCar){d.Player.EnterCar();yield return null;doorEscape=d.Horror.Phase==PursuitPhase.Escaped;d.Player.StartEngine();clean=!d.Player.FailedIgnition;float u=Time.time+6;while(Time.time<u&&d.Horror.Active&&!d.Horror.Caught){if(d.Player.EngineRunning)d.Player.SmokeThrottle=1;yield return null;}d.Player.SmokeThrottle=0;d.Player.SmokeBrake=true;yield return new WaitForSeconds(.6f);d.Player.SmokeBrake=false;}
+    Require(fired&&atCar&&doorEscape&&clean&&!d.Horror.Caught&&d.Horror.Captures==caught,"Bell's, night two: his door bangs open as you go down the drive - run for the car, start it, drive: you get away (fired "+fired+", in the car and away "+doorEscape+", started first time "+clean+", at the car "+atCar+" after "+(Time.time-t0).ToString("F1")+" s with it "+gap.ToString("F1")+" m behind, caught "+d.Horror.Caught+")");
+    d.Horror.ResetEncounter();}
+   // -- V28b: caught at Bell's: the retry at the gate is clean - walk back in, leave the papers, nothing comes again
+   {ServiceScenes27.RulesInTests=true;d.BeginShift(1);d.PaperOpen=false;yield return null;var p=d.Property(4);
+    int fr0=d.Scenes.Freezes;yield return Knock26(p);yield return Leave26(p);d.Horror.ResetEncounter();
+    // his page first (the freeze, the book), so walking back in after the retry WOULD be 'coming back' - BellCaught must stop it
+    bool warned=false;if(d.Books.Flight(p)){var dn0=FlatV(d.Books.StairBottom-d.Books.StairTop).normalized;var top0=d.Books.StairTop+Vector3.up*.3f;int fall0=d.Books.StairFalls;d.Player.SmokePlaceWalker(d.Books.StairBottom+dn0*4f);yield return new WaitForSeconds(.4f);yield return Face(top0);{float tf=Time.time+8;while(Time.time<tf&&d.Scenes.Freezes==fr0){d.Player.SmokeFace(top0);d.Player.SmokeWalk=FlatV(d.Scene.Walker.transform.position-d.Books.StairBottom).magnitude>1.6f?Vector2.up*.5f:Vector2.zero;yield return null;}d.Player.SmokeWalk=Vector2.zero;}
+     yield return WaitFor(()=>d.Books.StairFalls>fall0&&!d.Busy&&!d.Scenes.Frozen,14f);yield return new WaitForSeconds(1.2f);var bk=d.Books.StairBook;
+     if(bk){var from=FlatV(d.Scene.Walker.transform.position-bk.position).normalized;d.Player.SmokePlaceWalker(bk.position+from*1.1f);yield return new WaitForSeconds(.3f);for(int k=0;k<4&&!d.Scenes.CanReadPage;k++){yield return Face(bk.position);yield return null;}if(d.Scenes.CanReadPage){d.Scenes.ReadPage();yield return new WaitForSeconds(.4f);warned=d.Scenes.PageOpen;d.Scenes.SmokeClosePage();}}}
+    d.Horror.ArmReturnAmbush();int am=d.Horror.ReturnAmbushes,ret=d.Scenes.BellReturns;
+    var o=Outward(p);var R=p.ApproachRoute;d.Player.SmokePlaceWalker(p.Door.position+o*2.6f);yield return new WaitForSeconds(2.2f);
+    float t=Time.time+16;while(Time.time<t&&d.Horror.ReturnAmbushes==am){var dn=FlatV(R[0]-d.Scene.Walker.transform.position);d.Player.SmokeFace(d.Scene.Walker.transform.position+dn+Vector3.up*1.5f);d.Player.SmokeWalk=Vector2.up;yield return null;}d.Player.SmokeWalk=Vector2.zero;
+    yield return WaitFor(()=>d.Horror.Caught,14f);bool caught=d.Horror.Caught;yield return WaitFor(()=>!d.Horror.Caught&&!d.Horror.Active,10f);
+    bool pending=d.ResultAt(4)==ServiceResult.Pending;yield return Leave26(p);yield return new WaitForSeconds(3f);bool calmIn=!d.Horror.Active;bool rearmed=d.Horror.ReturnState.StartsWith("armed True");
+    d.Player.SmokePlaceWalker(p.Door.position+o*9f);yield return new WaitForSeconds(3f);d.Player.SmokePlaceWalker(p.OpeningCentre+p.Inward*3f);yield return new WaitForSeconds(4f);
+    Require(warned&&!rearmed&&caught&&pending&&calmIn&&!d.Horror.Active&&d.ResultAt(4)==ServiceResult.LeftAtDoor&&d.Horror.ReturnAmbushes==am+1&&d.Scenes.BellReturns==ret,"Bell's, night two: his page read, caught once, the retry is clean - papers left again (the door ambush not re-armed), out and back in, nothing comes (page "+warned+", re-armed "+rearmed+", caught "+caught+", retry pending "+pending+", calm "+calmIn+", ambushes "+(d.Horror.ReturnAmbushes-am)+", returns "+(d.Scenes.BellReturns-ret)+")");
+    d.Horror.ResetEncounter();ServiceScenes27.RulesInTests=false;}
+   // -- V28b: Morrow's night two, the way a person runs it: out of her door and down her drive to the car
+   {d.BeginShift(1);d.PaperOpen=false;foreach(var i in new[]{0,3,1,4})d.Docket.Find(e=>e.Property==i).Result=ServiceResult.Served;var p=d.Property(5);var o=Outward(p);
+    d.Player.TeleportCar(p.Gate.position+Vector3.up*.3f,Quaternion.LookRotation(FlatV(p.Gate.forward)));yield return new WaitForSeconds(.3f);
+    d.Life.OpenDoor(p,true);yield return new WaitForSeconds(.8f);
+    d.Player.SmokePlaceWalker(p.TableApproach.position);yield return new WaitForSeconds(.3f);d.Horror.Begin(5);yield return new WaitForSeconds(1.5f);float t0=Time.time;
+    yield return Sprint(p.Door.position+o*1.8f,true,30,()=>d.Horror.Caught);yield return RunDrive(p,()=>d.Horror.Caught||d.CanEnterCar);
+    float gap=d.Horror.Agent?Vector3.Distance(d.Horror.Agent.transform.position,d.Scene.Walker.transform.position):-1;bool atCar=!d.Horror.Caught&&d.CanEnterCar;if(atCar){d.Player.EnterCar();yield return null;}
+    Require(atCar&&d.Horror.Phase==PursuitPhase.Escaped,"Morrow's, night two: out of her door and down her drive at a run - you reach the car and get away ("+(Time.time-t0).ToString("F1")+" s, it "+gap.ToString("F1")+" m behind, winded "+d.Player.WindedCount+" times)");d.Horror.ResetEncounter();}
+   // -- V28b: Bell's, night two, come back in: it comes down his stairs at you - turn, run out and down his drive: you reach the car
+   {d.BeginShift(1);d.PaperOpen=false;foreach(var i in new[]{0,3,1})d.Docket.Find(e=>e.Property==i).Result=ServiceResult.Served;var p=d.Property(4);var o=Outward(p);
+    d.Player.TeleportCar(p.Gate.position+Vector3.up*.3f,Quaternion.LookRotation(FlatV(p.Gate.forward)));yield return new WaitForSeconds(.3f);
+    d.Life.OpenDoor(p,true);yield return new WaitForSeconds(.8f);d.Player.SmokePlaceWalker(p.OpeningCentre+p.Inward*3f);yield return new WaitForSeconds(.3f);
+    /* the night card from BeginShift holds your input for its first seconds - in play you never walk back in under it */yield return WaitFor(()=>!d.InputBlocked&&!d.Busy,10f);
+    var top=d.Books.Flight(p)&&d.Books.StairKnown?d.Books.StairTop:p.EntitySpawn.position;var spawn=UnityEngine.AI.NavMesh.SamplePosition(top,out var sh,1.5f,UnityEngine.AI.NavMesh.AllAreas)?sh.position:p.EntitySpawn.position;
+    yield return FaceAt(top+Vector3.up*.4f,.3f);d.Horror.BeginAt(4,spawn,true);bool stalk=d.Horror.StairStalk;var from=d.Horror.Agent?d.Horror.Agent.transform.position:Vector3.zero;yield return new WaitForSeconds(1.2f);float t0=Time.time;
+    yield return Sprint(p.Door.position+o*1.8f,true,30,()=>d.Horror.Caught);yield return RunDrive(p,()=>d.Horror.Caught||d.CanEnterCar);
+    float gap=d.Horror.Agent?Vector3.Distance(d.Horror.Agent.transform.position,d.Scene.Walker.transform.position):-1;bool atCar=!d.Horror.Caught&&d.CanEnterCar;if(atCar){d.Player.EnterCar();yield return null;}
+    Require(stalk&&atCar&&d.Horror.Phase==PursuitPhase.Escaped,"Bell's, night two, come back in: it comes down the stairs at you - out of his door and down his drive at a run, you reach the car and get away (stalks "+stalk+", from "+from.ToString("F1")+", "+(Time.time-t0).ToString("F1")+" s, it "+gap.ToString("F1")+" m behind, winded "+d.Player.WindedCount+" times)");d.Horror.ResetEncounter();}
+   // -- V28b (audit): night three at Vale's - shut her door behind you as her note says, leave the papers: the chase starts, the
+   //    door bangs open, you run out and get away
+   {ServiceScenes27.RulesInTests=true;d.BeginShift(2);d.PaperOpen=false;if(d.Scene.LateRoad)d.Scene.LateRoad.SetActive(true);yield return null;var p=d.Property(1);var o=Outward(p);
+    d.Player.TeleportCar(p.Gate.position+Vector3.up*.3f,Quaternion.LookRotation(FlatV(p.Gate.forward)));yield return new WaitForSeconds(.3f);
+    yield return Knock26(p);d.Player.SmokePlaceWalker(p.OpeningCentre+p.Inward*(p.DoorWidth+.8f));yield return new WaitForSeconds(.4f);yield return FaceAt(p.OpeningCentre+Vector3.up*1.2f,.6f);
+    if(d.Life.DoorOpenDegrees(1)>25f&&d.NearbyLeaf()==1){d.ToggleDoor(1);yield return new WaitForSeconds(1.6f);}bool shut=d.Life.DoorOpenDegrees(1)<6f;
+    yield return Leave26(p);yield return WaitFor(()=>d.Horror.Active,8f);bool began=d.Horror.Active;yield return WaitFor(()=>d.Life.DoorOpenDegrees(1)>25f,1.5f);bool banged=d.Life.DoorOpenDegrees(1)>25f;
+    yield return WaitFor(()=>d.Horror.Phase==PursuitPhase.Chase,6f);yield return Sprint(p.Door.position+o*1.8f,true,30,()=>d.Horror.Caught);yield return RunDrive(p,()=>d.Horror.Caught||d.CanEnterCar);
+    bool atCar=!d.Horror.Caught&&d.CanEnterCar;if(atCar){d.Player.EnterCar();yield return null;}
+    Require(shut&&began&&banged&&atCar&&d.Horror.Phase==PursuitPhase.Escaped,"Vale's, night three: shut her door behind you, papers down - it comes, her door bangs open, you run out and get away (shut "+shut+", began "+began+", door open "+banged+", at the car "+atCar+")");d.Horror.ResetEncounter();ServiceScenes27.RulesInTests=false;}
+   // -- V28b (audit): Morrow's bulletin cannot be read through her front wall from the porch
+   {d.BeginShift(1);d.PaperOpen=false;yield return null;var p=d.Property(5);var t=d.Scene.GetComponentsInChildren<Transform>(true).FirstOrDefault(x=>x.name=="V28 readable — morrow-bulletin");bool can=true;
+    if(t){var o=Outward(p);var outside=t.position+o*1.2f;if(UnityEngine.AI.NavMesh.SamplePosition(outside,out var nh,1.5f,UnityEngine.AI.NavMesh.AllAreas))outside=nh.position;d.Player.SmokePlaceWalker(outside);yield return new WaitForSeconds(.3f);yield return FaceAt(t.position,.5f);can=d.Scenes.CanReadPage;}
+    Require(t&&!can,"Morrow's bulletin is not offered through her front wall from outside ("+(t?"looked from "+FlatV(d.Scene.Walker.transform.position-t.position).magnitude.ToString("F1")+" m":"no bulletin")+")");}
+   // -- V28b (review): night three at Vale's, let in (knocked): standing at her desk and aimed at the clipping beside the
+   //    delivery point, E reads the clipping - it does not leave the papers (which would start the chase and lose the page)
+   {d.BeginShift(2);d.PaperOpen=false;if(d.Scene.LateRoad)d.Scene.LateRoad.SetActive(true);yield return null;var p=d.Property(1);d.Player.TeleportCar(p.Gate.position+Vector3.up*.3f,Quaternion.LookRotation(FlatV(p.Gate.forward)));yield return new WaitForSeconds(.3f);yield return Knock26(p);bool access=d.AccessGranted(1);
+    var t=d.Scene.GetComponentsInChildren<Transform>(true).FirstOrDefault(x=>x.name=="V28 readable — vale-clipping");bool desk=false,page=false,read=false;int tried=0,canRead=0,deskSeen=0;
+    // stand where both the clipping and the papers' place are in reach (round the desk, a step off it), aimed at the clipping
+    if(t)for(int a=0;a<24&&!(desk&&page);a++)foreach(float r in new[]{1.0f,1.25f}){var q=t.position+Quaternion.Euler(0,a*15,0)*Vector3.forward*r;
+      if(!UnityEngine.AI.NavMesh.SamplePosition(q,out var sh,1.0f,UnityEngine.AI.NavMesh.AllAreas)||Mathf.Abs(sh.position.y-t.position.y)>1.9f||!ServiceInteraction.Clear(sh.position+Vector3.up*1.6f,t.position,t.parent,d.Scene.Walker.transform))continue;
+      d.Player.SmokePlaceWalker(sh.position);yield return new WaitForSeconds(.2f);for(int k=0;k<3;k++){yield return Face(t.position);yield return null;}tried++;if(d.Scenes.CanReadPage)canRead++;desk=d.NearbyDoor()==1;if(desk)deskSeen++;page=d.PaperBeatsDesk(1);if(desk&&page)break;}
+    if(desk&&page){d.UseOnFoot();yield return new WaitForSeconds(.5f);read=d.Scenes.PageOpen&&d.Scenes.LastReadable=="vale-clipping";d.Scenes.SmokeClosePage();yield return new WaitForSeconds(.3f);}
+    Require(t&&desk&&page&&read&&!d.Horror.Active&&d.ResultAt(1)==ServiceResult.Pending,"Vale's, night three, at her desk: aimed at the clipping beside the papers' place, E reads it and leaves nothing (let in "+access+", stands tried "+tried+", readable at "+canRead+", desk at "+deskSeen+"; desk in reach "+desk+", paper wins "+page+", read "+read+", chase "+d.Horror.Active+")");d.Horror.ResetEncounter();}
+   // -- V28b (audit): Bell's, night two: the straight walk from his door to the back room sets off the stair freeze
+   {ServiceScenes27.RulesInTests=true;d.BeginShift(1);d.PaperOpen=false;yield return null;var p=d.Property(4);int fr=d.Scenes.Freezes;yield return Knock26(p);
+    d.Player.SmokePlaceWalker(p.OpeningCentre+p.Inward*.8f);yield return new WaitForSeconds(.3f);yield return Face(p.TableApproach.position+Vector3.up*1.4f);
+    yield return Sprint(p.TableApproach.position,false,20,()=>d.Scenes.Freezes>fr);yield return WaitFor(()=>!d.Scenes.Frozen&&!d.Busy,14f);
+    Require(d.Scenes.Freezes>fr,"Bell's, night two: walking straight from his door to the back room, the stairs freeze you on the way (freezes "+(d.Scenes.Freezes-fr)+")");d.Horror.ResetEncounter();ServiceScenes27.RulesInTests=false;}
+   // -- V28b (audit): Harrow's watcher stands BEHIND you ('right behind me, don't turn around'), not in front
+   {d.BeginShift(1);d.PaperOpen=false;yield return null;var p=d.Property(3);d.Player.SmokePlaceWalker(p.TableApproach.position);yield return new WaitForSeconds(.3f);yield return Face(p.DeliveryPoint.position);
+    d.Horror.Begin(3);yield return new WaitForSeconds(.3f);var ag=d.Horror.Agent;float dot=ag?Vector3.Dot(FlatV(d.Scene.View.transform.forward).normalized,FlatV(ag.transform.position-d.Scene.View.transform.position).normalized):1;
+    Require(ag&&d.Horror.Active&&dot<-.3f,"Harrow's watcher stands behind you when it breathes (facing "+dot.ToString("F2")+")");d.Horror.ResetEncounter();}
+   // -- V28b (review): Harrow's, night two: papers down, and in the car before it breathes - it does not start behind a driver
+   {d.BeginShift(1);d.PaperOpen=false;yield return null;var p=d.Property(3);d.Player.TeleportCar(p.Gate.position+Vector3.up*.3f,Quaternion.LookRotation(FlatV(p.Gate.forward)));yield return new WaitForSeconds(.3f);
+    int bu=d.Scenes.Buildups;yield return Knock26(p);yield return Leave26(p);bool left=d.ResultAt(3)!=ServiceResult.Pending;d.Player.EnterCar();yield return null;float tw=Time.time+9;while(Time.time<tw&&!d.Horror.Active&&!d.Horror.Caught)yield return null;bool built=d.Scenes.Buildups>bu;
+    Require(left&&built&&d.Player.InCar&&!d.Horror.Active&&!d.Horror.Caught,"Harrow's, night two: papers down, then in the car before it breathes - it does not come for a driver (papers "+left+", build-up "+built+", in car "+d.Player.InCar+", came "+d.Horror.Active+")");d.Horror.ResetEncounter();}
+   // -- the story: what you can pick up and read, each on its night
+   foreach(var (night,key,prompt) in new[]{(0,"harrow-photo","Look behind the photograph"),(1,"vale-letter","Read the letter"),(1,"morrow-bulletin","Read the bulletin"),(2,"vale-clipping","Read the clipping")}){
+    d.BeginShift(night);d.PaperOpen=false;if(night==2&&d.Scene.LateRoad)d.Scene.LateRoad.SetActive(true);yield return null;var t=d.Scene.GetComponentsInChildren<Transform>(true).FirstOrDefault(x=>x.name=="V28 readable — "+key);
+    bool shown=t&&t.gameObject.activeInHierarchy;bool ok=false;string got="";
+    if(t){Vector3 stand=t.position;float best=99;for(int a=0;a<24;a++){var dv=Quaternion.Euler(0,a*15,0)*Vector3.forward;var q=t.position+dv*1.25f;if(UnityEngine.AI.NavMesh.SamplePosition(q,out var h,.7f,UnityEngine.AI.NavMesh.AllAreas)&&Mathf.Abs(h.position.y-t.position.y)<1.9f&&ServiceInteraction.Clear(h.position+Vector3.up*1.6f,t.position,t.parent,d.Scene.Walker.transform)){float dd=Vector3.Distance(h.position,q);if(dd<best){best=dd;stand=h.position;}}}
+     d.Player.SmokePlaceWalker(stand);yield return new WaitForSeconds(.3f);for(int k=0;k<4&&!d.Scenes.CanReadPage;k++){yield return Face(t.position);yield return null;}
+     got=d.Scenes.ReadPrompt;if(d.Scenes.CanReadPage){d.Scenes.ReadPage();yield return new WaitForSeconds(.5f);yield return Shot("v28-read-"+key);ok=d.Scenes.PageOpen&&d.Scenes.LastReadable==key;d.Scenes.SmokeClosePage();yield return null;}}
+    Require(shown&&ok&&got.Contains(prompt),"The story: '"+prompt+"' at "+key+" on night "+(night+1)+" (prompt '"+got+"')");}
+   {d.BeginShift(0);d.PaperOpen=false;yield return null;var t=d.Scene.GetComponentsInChildren<Transform>(true).FirstOrDefault(x=>x.name=="V28 readable — vale-letter");Require(t&&!t.gameObject.activeInHierarchy,"...and each only on its own night (Vale's letter is not there on night one)");}
+  }
+  // V28 ("furniture still misplaced"): does anything in the houses move at run time? Every prop as saved in the scene
+  // (Resources/V28/props28.txt, written by the PropDump28 editor stage) against where it is in the running game - at the
+  // start, and a few seconds into each night (the scripts that set nights up run then).
+  static string RunPath(Transform t){var s=t.name;while(t.parent){t=t.parent;s=t.name+"/"+s;}return s.Replace((char)10,' ');}
+  IEnumerator PropDiff28(){var ta=Resources.Load<TextAsset>("V28/props28");var sb=new System.Text.StringBuilder();if(!ta){Require(false,"props28 list present");yield break;}
+   var live=new Dictionary<string,Transform>();foreach(var t in d.Scene.GetComponentsInChildren<Transform>(true)){var k=RunPath(t);if(!live.ContainsKey(k))live[k]=t;}
+   var rows=ta.text.Split((char)10).Where(l=>l.Contains((char)9)).Select(l=>l.TrimEnd((char)13).Split((char)9)).ToList();
+   int total=0;
+   foreach(var (night,label) in new[]{(-1,"at load"),(0,"night one"),(1,"night two"),(2,"night three")}){
+    if(night>=0){d.BeginShift(night);d.PaperOpen=false;if(night==2&&d.Scene.LateRoad)d.Scene.LateRoad.SetActive(true);yield return new WaitForSeconds(6f);}
+    int moved=0,missing=0,toggled=0;
+    foreach(var r in rows){if(!live.TryGetValue(r[0],out var t)){missing++;if(missing<=5)sb.AppendLine($"[{label}] MISSING {r[0]}");continue;}
+     var want=new Vector3(float.Parse(r[1],System.Globalization.CultureInfo.InvariantCulture),float.Parse(r[2],System.Globalization.CultureInfo.InvariantCulture),float.Parse(r[3],System.Globalization.CultureInfo.InvariantCulture));
+     var wr=Quaternion.Euler(float.Parse(r[4],System.Globalization.CultureInfo.InvariantCulture),float.Parse(r[5],System.Globalization.CultureInfo.InvariantCulture),float.Parse(r[6],System.Globalization.CultureInfo.InvariantCulture));
+     float dp=Vector3.Distance(want,t.position),da=Quaternion.Angle(wr,t.rotation);bool act=t.gameObject.activeInHierarchy,wact=r[7]=="1";
+     if(dp>.01f||da>1f){moved++;sb.AppendLine($"[{label}] MOVED {r[0].Replace("SERVICE — Hollis County/","")} by {dp:F3} m / {da:F1} deg (now {t.position:F2}, saved {want:F2})");}
+     if(act!=wact){toggled++;if(toggled<=40)sb.AppendLine($"[{label}] {(act?"SHOWN":"HIDDEN")} {r[0].Replace("SERVICE — Hollis County/","")}");}}
+    sb.AppendLine($"== {label}: {rows.Count} saved, {moved} moved, {toggled} shown/hidden differently, {missing} missing");total+=moved;}
+   File.WriteAllText(Path.Combine(dir,"propdiff.txt"),sb.ToString());Require(true,"prop diff written ("+total+" moves in all)");}
   static void DriveProgress25(ServiceProperty p,Vector3 at,out float lateral){lateral=float.MaxValue;var r=p.ApproachRoute;for(int i=1;i<r.Length;i++){var a=r[i-1];var b=r[i];a.y=b.y=at.y;var ab=b-a;float len=ab.magnitude;if(len<1e-4f)continue;float k=Mathf.Clamp01(Vector3.Dot(at-a,ab)/(len*len));lateral=Mathf.Min(lateral,Vector3.Distance(at,a+ab*k));}}
   IEnumerator V23(){
    var hud=d.GetComponentInChildren<ServiceHUD>();
@@ -558,7 +751,7 @@ namespace ServiceGameV2 {
    {d.BeginShift(0);d.PaperOpen=false;var p=d.Property(0);var A=p.ApproachRoute;yield return new WaitForSeconds(.3f);Require(d.Life.Mode==ServiceLife.DogMode.Home,"Rex at home before you come");
     d.Player.SmokePlaceWalker(A[8]);yield return null;bool left=false,far=false,inside=false,porch=false;float farthest=0,firstMove=-1,startT=Time.time;string modes="";int escortFrames=0,escortInView=0;
     for(int i=9;i<A.Length;i++){var c=A[i];float tt=Time.time+8;while(Vector2.Distance(new Vector2(d.Scene.Walker.transform.position.x,d.Scene.Walker.transform.position.z),new Vector2(c.x,c.z))>.4f&&Time.time<tt){d.Player.SmokeFace(c);d.Player.SmokeWalk=Vector2.up;
-      if(d.Life.Mode!=ServiceLife.DogMode.Home){if(!left)firstMove=Time.time-startT;left=true;}if(d.Life.Mode==ServiceLife.DogMode.Escort){var dv=d.Scene.View.WorldToViewportPoint(d.Life.DogPosition+Vector3.up*.35f);escortFrames++;if(dv.z>0&&dv.x>.1f&&dv.x<.9f&&dv.y>0&&dv.y<1)escortInView++;if(escortFrames%15==1)File.AppendAllText(Path.Combine(dir,"rex.txt"),$"{Time.time:F2} walker {d.Scene.Walker.transform.position} wfwd {d.Scene.Walker.transform.forward} vfwd {d.Scene.View.transform.forward} dog {d.Life.DogPosition} vp {dv}"+System.Environment.NewLine);}if(!modes.EndsWith(d.Life.Mode.ToString()))modes+=" "+d.Life.Mode;farthest=Mathf.Max(farthest,Vector3.Distance(d.Life.DogPosition,d.Life.DogHome));if(Vector3.Distance(d.Life.DogPosition,d.Life.DogHome)>8)far=true;if(OnBuilding(d.Life.DogPosition))inside=porch=true;yield return null;}
+      if(d.Life.Mode!=ServiceLife.DogMode.Home){if(!left)firstMove=Time.time-startT;left=true;}if(d.Life.Mode==ServiceLife.DogMode.Escort){/* V28: his back (he is a big shepherd since V27), not his belly - at 2.5 m his middle sits on the frame's bottom edge */var dv=d.Scene.View.WorldToViewportPoint(d.Life.DogPosition+Vector3.up*.55f);escortFrames++;if(dv.z>0&&dv.x>.1f&&dv.x<.9f&&dv.y>0&&dv.y<1)escortInView++;if(escortFrames%15==1)File.AppendAllText(Path.Combine(dir,"rex.txt"),$"{Time.time:F2} walker {d.Scene.Walker.transform.position} wfwd {d.Scene.Walker.transform.forward} vfwd {d.Scene.View.transform.forward} dog {d.Life.DogPosition} vp {dv}"+System.Environment.NewLine);}if(!modes.EndsWith(d.Life.Mode.ToString()))modes+=" "+d.Life.Mode;farthest=Mathf.Max(farthest,Vector3.Distance(d.Life.DogPosition,d.Life.DogHome));if(Vector3.Distance(d.Life.DogPosition,d.Life.DogHome)>8)far=true;if(OnBuilding(d.Life.DogPosition))inside=porch=true;yield return null;}
      if(i==16)yield return Shot("v22-rex-escort");}
     d.Player.SmokeWalk=Vector2.zero;
     Require(escortFrames>0&&escortInView>escortFrames*.6f,$"Rex runs in front of you up the drive, in view {escortInView} of {escortFrames} escort frames (steps refused: ground {d.Life.BlockedBy[0]} indoors {d.Life.BlockedBy[1]} high {d.Life.BlockedBy[2]} jump {d.Life.BlockedBy[3]} navmesh {d.Life.BlockedBy[4]}, travel {d.Life.DogTravel:F1} m)");
@@ -623,6 +816,7 @@ namespace ServiceGameV2 {
     // the corner stamp and the card text sit on the screen (the V21 tour caught the stamp 340 px off the left edge)
     tc.Stamp("77 LATIGO TRAIL","10:14 PM");yield return new WaitForSeconds(1.2f);var corners=new Vector3[4];tc.StampRect.GetWorldCorners(corners);
     Require(corners[0].x>=0&&corners[0].y>=0&&corners[2].x<=Screen.width&&corners[2].y<=Screen.height&&corners[0].x<Screen.width*.2f&&corners[0].y<Screen.height*.25f,"Arrival stamp sits in the bottom-left corner of the screen ("+corners[0]+")");
+    {float ui=Mathf.Min(Screen.width/1280f,Screen.height/720f),subBottom=Screen.height*.5f-(646-360)*ui;Require(corners[1].y<=subBottom+1f,"Arrival stamp sits below the subtitle band, so a long line cannot run into it (stamp top "+corners[1].y.ToString("F0")+", subtitles end "+subBottom.ToString("F0")+")");}
     tc.CardRect.GetWorldCorners(corners);var mid=(corners[0]+corners[2])*.5f;Require(Mathf.Abs(mid.x-Screen.width*.5f)<Screen.width*.1f&&Mathf.Abs(mid.y-Screen.height*.5f)<Screen.height*.2f,"Card time is centred on the screen ("+mid+")");}
    // dread: a pursuit tears the tape, and it heals afterwards
    {d.BeginShift(1);d.PaperOpen=false;var p=d.Property(5);d.Player.SmokePlaceWalker(p.TableApproach.position);yield return null;d.Horror.Begin(5);yield return new WaitForSeconds(4);

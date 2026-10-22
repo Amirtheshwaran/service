@@ -27,14 +27,27 @@ namespace ServiceGameV2 {
   float clock;
   readonly Color white=new Color(.93f,.94f,.91f),dim=new Color(.56f,.59f,.57f),faint=new Color(.38f,.41f,.40f),amber=new Color(.86f,.68f,.40f);
 
+  // V28: full screen always at the monitor's own pixels; a window is the largest 16:9 that fits on the desktop
+  static int WindowHeight(int w,int h){int wh=Mathf.Max(540,Mathf.FloorToInt(Mathf.Min(h-120,h*.82f)/36f)*36); /* V28b (audit): fits a 768-line laptop above the taskbar */if(wh*16/9>w*.95f)wh=Mathf.FloorToInt(w*.95f*9f/16f/36f)*36;return wh;}
+  public static void ApplyDisplay(FullScreenMode mode){int w=Display.main.systemWidth,h=Display.main.systemHeight;
+   if(mode==FullScreenMode.Windowed){int wh=WindowHeight(w,h);Screen.SetResolution(wh*16/9,wh,mode);}
+   else Screen.SetResolution(w,h,mode);Debug.Log($"SERVICE display -> {mode} at {(mode==FullScreenMode.Windowed?"a window":w+"x"+h)}");}
   public void Initialize(ServiceDirector director){
    d=director;osd=Resources.Load<Font>("Fonts/VT323-Regular");if(!osd)osd=Resources.Load<Font>("Fonts/Barlow-Regular");
    var o=new GameObject("Service menus",typeof(RectTransform),typeof(Canvas),typeof(CanvasScaler));o.transform.SetParent(transform,false);canvas=o.GetComponent<Canvas>();canvas.renderMode=RenderMode.ScreenSpaceOverlay;canvas.sortingOrder=60;
    var scaler=o.GetComponent<CanvasScaler>();scaler.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;scaler.referenceResolution=new Vector2(1280,720);scaler.screenMatchMode=CanvasScaler.ScreenMatchMode.Expand;
+   // V28 ("the game breaks at 1440p, the text and everything"): the player starts as a 1280x720 window and DISPLAY only
+   // changed the mode, so full screen stretched that small (or a dragged, odd-shaped) picture over the monitor - every
+   // letter resampled soft. First launch goes borderless at the monitor's own resolution; a saved full screen that is not
+   // native is put right; a window taller than the desktop is brought back to a 16:9 one that fits.
+   if(!Application.isEditor&&!d.IsSmoke&&!d.IsChaos&&!d.IsTour){int nw=Display.main.systemWidth,nh=Display.main.systemHeight;Debug.Log($"SERVICE display {Screen.width}x{Screen.height} {Screen.fullScreenMode}, monitor {nw}x{nh}");
+    if(PlayerPrefs.GetInt("SERVICE.display28",0)==0){PlayerPrefs.SetInt("SERVICE.display28",1);ApplyDisplay(FullScreenMode.FullScreenWindow);}
+    else if(Screen.fullScreenMode!=FullScreenMode.Windowed&&(Screen.width!=nw||Screen.height!=nh))ApplyDisplay(Screen.fullScreenMode==FullScreenMode.MaximizedWindow?FullScreenMode.FullScreenWindow:Screen.fullScreenMode);
+    else if(Screen.fullScreenMode==FullScreenMode.Windowed&&(Screen.height>WindowHeight(nw,nh)||Mathf.Abs(Screen.width/(float)Screen.height-16f/9f)>.02f))ApplyDisplay(FullScreenMode.Windowed);}
    ui=gameObject.AddComponent<AudioSource>();ui.playOnAwake=false;ui.spatialBlend=0;ui.ignoreListenerPause=true;ui.volume=.55f;
    tick=Resources.Load<AudioClip>("Audio/V20/ui/tick");confirm=Resources.Load<AudioClip>("Audio/V20/ui/confirm");back=Resources.Load<AudioClip>("Audio/V20/ui/back");begin=Resources.Load<AudioClip>("Audio/V20/ui/begin");staticHiss=Resources.Load<AudioClip>("Audio/V5/static/static_1");
    BuildTitle();BuildPause();BuildOptions();BuildConfirm();BuildChapters();
-   fade=Block(canvas.transform as RectTransform,new Rect(-400,-400,2080,1520),Color.black);fade.color=new Color(0,0,0,0);fade.raycastTarget=false;
+   fade=Block(canvas.transform as RectTransform,new Rect(-3000,-2000,7280,4720),Color.black);fade.color=new Color(0,0,0,0);fade.raycastTarget=false;
    {var ft=fade.rectTransform;ft.anchorMin=Vector2.zero;ft.anchorMax=Vector2.one;ft.pivot=new Vector2(.5f,.5f);ft.offsetMin=new Vector2(-40,-40);ft.offsetMax=new Vector2(40,40);}
    tapeStart=0;
    foreach(var p in AllPages())Hide(p,true);
@@ -81,7 +94,7 @@ namespace ServiceGameV2 {
    timeOsd=Words(title.Root,new Rect(820,644,400,40),"",34,white,TextAnchor.MiddleRight);
   }
   void BuildPause(){
-   pause=NewPage("Menu - pause");Block(pause.Root,new Rect(-400,-400,2080,1520),new Color(0,0,0,.45f));LeftShade(pause.Root,.9f);
+   pause=NewPage("Menu - pause");Block(pause.Root,new Rect(-3000,-2000,7280,4720),new Color(0,0,0,.45f));LeftShade(pause.Root,.9f);
    pauseOsd=Words(pause.Root,new Rect(58,34,300,40),"‖ PAUSE",34,white);
    Words(pause.Root,new Rect(96,150,800,100),"PAUSED",96,white);
    pauseSub=Words(pause.Root,new Rect(102,250,900,36),"",26,dim);
@@ -92,7 +105,7 @@ namespace ServiceGameV2 {
    Words(pause.Root,new Rect(100,652,900,30),"PROGRESS IS SAVED WHEN A SHIFT REPORT IS FILED.",22,faint);
   }
   void BuildOptions(){
-   options=NewPage("Menu - options");Block(options.Root,new Rect(-400,-400,2080,1520),new Color(0,0,0,.72f));LeftShade(options.Root,.8f);
+   options=NewPage("Menu - options");Block(options.Root,new Rect(-3000,-2000,7280,4720),new Color(0,0,0,.72f));LeftShade(options.Root,.8f);
    Words(options.Root,new Rect(58,34,300,40),"■ MENU",34,white);
    Words(options.Root,new Rect(96,74,800,90),"OPTIONS",80,white);
    string[] names={"GAME","VIDEO","AUDIO","CONTROLS"};tabLabels=new Text[names.Length];tabBar=Area(options.Root,"Tab bar",new Rect(102,196,10,3));Block(tabBar,new Rect(0,0,10,3),white);
@@ -109,8 +122,8 @@ namespace ServiceGameV2 {
    // VIDEO
    var v=tabs[1];y=236;
    // V27: "please give us borderless"
-   AddValue(v,y,"DISPLAY",()=>Pick(Screen.fullScreenMode==FullScreenMode.Windowed?"Windowed":Screen.fullScreenMode==FullScreenMode.ExclusiveFullScreen?"Exclusive":"Borderless"),s=>{var modes=new[]{FullScreenMode.FullScreenWindow,FullScreenMode.ExclusiveFullScreen,FullScreenMode.Windowed};int i=System.Array.IndexOf(modes,Screen.fullScreenMode==FullScreenMode.MaximizedWindow?FullScreenMode.FullScreenWindow:Screen.fullScreenMode);Screen.fullScreenMode=modes[((i<0?0:i)+s+3)%3];},"Borderless full screen, exclusive full screen, or a window.");y+=52;
-   AddValue(v,y,"CAMERA FILTER",()=>Pick(d.Camcorder?ServiceCamcorder.Names[d.Camcorder.Level]:"Off"),s=>{if(d.Camcorder)d.Camcorder.Set((d.Camcorder.Level+s+4)%4);},"The camcorder look. STRONG is the intended picture; EXTREME is lower still.");y+=52;
+   AddValue(v,y,"DISPLAY",()=>Pick(Screen.fullScreenMode==FullScreenMode.Windowed?"Windowed":Screen.fullScreenMode==FullScreenMode.ExclusiveFullScreen?"Exclusive":"Borderless"),s=>{var modes=new[]{FullScreenMode.FullScreenWindow,FullScreenMode.ExclusiveFullScreen,FullScreenMode.Windowed};int i=System.Array.IndexOf(modes,Screen.fullScreenMode==FullScreenMode.MaximizedWindow?FullScreenMode.FullScreenWindow:Screen.fullScreenMode);var m=modes[((i<0?0:i)+s+3)%3];if(d.IsSmoke||d.IsChaos)Screen.fullScreenMode=m;else ApplyDisplay(m);},"Borderless full screen, exclusive full screen, or a window.");y+=52;
+   AddValue(v,y,"CAMERA FILTER",()=>Pick(ServiceCamcorder.Names[d.Camcorder?Mathf.Max(ServiceCamcorder.Lowest,d.Camcorder.Level):2]),s=>{if(d.Camcorder){int k=Mathf.Max(1,d.Camcorder.Level)-1;d.Camcorder.Set(1+((k+s)%3+3)%3);}},"How worn the tape looks. SUBTLE is the lightest; STRONG is the intended picture; EXTREME is lower still.");y+=52;
    AddValue(v,y,"BRIGHTNESS",()=>Bar(Mathf.InverseLerp(.6f,1.6f,ServiceCamcorder.Brightness)),s=>{if(d.Camcorder)d.Camcorder.SetBrightness(ServiceCamcorder.Brightness+s*.1f);},"Raise it until the darkest corner of the road is just visible.");
    // AUDIO
    var a=tabs[2];y=236;
@@ -126,7 +139,7 @@ namespace ServiceGameV2 {
   }
   // V27 ("it deleted the save - add a save system so people can go to certain areas"): every night you have reached
   void BuildChapters(){
-   chapters=NewPage("Menu - chapters");Block(chapters.Root,new Rect(-400,-400,2080,1520),new Color(0,0,0,.6f));LeftShade(chapters.Root,.85f);
+   chapters=NewPage("Menu - chapters");Block(chapters.Root,new Rect(-3000,-2000,7280,4720),new Color(0,0,0,.6f));LeftShade(chapters.Root,.85f);
    Words(chapters.Root,new Rect(58,34,300,40),"■ CHAPTERS",34,white);Words(chapters.Root,new Rect(96,96,800,90),"CHAPTERS",80,white);
    string[] names={"NIGHT ONE","NIGHT TWO","NIGHT THREE"},dates={"THURSDAY  ·  OCT. 01","SUNDAY  ·  OCT. 04","FRIDAY  ·  OCT. 09"};
    for(int i=0;i<3;i++){int n=i;var it=AddItem(chapters,98,236+i*64,names[i],42,()=>{if(n<=d.ReachedNight)Begin(()=>d.StartChapter(n));else Sound(back,.6f);},"Start this night fresh. Your saved route is kept.");chapterNotes[i]=Words(it.Root,new Rect(380,0,420,52),dates[i],26,faint);}
@@ -134,7 +147,7 @@ namespace ServiceGameV2 {
    Words(chapters.Root,new Rect(100,652,900,30),"A NIGHT OPENS HERE ONCE YOU HAVE REACHED IT.",22,faint);
   }
   void BuildConfirm(){
-   confirmPage=NewPage("Menu - confirm");Block(confirmPage.Root,new Rect(-400,-400,2080,1520),new Color(0,0,0,.35f));
+   confirmPage=NewPage("Menu - confirm");Block(confirmPage.Root,new Rect(-3000,-2000,7280,4720),new Color(0,0,0,.35f));
    Block(confirmPage.Root,new Rect(102,322,520,2),white);
    confirmText=Words(confirmPage.Root,new Rect(102,336,900,80),"",34,white,TextAnchor.UpperLeft);
    AddItem(confirmPage,98,430,"NO",42,()=>Close(View.Confirm));

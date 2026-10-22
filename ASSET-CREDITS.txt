@@ -310,4 +310,9 @@ V27 (audio expansion, owls, streetlamps)
 - Car horn: Flooded Grounds by Sandro T (Unity Asset Store EULA), routed through far audio.
 - Drive lamps: Kenney "City Kit Roads" street_lamp_01 (CC0, already imported in V19).
 
+V28 (furniture overhaul, shift notices, readables)
+- Interior furnishings: Poly Haven CC0 scanned models (ClassicNightstand_01, Sofa_01, WoodenArmchair_01, VintageGrandfatherClock_01, and assorted decor, already imported in V18-V20) deployed across all six properties according to architectural room plans.
+- Night doorstep notices and indoor documents: typeset from Barlow and Kalam (SIL OFL) on weathered paper textures (Assets/ServiceArt/V19/Signs).
+- Sound: ambient tape-wear artifacts and dread audio design using licensed human recordings.
+
 

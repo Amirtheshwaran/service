@@ -39,7 +39,13 @@ namespace ServiceGameV2 {
    }
    threat=Mathf.MoveTowards(threat,want,Time.deltaTime*(want>threat?1.6f:.5f));spike=Mathf.Max(0,spike-Time.deltaTime*1.8f);
    // picture
-   float glitch=Mathf.Clamp01(threat*threat*.62f+spike*.55f);if(d.Storm&&!d.Storm.FlashesEnabled)glitch*=.5f;
+   float glitch=Mathf.Clamp01(threat*threat*.62f+spike*.55f);
+   // V28 ("subtle camera effects... natural and unsettling rather than an obvious effect"): now and then, with nothing
+   // near, the tape wears for a moment - a tracking line rolls through and the colours slip (no tearing at this level);
+   // more often on later nights, and whenever she is standing there
+   if(!h.Active&&!h.Caught&&(!d.IsSmoke||d.IsTour)&&d.Phase==ServicePhase.Playing){if(nextWear<=0)nextWear=Time.time+Random.Range(40f,80f);if(Time.time>nextWear){wearUntil=Time.time+Random.Range(.15f,.35f);nextWear=Time.time+(d.NightIndex>=1?Random.Range(30f,75f):Random.Range(50f,110f));}
+    if(d.Blink&&d.Blink.FigureShown)wearUntil=Mathf.Max(wearUntil,Time.time+.1f);if(Time.time<wearUntil)glitch=Mathf.Max(glitch,.12f);}
+   if(d.Storm&&!d.Storm.FlashesEnabled)glitch*=.5f;
    GlitchLevel=glitch;ServiceCamcorder.Glitch=glitch;
    // sound
    bool chase=h.Phase==PursuitPhase.Chase&&h.Agent&&d.Property(Mathf.Max(0,h.PropertyIndex)).Encounter==EncounterKind.Pursuit;
@@ -67,6 +73,7 @@ namespace ServiceGameV2 {
   void Sting(float volume){if(shockClips==null||shockClips.Length==0)return;var clip=shockClips[Random.Range(0,shockClips.Length)];var src=d.Scene.View.GetComponent<AudioSource>();if(!src){src=d.Scene.View.gameObject.AddComponent<AudioSource>();src.spatialBlend=0;src.playOnAwake=false;}src.PlayOneShot(clip,volume);Stings++;}
   // V22: a short spike of tape damage for a scripted scare outside a pursuit (the Vale glimpse)
   public void Pulse(float amount){spike=Mathf.Max(spike,amount);}
-  public void ResetForShift(){threat=spike=0;ServiceCamcorder.Glitch=0;foreach(var s in new[]{drone,panic,watch,tape})if(s){s.Stop();s.volume=0;}}
+  float nextWear,wearUntil;
+  public void ResetForShift(){threat=spike=0;nextWear=wearUntil=0;ServiceCamcorder.Glitch=0;foreach(var s in new[]{drone,panic,watch,tape})if(s){s.Stop();s.volume=0;}}
  }
 }

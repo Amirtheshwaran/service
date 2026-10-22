@@ -11,7 +11,7 @@ namespace ServiceGameV2 {
  //   night two, Bell's: in the hall between you and the front door once the papers are down
  //   night three, Route 9: at the roadside in the headlights
  public sealed class ServiceBlink:MonoBehaviour {
-  ServiceDirector d;GameObject figure;Animator figureAnim;Canvas canvas;RectTransform top,bottom;float closed;bool running;
+  ServiceDirector d;GameObject figure;Animator figureAnim;Canvas canvas;RectTransform top,bottom;float closed;bool running;public bool Running=>running;
   readonly bool[] done=new bool[3];Vector3 bellSpot;bool bellSpotSet;float nextCheck;
   public int Blinks {get;private set;} public int Shows {get;private set;} public int LastSpot {get;private set;}=-1;
   public bool FigureShown=>figure&&figure.activeSelf;public Vector3 FigureAt=>figure?figure.transform.position:Vector3.zero;public float Closed=>closed;
@@ -73,12 +73,16 @@ namespace ServiceGameV2 {
    float total=0;for(int i=1;i<path.corners.Length;i++)total+=Vector3.Distance(path.corners[i-1],path.corners[i]);if(total<4.5f)return false;
    float need=Mathf.Max(3.6f,total*.58f);for(int i=1;i<path.corners.Length;i++){float len=Vector3.Distance(path.corners[i-1],path.corners[i]);if(len>=need){spot=Vector3.Lerp(path.corners[i-1],path.corners[i],need/len);return true;}need-=len;}
    spot=path.corners[path.corners.Length-1];return true;}
+  // V28 ("the girl could have a particular gesture or phrase that reminds us of our sister"): before each time she is
+  // there, two soft taps - the way Sofia knocked on his door as a child - and the first time, a whisper: Sofia's words
+  public int Taps {get;private set;}
   IEnumerator Show(int which,Vector3 at,float hold,string line){running=true;Shows++;LastSpot=which;
+   if(which!=2){d.Audio.HorrorAt("taps",at+Vector3.up*1.1f,.32f,1.08f);yield return new WaitForSeconds(.32f);d.Audio.HorrorAt("taps",at+Vector3.up*1.1f,.28f,1.12f);Taps++;yield return new WaitForSeconds(.5f);}
    yield return Lids(1,.09f);Blinks++;
    var face=d.Scene.View.transform.position-at;face.y=0;figure.transform.SetPositionAndRotation(at,Quaternion.LookRotation(face.sqrMagnitude>.01f?face.normalized:Vector3.forward));figure.SetActive(true);
    // held in her idle, barely breathing - a person standing where no one should be
    if(figureAnim){figureAnim.Play(0,0,Random.Range(.2f,.6f));figureAnim.Update(0);figureAnim.speed=.06f;}
-   yield return new WaitForSeconds(.1f);yield return Lids(0,.18f);if(d.Dread)d.Dread.Pulse(.45f);
+   yield return new WaitForSeconds(.1f);yield return Lids(0,.18f);if(d.Dread)d.Dread.Pulse(.45f);if(which==0)d.Narrate(ServiceScript.ApparitionWhisper);
    float t=0;while(t<hold){t+=Time.deltaTime;var dd=d.Scene.View.transform.position-at;dd.y=0;if(dd.magnitude<2.6f)break;
     if(dd.sqrMagnitude>.01f)figure.transform.rotation=Quaternion.RotateTowards(figure.transform.rotation,Quaternion.LookRotation(dd.normalized),40*Time.deltaTime);yield return null;}
    // V27 ("the girl that appears is more funny than scary"; "she suddenly comes"): on foot she is nearer at each blink,
@@ -90,7 +94,9 @@ namespace ServiceGameV2 {
     float t3=0;while(d.Scare.Playing&&t3<2f){t3+=Time.deltaTime;yield return null;}figure.SetActive(false);}
    else{Blinks++;yield return Lids(1,.08f);figure.SetActive(false);yield return new WaitForSeconds(.12f);yield return Lids(0,.2f);}
    d.Audio.HorrorAt("woodstress",at+Vector3.up*.3f,.22f);
-   yield return new WaitForSeconds(.9f);if(!string.IsNullOrEmpty(line)&&string.IsNullOrEmpty(d.Notice))d.Say(line);
+   yield return new WaitForSeconds(.9f);
+   // V28b: wait for the line on screen to finish instead of dropping hers (the road one never showed under the odometer line)
+   {float w=0;while(!string.IsNullOrEmpty(d.Notice)&&w<8f){w+=Time.deltaTime;yield return null;}}/* V28b (review): not over a newer beat - a chase, the freeze, a line still up */if(!string.IsNullOrEmpty(line)&&string.IsNullOrEmpty(d.Notice)&&!d.Horror.Active&&!d.Horror.Caught&&!d.Busy)d.Say(line);
    running=false;}
  }
 }

@@ -3,12 +3,14 @@ using UnityEngine.AI;
 namespace ServiceGameV2 {
  // V25, a playtester's idea for 214 Millbrook: night one, tell Walter somebody ought to do something about that dog.
  // Night two Rex is gone, there is blood in the hall, and Walter says it's your turn - and comes out after you. He starts
- // at a walk and works up to a fast, stiff stride (3.3 m/s: a walk loses, a run gets away). Reach the car and drive and
+ // at a walk and works up to a fast, stiff stride (3.5 m/s: a walk loses, a run gets away). Reach the car and drive and
  // he stops in the road watching you go; let him reach you on foot and the route ends there (its own ending).
  public sealed class ServiceWalter:MonoBehaviour {
   ServiceDirector d;GameObject walter;ServiceResidents residents;readonly NavMeshPath path=new NavMeshPath();Vector3[] corners=new Vector3[0];int ci;float repath,speed,holdUntil;
-  public const float Stare=2.2f; // he stands in the doorway looking at you first - long enough to turn and run (the tour, slow to react, was caught in a second)
-  public const float TopSpeed=3.8f,Reach=1.15f;
+  public const float Stare=2.8f; // he stands in the doorway looking at you first - long enough to turn and run (the tour, slow to react, was caught in a second)
+  // V28: top speed between a walk (3.25) and an out-of-breath run (3.8) - a walk loses, any run gains; he starts you
+  // off with a burst of breath like the house pursuers do
+  public const float TopSpeed=3.5f,Reach=1.15f;
   // V25: he runs (the Starter Assets Run_N on his own humanoid rig) once he is up to speed - "cook a running animation
   // that looks fair". Its stride matches about 5.3 m/s at full playback. The state is set once per change: setting it
   // every frame restarted the crossfade every frame, which froze the walk (he glided).
@@ -19,7 +21,7 @@ namespace ServiceGameV2 {
   public void Initialize(ServiceDirector director){d=director;}
   public void ResetForShift(){Chasing=false;Escaped=false;Closest=99;corners=new Vector3[0];}
   public void Begin(ServiceResidents r){residents=r;walter=r?r.Correll:null;if(!walter)return;r.Release(0);r.Hold(0,true);Chasing=true;Escaped=false;speed=.9f;Closest=99;repath=0;corners=new Vector3[0];holdUntil=Time.time+Stare;animState=null;anim=null;
-   d.Audio.Pursuit(true);if(d.Dread)d.Dread.Pulse(.6f);}
+   d.Audio.Pursuit(true);if(d.Dread)d.Dread.Pulse(.6f);if(d.Player)d.Player.GiveAdrenaline(.7f);}
   void Update(){
    if(!Chasing||!walter||d.Phase!=ServicePhase.Playing)return;
    var w=d.Scene.Walker.transform.position;var at=walter.transform.position;

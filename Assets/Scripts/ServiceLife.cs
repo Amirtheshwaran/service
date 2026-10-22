@@ -10,7 +10,7 @@ namespace ServiceGameV2 {
   public DogMode Mode {get;private set;}=DogMode.Home;
   public bool DogBusy=>Mode!=DogMode.Home;
   public int Barks {get;private set;}
-  public float ClosestApproach {get;private set;}=99;
+  public float ClosestApproach {get;private set;}=99;readonly Vector3[] stepDirs=new Vector3[16];
   public Vector3 DogPosition=>dog?dog.position:Vector3.zero;
   CapsuleCollider dogBody;bool ghost;float pressedFor;public bool BodyYielded=>ghost;public int Yields {get;private set;}
   bool charged;Vector3 escortGoal;float nextBark,nextPath,modeSince,porchSince,weaveFlip;int weaveSide=1;Vector3 porchSpot,goalCache;bool porchPicked;string curState;
@@ -22,6 +22,7 @@ namespace ServiceGameV2 {
   // V22: when each door's current swing finishes (a door is not offered to the player while it is still moving)
   readonly float[] settleAt=new float[6];
   public bool DoorMoving(int i)=>i>=0&&i<6&&Time.time<settleAt[i];
+  readonly bool[] opening=new bool[6];public bool DoorClosing(int i)=>DoorMoving(i)&&!opening[i]; // V28b: swinging shut right now
   public void Initialize(ServiceDirector director){d=director;
    for(int i=0;i<6;i++){var p=d.Property(i);rest[i]=p.DoorPanel?p.DoorPanel.localRotation:Quaternion.identity;porch[i]=p.PorchLight?p.PorchLight.intensity:0;p.MeasureDoorway();}
    dog=transform.Find("Correll yard dog");
@@ -97,7 +98,10 @@ namespace ServiceGameV2 {
      // V23: ahead of you on the way to the door - by where you are headed, not where you look (by your facing he ran in
      // circles whenever you looked round); a new spot only once the old one has drifted, and none while you stand still
      var way=Flat3(door-w);if(way.sqrMagnitude<.01f)way=Flat3(d.Scene.Walker.transform.forward);way.Normalize();
-     var want=w+Quaternion.AngleAxis(weaveSide*22,Vector3.up)*way*4f;
+     // V28b: between the door and the way you are actually walking (your movement, not your look) - on the bends of a
+     // drive he led to the door in a straight line and kept to your side, off the edge of the view
+     {var vel=Flat3(d.Scene.Walker.velocity);if(moving&&vel.sqrMagnitude>.04f)way=(way+vel.normalized).normalized;}
+     var want=w+Quaternion.AngleAxis(weaveSide*18,Vector3.up)*way*4f;
      if(escortGoal==Vector3.zero||(moving&&Flat(want-escortGoal).magnitude>1f)||Flat(escortGoal-w).magnitude<2.2f)escortGoal=want;goal=escortGoal;
      // your pace plus the gap (by the gap alone he trailed his spot by 1.5 m at a walk, under the bottom of the view)
      speed=Mathf.Clamp(d.Player.HorizontalSpeed+Flat(goal-dog.position).magnitude*2f,0,6.5f);if(dw<4.5f)Go(DogMode.Porch);break;}
@@ -135,7 +139,9 @@ namespace ServiceGameV2 {
     // straight away first; where that is the steps or the porch (the foot of the steps), sideways off the line you walk, or back past you
     var head=Flat3(d.Scene.Walker.velocity);if(head.sqrMagnitude<.04f)head=Flat3(door-w);if(head.sqrMagnitude<.01f)head=a;head.Normalize();var perp=Vector3.Cross(Vector3.up,head);if(Vector3.Dot(perp,a)<0)perp=-perp;
     float len=Mathf.Min((calmNow&&!rushed?2.6f:6f)*Time.deltaTime,keep+.1f-away.magnitude); /* calm, an unhurried step aside */
-    foreach(var dir in new[]{a,perp,(perp-head*.6f).normalized,-perp,(-perp-head*.6f).normalized}){var to=dog.position+dir*len;
+    // V28: at the foot of Correll's steps all five could be refused and you walked into him - then any way round that is open
+    stepDirs[0]=a;stepDirs[1]=perp;stepDirs[2]=(perp-head*.6f).normalized;stepDirs[3]=-perp;stepDirs[4]=(-perp-head*.6f).normalized;for(int k=1;k<12;k++)stepDirs[4+k]=Quaternion.Euler(0,k*30,0)*a;
+    foreach(var dir in stepDirs){var to=dog.position+dir*len;
      if(Ground(ref to)&&!OnBuilt&&!Indoors(p,to)&&to.y<door.y-.4f&&Mathf.Abs(to.y-dog.position.y)<.35f){backed=Flat(to-dog.position).magnitude;moved+=backed;dog.position=to;break;}}}
    if(!calmNow)ClosestApproach=Mathf.Min(ClosestApproach,Flat(dog.position-w).magnitude); // the distance he keeps while he is worked up
    float v=moved/Mathf.Max(Time.deltaTime,1e-4f);DogTravel+=moved;
@@ -208,7 +214,7 @@ namespace ServiceGameV2 {
   static Vector3 Flat3(Vector3 v)=>new Vector3(v.x,0,v.z);
   IEnumerator Flicker(ServiceProperty p){if(!p.PorchLight)yield break;var light=p.PorchLight;float baseline=porch[p.Index];foreach(float value in new[]{.15f,1f,.1f,.2f,1f}){light.intensity=baseline*value;yield return new WaitForSeconds(.12f);}light.intensity=baseline;}
   public float DoorOpenDegrees(int index){var p=d?d.Property(index):null;return p&&p.DoorPanel?Quaternion.Angle(rest[index],p.DoorPanel.localRotation):0;}
-  public void OpenDoor(ServiceProperty p,bool open,bool wide=false,float seconds=.65f){if(p.DoorPanel){settleAt[p.Index]=Time.time+Mathf.Max(.05f,seconds);if(doors[p.Index]!=null)StopCoroutine(doors[p.Index]);doors[p.Index]=StartCoroutine(Door(p,open,wide,seconds));}}
+  public void OpenDoor(ServiceProperty p,bool open,bool wide=false,float seconds=.65f){if(p.DoorPanel){if(p.Index>=0&&p.Index<6)opening[p.Index]=open;settleAt[p.Index]=Time.time+Mathf.Max(.05f,seconds);if(doors[p.Index]!=null)StopCoroutine(doors[p.Index]);doors[p.Index]=StartCoroutine(Door(p,open,wide,seconds));}}
   // A bang (short seconds) is thrown open and decelerates; an ordinary swing eases in and out.
   IEnumerator Door(ServiceProperty p,bool open,bool wide,float seconds){var start=p.DoorPanel.localRotation;var goal=rest[p.Index]*Quaternion.Euler(0,open?(d.IsFriendly(p.Index)&&!wide?Mathf.Sign(p.DoorSwing)*FriendlyOpen:p.DoorSwing):0,0);seconds=Mathf.Max(.05f,seconds);float time=0;while(time<seconds){time+=Time.deltaTime;float t=Mathf.Clamp01(time/seconds);t=seconds<.3f?1-(1-t)*(1-t):Mathf.SmoothStep(0,1,t);p.DoorPanel.localRotation=Quaternion.Slerp(start,goal,t);yield return null;}p.DoorPanel.localRotation=goal;}
  }

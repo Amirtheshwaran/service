@@ -50,7 +50,7 @@ namespace ServiceGameV2
         public ServiceDialogue Dialogue {get;private set;}
         public ServiceCamcorder Camcorder {get;private set;}
         public bool BellGone;
-        readonly bool[] arrived = new bool[6], inside = new bool[6];
+        readonly bool[] arrived = new bool[6], inside = new bool[6]; readonly float[] nearSince = new float[6];
         bool dogLine, lightsLine, docketLine, barricadeLine, surveyLine; float depotIntroAt = -1;
         public int KnockCount {get;private set;}
         public int WhosThereCalls {get;private set;}
@@ -89,10 +89,10 @@ namespace ServiceGameV2
         IEnumerator WipeFeet(){Busy=true;var at=Doormat.position;for(int i=0;i<3;i++){Audio.HorrorAt("wipe",at,.55f);yield return new WaitForSeconds(.34f);}
             FeetWiped=true;Say(NightIndex==0?ServiceScript.WipedFeet:ServiceScript.WipedFeetAgain);yield return new WaitForSeconds(.3f);Busy=false;}
         public int SecondWipes {get;private set;}bool secondWiped;
-        void SecondWipe(){if(secondWiped||!FeetWiped||NightIndex!=1||!Doormat||Player.InCar||Horror.Active||Horror.Caught||ResultAt(5)!=ServiceResult.Pending)return;
+        void SecondWipe(){if(secondWiped||NightIndex!=1||!Doormat||Player.InCar||Horror.Active||Horror.Caught||ResultAt(5)!=ServiceResult.Pending)return;
             var p=Property(5);var w=Scene.Walker.transform.position;if(!ServiceLife.Indoors(p,w))return;var f=w-Doormat.position;f.y=0;if(f.magnitude<4f)return;
             secondWiped=true;StartCoroutine(SecondWipeRun());}
-        IEnumerator SecondWipeRun(){SecondWipes++;var at=Doormat.position;yield return new WaitForSeconds(.35f);
+        IEnumerator SecondWipeRun(){SecondWipes++;var at=Doormat.position;if(!FeetWiped)yield return new WaitForSeconds(2.5f); /* V28: every player hears it (not only those who wiped); after the mud line */yield return new WaitForSeconds(.35f);
             // V27 ("is it implied the monster just wiped its feet on her mat?"): one heavy wet step onto the mat and a slow drag
             Audio.HorrorAt("wetmud",at,.75f,.7f);yield return new WaitForSeconds(.9f);Audio.HorrorAt("wipe",at,.7f,.62f);yield return new WaitForSeconds(1.4f);Audio.HorrorAt("woodstress",at+Vector3.up*.3f,.3f,.8f);
             yield return new WaitForSeconds(.8f);if(!Horror.Active&&!Horror.Caught)Say(ServiceScript.SecondWipe);}
@@ -166,6 +166,7 @@ namespace ServiceGameV2
                 if(HUD&&HUD.Back())return;
                 // V21: a paused game resumes first (to the clipboard if it was open), then Esc closes the clipboard.
                 if (Phase == ServicePhase.Paused) Resume();
+                else if (Scenes&&(Scenes.PageOpen||Scenes.ClosedFrame==Time.frameCount)) { } // V28b (audit): Esc puts a page down (ServiceScenes27), it does not pause
                 else if (NoteOpen >= 0) { NoteOpen = -1; Audio.Paper(); } // V22: Esc puts a held note down first
                 else if (PaperOpen) { PaperOpen = false; SetCursor(); }
                 else if (Phase == ServicePhase.Playing) Pause();
@@ -192,15 +193,14 @@ namespace ServiceGameV2
             if (Pressed(Key.F)) ToggleTorch();
             // E also looks over the right shoulder while sprinting, so reaching the car must not depend on releasing Shift first.
             bool nearCar = CanEnterCar;
-            if (Horror!=null&&Horror.NerveActive) { if (Pressed(Key.E)) Horror.SteadyNerve(); } // V25: E holds your nerve while it stands behind you
+            if (Horror!=null&&Horror.NerveActive) { if (Pressed(Key.E)) Horror.SteadyNerve(); else if (Keyboard.current!=null&&Keyboard.current.eKey.isPressed) Horror.HoldNerve(Time.deltaTime); } // V25: E holds your nerve while it stands behind you
             else if (Pressed(Key.E) && nearCar) Player.EnterCar();
             else if (Pressed(Key.E)&&!Player.InteractionSuppressed)
             {
                 if (CanFinish) TryFinishShift();
                 else if (Player.InCar) Player.TryExitCar();
                 else if(NoteOpen>=0){NoteOpen=-1;Audio.Paper();}
-                else if(NearbyNotice()>=0)ReadNotice(NearbyNotice());
-                else { int front=NearbyKnockDoor();if(front>=0)Attempt(front,ServiceResult.Served);else {int i=NearbyDoor();if(i>=0)Attempt(i,ServiceResult.LeftAtDoor);else{int leaf=NearbyLeaf();if(leaf>=0)ToggleDoor(leaf);else if(CanPetDog)StartCoroutine(PetDog());else if(CanWipeFeet)StartCoroutine(WipeFeet());else if(Scenes&&Scenes.CanReadPage)Scenes.ReadPage();}} }
+                else UseOnFoot();
             }
             if (!Player.InCar)
             {
@@ -220,9 +220,14 @@ namespace ServiceGameV2
             var w=Scene.Walker.transform.position;
             foreach(var e in Docket){var p=Property(e.Property);int i=p.Index;
                 if(!p.DoorPanel||IsFriendly(i)||!AccessGranted(i)||Life.DoorMoving(i))continue;
-                bool open=Life.DoorOpenDegrees(i)>25;if(!open&&!shutByPlayer[i])continue;
+                bool open=Life.DoorOpenDegrees(i)>25;if(!open&&!shutByPlayer[i]&&!(i==4&&Horror.BellShutBehindYou))continue;
                 // closing an open leaf needs you clear of its sweep; a shut leaf (they all swing inward) opens from right against it
-                float step=Vector3.Dot(w-p.OpeningCentre,-p.Inward);if(step<(open?.55f:0f)||step>2.6f)continue;
+                float step=Vector3.Dot(w-p.OpeningCentre,-p.Inward);bool fromStep=step>=(open?.55f:0f)&&step<=2.6f;
+                // V28: Vale's front door shuts (and opens) from her hall too, from clear of the leaf's swing - "shut the door
+                // behind you" could only be done from the step outside, so every visitor broke her rule
+                // V28b: and from right against it on the inside, at any house you let yourself into (a 0-1.1 m dead zone
+                // just inside Vale's door gave no prompt at all; SwingDoor eases you back out of the leaf's swing)
+                bool fromHall=step<-.05f&&step>=-3.1f;if(!fromStep&&!fromHall)continue;
                 var flat=w-p.OpeningCentre;flat.y=0;if(flat.magnitude>3.2f)continue;
                 var eye=Scene.View.transform.position;var aimAt=p.OpeningCentre+Vector3.up*Mathf.Clamp(eye.y-p.OpeningCentre.y,.9f,1.6f);
                 if(!ServiceInteraction.Reachable(Scene.View,aimAt,3.2f,p.DoorPanel))continue;
@@ -244,12 +249,18 @@ namespace ServiceGameV2
         IEnumerator SwingDoor(int i){
             Busy=true;var p=Property(i);bool close=Life.DoorOpenDegrees(i)>25;
             var hands=Scene.View.GetComponentInChildren<ServiceHands>();if(hands)hands.Play("Push");
+            // V28b: inside, within the leaf's swing (they all swing inward): step back clear of it first
+            {var w=Scene.Walker.transform.position;var inward=p.Inward;inward.y=0;inward.Normalize();var along=Vector3.Cross(Vector3.up,inward);
+             float step=Vector3.Dot(w-p.OpeningCentre,-inward),lat=Mathf.Abs(Vector3.Dot(w-p.OpeningCentre,along)),clear=-(p.DoorWidth+.25f);
+             if(step<0f&&step>clear&&lat<p.DoorWidth*.5f+.45f){float need=step-clear,t=0;while(t<.25f){float dt=Mathf.Min(Time.deltaTime,.25f-t);t+=dt;Scene.Walker.Move(inward*(need*dt/.25f));yield return null;}
+              w=Scene.Walker.transform.position;step=Vector3.Dot(w-p.OpeningCentre,-inward);if(step>-(p.DoorWidth+.05f)){Busy=false;Say("Not enough room. Step back from the door.");yield break;}}}
             if(hands&&hands.Visible)yield return new WaitForSeconds(hands.PushLead);
+            if(close&&Horror&&(Horror.Active||Horror.Caught)){Busy=false;yield break;} // V28b (review): never shut your way out once it has come
             shutByPlayer[i]=close;if(close)DoorsShut++;if(Horror)Horror.DoorChanged(i,!close);
             if(!close)Audio.DoorAt(p.Door.position);
             Life.OpenDoor(p,!close,false,close?.9f:.8f);
             yield return new WaitForSeconds(close?.9f:.8f);
-            if(close)Audio.DoorAt(p.Door.position);
+            if(close&&Life.DoorOpenDegrees(i)<6f)Audio.DoorAt(p.Door.position);
             Busy=false;}
         public void ToggleTorch(){ if (Scene.Flashlight == null || Player.InCar) return; Scene.Flashlight.enabled = !Scene.Flashlight.enabled; Gesture("Torch"); var click = Resources.Load<AudioClip>("Audio/V19/torch_click"); if (click) AudioSource.PlayClipAtPoint(click, Scene.View.transform.position, .45f); }
         public void ToggleDocument(bool map){if(Horror.Active||Horror.Caught){Say("No time for the map.");return;}if(map){bool close=PaperOpen&&MapOpen;MapOpen=PaperOpen=!close;}else{PaperOpen=!PaperOpen||MapOpen;MapOpen=false;}if(PaperOpen)Player.HoldVehicle();Audio.SyncVehicleAudio();SetCursor();}
@@ -271,7 +282,7 @@ namespace ServiceGameV2
             EnvironmentChanges = 0;
             Notice = "";
             NoteOpen=-1;Array.Clear(noticeRead,0,6); Array.Clear(accessGranted,0,6); Array.Clear(shutByPlayer,0,6); Array.Clear(linger, 0, 6); stallArmed = false; Array.Clear(unseen, 0, 6);
-            Array.Clear(changed, 0, 6); Array.Clear(dogHeard, 0, 6); Array.Clear(arrived, 0, 6); Array.Clear(inside, 0, 6); BellGone = false;
+            Array.Clear(changed, 0, 6); Array.Clear(dogHeard, 0, 6); Array.Clear(arrived, 0, 6); Array.Clear(inside, 0, 6); Array.Clear(nearSince, 0, 6); BellGone = false; ServiceDoorNote.ShowAll(NightIndex);
             dogLine = lightsLine = docketLine = barricadeLine = surveyLine = false; depotIntroAt = Time.unscaledTime + (IsSmoke && !IsTour ? 0 : 8.4f);
             if(Dialogue)Dialogue.Cancel();
             ResetResidents();
@@ -342,7 +353,7 @@ namespace ServiceGameV2
                 if (distance > 32) continue;
                 linger[i] += dt;
                 bool pending = Docket.Exists(e => e.Property == p.Index && e.Result == ServiceResult.Pending);
-                if (distance < 16 && !arrived[i] && pending) { arrived[i] = true; var line = p.Index==0&&CorrellBranch&&NightIndex>=1?ServiceScript.WalterArrivalBranch:ServiceScript.Arrival(p.Index, NightIndex); if (line != null && string.IsNullOrEmpty(Notice)) Say(line); }
+                /* V28b (review): the arrival line waits for a line still up (the road vision on night three) instead of being lost - not once you are in, talking, or 12 s on */if (distance < 16 && !arrived[i] && pending) { if (nearSince[i] <= 0) nearSince[i] = Time.time; var line = p.Index==0&&CorrellBranch&&NightIndex>=1?ServiceScript.WalterArrivalBranch:ServiceScript.Arrival(p.Index, NightIndex); if (line == null || inside[i] || Time.time - nearSince[i] > 12f) arrived[i] = true; else if (string.IsNullOrEmpty(Notice) && !Busy && !(Dialogue && Dialogue.Active)) { arrived[i] = true; Say(line); } }
                 if (!inside[i] && pending && p.InteriorBounds.Contains(Scene.Walker.transform.position + Vector3.up * .3f) && Vector3.Dot(Scene.Walker.transform.position - p.Door.position, Outward(p)) < -0.8f && ServiceLife.UnderRoof(Scene.Walker.transform.position)) { inside[i] = true; var t = ServiceScript.For(p.Index); if (t != null && !string.IsNullOrEmpty(t.Inside)) Say(t.Inside); if (p.Index == 2) StartCoroutine(Later(7.5f, ServiceScript.ParcelInside)); }
                 if (NightIndex > 0 && !stallArmed && !IsFriendly(p.Index) && !(p.Index == 4 && NightIndex == 1) && linger[i] > 24) { stallArmed = true; Player.IgnitionDelayPending = true; }
                 if (i == 0 && distance > 11 && Time.time > nextDog && !(Life && Life.DogBusy) && !(CorrellBranch && NightIndex >= 1)) // V25: no dog on the branch nights
@@ -384,6 +395,7 @@ namespace ServiceGameV2
             var eye=Scene.View.transform;
             foreach(var entry in Docket){var p=Property(entry.Property);if(entry.Result!=ServiceResult.Pending||!p.NoticePoint||!p.NoticePoint.gameObject.activeInHierarchy||string.IsNullOrEmpty(p.NoticeText)||!ServiceInteraction.Reachable(Scene.View,p.NoticePoint.position,2.7f,p.NoticePoint.parent))continue;
              if(Life&&Life.DoorOpenDegrees(p.Index)>25)continue; // V21: the door is open; the note went with it
+             if(Vector3.Dot(eye.position-p.OpeningCentre,-p.Inward)<0f)continue; // V28b: the note is on the outside face
              float aim=Vector3.Dot(eye.forward,(p.NoticePoint.position-eye.position).normalized);
              if(noticeRead[p.Index]&&aim<.975f)continue;
              if(!AccessGranted(p.Index)&&p.KnockPoint&&p.DoorPanel&&ServiceInteraction.Reachable(Scene.View,p.KnockPoint.position,2.4f,p.DoorPanel)&&Vector3.Dot(eye.forward,(p.KnockPoint.position-eye.position).normalized)>aim+.004f)continue;
@@ -399,6 +411,12 @@ namespace ServiceGameV2
             return -1;
         }
         public const float TableReach=1.8f;
+        // V28b (review): a paper you can read lies beside the delivery point (Vale's clipping on her desk, night three) - the one
+        // you are aiming at more squarely wins, so E reads the clipping instead of leaving the papers and setting off the chase
+        public bool PaperBeatsDesk(int desk){if(!(Scenes&&Scenes.CanReadPage))return false;if(desk<0)return true;var c=Scene.View.transform;var dp=Property(desk).DeliveryPoint.position+Vector3.up*.09f;return Scenes.ReadAim>Vector3.Dot(c.forward,(dp-c.position).normalized);}
+        // E on foot, away from the car: the note, the knock, the papers (or the paper you are aimed at), the door, the page, Rex, the mat
+        public void UseOnFoot(){if(NearbyNotice()>=0)ReadNotice(NearbyNotice());else { int front=NearbyKnockDoor();if(front>=0)Attempt(front,ServiceResult.Served);else {int i=NearbyDoor();bool page=PaperBeatsDesk(i);if(i>=0&&!page)Attempt(i,ServiceResult.LeftAtDoor);else{int leaf=page||Scenes&&Scenes.CanReadPage?-1:NearbyLeaf();if(leaf>=0)ToggleDoor(leaf);else if(Scenes&&Scenes.CanReadPage)Scenes.ReadPage();else if(CanPetDog)StartCoroutine(PetDog());else if(CanWipeFeet)StartCoroutine(WipeFeet());}} }}
+        public bool DepotIntroDone => depotIntroAt < 0;
         public int NearbyDoor(){
             if(Player.InCar)return -1;
             foreach(var e in Docket){var p=Property(e.Property);if(e.Result==ServiceResult.Pending&&AccessGranted(e.Property)&&!IsFriendly(e.Property)&&p.DeliveryPoint&&ServiceInteraction.Reachable(Scene.View,p.DeliveryPoint.position+Vector3.up*.09f,TableReach,null))return e.Property;}
@@ -459,9 +477,9 @@ namespace ServiceGameV2
             if(Interrupted()){if(p.PostedPaper)p.PostedPaper.SetActive(false);yield break;}
             if(Phase!=ServicePhase.Playing&&Phase!=ServicePhase.Paused)yield break;
             entry.Result=ServiceResult.LeftAtDoor;Audio.Paper();PapersPlaced++;
-            if(encounter){if(index==3&&Scenes)yield return Scenes.HarrowBuildup(p);if(!Horror.Active&&!Horror.Caught)Horror.Begin(index);yield break;}
+            if(encounter){if(index==3&&Scenes)yield return Scenes.HarrowBuildup(p);/* V28b (review): out of his house during the build-up (or in the car) - it does not start behind a driver */if(!Horror.Active&&!Horror.Caught&&!(index==3&&(Player.InCar||!ServiceLife.Indoors(p,Scene.Walker.transform.position))))Horror.Begin(index);yield break;}
             if(index==2&&NightIndex==2&&Scenes){Scenes.Finale(p);yield break;} // V27: the last house - the ending
-            if (index == 4 && NightIndex == 1) Horror.ArmReturnAmbush();
+            if (index == 4 && NightIndex == 1 && !(Scenes && Scenes.BellKept)) Horror.ArmReturnAmbush(); // V28: not twice in a night
             if (!p.HasEncounter && !IsFriendly(index) && NightIndex > 0 && !string.IsNullOrEmpty(p.RevealLine))
             {
                 Audio.KnockAt(p.SoundPoint != null ? p.SoundPoint.position : p.Door.position, .35f);
@@ -536,11 +554,21 @@ namespace ServiceGameV2
         }
 
         // V25 night two at Walter's when you told him to do something about the dog
-        IEnumerator CorrellTurn(DocketEntry entry,ServiceProperty p){
-            if(Dialogue)yield return Dialogue.Run(ServiceScript.Resident(0),new[]{new ServiceDialogue.Step(ServiceScript.WalterTurnLine1,ServiceScript.WalterTurnChoices,ServiceScript.WalterTurnReplies),new ServiceDialogue.Step(ServiceScript.WalterTurnLine2),new ServiceDialogue.Step(ServiceScript.WalterTurnLine3)});
-            entry.Result=ServiceResult.Served;CorrellTurns++; // the papers never change hands, but this stop is over
+        // V28 ("dog owner was a pain - both options will definitely kill you"): the two replies are a real choice now. Hand
+        // him the papers and go, and he lets you (the door shuts; he is still behind it). Ask what he did to Rex and he comes
+        // out after you. Your own eyes warn you first.
+        public int CorrellSpared {get;private set;}
+        IEnumerator CorrellTurn(DocketEntry entry,ServiceProperty p){int pick=-1;
+            if(Dialogue){yield return Dialogue.Run("You",new[]{new ServiceDialogue.Step(ServiceScript.WalterTell)});
+                yield return Dialogue.Run(ServiceScript.Resident(0),new[]{new ServiceDialogue.Step(ServiceScript.WalterTurnLine1,ServiceScript.WalterTurnChoices,ServiceScript.WalterTurnReplies)},k=>pick=k);}
+            entry.Result=ServiceResult.Served;CorrellTurns++;
+            if(!residents)residents=FindAnyObjectByType<ServiceResidents>();
+            if(pick!=1){CorrellSpared++;var hands=Scene.View.GetComponentInChildren<ServiceHands>();if(hands)hands.Play("Give");if(hands&&hands.Visible)yield return new WaitForSeconds(hands.GiveLead);Audio.Paper();
+                if(residents)yield return residents.StepBack(p);if(Life)Life.OpenDoor(p,false);Audio.DoorAt(p.Door.position);Narrate(ServiceScript.WalterSpared);
+                yield return new WaitForSeconds(.7f);if(residents)residents.Answer(p,false);yield break;}
+            if(Dialogue)yield return Dialogue.Run(ServiceScript.Resident(0),new[]{new ServiceDialogue.Step(ServiceScript.WalterTurnLine2),new ServiceDialogue.Step(ServiceScript.WalterTurnLine3)});
             if(Dread)Dread.Pulse(.7f);Say(ServiceScript.WalterRun);
-            if(!residents)residents=FindAnyObjectByType<ServiceResidents>();if(Walter)Walter.Begin(residents);}
+            if(Walter)Walter.Begin(residents);}
         void ShowCorrellBlood(){var p=Property(0);var blood=p?p.transform.Find("V25 blood"):null;if(blood)blood.gameObject.SetActive(CorrellBranch&&NightIndex>=1);}
         // V25: a route that ends early, with its own epilogue (Walter reached you)
         public void EndWith(string text,Vector3 lookAt){StartCoroutine(EndRoutine(text,lookAt));}
@@ -558,6 +586,7 @@ namespace ServiceGameV2
         // envelope and shuts the door.") is drawn in italics in another colour so it is not taken for your own voice
         public bool NoticeIsAction {get;private set;}
         public void Say(string text) { if (string.IsNullOrEmpty(text)) return; Notice = text; NoticeIsAction = false; noticeUntil = Time.unscaledTime + Mathf.Clamp(1.8f + text.Length * .068f, 3.6f, 9.5f); }
+        public void ClearNotice(){Notice="";noticeUntil=0;}
         public void Narrate(string text) { if (string.IsNullOrEmpty(text)) return; Say(text); NoticeIsAction = true; }
         public void RetryVilla(){RetryProperty(1);}
         public void RetryProperty(int index){if(index>=0&&index<6)shutByPlayer[index]=false;var entry=Docket.Find(e=>e.Property==index);if(entry!=null)entry.Result=IsFriendly(index)?ServiceResult.Served:ServiceResult.Pending;if(Property(index).PostedPaper)Property(index).PostedPaper.SetActive(false);Busy=false;PaperOpen=MapOpen=false;accessGranted[index]=true;if(Life)Life.OpenDoor(Property(index),true);Player.IgnitionDelayPending=false;}
@@ -592,7 +621,7 @@ namespace ServiceGameV2
         public void Pause() { if (Phase != ServicePhase.Playing) return; Phase = ServicePhase.Paused; Time.timeScale = 0; SetCursor(); }
         public int ResumedFrame = -1;
         public void Resume() { if (Phase != ServicePhase.Paused) return; Phase = ServicePhase.Playing; Time.timeScale = 1; ResumedFrame = Time.frameCount; SetCursor(); }
-        public void Title() { StopAllCoroutines(); Busy = false; if(Timecard)Timecard.Clear(); if(Dread)Dread.ResetForShift(); ResetResidents(); if(Life)Life.ResetForShift(); if(Vehicle)Vehicle.ResetRadio(); if(Dialogue)Dialogue.Cancel(); Phase = ServicePhase.Title; PaperOpen = MapOpen = false; Time.timeScale = 1; Player.StopEngine(); Horror.ResetEncounter(); SetCursor(); }
+        public void Title() { StopAllCoroutines(); Busy = false; if(Scenes)Scenes.ResetForShift(); /* V28b (review): the finale or the stair freeze no longer runs on at the title */ if(Timecard)Timecard.Clear(); if(Dread)Dread.ResetForShift(); ResetResidents(); if(Life)Life.ResetForShift(); if(Vehicle)Vehicle.ResetRadio(); if(Dialogue)Dialogue.Cancel(); Phase = ServicePhase.Title; PaperOpen = MapOpen = false; Time.timeScale = 1; Player.StopEngine(); Horror.ResetEncounter(); SetCursor(); }
         public void SetCursor() { bool locked = Phase == ServicePhase.Playing && !PaperOpen && !IsSmoke; Cursor.lockState = locked ? CursorLockMode.Locked : CursorLockMode.None; Cursor.visible = !locked; }
         void OnDestroy() { if(Audio&&Player)SaveOptions();AudioListener.pause=false;Time.timeScale = 1; Cursor.lockState = CursorLockMode.None; Cursor.visible = true; }
     }

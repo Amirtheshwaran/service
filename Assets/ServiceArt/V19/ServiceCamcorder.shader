@@ -52,15 +52,18 @@ Shader "Service/Camcorder"
                 // V21 tape damage while something is close (ServiceDread drives _Glitch). Like a camcorder tape chewed
                 // in the deck: the picture tears sideways in bands that jump a dozen times a second, a tracking band rolls
                 // down the frame, the colour channels slip apart and the frame shudders vertically.
-                float tick = floor(_GlitchTime * 14.0);
+                // V28 ("keep the subtle camera effects... natural and unsettling rather than an obvious effect"): at a low
+                // level only the tracking band rolls and the colour slips; the torn bands and the shudder come in as it gets close
+                float tearGate = smoothstep(0.22, 0.5, _Glitch);
+                float tick = floor(_GlitchTime * lerp(8.0, 14.0, saturate(_Glitch * 2.0)));
                 float glitchOn = _Glitch * step(Hash(float2(tick, 3.1)), _Glitch * _Glitch * 0.9 + 0.08);
                 float bandH = lerp(0.015, 0.07, Hash(float2(tick, 7.7)));
                 float band = floor(uv.y / bandH);
-                float tear = (Hash(float2(band, tick)) - 0.5) * step(Hash(float2(band * 1.7, tick + 0.5)), glitchOn * 0.4);
+                float tear = (Hash(float2(band, tick)) - 0.5) * step(Hash(float2(band * 1.7, tick + 0.5)), glitchOn * 0.4) * tearGate;
                 float roll = frac(_GlitchTime * 0.23);
                 float rollBand = (1.0 - saturate(abs(uv.y - roll) / 0.02)) * saturate(_Glitch * 1.5 - 0.15);
                 uv.x += tear * 0.09 * glitchOn + rollBand * _Glitch * (Hash(float2(floor(uv.y * 240.0), tick)) - 0.5) * 0.03;
-                uv.y += (Hash(float2(tick, 11.0)) - 0.5) * 0.012 * glitchOn * step(0.7, Hash(float2(tick, 13.0)));
+                uv.y += (Hash(float2(tick, 11.0)) - 0.5) * 0.012 * glitchOn * step(0.7, Hash(float2(tick, 13.0))) * tearGate;
                 uv = saturate(uv);
                 float2 fromCentre = uv - 0.5;
                 // Chromatic fringe grows toward the frame edges, like a cheap lens (and slips sideways under tape damage).

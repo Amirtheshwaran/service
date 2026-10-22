@@ -56,7 +56,7 @@ namespace ServiceGameV2
         void TickStamina(float dt){
             if(SmokeEndlessStamina){Stamina=1;Winded=false;return;}
             bool exerting=!InCar&&!d.InputBlocked&&Sprinting&&HorizontalSpeed>1f;
-            if(exerting){Stamina-=dt*(d.Horror!=null&&d.Horror.Active?.1f:1f/6f);exertedAt=Time.time;if(Stamina<=0){Stamina=0;if(!Winded){Winded=true;WindedCount++;}}}
+            if(exerting){Stamina-=dt*((d.Horror!=null&&d.Horror.Active)||(d.Walter&&d.Walter.Chasing)?.1f:1f/6f);exertedAt=Time.time;if(Stamina<=0){Stamina=0;if(!Winded){Winded=true;WindedCount++;}}}
             else if(Time.time-exertedAt>.5f){float rate=InCar||d.InputBlocked?.5f:HorizontalSpeed<.2f?.35f:Running?.12f:.2f;Stamina=Mathf.Min(1,Stamina+rate*dt);}
             if(Winded&&Stamina>=.3f)Winded=false;
         }
@@ -250,7 +250,7 @@ namespace ServiceGameV2
         public void StopEngine() { FailedIgnition=false; EngineRunning = IsStarting = false; speed = 0; if (d.Audio != null) d.Audio.Engine(false); }
 
         public void EnterCar()
-        {
+        {HorizontalSpeed=0; /* V28b (review): a run into the seat is not still "moving" to the house creatures */
             Crouched=false;motionBlend=landing=0;SmokeCrouch=SmokeJump=false;
             lookBack=0;SmokeLookBack=0;
             if(!InCar&&walked&&s.Flashlight)torch=s.Flashlight.enabled;

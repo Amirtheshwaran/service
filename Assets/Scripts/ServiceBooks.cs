@@ -48,9 +48,13 @@ namespace ServiceGameV2 {
   void StairCheck(){if(stairDone||d.NightIndex!=1||d.Player.InCar||d.Horror.Active||d.Horror.Caught||d.Busy)return;var p=d.Property(4);if(!p)return;
    var w=d.Scene.Walker.transform.position;if(!ServiceLife.Indoors(p,w))return;if(!Flight(p)){stairDone=true;return;}
    var down=StairBottom-StairTop;down.y=0;var foot=StairBottom+down.normalized*.5f;var off=w-foot;off.y=0;float feet=d.Scene.Walker.bounds.min.y;
-   if(off.magnitude>StairNear||Mathf.Abs(feet-StairBottom.y)>1.2f){stairNearFor=0;return;}stairNearFor+=Time.deltaTime;
+   // V28b (audit): the straight walk from his front door to the back room passes 4.7 m from the stair foot - looking up the
+   // stairs from up to 3.6 m away is enough now (2.6 m still for lingering at the foot without looking)
    var vp=d.Scene.View.WorldToViewportPoint(StairTop+Vector3.up*.3f);bool inView=vp.z>0&&vp.x>.08f&&vp.x<.92f&&vp.y>.05f&&vp.y<.97f;
-   if(inView||stairNearFor>1.5f){stairDone=true;if(d.Scenes)d.Scenes.BellFreeze(p);else StartCoroutine(StairFall(p));}} // V27: it stands on the landing first; the book after
+   // the freeze turns your head to the landing itself, so a clear line to the top of his stairs within 5 m is enough
+   bool los=off.magnitude<=5f&&ServiceInteraction.Clear(d.Scene.View.transform.position,StairTop+Vector3.up*1.2f,null,d.Scene.Walker.transform);
+   if(off.magnitude>(los?5f:inView?3.6f:StairNear)||Mathf.Abs(feet-StairBottom.y)>1.2f){stairNearFor=0;return;}stairNearFor+=Time.deltaTime;
+   if(inView||los||stairNearFor>1.5f){stairDone=true;if(d.Scenes)d.Scenes.BellFreeze(p);else StartCoroutine(StairFall(p));}} // V27: it stands on the landing first; the book after
   public void BeginStairFall(ServiceProperty p){StartCoroutine(StairFall(p));}
   IEnumerator StairFall(ServiceProperty p){StairFalls++;
    d.Audio.HorrorAt("woodstress",StairTop+Vector3.up*.6f,.32f); // a board upstairs first
