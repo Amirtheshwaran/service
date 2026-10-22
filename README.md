@@ -1,10 +1,12 @@
 # Service
 
 > An atmospheric first-person horror game about serving civil process documents across rural Hollis County after dark.
+>
+> **Development Status**: Active development - currently working on Version 29.
 
 [![Unity](https://img.shields.io/badge/Unity-6000.6.0f1%20URP-black?style=flat-square&logo=unity)](https://unity.com/)
-[![Platform](https://img.shields.io/badge/Platform-Windows%2064--bit-blue?style=flat-square&logo=windows)](https://github.com/Amirtheshwaran/service/releases)
-[![Release](https://img.shields.io/badge/Release-v1.0.0%20(Build%20v28)-orange?style=flat-square)](https://github.com/Amirtheshwaran/service/releases)
+[![Status](https://img.shields.io/badge/Status-Active%20Development%20(v29)-yellow?style=flat-square)](https://github.com/Amirtheshwaran/service)
+[![Platform](https://img.shields.io/badge/Platform-Windows%2064--bit-blue?style=flat-square)](https://unity.com/)
 [![License](https://img.shields.io/badge/License-All%20Rights%20Reserved-lightgrey?style=flat-square)](LICENSE)
 
 ![Cockpit driving at night in Hollis County](docs/images/hero-cockpit.jpg)
@@ -61,14 +63,15 @@ There is no combat. Survival depends on keen observation, composure, and knowing
 - **Post-Processing**: Custom shader passes implementing retro camcorder dithering, vignette, scanlines, and adaptive torch exposure.
 - **Verification**: Built-in automated headless test framework covering player movement, route triggers, door interactions, and placement audits.
 
-## How to Play
+## Running the Project
 
-### Option 1: Standalone Build (Recommended)
-Download the pre-built game package from the [Releases](https://github.com/Amirtheshwaran/service/releases) page, extract the zip, and launch `Service.exe` (Windows 64-bit).
-
-### Option 2: Running in Unity
 1. Install **Unity 6 (6000.6.0f1)** via Unity Hub.
-2. Clone this repository (ensure Git LFS is installed and run `git lfs pull` to fetch scene assets).
+2. Clone this repository (ensure Git LFS is installed and run `git lfs pull` to fetch scene assets):
+   ```bash
+   git clone https://github.com/Amirtheshwaran/service.git
+   cd service/ServiceProject
+   git lfs pull
+   ```
 3. Open the `ServiceProject` directory in Unity Hub.
 4. In the Project tab, open `Assets/Scenes/HollisCounty.unity`.
 5. Press **Play**.
