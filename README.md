@@ -1,99 +1,79 @@
 # Service
 
-First-person horror game with free-roam driving/walking and no combat, built in Unity.
+> An atmospheric first-person horror game about serving civil process documents across rural Hollis County after dark.
 
-## About the Game
+[![Unity](https://img.shields.io/badge/Unity-6000.6.0f1%20URP-black?style=flat-square&logo=unity)](https://unity.com/)
+[![Platform](https://img.shields.io/badge/Platform-Windows%2064--bit-blue?style=flat-square&logo=windows)](https://github.com/Amirtheshwaran/service/releases)
+[![Release](https://img.shields.io/badge/Release-v1.0.0%20(Build%20v28)-orange?style=flat-square)](https://github.com/Amirtheshwaran/service/releases)
+[![License](https://img.shields.io/badge/License-All%20Rights%20Reserved-lightgrey?style=flat-square)](LICENSE)
 
-You play as a civil process server working night shifts in rural Hollis County. Your job is to drive out and deliver court documents to people who usually don't want to receive them. Every shift gives you a docket of addresses to locate and serve using your car, a flashlight, and your judgment. If a place feels wrong, you can't fight back; you just leave.
+![Cockpit driving at night in Hollis County](docs/images/hero-cockpit.jpg)
 
-The horror is focused on slow burn and atmosphere rather than cheap jump scares. In this build (v28), the story unfolds across three night shifts:
-- Night 1 (October 1st, 1998): Ordinary civil service work across five rural properties. Subtle atmospheric omens, doorstep resident calls, an unsettling figure along the tree line, and an upstairs corridor encounter at Vale House.
-- Night 2 (October 4th, 1998): Escalated tension and wrongness. Harrow Lodge watcher encounter (turn away and stand completely still), Bell residence note and pursuit escape back to the car, and Morrow House pursuit.
-- Night 3 (October 9th, 1998): Severe fog and unmapped route past the county road closure, leading to the unsurveyed final parcel.
+## Overview
 
-## How to Play / Run in Unity
+Set in October 1998, you play as a civil process server tasked with delivering court notices to isolated properties throughout rural Hollis County. Navigate dark two-lane county roads, inspect handwritten doorstep notes under flashlight beam, and explore sparsely lit rural residences to locate recipients.
 
-Built with Unity 6 (6000.6.0f1) using URP.
+There is no combat. Survival depends on keen observation, composure, and knowing when a delivery is no longer safe to complete.
 
-1. Open Unity Hub.
-2. Click Add -> Add project from disk, and select this folder (ServiceProject).
-3. Open it with Unity 6000.6.0f1.
-4. In the Project tab, open Assets/Scenes/HollisCounty.unity.
-5. Hit Play.
+## Highlights
+
+- **Free-Roam Driving and Foot Exploration**: Drive a 1990s county vehicle along winding rural routes with manual ignition, headlights, radio tuning, and on-foot transitions.
+- **Three-Night Narrative Campaign**: Work multi-shift delivery dockets across five rural parcels and an unsurveyed route, featuring branching dialogue and alternate outcomes.
+- **Custom VHS and Camcorder Visuals**: Authentic analog post-processing with adjustable tape degradation, edge fringing, and dynamic gamma-space color grading built on Unity URP.
+- **Tension and Pursuit Mechanics**: Encounter logic with stamina-limited sprint escapes, composure-based horror encounters, and proximity dread audio.
+- **First-Person Hands and Gestures**: Dedicated animations for vehicle steering, knocking, handing over papers, placing notices, flashlight grip, and door interactions.
+- **Spatial Audio and Foley**: Authentic field recordings, Great Horned Owl canopy calls, dry leaves footsteps, and distance-attenuated environmental acoustics.
+- **Automated Regression Suite**: In-engine smoke test suite verifying route dockets, collision bounds, prop placement, and lighting sanity.
+
+## Gameplay Gallery
+
+| Doorstep Delivery | Resident Interaction |
+| :---: | :---: |
+| ![Porch Delivery](docs/images/porch-delivery.jpg) | ![Resident Dialogue](docs/images/resident-dialogue.jpg) |
+| *Inspecting handwritten doorstep notices with torch auto-exposure* | *Conversational doorstep delivery with dynamic dialogue choices* |
+
+| Atmospheric Encounter | Cockpit Navigation |
+| :---: | :---: |
+| ![The Watcher Encounter](docs/images/watcher-encounter.jpg) | ![Cockpit Navigation](docs/images/hero-cockpit.jpg) |
+| *High-tension encounter where composure determines survival* | *Nighttime navigation along unlit rural corridors in Hollis County* |
 
 ## Controls
 
 | Key | Action |
 | --- | --- |
-| WASD | Walk / Drive (S reverses car) |
-| Mouse | Look around (including inside cockpit) |
-| E / Space / Click | Advance dialogue line ("E NEXT" prompt) / knock / enter or exit car, close door, pet Rex, wipe feet, hold nerve, interact, file report |
-| R | Leave documents on the delivery table |
-| U | Mark address as unable to serve |
-| F | Flashlight (on foot) |
-| Space | Jump on foot (supports diagonal stairs) / turn ignition key (in car) |
-| Ctrl | Hold to crouch (on foot) |
-| V / B | Radio power / cycle through 3 stations (in car) |
-| Shift | Forward sprint (with stamina meter and breath depletion) / brake while driving |
-| Tab | Open docket clipboard (in car, while stopped) |
-| Esc | Pause menu / close papers or held note |
+| **WASD** | Walk / Drive (S reverses vehicle) |
+| **Mouse** | Look around (including cockpit view) |
+| **E / Space / Click** | Interact / knock / enter or exit car / advance dialogue |
+| **R** | Leave documents on marked delivery table |
+| **U** | Mark property as unable to serve |
+| **F** | Toggle flashlight (on foot) |
+| **Space** | Jump (on foot) / turn ignition key (in car) |
+| **Ctrl** | Hold to crouch (on foot) |
+| **Shift** | Forward sprint (stamina limited) / vehicle brake |
+| **Tab** | Open docket clipboard (in car, stopped) |
+| **V / B** | Toggle radio / cycle radio stations (in car) |
+| **Esc** | Pause menu / close inspected documents |
 
-## Gameplay & Features
+## Technical Details
 
-- **Architectural Room Furnishing**: Every residence has been individually furnished according to architectural room plans, placing 89 pieces across Morrow's sparse parlor, sewing corner, gallery, and bedrooms, 44 pieces at Vale's morning room, corridor, and shut room, and reconfigured layouts at Route 9, Correll's, Harrow's, and Bell's. All furniture pieces are seated flush against drawn walls and resting on drawn floorboards.
-- **June Lowell Lore & Readables**: Richer narrative documentation concerning the events of 1958, including June Lowell's backstory, the historical actions of each household, hidden family photographs, readable summons notices, and unique shift doorstep notes.
-- **1440p Native Display & Subtler Tape Degradation**: Full support for native 1440p and widescreen displays with borderless windowed mode. The camera filter removes the artificial 'Off' setting in favor of subtle, authentic tape-wear glitching and analog distortion.
-- **Compass Headings & Direction Hints**: On-screen bearing indicators ("BEHIND YOU", "TURN AROUND") and perimeter screen edge arrows to help orient the player toward objectives and delivery points.
-- **Fair Chase & Door Dynamics**: Front doors forcefully bang open if an encounter begins while shut; outdoor pursuer movement speeds are capped to allow survival through consistent sprinting; Bell came-back pursuit sequence is cleanly paced.
-- **Canine Escort Behavior**: Rex guides the player naturally along driveways between the entrance and porch steps, remaining in view even around sharp curves.
+- **Engine and Pipeline**: Built in Unity 6 (6000.6.0f1) utilizing the Universal Render Pipeline (URP).
+- **Large Asset Management**: Version-controlled using Git LFS for large level scenes (`HollisCounty.unity`).
+- **Post-Processing**: Custom shader passes implementing retro camcorder dithering, vignette, scanlines, and adaptive torch exposure.
+- **Verification**: Built-in automated headless test framework covering player movement, route triggers, door interactions, and placement audits.
 
-- **Capture Jumpscares**: Every capture sequence features an intense in-your-face jumpscare with creature attack audio, screen flash, camera shake, and blackout transition.
-- **Story Lore & Hospital Pager**: Backstory reveals the player character's family history (parents died in the 1987 Route 9 fire, leaving only the player and Sofia) with incoming St. Brigid's Hospital pager alerts across shifts.
-- **Vale House Doorway Rule**: Leaving the front entrance open on night one triggers audio warnings; failing to pull the door shut allows an entity to enter and attack, while shutting it results in aggressive impacts from outside.
-- **Bell Residence Sequence & Reading**: Approaching the stairs at Bell's on night two triggers an entity on the landing and a player freeze effect, followed by a heavy encyclopedia tumbling down the steps and an interactive handwritten reading page.
-- **Route 9 Climax & Final Parcel**: The third night route concludes at the childhood house on Route 9 with hospital pager climax, lights-out sequence, entity presence, escalating apparitions, and a dedicated narrative epilogue.
-- **Enhanced Visuals & Dynamic Reflections**: Refined camcorder filter defaults (540-line Strong setting), balanced shadow casting (optimized shadow atlas), realistic nighttime reflection intensity (eliminating daytime reflection glow on mirrors/glass), and wide-cone torch auto-iris adjusting properly around characters without washouts.
-- **Driveway Lamps & Guide Markers**: Street lamps placed at driveway entrances and optional HUD guide markers for improved night-driving navigation.
-- **Woodland Ambience & Great Horned Owls**: Great horned owl field calls echoing through the forest canopy, dry leaves rustling off-road, carrying long-distance horns, and interior floorboard creaks.
-- **Chapters Menu & Display Modes**: Level selection allowing players to jump directly to any unlocked night shift from the main menu, plus borderless windowed mode support.
-- **Terrain-Painted Drives & Roadways**: Gravel driveways, footpaths, and road shoulders are rasterised and blended directly into the high-resolution terrain surface (with damp verges and faint wheel ruts), replacing flat surface ribbons. All woodland foliage and thicket brush are grounded directly to terrain elevation.
-- **Blink Apparitions**: Subtle atmospheric apparitions manifest during involuntary eyelid blinks (at Morrow's desk on night one, Bell's hallway on night two, and along the Route 9 shoulder on night three).
-- **Watcher Nerve Composure & Lunges**: Encountering the Harrow Lodge watcher requires holding your nerve by tapping `E` to steady rising panic while remaining still and facing away. If composure breaks or eye contact is made, the entity lunges across the room into close proximity before attacking.
-- **Correll Branch Storyline & Pursuit**: Specific dialogue choices on night one unlock an alternate night-two route at Correll's with blood omens, missing pets, an active pursuit featuring realistic humanoid running animations, and an exclusive route epilogue.
-- **Morrow House Mat Reversals**: Wiping boots on the entrance mat prompts an eerie delayed second wiping audio sequence from directly behind once indoors.
-- **Rex Behaviors & Petting**: Rex approaches calmly on arrival, stepping aside for sprinting players, and can be petted up close with a dedicated downward hand gesture and canine trot animation.
-- **Visible Hearth Fires**: Cabin fireplaces at Correll's, Harrow Lodge, and Route 9 feature animated flame tongues, ember beds, and crackling audio. Hearth fires die down to faint embers during atmospheric scares.
-- **Driveway Pull-offs & Foot Navigation**: Cars pull off approximately a car length into each drive before encountering muddy ground barriers, requiring deliveries and retreat runs to be completed on foot.
-- **Note Transcripts & Legibility Plates**: Inspecting a handwritten doorstep note displays a typed transcript with signature attribution underneath. Interaction prompts sit on shaded backdrop plates with targeting reticles to maintain legibility in direct flashlight beams.
-- **Torch Auto-Iris & Stamina Meter**: Flashlight exposure eases down automatically at close range to prevent glare on notes and doors. An on-foot HUD stamina meter indicates exertion and breath depletion.
-- **Resident Audio & Doorstep Responses**: Residents call out through the door with throat-clearing before answering. Front doors can be pulled shut from the outside after entry.
-- **Atmospheric Scares**: Delayed door creaks and room-by-room light cuts on night-one departures, falling shelf books after document placement, and Morrow House entrance mat wiping mechanics.
-- **Camcorder Aesthetic**: VHS/camcorder visual filter with adjustable grain, fringing, vignette, and gamma-space color grading.
-- **First-Person Hands & Gestures**: Overhand flashlight grip, dedicated gestures for knocking, handing over papers, placing documents on desks, petting, and pushing doors, plus dynamic steering wheel hands with crossing poses.
-- **Typewriter Time Cards & Stamps**: Fears to Fathom style typed date and time opening cards, corner arrival stamps, and rewind sequence cards.
-- **Audio & Pursuit Dread**: Adaptive pursuit tension score ("Anxiety" and "Penumbra" by Kevin MacLeod), rising drones, panic breathing audio, tall-grass foley, and VHS tape-damage glitch effects.
-- **Wayfinding**: Reflective blue rural mailboxes with 911 numbers and family names at each driveway, dynamic on-screen route guidance, and handwritten docket clipboard.
-- **Settings Menu**: Press `Esc` while playing to access configuration options for video, audio, controls, mouse look sensitivity, camera filter intensity, and brightness.
-- **Route Saves**: Completed delivery shifts save automatically upon filing your report at the county depot.
+## How to Play
 
-## Project Layout
+### Option 1: Standalone Build (Recommended)
+Download the pre-built game package from the [Releases](https://github.com/Amirtheshwaran/service/releases) page, extract the zip, and launch `Service.exe` (Windows 64-bit).
 
-- Assets/Scenes/HollisCounty.unity: Main scene with the road network, rural properties, and county depot.
-- Assets/Scripts/: Gameplay scripts (player locomotion, interaction gestures, car physics, route guidance, dialog/notes, VHS post-processing, and horror encounter logic).
-- Assets/ServiceArt/: Shaders, materials, meshes, scanned woodland assets, furniture, mailboxes, and scene assets.
-- Assets/Editor/: Build tools, doorway inspection, layout toolkits, and test runners.
+### Option 2: Running in Unity
+1. Install **Unity 6 (6000.6.0f1)** via Unity Hub.
+2. Clone this repository (ensure Git LFS is installed and run `git lfs pull` to fetch scene assets).
+3. Open the `ServiceProject` directory in Unity Hub.
+4. In the Project tab, open `Assets/Scenes/HollisCounty.unity`.
+5. Press **Play**.
 
-## Asset Credits
+## License and Credits
 
-- Environment & Props: Flooded Grounds by Sandro T, Conifers [BOTD], Rocks and Boulders 2 (Unity Asset Store), Poly Haven CC0 scanned woodland assets and furniture, and Kenney City Kit Roads (CC0).
-- Fire particles & decals: Kenney Particle Pack 1.1 by Kenney Vleugels (CC0).
-- Monster models & apparitions: Creep Horror Creature by AC Game Assets, Demon Horror Creature with Weapon, and Sophia model by Renderpeople.
-- First-person arms: PSX First Person Arms by Drillimpact (CC0).
-- Resident NPCs: BELAZ elderly man and vrimen resident model (CC BY 4.0), with animations from Unity Starter Assets.
-- Domestic dog: German Shepherd by RetroStyle Games (itch.io).
-- Props: Blue rural mailbox by Rylae Shylna (CC BY 4.0), electrical powerline poles by tiedtke (CC BY 4.0), and fuzzy dice by jediscoob (CC BY 4.0).
-- Vehicle cabin: Ford Crown Victoria interior by Tyble (CC BY 3.0 fan art, noncommercial).
-- Music: "Anxiety", "Penumbra", "This House", "The Descent", "George Street Shuffle", "Local Forecast - Elevator", and "Jazz Brunch" by Kevin MacLeod (incompetech.com), licensed under CC BY 4.0.
-- Audio: Great Horned Owl calls from xeno-canto (CC BY-SA 3.0 / 4.0), human field recordings and sound effects from Freesound, Nox Sound Essentials, and ViRiX Dreamcore (CC0 / CC BY 4.0 / CC BY 3.0).
-- Fonts: Courier Prime, Barlow, VT323, and handwritten fonts (SIL Open Font License).
-- Full links and source details are in ASSET-CREDITS.txt.
+- **Original Project Code and Design**: All Rights Reserved for personal portfolio and educational evaluation. See [LICENSE](LICENSE) for details.
+- **Third-Party Assets**: Audio recordings, 3D models, textures, and fonts are used under CC0, CC BY, SIL Open Font License, or standard commercial licenses. Full links and attributions are documented in [ASSET-CREDITS.txt](ASSET-CREDITS.txt).
