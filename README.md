@@ -29,15 +29,15 @@ There is no combat. Survival depends on keen observation, composure, and knowing
 
 ## Gameplay Gallery
 
-| Doorstep Delivery | Resident Interaction |
+| Doorway Investigation | Resident Interaction |
 | :---: | :---: |
-| ![Porch Delivery](docs/images/porch-delivery.jpg) | ![Resident Dialogue](docs/images/resident-dialogue.jpg) |
-| *Inspecting handwritten doorstep notices with torch auto-exposure* | *Conversational doorstep delivery with dynamic dialogue choices* |
+| ![Doorway Investigation](docs/images/door-investigation.jpg) | ![Resident Dialogue](docs/images/resident-dialogue.jpg) |
+| *First-person hand interaction and atmospheric entryways* | *Doorstep delivery encounter with dynamic dialogue choices* |
 
-| Atmospheric Encounter | Cockpit Navigation |
+| Atmospheric Encounter | Handwritten Clues and Lore |
 | :---: | :---: |
-| ![The Watcher Encounter](docs/images/watcher-encounter.jpg) | ![Cockpit Navigation](docs/images/hero-cockpit.jpg) |
-| *High-tension encounter where composure determines survival* | *Nighttime navigation along unlit rural corridors in Hollis County* |
+| ![The Encounter](docs/images/watcher-encounter.jpg) | ![Handwritten Note](docs/images/read-note.jpg) |
+| *High-tension encounter where composure determines survival* | *Inspecting handwritten letters, bulletins, and environmental lore* |
 
 ## Controls
 
